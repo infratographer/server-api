@@ -25,6 +25,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/x/gidx"
 )
@@ -36,6 +37,7 @@ type ServerAttributeQuery struct {
 	order      []serverattribute.OrderOption
 	inters     []Interceptor
 	predicates []predicate.ServerAttribute
+	withServer *ServerQuery
 	modifiers  []func(*sql.Selector)
 	loadTotal  []func(context.Context, []*ServerAttribute) error
 	// intermediate query (i.e. traversal path).
@@ -72,6 +74,28 @@ func (saq *ServerAttributeQuery) Unique(unique bool) *ServerAttributeQuery {
 func (saq *ServerAttributeQuery) Order(o ...serverattribute.OrderOption) *ServerAttributeQuery {
 	saq.order = append(saq.order, o...)
 	return saq
+}
+
+// QueryServer chains the current query on the "server" edge.
+func (saq *ServerAttributeQuery) QueryServer() *ServerQuery {
+	query := (&ServerClient{config: saq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := saq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := saq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverattribute.Table, serverattribute.FieldID, selector),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverattribute.ServerTable, serverattribute.ServerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(saq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first ServerAttribute entity from the query.
@@ -266,10 +290,22 @@ func (saq *ServerAttributeQuery) Clone() *ServerAttributeQuery {
 		order:      append([]serverattribute.OrderOption{}, saq.order...),
 		inters:     append([]Interceptor{}, saq.inters...),
 		predicates: append([]predicate.ServerAttribute{}, saq.predicates...),
+		withServer: saq.withServer.Clone(),
 		// clone intermediate query.
 		sql:  saq.sql.Clone(),
 		path: saq.path,
 	}
+}
+
+// WithServer tells the query-builder to eager-load the nodes that are connected to
+// the "server" edge. The optional arguments are used to configure the query builder of the edge.
+func (saq *ServerAttributeQuery) WithServer(opts ...func(*ServerQuery)) *ServerAttributeQuery {
+	query := (&ServerClient{config: saq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	saq.withServer = query
+	return saq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -348,8 +384,11 @@ func (saq *ServerAttributeQuery) prepareQuery(ctx context.Context) error {
 
 func (saq *ServerAttributeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ServerAttribute, error) {
 	var (
-		nodes = []*ServerAttribute{}
-		_spec = saq.querySpec()
+		nodes       = []*ServerAttribute{}
+		_spec       = saq.querySpec()
+		loadedTypes = [1]bool{
+			saq.withServer != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ServerAttribute).scanValues(nil, columns)
@@ -357,6 +396,7 @@ func (saq *ServerAttributeQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &ServerAttribute{config: saq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(saq.modifiers) > 0 {
@@ -371,12 +411,48 @@ func (saq *ServerAttributeQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := saq.withServer; query != nil {
+		if err := saq.loadServer(ctx, query, nodes, nil,
+			func(n *ServerAttribute, e *Server) { n.Edges.Server = e }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range saq.loadTotal {
 		if err := saq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (saq *ServerAttributeQuery) loadServer(ctx context.Context, query *ServerQuery, nodes []*ServerAttribute, init func(*ServerAttribute), assign func(*ServerAttribute, *Server)) error {
+	ids := make([]gidx.PrefixedID, 0, len(nodes))
+	nodeids := make(map[gidx.PrefixedID][]*ServerAttribute)
+	for i := range nodes {
+		fk := nodes[i].ServerID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(server.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "server_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (saq *ServerAttributeQuery) sqlCount(ctx context.Context) (int, error) {
@@ -406,6 +482,9 @@ func (saq *ServerAttributeQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != serverattribute.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if saq.withServer != nil {
+			_spec.Node.AddColumnOnce(serverattribute.FieldServerID)
 		}
 	}
 	if ps := saq.predicates; len(ps) > 0 {

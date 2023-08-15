@@ -379,6 +379,10 @@ type ServerWhereInput struct {
 	// "components" edge predicates.
 	HasComponents     *bool                        `json:"hasComponents,omitempty"`
 	HasComponentsWith []*ServerComponentWhereInput `json:"hasComponentsWith,omitempty"`
+
+	// "attributes" edge predicates.
+	HasAttributes     *bool                        `json:"hasAttributes,omitempty"`
+	HasAttributesWith []*ServerAttributeWhereInput `json:"hasAttributesWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -663,6 +667,24 @@ func (i *ServerWhereInput) P() (predicate.Server, error) {
 		}
 		predicates = append(predicates, server.HasComponentsWith(with...))
 	}
+	if i.HasAttributes != nil {
+		p := server.HasAttributes()
+		if !*i.HasAttributes {
+			p = server.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAttributesWith) > 0 {
+		with := make([]predicate.ServerAttribute, 0, len(i.HasAttributesWith))
+		for _, w := range i.HasAttributesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAttributesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, server.HasAttributesWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyServerWhereInput
@@ -724,6 +746,25 @@ type ServerAttributeWhereInput struct {
 	NameHasSuffix    *string  `json:"nameHasSuffix,omitempty"`
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+
+	// "value" field predicates.
+	Value             *string  `json:"value,omitempty"`
+	ValueNEQ          *string  `json:"valueNEQ,omitempty"`
+	ValueIn           []string `json:"valueIn,omitempty"`
+	ValueNotIn        []string `json:"valueNotIn,omitempty"`
+	ValueGT           *string  `json:"valueGT,omitempty"`
+	ValueGTE          *string  `json:"valueGTE,omitempty"`
+	ValueLT           *string  `json:"valueLT,omitempty"`
+	ValueLTE          *string  `json:"valueLTE,omitempty"`
+	ValueContains     *string  `json:"valueContains,omitempty"`
+	ValueHasPrefix    *string  `json:"valueHasPrefix,omitempty"`
+	ValueHasSuffix    *string  `json:"valueHasSuffix,omitempty"`
+	ValueEqualFold    *string  `json:"valueEqualFold,omitempty"`
+	ValueContainsFold *string  `json:"valueContainsFold,omitempty"`
+
+	// "server" edge predicates.
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -908,7 +949,64 @@ func (i *ServerAttributeWhereInput) P() (predicate.ServerAttribute, error) {
 	if i.NameContainsFold != nil {
 		predicates = append(predicates, serverattribute.NameContainsFold(*i.NameContainsFold))
 	}
+	if i.Value != nil {
+		predicates = append(predicates, serverattribute.ValueEQ(*i.Value))
+	}
+	if i.ValueNEQ != nil {
+		predicates = append(predicates, serverattribute.ValueNEQ(*i.ValueNEQ))
+	}
+	if len(i.ValueIn) > 0 {
+		predicates = append(predicates, serverattribute.ValueIn(i.ValueIn...))
+	}
+	if len(i.ValueNotIn) > 0 {
+		predicates = append(predicates, serverattribute.ValueNotIn(i.ValueNotIn...))
+	}
+	if i.ValueGT != nil {
+		predicates = append(predicates, serverattribute.ValueGT(*i.ValueGT))
+	}
+	if i.ValueGTE != nil {
+		predicates = append(predicates, serverattribute.ValueGTE(*i.ValueGTE))
+	}
+	if i.ValueLT != nil {
+		predicates = append(predicates, serverattribute.ValueLT(*i.ValueLT))
+	}
+	if i.ValueLTE != nil {
+		predicates = append(predicates, serverattribute.ValueLTE(*i.ValueLTE))
+	}
+	if i.ValueContains != nil {
+		predicates = append(predicates, serverattribute.ValueContains(*i.ValueContains))
+	}
+	if i.ValueHasPrefix != nil {
+		predicates = append(predicates, serverattribute.ValueHasPrefix(*i.ValueHasPrefix))
+	}
+	if i.ValueHasSuffix != nil {
+		predicates = append(predicates, serverattribute.ValueHasSuffix(*i.ValueHasSuffix))
+	}
+	if i.ValueEqualFold != nil {
+		predicates = append(predicates, serverattribute.ValueEqualFold(*i.ValueEqualFold))
+	}
+	if i.ValueContainsFold != nil {
+		predicates = append(predicates, serverattribute.ValueContainsFold(*i.ValueContainsFold))
+	}
 
+	if i.HasServer != nil {
+		p := serverattribute.HasServer()
+		if !*i.HasServer {
+			p = serverattribute.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerWith) > 0 {
+		with := make([]predicate.Server, 0, len(i.HasServerWith))
+		for _, w := range i.HasServerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverattribute.HasServerWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyServerAttributeWhereInput

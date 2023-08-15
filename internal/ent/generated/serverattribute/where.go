@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/x/gidx"
 )
@@ -82,6 +83,11 @@ func UpdatedAt(v time.Time) predicate.ServerAttribute {
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.ServerAttribute {
 	return predicate.ServerAttribute(sql.FieldEQ(FieldName, v))
+}
+
+// Value applies equality check predicate on the "value" field. It's identical to ValueEQ.
+func Value(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldEQ(FieldValue, v))
 }
 
 // ServerID applies equality check predicate on the "server_id" field. It's identical to ServerIDEQ.
@@ -234,6 +240,71 @@ func NameContainsFold(v string) predicate.ServerAttribute {
 	return predicate.ServerAttribute(sql.FieldContainsFold(FieldName, v))
 }
 
+// ValueEQ applies the EQ predicate on the "value" field.
+func ValueEQ(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldEQ(FieldValue, v))
+}
+
+// ValueNEQ applies the NEQ predicate on the "value" field.
+func ValueNEQ(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldNEQ(FieldValue, v))
+}
+
+// ValueIn applies the In predicate on the "value" field.
+func ValueIn(vs ...string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldIn(FieldValue, vs...))
+}
+
+// ValueNotIn applies the NotIn predicate on the "value" field.
+func ValueNotIn(vs ...string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldNotIn(FieldValue, vs...))
+}
+
+// ValueGT applies the GT predicate on the "value" field.
+func ValueGT(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldGT(FieldValue, v))
+}
+
+// ValueGTE applies the GTE predicate on the "value" field.
+func ValueGTE(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldGTE(FieldValue, v))
+}
+
+// ValueLT applies the LT predicate on the "value" field.
+func ValueLT(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldLT(FieldValue, v))
+}
+
+// ValueLTE applies the LTE predicate on the "value" field.
+func ValueLTE(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldLTE(FieldValue, v))
+}
+
+// ValueContains applies the Contains predicate on the "value" field.
+func ValueContains(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldContains(FieldValue, v))
+}
+
+// ValueHasPrefix applies the HasPrefix predicate on the "value" field.
+func ValueHasPrefix(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldHasPrefix(FieldValue, v))
+}
+
+// ValueHasSuffix applies the HasSuffix predicate on the "value" field.
+func ValueHasSuffix(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldHasSuffix(FieldValue, v))
+}
+
+// ValueEqualFold applies the EqualFold predicate on the "value" field.
+func ValueEqualFold(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldEqualFold(FieldValue, v))
+}
+
+// ValueContainsFold applies the ContainsFold predicate on the "value" field.
+func ValueContainsFold(v string) predicate.ServerAttribute {
+	return predicate.ServerAttribute(sql.FieldContainsFold(FieldValue, v))
+}
+
 // ServerIDEQ applies the EQ predicate on the "server_id" field.
 func ServerIDEQ(v gidx.PrefixedID) predicate.ServerAttribute {
 	return predicate.ServerAttribute(sql.FieldEQ(FieldServerID, v))
@@ -302,6 +373,29 @@ func ServerIDEqualFold(v gidx.PrefixedID) predicate.ServerAttribute {
 func ServerIDContainsFold(v gidx.PrefixedID) predicate.ServerAttribute {
 	vc := string(v)
 	return predicate.ServerAttribute(sql.FieldContainsFold(FieldServerID, vc))
+}
+
+// HasServer applies the HasEdge predicate on the "server" edge.
+func HasServer() predicate.ServerAttribute {
+	return predicate.ServerAttribute(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, ServerTable, ServerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasServerWith applies the HasEdge predicate on the "server" edge with a given conditions (other predicates).
+func HasServerWith(preds ...predicate.Server) predicate.ServerAttribute {
+	return predicate.ServerAttribute(func(s *sql.Selector) {
+		step := newServerStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

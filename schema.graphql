@@ -5,7 +5,8 @@ directive @prefixedID(prefix: String!) on OBJECT
 input CreateServerAttributeInput {
 	"""The name of the server attribute."""
 	name: String!
-	"""The ID for the server of this attribute."""
+	"""The value of the server attribute."""
+	value: String!
 	serverID: ID!
 }
 """Input information to create a server component."""
@@ -39,6 +40,7 @@ input CreateServerInput {
 	providerID: ID!
 	serverTypeID: ID!
 	componentIDs: [ID!]
+	attributeIDs: [ID!]
 }
 """Input information to create a server provider."""
 input CreateServerProviderInput {
@@ -196,6 +198,25 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
 		"""Filtering options for ServerComponents returned from the connection."""
 		where: ServerComponentWhereInput
 	): ServerComponentConnection!
+	attributes(
+		"""Returns the elements in the list that come after the specified cursor."""
+		after: Cursor
+
+		"""Returns the first _n_ elements from the list."""
+		first: Int
+
+		"""Returns the elements in the list that come before the specified cursor."""
+		before: Cursor
+
+		"""Returns the last _n_ elements from the list."""
+		last: Int
+
+		"""Ordering options for ServerAttributes returned from the connection."""
+		orderBy: ServerAttributeOrder
+
+		"""Filtering options for ServerAttributes returned from the connection."""
+		where: ServerAttributeWhereInput
+	): ServerAttributeConnection!
 }
 type ServerAttribute implements Node @key(fields: "id") @prefixedID(prefix: "srvratr") {
 	"""The ID of the server attribute."""
@@ -204,6 +225,9 @@ type ServerAttribute implements Node @key(fields: "id") @prefixedID(prefix: "srv
 	updatedAt: Time!
 	"""The name of the server attribute."""
 	name: String!
+	"""The value of the server attribute."""
+	value: String!
+	server: Server!
 }
 """A connection to a list of items."""
 type ServerAttributeConnection {
@@ -244,6 +268,7 @@ enum ServerAttributeOrderField {
 	CREATED_AT
 	UPDATED_AT
 	NAME
+	VALUE
 }
 """Return response from serverAttributeUpdate"""
 type ServerAttributeUpdatePayload {
@@ -299,6 +324,23 @@ input ServerAttributeWhereInput {
 	nameHasSuffix: String
 	nameEqualFold: String
 	nameContainsFold: String
+	"""value field predicates"""
+	value: String
+	valueNEQ: String
+	valueIn: [String!]
+	valueNotIn: [String!]
+	valueGT: String
+	valueGTE: String
+	valueLT: String
+	valueLTE: String
+	valueContains: String
+	valueHasPrefix: String
+	valueHasSuffix: String
+	valueEqualFold: String
+	valueContainsFold: String
+	"""server edge predicates"""
+	hasServer: Boolean
+	hasServerWith: [ServerWhereInput!]
 }
 type ServerComponent implements Node @key(fields: "id") @prefixedID(prefix: "srvrcmp") {
 	"""The ID of the server component."""
@@ -940,6 +982,9 @@ input ServerWhereInput {
 	"""components edge predicates"""
 	hasComponents: Boolean
 	hasComponentsWith: [ServerComponentWhereInput!]
+	"""attributes edge predicates"""
+	hasAttributes: Boolean
+	hasAttributesWith: [ServerAttributeWhereInput!]
 }
 """The builtin Time type"""
 scalar Time
@@ -947,6 +992,8 @@ scalar Time
 input UpdateServerAttributeInput {
 	"""The name of the server attribute."""
 	name: String
+	"""The value of the server attribute."""
+	value: String
 }
 """Input information to update a server component."""
 input UpdateServerComponentInput {
@@ -974,6 +1021,9 @@ input UpdateServerInput {
 	addComponentIDs: [ID!]
 	removeComponentIDs: [ID!]
 	clearComponents: Boolean
+	addAttributeIDs: [ID!]
+	removeAttributeIDs: [ID!]
+	clearAttributes: Boolean
 }
 """Input information to update a server provider."""
 input UpdateServerProviderInput {

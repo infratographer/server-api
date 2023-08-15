@@ -1149,6 +1149,20 @@ var (
 			}
 		},
 	}
+	// ServerAttributeOrderFieldValue orders ServerAttribute by value.
+	ServerAttributeOrderFieldValue = &ServerAttributeOrderField{
+		Value: func(sa *ServerAttribute) (ent.Value, error) {
+			return sa.Value, nil
+		},
+		column: serverattribute.FieldValue,
+		toTerm: serverattribute.ByValue,
+		toCursor: func(sa *ServerAttribute) Cursor {
+			return Cursor{
+				ID:    sa.ID,
+				Value: sa.Value,
+			}
+		},
+	}
 )
 
 // String implement fmt.Stringer interface.
@@ -1163,6 +1177,8 @@ func (f ServerAttributeOrderField) String() string {
 		str = "UPDATED_AT"
 	case ServerAttributeOrderFieldName.column:
 		str = "NAME"
+	case ServerAttributeOrderFieldValue.column:
+		str = "VALUE"
 	}
 	return str
 }
@@ -1187,6 +1203,8 @@ func (f *ServerAttributeOrderField) UnmarshalGQL(v interface{}) error {
 		*f = *ServerAttributeOrderFieldUpdatedAt
 	case "NAME":
 		*f = *ServerAttributeOrderFieldName
+	case "VALUE":
+		*f = *ServerAttributeOrderFieldValue
 	default:
 		return fmt.Errorf("%s is not a valid ServerAttributeOrderField", str)
 	}

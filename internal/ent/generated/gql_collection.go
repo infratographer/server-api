@@ -349,6 +349,90 @@ func (s *ServerQuery) collectField(ctx context.Context, opCtx *graphql.Operation
 			s.WithNamedComponents(alias, func(wq *ServerComponentQuery) {
 				*wq = *query
 			})
+		case "attributes":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerAttributeClient{config: s.config}).Query()
+			)
+			args := newServerAttributePaginateArgs(fieldArgs(ctx, new(ServerAttributeWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newServerAttributePager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					s.loadTotal = append(s.loadTotal, func(ctx context.Context, nodes []*Server) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID gidx.PrefixedID `sql:"server_id"`
+							Count  int             `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(server.AttributesColumn), ids...))
+						})
+						if err := query.GroupBy(server.AttributesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[gidx.PrefixedID]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[3] == nil {
+								nodes[i].Edges.totalCount[3] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[3][alias] = n
+						}
+						return nil
+					})
+				} else {
+					s.loadTotal = append(s.loadTotal, func(_ context.Context, nodes []*Server) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.Attributes)
+							if nodes[i].Edges.totalCount[3] == nil {
+								nodes[i].Edges.totalCount[3] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[3][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "ServerAttribute")...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				modify := limitRows(server.AttributesColumn, limit, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
+			} else {
+				query = pager.applyOrder(query)
+			}
+			s.WithNamedAttributes(alias, func(wq *ServerAttributeQuery) {
+				*wq = *query
+			})
 		case "createdAt":
 			if _, ok := fieldSeen[server.FieldCreatedAt]; !ok {
 				selectedFields = append(selectedFields, server.FieldCreatedAt)
@@ -453,6 +537,20 @@ func (sa *ServerAttributeQuery) collectField(ctx context.Context, opCtx *graphql
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
+		case "server":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerClient{config: sa.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sa.withServer = query
+			if _, ok := fieldSeen[serverattribute.FieldServerID]; !ok {
+				selectedFields = append(selectedFields, serverattribute.FieldServerID)
+				fieldSeen[serverattribute.FieldServerID] = struct{}{}
+			}
 		case "createdAt":
 			if _, ok := fieldSeen[serverattribute.FieldCreatedAt]; !ok {
 				selectedFields = append(selectedFields, serverattribute.FieldCreatedAt)
@@ -467,6 +565,11 @@ func (sa *ServerAttributeQuery) collectField(ctx context.Context, opCtx *graphql
 			if _, ok := fieldSeen[serverattribute.FieldName]; !ok {
 				selectedFields = append(selectedFields, serverattribute.FieldName)
 				fieldSeen[serverattribute.FieldName] = struct{}{}
+			}
+		case "value":
+			if _, ok := fieldSeen[serverattribute.FieldValue]; !ok {
+				selectedFields = append(selectedFields, serverattribute.FieldValue)
+				fieldSeen[serverattribute.FieldValue] = struct{}{}
 			}
 		case "id":
 		case "__typename":

@@ -47,6 +47,12 @@ func (sau *ServerAttributeUpdate) SetName(s string) *ServerAttributeUpdate {
 	return sau
 }
 
+// SetValue sets the "value" field.
+func (sau *ServerAttributeUpdate) SetValue(s string) *ServerAttributeUpdate {
+	sau.mutation.SetValue(s)
+	return sau
+}
+
 // Mutation returns the ServerAttributeMutation object of the builder.
 func (sau *ServerAttributeUpdate) Mutation() *ServerAttributeMutation {
 	return sau.mutation
@@ -95,6 +101,14 @@ func (sau *ServerAttributeUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.name": %w`, err)}
 		}
 	}
+	if v, ok := sau.mutation.Value(); ok {
+		if err := serverattribute.ValueValidator(v); err != nil {
+			return &ValidationError{Name: "value", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.value": %w`, err)}
+		}
+	}
+	if _, ok := sau.mutation.ServerID(); sau.mutation.ServerCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerAttribute.server"`)
+	}
 	return nil
 }
 
@@ -115,6 +129,9 @@ func (sau *ServerAttributeUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if value, ok := sau.mutation.Name(); ok {
 		_spec.SetField(serverattribute.FieldName, field.TypeString, value)
+	}
+	if value, ok := sau.mutation.Value(); ok {
+		_spec.SetField(serverattribute.FieldValue, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sau.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -139,6 +156,12 @@ type ServerAttributeUpdateOne struct {
 // SetName sets the "name" field.
 func (sauo *ServerAttributeUpdateOne) SetName(s string) *ServerAttributeUpdateOne {
 	sauo.mutation.SetName(s)
+	return sauo
+}
+
+// SetValue sets the "value" field.
+func (sauo *ServerAttributeUpdateOne) SetValue(s string) *ServerAttributeUpdateOne {
+	sauo.mutation.SetValue(s)
 	return sauo
 }
 
@@ -203,6 +226,14 @@ func (sauo *ServerAttributeUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.name": %w`, err)}
 		}
 	}
+	if v, ok := sauo.mutation.Value(); ok {
+		if err := serverattribute.ValueValidator(v); err != nil {
+			return &ValidationError{Name: "value", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.value": %w`, err)}
+		}
+	}
+	if _, ok := sauo.mutation.ServerID(); sauo.mutation.ServerCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerAttribute.server"`)
+	}
 	return nil
 }
 
@@ -240,6 +271,9 @@ func (sauo *ServerAttributeUpdateOne) sqlSave(ctx context.Context) (_node *Serve
 	}
 	if value, ok := sauo.mutation.Name(); ok {
 		_spec.SetField(serverattribute.FieldName, field.TypeString, value)
+	}
+	if value, ok := sauo.mutation.Value(); ok {
+		_spec.SetField(serverattribute.FieldValue, field.TypeString, value)
 	}
 	_node = &ServerAttribute{config: sauo.config}
 	_spec.Assign = _node.assignValues

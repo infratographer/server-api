@@ -23,6 +23,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/x/gidx"
 )
@@ -39,9 +40,38 @@ type ServerAttribute struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// The name of the server attribute.
 	Name string `json:"name,omitempty"`
+	// The value of the server attribute.
+	Value string `json:"value,omitempty"`
 	// The ID for the server of this attribute.
-	ServerID     gidx.PrefixedID `json:"server_id,omitempty"`
+	ServerID gidx.PrefixedID `json:"server_id,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ServerAttributeQuery when eager-loading is set.
+	Edges        ServerAttributeEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// ServerAttributeEdges holds the relations/edges for other nodes in the graph.
+type ServerAttributeEdges struct {
+	// Server holds the value of the server edge.
+	Server *Server `json:"server,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+}
+
+// ServerOrErr returns the Server value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ServerAttributeEdges) ServerOrErr() (*Server, error) {
+	if e.loadedTypes[0] {
+		if e.Server == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: server.Label}
+		}
+		return e.Server, nil
+	}
+	return nil, &NotLoadedError{edge: "server"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -51,7 +81,7 @@ func (*ServerAttribute) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case serverattribute.FieldID, serverattribute.FieldServerID:
 			values[i] = new(gidx.PrefixedID)
-		case serverattribute.FieldName:
+		case serverattribute.FieldName, serverattribute.FieldValue:
 			values[i] = new(sql.NullString)
 		case serverattribute.FieldCreatedAt, serverattribute.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -94,6 +124,12 @@ func (sa *ServerAttribute) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sa.Name = value.String
 			}
+		case serverattribute.FieldValue:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field value", values[i])
+			} else if value.Valid {
+				sa.Value = value.String
+			}
 		case serverattribute.FieldServerID:
 			if value, ok := values[i].(*gidx.PrefixedID); !ok {
 				return fmt.Errorf("unexpected type %T for field server_id", values[i])
@@ -107,10 +143,15 @@ func (sa *ServerAttribute) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the ServerAttribute.
+// GetValue returns the ent.Value that was dynamically selected and assigned to the ServerAttribute.
 // This includes values selected through modifiers, order, etc.
-func (sa *ServerAttribute) Value(name string) (ent.Value, error) {
+func (sa *ServerAttribute) GetValue(name string) (ent.Value, error) {
 	return sa.selectValues.Get(name)
+}
+
+// QueryServer queries the "server" edge of the ServerAttribute entity.
+func (sa *ServerAttribute) QueryServer() *ServerQuery {
+	return NewServerAttributeClient(sa.config).QueryServer(sa)
 }
 
 // Update returns a builder for updating this ServerAttribute.
@@ -144,6 +185,9 @@ func (sa *ServerAttribute) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(sa.Name)
+	builder.WriteString(", ")
+	builder.WriteString("value=")
+	builder.WriteString(sa.Value)
 	builder.WriteString(", ")
 	builder.WriteString("server_id=")
 	builder.WriteString(fmt.Sprintf("%v", sa.ServerID))

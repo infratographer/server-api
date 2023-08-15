@@ -4,6 +4,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 
 	"go.infratographer.com/x/entx"
@@ -60,7 +61,14 @@ func (ServerAttribute) Fields() []ent.Field {
 
 // Edges of the Provider
 func (ServerAttribute) Edges() []ent.Edge {
-	return []ent.Edge{}
+	return []ent.Edge{
+		edge.To("server", Server.Type).
+			Unique().
+			Required().
+			Immutable().
+			Field("server_id").
+			Annotations(),
+	}
 }
 
 // Indexes of the Provider

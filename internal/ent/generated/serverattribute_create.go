@@ -24,6 +24,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/x/gidx"
 )
@@ -69,6 +70,12 @@ func (sac *ServerAttributeCreate) SetName(s string) *ServerAttributeCreate {
 	return sac
 }
 
+// SetValue sets the "value" field.
+func (sac *ServerAttributeCreate) SetValue(s string) *ServerAttributeCreate {
+	sac.mutation.SetValue(s)
+	return sac
+}
+
 // SetServerID sets the "server_id" field.
 func (sac *ServerAttributeCreate) SetServerID(gi gidx.PrefixedID) *ServerAttributeCreate {
 	sac.mutation.SetServerID(gi)
@@ -87,6 +94,11 @@ func (sac *ServerAttributeCreate) SetNillableID(gi *gidx.PrefixedID) *ServerAttr
 		sac.SetID(*gi)
 	}
 	return sac
+}
+
+// SetServer sets the "server" edge to the Server entity.
+func (sac *ServerAttributeCreate) SetServer(s *Server) *ServerAttributeCreate {
+	return sac.SetServerID(s.ID)
 }
 
 // Mutation returns the ServerAttributeMutation object of the builder.
@@ -154,6 +166,14 @@ func (sac *ServerAttributeCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.name": %w`, err)}
 		}
 	}
+	if _, ok := sac.mutation.Value(); !ok {
+		return &ValidationError{Name: "value", err: errors.New(`generated: missing required field "ServerAttribute.value"`)}
+	}
+	if v, ok := sac.mutation.Value(); ok {
+		if err := serverattribute.ValueValidator(v); err != nil {
+			return &ValidationError{Name: "value", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.value": %w`, err)}
+		}
+	}
 	if _, ok := sac.mutation.ServerID(); !ok {
 		return &ValidationError{Name: "server_id", err: errors.New(`generated: missing required field "ServerAttribute.server_id"`)}
 	}
@@ -161,6 +181,9 @@ func (sac *ServerAttributeCreate) check() error {
 		if err := serverattribute.ServerIDValidator(string(v)); err != nil {
 			return &ValidationError{Name: "server_id", err: fmt.Errorf(`generated: validator failed for field "ServerAttribute.server_id": %w`, err)}
 		}
+	}
+	if _, ok := sac.mutation.ServerID(); !ok {
+		return &ValidationError{Name: "server", err: errors.New(`generated: missing required edge "ServerAttribute.server"`)}
 	}
 	return nil
 }
@@ -209,9 +232,26 @@ func (sac *ServerAttributeCreate) createSpec() (*ServerAttribute, *sqlgraph.Crea
 		_spec.SetField(serverattribute.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := sac.mutation.ServerID(); ok {
-		_spec.SetField(serverattribute.FieldServerID, field.TypeString, value)
-		_node.ServerID = value
+	if value, ok := sac.mutation.Value(); ok {
+		_spec.SetField(serverattribute.FieldValue, field.TypeString, value)
+		_node.Value = value
+	}
+	if nodes := sac.mutation.ServerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   serverattribute.ServerTable,
+			Columns: []string{serverattribute.ServerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(server.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ServerID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

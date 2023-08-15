@@ -28,6 +28,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
@@ -43,9 +44,11 @@ type ServerQuery struct {
 	withProvider        *ProviderQuery
 	withServerType      *ServerTypeQuery
 	withComponents      *ServerComponentQuery
+	withAttributes      *ServerAttributeQuery
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*Server) error
 	withNamedComponents map[string]*ServerComponentQuery
+	withNamedAttributes map[string]*ServerAttributeQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -141,6 +144,28 @@ func (sq *ServerQuery) QueryComponents() *ServerComponentQuery {
 			sqlgraph.From(server.Table, server.FieldID, selector),
 			sqlgraph.To(servercomponent.Table, servercomponent.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, server.ComponentsTable, server.ComponentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAttributes chains the current query on the "attributes" edge.
+func (sq *ServerQuery) QueryAttributes() *ServerAttributeQuery {
+	query := (&ServerAttributeClient{config: sq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := sq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(server.Table, server.FieldID, selector),
+			sqlgraph.To(serverattribute.Table, serverattribute.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, server.AttributesTable, server.AttributesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
 		return fromU, nil
@@ -343,6 +368,7 @@ func (sq *ServerQuery) Clone() *ServerQuery {
 		withProvider:   sq.withProvider.Clone(),
 		withServerType: sq.withServerType.Clone(),
 		withComponents: sq.withComponents.Clone(),
+		withAttributes: sq.withAttributes.Clone(),
 		// clone intermediate query.
 		sql:  sq.sql.Clone(),
 		path: sq.path,
@@ -379,6 +405,17 @@ func (sq *ServerQuery) WithComponents(opts ...func(*ServerComponentQuery)) *Serv
 		opt(query)
 	}
 	sq.withComponents = query
+	return sq
+}
+
+// WithAttributes tells the query-builder to eager-load the nodes that are connected to
+// the "attributes" edge. The optional arguments are used to configure the query builder of the edge.
+func (sq *ServerQuery) WithAttributes(opts ...func(*ServerAttributeQuery)) *ServerQuery {
+	query := (&ServerAttributeClient{config: sq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	sq.withAttributes = query
 	return sq
 }
 
@@ -460,10 +497,11 @@ func (sq *ServerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Serve
 	var (
 		nodes       = []*Server{}
 		_spec       = sq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			sq.withProvider != nil,
 			sq.withServerType != nil,
 			sq.withComponents != nil,
+			sq.withAttributes != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -506,10 +544,24 @@ func (sq *ServerQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Serve
 			return nil, err
 		}
 	}
+	if query := sq.withAttributes; query != nil {
+		if err := sq.loadAttributes(ctx, query, nodes,
+			func(n *Server) { n.Edges.Attributes = []*ServerAttribute{} },
+			func(n *Server, e *ServerAttribute) { n.Edges.Attributes = append(n.Edges.Attributes, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range sq.withNamedComponents {
 		if err := sq.loadComponents(ctx, query, nodes,
 			func(n *Server) { n.appendNamedComponents(name) },
 			func(n *Server, e *ServerComponent) { n.appendNamedComponents(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range sq.withNamedAttributes {
+		if err := sq.loadAttributes(ctx, query, nodes,
+			func(n *Server) { n.appendNamedAttributes(name) },
+			func(n *Server, e *ServerAttribute) { n.appendNamedAttributes(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -594,6 +646,36 @@ func (sq *ServerQuery) loadComponents(ctx context.Context, query *ServerComponen
 	}
 	query.Where(predicate.ServerComponent(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(server.ComponentsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ServerID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "server_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (sq *ServerQuery) loadAttributes(ctx context.Context, query *ServerAttributeQuery, nodes []*Server, init func(*Server), assign func(*Server, *ServerAttribute)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[gidx.PrefixedID]*Server)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(serverattribute.FieldServerID)
+	}
+	query.Where(predicate.ServerAttribute(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(server.AttributesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -711,6 +793,20 @@ func (sq *ServerQuery) WithNamedComponents(name string, opts ...func(*ServerComp
 		sq.withNamedComponents = make(map[string]*ServerComponentQuery)
 	}
 	sq.withNamedComponents[name] = query
+	return sq
+}
+
+// WithNamedAttributes tells the query-builder to eager-load the nodes that are connected to the "attributes"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (sq *ServerQuery) WithNamedAttributes(name string, opts ...func(*ServerAttributeQuery)) *ServerQuery {
+	query := (&ServerAttributeClient{config: sq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if sq.withNamedAttributes == nil {
+		sq.withNamedAttributes = make(map[string]*ServerAttributeQuery)
+	}
+	sq.withNamedAttributes[name] = query
 	return sq
 }
 

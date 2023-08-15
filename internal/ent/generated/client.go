@@ -528,6 +528,22 @@ func (c *ServerClient) QueryComponents(s *Server) *ServerComponentQuery {
 	return query
 }
 
+// QueryAttributes queries the attributes edge of a Server.
+func (c *ServerClient) QueryAttributes(s *Server) *ServerAttributeQuery {
+	query := (&ServerAttributeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(server.Table, server.FieldID, id),
+			sqlgraph.To(serverattribute.Table, serverattribute.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, server.AttributesTable, server.AttributesColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ServerClient) Hooks() []Hook {
 	return c.hooks.Server
@@ -644,6 +660,22 @@ func (c *ServerAttributeClient) GetX(ctx context.Context, id gidx.PrefixedID) *S
 		panic(err)
 	}
 	return obj
+}
+
+// QueryServer queries the server edge of a ServerAttribute.
+func (c *ServerAttributeClient) QueryServer(sa *ServerAttribute) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverattribute.Table, serverattribute.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverattribute.ServerTable, serverattribute.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(sa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

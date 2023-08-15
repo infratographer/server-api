@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -34,10 +35,21 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldValue holds the string denoting the value field in the database.
+	FieldValue = "value"
 	// FieldServerID holds the string denoting the server_id field in the database.
 	FieldServerID = "server_id"
+	// EdgeServer holds the string denoting the server edge name in mutations.
+	EdgeServer = "server"
 	// Table holds the table name of the serverattribute in the database.
 	Table = "server_attributes"
+	// ServerTable is the table that holds the server relation/edge.
+	ServerTable = "server_attributes"
+	// ServerInverseTable is the table name for the Server entity.
+	// It exists in this package in order to avoid circular dependency with the "server" package.
+	ServerInverseTable = "servers"
+	// ServerColumn is the table column denoting the server relation/edge.
+	ServerColumn = "server_id"
 )
 
 // Columns holds all SQL columns for serverattribute fields.
@@ -46,6 +58,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldName,
+	FieldValue,
 	FieldServerID,
 }
 
@@ -68,6 +81,8 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
+	// ValueValidator is a validator for the "value" field. It is called by the builders before save.
+	ValueValidator func(string) error
 	// ServerIDValidator is a validator for the "server_id" field. It is called by the builders before save.
 	ServerIDValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -97,7 +112,26 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
+// ByValue orders the results by the value field.
+func ByValue(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldValue, opts...).ToFunc()
+}
+
 // ByServerID orders the results by the server_id field.
 func ByServerID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldServerID, opts...).ToFunc()
+}
+
+// ByServerField orders the results by server field.
+func ByServerField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newServerStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newServerStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ServerInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, ServerTable, ServerColumn),
+	)
 }

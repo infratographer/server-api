@@ -33,7 +33,8 @@ type Entity interface {
 type CreateServerAttributeInput struct {
 	// The name of the server attribute.
 	Name string `json:"name"`
-	// The ID for the server of this attribute.
+	// The value of the server attribute.
+	Value    string          `json:"value"`
 	ServerID gidx.PrefixedID `json:"serverID"`
 }
 
@@ -70,6 +71,7 @@ type CreateServerInput struct {
 	ProviderID   gidx.PrefixedID   `json:"providerID"`
 	ServerTypeID gidx.PrefixedID   `json:"serverTypeID"`
 	ComponentIDs []gidx.PrefixedID `json:"componentIDs,omitempty"`
+	AttributeIDs []gidx.PrefixedID `json:"attributeIDs,omitempty"`
 }
 
 // Input information to create a server provider.
@@ -114,6 +116,7 @@ type Server struct {
 	Provider   generated.Provider        `json:"serverProvider"`
 	ServerType ServerType                `json:"serverType"`
 	Components ServerComponentConnection `json:"components"`
+	Attributes ServerAttributeConnection `json:"attributes"`
 }
 
 func (Server) IsIPAddressable()            {}
@@ -132,6 +135,9 @@ type ServerAttribute struct {
 	UpdatedAt time.Time       `json:"updatedAt"`
 	// The name of the server attribute.
 	Name string `json:"name"`
+	// The value of the server attribute.
+	Value  string `json:"value"`
+	Server Server `json:"server"`
 }
 
 func (ServerAttribute) IsNode() {}
@@ -232,6 +238,23 @@ type ServerAttributeWhereInput struct {
 	NameHasSuffix    *string  `json:"nameHasSuffix,omitempty"`
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+	// value field predicates
+	Value             *string  `json:"value,omitempty"`
+	ValueNeq          *string  `json:"valueNEQ,omitempty"`
+	ValueIn           []string `json:"valueIn,omitempty"`
+	ValueNotIn        []string `json:"valueNotIn,omitempty"`
+	ValueGt           *string  `json:"valueGT,omitempty"`
+	ValueGte          *string  `json:"valueGTE,omitempty"`
+	ValueLt           *string  `json:"valueLT,omitempty"`
+	ValueLte          *string  `json:"valueLTE,omitempty"`
+	ValueContains     *string  `json:"valueContains,omitempty"`
+	ValueHasPrefix    *string  `json:"valueHasPrefix,omitempty"`
+	ValueHasSuffix    *string  `json:"valueHasSuffix,omitempty"`
+	ValueEqualFold    *string  `json:"valueEqualFold,omitempty"`
+	ValueContainsFold *string  `json:"valueContainsFold,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
 }
 
 type ServerComponent struct {
@@ -834,12 +857,17 @@ type ServerWhereInput struct {
 	// components edge predicates
 	HasComponents     *bool                        `json:"hasComponents,omitempty"`
 	HasComponentsWith []*ServerComponentWhereInput `json:"hasComponentsWith,omitempty"`
+	// attributes edge predicates
+	HasAttributes     *bool                        `json:"hasAttributes,omitempty"`
+	HasAttributesWith []*ServerAttributeWhereInput `json:"hasAttributesWith,omitempty"`
 }
 
 // Input information to update a server attribute.
 type UpdateServerAttributeInput struct {
 	// The name of the server attribute.
 	Name *string `json:"name,omitempty"`
+	// The value of the server attribute.
+	Value *string `json:"value,omitempty"`
 }
 
 // Input information to update a server component.
@@ -870,6 +898,9 @@ type UpdateServerInput struct {
 	AddComponentIDs    []gidx.PrefixedID `json:"addComponentIDs,omitempty"`
 	RemoveComponentIDs []gidx.PrefixedID `json:"removeComponentIDs,omitempty"`
 	ClearComponents    *bool             `json:"clearComponents,omitempty"`
+	AddAttributeIDs    []gidx.PrefixedID `json:"addAttributeIDs,omitempty"`
+	RemoveAttributeIDs []gidx.PrefixedID `json:"removeAttributeIDs,omitempty"`
+	ClearAttributes    *bool             `json:"clearAttributes,omitempty"`
 }
 
 // Input information to update a server provider.
@@ -940,6 +971,7 @@ const (
 	ServerAttributeOrderFieldCreatedAt ServerAttributeOrderField = "CREATED_AT"
 	ServerAttributeOrderFieldUpdatedAt ServerAttributeOrderField = "UPDATED_AT"
 	ServerAttributeOrderFieldName      ServerAttributeOrderField = "NAME"
+	ServerAttributeOrderFieldValue     ServerAttributeOrderField = "VALUE"
 )
 
 var AllServerAttributeOrderField = []ServerAttributeOrderField{
@@ -947,11 +979,12 @@ var AllServerAttributeOrderField = []ServerAttributeOrderField{
 	ServerAttributeOrderFieldCreatedAt,
 	ServerAttributeOrderFieldUpdatedAt,
 	ServerAttributeOrderFieldName,
+	ServerAttributeOrderFieldValue,
 }
 
 func (e ServerAttributeOrderField) IsValid() bool {
 	switch e {
-	case ServerAttributeOrderFieldID, ServerAttributeOrderFieldCreatedAt, ServerAttributeOrderFieldUpdatedAt, ServerAttributeOrderFieldName:
+	case ServerAttributeOrderFieldID, ServerAttributeOrderFieldCreatedAt, ServerAttributeOrderFieldUpdatedAt, ServerAttributeOrderFieldName, ServerAttributeOrderFieldValue:
 		return true
 	}
 	return false

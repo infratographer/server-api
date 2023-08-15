@@ -26,6 +26,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
@@ -147,6 +148,21 @@ func (sc *ServerCreate) AddComponents(s ...*ServerComponent) *ServerCreate {
 		ids[i] = s[i].ID
 	}
 	return sc.AddComponentIDs(ids...)
+}
+
+// AddAttributeIDs adds the "attributes" edge to the ServerAttribute entity by IDs.
+func (sc *ServerCreate) AddAttributeIDs(ids ...gidx.PrefixedID) *ServerCreate {
+	sc.mutation.AddAttributeIDs(ids...)
+	return sc
+}
+
+// AddAttributes adds the "attributes" edges to the ServerAttribute entity.
+func (sc *ServerCreate) AddAttributes(s ...*ServerAttribute) *ServerCreate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sc.AddAttributeIDs(ids...)
 }
 
 // Mutation returns the ServerMutation object of the builder.
@@ -344,6 +360,22 @@ func (sc *ServerCreate) createSpec() (*Server, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(servercomponent.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sc.mutation.AttributesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   server.AttributesTable,
+			Columns: []string{server.AttributesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

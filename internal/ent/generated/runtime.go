@@ -106,8 +106,12 @@ func init() {
 	serverattributeDescName := serverattributeFields[1].Descriptor()
 	// serverattribute.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	serverattribute.NameValidator = serverattributeDescName.Validators[0].(func(string) error)
+	// serverattributeDescValue is the schema descriptor for value field.
+	serverattributeDescValue := serverattributeFields[2].Descriptor()
+	// serverattribute.ValueValidator is a validator for the "value" field. It is called by the builders before save.
+	serverattribute.ValueValidator = serverattributeDescValue.Validators[0].(func(string) error)
 	// serverattributeDescServerID is the schema descriptor for server_id field.
-	serverattributeDescServerID := serverattributeFields[2].Descriptor()
+	serverattributeDescServerID := serverattributeFields[3].Descriptor()
 	// serverattribute.ServerIDValidator is a validator for the "server_id" field. It is called by the builders before save.
 	serverattribute.ServerIDValidator = serverattributeDescServerID.Validators[0].(func(string) error)
 	// serverattributeDescID is the schema descriptor for id field.

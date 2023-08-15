@@ -659,6 +659,9 @@ type ServerMutation struct {
 	components         map[gidx.PrefixedID]struct{}
 	removedcomponents  map[gidx.PrefixedID]struct{}
 	clearedcomponents  bool
+	attributes         map[gidx.PrefixedID]struct{}
+	removedattributes  map[gidx.PrefixedID]struct{}
+	clearedattributes  bool
 	done               bool
 	oldValue           func(context.Context) (*Server, error)
 	predicates         []predicate.Server
@@ -1175,6 +1178,60 @@ func (m *ServerMutation) ResetComponents() {
 	m.removedcomponents = nil
 }
 
+// AddAttributeIDs adds the "attributes" edge to the ServerAttribute entity by ids.
+func (m *ServerMutation) AddAttributeIDs(ids ...gidx.PrefixedID) {
+	if m.attributes == nil {
+		m.attributes = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.attributes[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAttributes clears the "attributes" edge to the ServerAttribute entity.
+func (m *ServerMutation) ClearAttributes() {
+	m.clearedattributes = true
+}
+
+// AttributesCleared reports if the "attributes" edge to the ServerAttribute entity was cleared.
+func (m *ServerMutation) AttributesCleared() bool {
+	return m.clearedattributes
+}
+
+// RemoveAttributeIDs removes the "attributes" edge to the ServerAttribute entity by IDs.
+func (m *ServerMutation) RemoveAttributeIDs(ids ...gidx.PrefixedID) {
+	if m.removedattributes == nil {
+		m.removedattributes = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.attributes, ids[i])
+		m.removedattributes[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAttributes returns the removed IDs of the "attributes" edge to the ServerAttribute entity.
+func (m *ServerMutation) RemovedAttributesIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removedattributes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AttributesIDs returns the "attributes" edge IDs in the mutation.
+func (m *ServerMutation) AttributesIDs() (ids []gidx.PrefixedID) {
+	for id := range m.attributes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAttributes resets all changes to the "attributes" edge.
+func (m *ServerMutation) ResetAttributes() {
+	m.attributes = nil
+	m.clearedattributes = false
+	m.removedattributes = nil
+}
+
 // Where appends a list predicates to the ServerMutation builder.
 func (m *ServerMutation) Where(ps ...predicate.Server) {
 	m.predicates = append(m.predicates, ps...)
@@ -1436,7 +1493,7 @@ func (m *ServerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ServerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.provider != nil {
 		edges = append(edges, server.EdgeProvider)
 	}
@@ -1445,6 +1502,9 @@ func (m *ServerMutation) AddedEdges() []string {
 	}
 	if m.components != nil {
 		edges = append(edges, server.EdgeComponents)
+	}
+	if m.attributes != nil {
+		edges = append(edges, server.EdgeAttributes)
 	}
 	return edges
 }
@@ -1467,15 +1527,24 @@ func (m *ServerMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case server.EdgeAttributes:
+		ids := make([]ent.Value, 0, len(m.attributes))
+		for id := range m.attributes {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ServerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedcomponents != nil {
 		edges = append(edges, server.EdgeComponents)
+	}
+	if m.removedattributes != nil {
+		edges = append(edges, server.EdgeAttributes)
 	}
 	return edges
 }
@@ -1490,13 +1559,19 @@ func (m *ServerMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case server.EdgeAttributes:
+		ids := make([]ent.Value, 0, len(m.removedattributes))
+		for id := range m.removedattributes {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ServerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedprovider {
 		edges = append(edges, server.EdgeProvider)
 	}
@@ -1505,6 +1580,9 @@ func (m *ServerMutation) ClearedEdges() []string {
 	}
 	if m.clearedcomponents {
 		edges = append(edges, server.EdgeComponents)
+	}
+	if m.clearedattributes {
+		edges = append(edges, server.EdgeAttributes)
 	}
 	return edges
 }
@@ -1519,6 +1597,8 @@ func (m *ServerMutation) EdgeCleared(name string) bool {
 		return m.clearedserver_type
 	case server.EdgeComponents:
 		return m.clearedcomponents
+	case server.EdgeAttributes:
+		return m.clearedattributes
 	}
 	return false
 }
@@ -1550,6 +1630,9 @@ func (m *ServerMutation) ResetEdge(name string) error {
 	case server.EdgeComponents:
 		m.ResetComponents()
 		return nil
+	case server.EdgeAttributes:
+		m.ResetAttributes()
+		return nil
 	}
 	return fmt.Errorf("unknown Server edge %s", name)
 }
@@ -1563,8 +1646,10 @@ type ServerAttributeMutation struct {
 	created_at    *time.Time
 	updated_at    *time.Time
 	name          *string
-	server_id     *gidx.PrefixedID
+	value         *string
 	clearedFields map[string]struct{}
+	server        *gidx.PrefixedID
+	clearedserver bool
 	done          bool
 	oldValue      func(context.Context) (*ServerAttribute, error)
 	predicates    []predicate.ServerAttribute
@@ -1782,14 +1867,50 @@ func (m *ServerAttributeMutation) ResetName() {
 	m.name = nil
 }
 
+// SetValue sets the "value" field.
+func (m *ServerAttributeMutation) SetValue(s string) {
+	m.value = &s
+}
+
+// Value returns the value of the "value" field in the mutation.
+func (m *ServerAttributeMutation) Value() (r string, exists bool) {
+	v := m.value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldValue returns the old "value" field's value of the ServerAttribute entity.
+// If the ServerAttribute object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerAttributeMutation) OldValue(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldValue: %w", err)
+	}
+	return oldValue.Value, nil
+}
+
+// ResetValue resets all changes to the "value" field.
+func (m *ServerAttributeMutation) ResetValue() {
+	m.value = nil
+}
+
 // SetServerID sets the "server_id" field.
 func (m *ServerAttributeMutation) SetServerID(gi gidx.PrefixedID) {
-	m.server_id = &gi
+	m.server = &gi
 }
 
 // ServerID returns the value of the "server_id" field in the mutation.
 func (m *ServerAttributeMutation) ServerID() (r gidx.PrefixedID, exists bool) {
-	v := m.server_id
+	v := m.server
 	if v == nil {
 		return
 	}
@@ -1815,7 +1936,33 @@ func (m *ServerAttributeMutation) OldServerID(ctx context.Context) (v gidx.Prefi
 
 // ResetServerID resets all changes to the "server_id" field.
 func (m *ServerAttributeMutation) ResetServerID() {
-	m.server_id = nil
+	m.server = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerAttributeMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerAttributeMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerAttributeMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerAttributeMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
 }
 
 // Where appends a list predicates to the ServerAttributeMutation builder.
@@ -1852,7 +1999,7 @@ func (m *ServerAttributeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ServerAttributeMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.created_at != nil {
 		fields = append(fields, serverattribute.FieldCreatedAt)
 	}
@@ -1862,7 +2009,10 @@ func (m *ServerAttributeMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, serverattribute.FieldName)
 	}
-	if m.server_id != nil {
+	if m.value != nil {
+		fields = append(fields, serverattribute.FieldValue)
+	}
+	if m.server != nil {
 		fields = append(fields, serverattribute.FieldServerID)
 	}
 	return fields
@@ -1879,6 +2029,8 @@ func (m *ServerAttributeMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case serverattribute.FieldName:
 		return m.Name()
+	case serverattribute.FieldValue:
+		return m.Value()
 	case serverattribute.FieldServerID:
 		return m.ServerID()
 	}
@@ -1896,6 +2048,8 @@ func (m *ServerAttributeMutation) OldField(ctx context.Context, name string) (en
 		return m.OldUpdatedAt(ctx)
 	case serverattribute.FieldName:
 		return m.OldName(ctx)
+	case serverattribute.FieldValue:
+		return m.OldValue(ctx)
 	case serverattribute.FieldServerID:
 		return m.OldServerID(ctx)
 	}
@@ -1927,6 +2081,13 @@ func (m *ServerAttributeMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case serverattribute.FieldValue:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetValue(v)
 		return nil
 	case serverattribute.FieldServerID:
 		v, ok := value.(gidx.PrefixedID)
@@ -1993,6 +2154,9 @@ func (m *ServerAttributeMutation) ResetField(name string) error {
 	case serverattribute.FieldName:
 		m.ResetName()
 		return nil
+	case serverattribute.FieldValue:
+		m.ResetValue()
+		return nil
 	case serverattribute.FieldServerID:
 		m.ResetServerID()
 		return nil
@@ -2002,19 +2166,28 @@ func (m *ServerAttributeMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ServerAttributeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.server != nil {
+		edges = append(edges, serverattribute.EdgeServer)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ServerAttributeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case serverattribute.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ServerAttributeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -2026,25 +2199,42 @@ func (m *ServerAttributeMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ServerAttributeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedserver {
+		edges = append(edges, serverattribute.EdgeServer)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ServerAttributeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case serverattribute.EdgeServer:
+		return m.clearedserver
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ServerAttributeMutation) ClearEdge(name string) error {
+	switch name {
+	case serverattribute.EdgeServer:
+		m.ClearServer()
+		return nil
+	}
 	return fmt.Errorf("unknown ServerAttribute unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ServerAttributeMutation) ResetEdge(name string) error {
+	switch name {
+	case serverattribute.EdgeServer:
+		m.ResetServer()
+		return nil
+	}
 	return fmt.Errorf("unknown ServerAttribute edge %s", name)
 }
 

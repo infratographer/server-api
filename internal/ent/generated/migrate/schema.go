@@ -123,6 +123,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Size: 2147483647},
+		{Name: "value", Type: field.TypeString, Size: 2147483647},
 		{Name: "server_id", Type: field.TypeString},
 	}
 	// ServerAttributesTable holds the schema information for the "server_attributes" table.
@@ -130,6 +131,14 @@ var (
 		Name:       "server_attributes",
 		Columns:    ServerAttributesColumns,
 		PrimaryKey: []*schema.Column{ServerAttributesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_attributes_servers_server",
+				Columns:    []*schema.Column{ServerAttributesColumns[5]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "serverattribute_created_at",
@@ -267,6 +276,7 @@ var (
 func init() {
 	ServersTable.ForeignKeys[0].RefTable = ProvidersTable
 	ServersTable.ForeignKeys[1].RefTable = ServerTypesTable
+	ServerAttributesTable.ForeignKeys[0].RefTable = ServersTable
 	ServerComponentsTable.ForeignKeys[0].RefTable = ServerComponentTypesTable
 	ServerComponentsTable.ForeignKeys[1].RefTable = ServersTable
 }

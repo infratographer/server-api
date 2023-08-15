@@ -71,6 +71,7 @@ type CreateServerInput struct {
 	ProviderID   gidx.PrefixedID
 	ServerTypeID gidx.PrefixedID
 	ComponentIDs []gidx.PrefixedID
+	AttributeIDs []gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerInput on the ServerMutation builder.
@@ -85,6 +86,9 @@ func (i *CreateServerInput) Mutate(m *ServerMutation) {
 	m.SetServerTypeID(i.ServerTypeID)
 	if v := i.ComponentIDs; len(v) > 0 {
 		m.AddComponentIDs(v...)
+	}
+	if v := i.AttributeIDs; len(v) > 0 {
+		m.AddAttributeIDs(v...)
 	}
 }
 
@@ -102,6 +106,9 @@ type UpdateServerInput struct {
 	ClearComponents    bool
 	AddComponentIDs    []gidx.PrefixedID
 	RemoveComponentIDs []gidx.PrefixedID
+	ClearAttributes    bool
+	AddAttributeIDs    []gidx.PrefixedID
+	RemoveAttributeIDs []gidx.PrefixedID
 }
 
 // Mutate applies the UpdateServerInput on the ServerMutation builder.
@@ -124,6 +131,15 @@ func (i *UpdateServerInput) Mutate(m *ServerMutation) {
 	if v := i.RemoveComponentIDs; len(v) > 0 {
 		m.RemoveComponentIDs(v...)
 	}
+	if i.ClearAttributes {
+		m.ClearAttributes()
+	}
+	if v := i.AddAttributeIDs; len(v) > 0 {
+		m.AddAttributeIDs(v...)
+	}
+	if v := i.RemoveAttributeIDs; len(v) > 0 {
+		m.RemoveAttributeIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the UpdateServerInput on the ServerUpdate builder.
@@ -141,12 +157,14 @@ func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
 // CreateServerAttributeInput represents a mutation input for creating serverattributes.
 type CreateServerAttributeInput struct {
 	Name     string
+	Value    string
 	ServerID gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerAttributeInput on the ServerAttributeMutation builder.
 func (i *CreateServerAttributeInput) Mutate(m *ServerAttributeMutation) {
 	m.SetName(i.Name)
+	m.SetValue(i.Value)
 	m.SetServerID(i.ServerID)
 }
 
@@ -158,13 +176,17 @@ func (c *ServerAttributeCreate) SetInput(i CreateServerAttributeInput) *ServerAt
 
 // UpdateServerAttributeInput represents a mutation input for updating serverattributes.
 type UpdateServerAttributeInput struct {
-	Name *string
+	Name  *string
+	Value *string
 }
 
 // Mutate applies the UpdateServerAttributeInput on the ServerAttributeMutation builder.
 func (i *UpdateServerAttributeInput) Mutate(m *ServerAttributeMutation) {
 	if v := i.Name; v != nil {
 		m.SetName(*v)
+	}
+	if v := i.Value; v != nil {
+		m.SetValue(*v)
 	}
 }
 
