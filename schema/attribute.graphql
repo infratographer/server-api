@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a server attribute by ID.
+  """
+  serverAttribute(
+    """
+    The server ID.
+    """
+    id: ID!
+  ): ServerAttribute!
+}
+
+extend type Mutation {
+  """
+  Create a server attribute.
+  """
+  serverAttributeCreate(
+    input: CreateServerAttributeInput!
+  ): ServerAttributeCreatePayload!
+  """
+  Update a server attribute.
+  """
+  serverAttributeUpdate(
+    id: ID!
+    input: UpdateServerAttributeInput!
+  ): ServerAttributeUpdatePayload!
+  """
+  Delete a server attribute.
+  """
+  serverAttributeDelete(id: ID!): ServerAttributeDeletePayload!
+}
+
+"""
+Return response from serverAttributeCreate
+"""
+type ServerAttributeCreatePayload {
+  """
+  The created server attribute.
+  """
+  serverAttribute: ServerAttribute!
+}
+
+"""
+Return response from serverAttributeDelete
+"""
+type ServerAttributeDeletePayload {
+  """
+  The ID of the deleted server attribute.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverAttributeUpdate
+"""
+type ServerAttributeUpdatePayload {
+  """
+  The updated server attribute.
+  """
+  serverAttribute: ServerAttribute!
+}

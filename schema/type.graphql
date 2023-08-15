@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverType by ID.
+  """
+  serverType(
+    """
+    The server type ID.
+    """
+    id: ID!
+  ): ServerType!
+}
+
+extend type Mutation {
+  """
+  Create a server type.
+  """
+  serverTypeCreate(
+    input: CreateServerTypeInput!
+  ): ServerTypeCreatePayload!
+  """
+  Update a server type.
+  """
+  serverTypeUpdate(
+    id: ID!
+    input: UpdateServerTypeInput!
+  ): ServerTypeUpdatePayload!
+  """
+  Delete a server type.
+  """
+  serverTypeDelete(id: ID!): ServerTypeDeletePayload!
+}
+
+"""
+Return response from serverTypeCreate
+"""
+type ServerTypeCreatePayload {
+  """
+  The created server type.
+  """
+  serverType: ServerType!
+}
+
+"""
+Return response from serverTypeDelete
+"""
+type ServerTypeDeletePayload {
+  """
+  The ID of the deleted server type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverTypeUpdate
+"""
+type ServerTypeUpdatePayload {
+  """
+  The updated server type.
+  """
+  serverType: ServerType!
+}
