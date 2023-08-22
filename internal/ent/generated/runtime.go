@@ -21,6 +21,7 @@ import (
 
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -86,6 +87,37 @@ func init() {
 	serverDescID := serverFields[0].Descriptor()
 	// server.DefaultID holds the default value on creation for the id field.
 	server.DefaultID = serverDescID.Default.(func() gidx.PrefixedID)
+	serverchassistypeMixin := schema.ServerChassisType{}.Mixin()
+	serverchassistypeMixinFields0 := serverchassistypeMixin[0].Fields()
+	_ = serverchassistypeMixinFields0
+	serverchassistypeFields := schema.ServerChassisType{}.Fields()
+	_ = serverchassistypeFields
+	// serverchassistypeDescCreatedAt is the schema descriptor for created_at field.
+	serverchassistypeDescCreatedAt := serverchassistypeMixinFields0[0].Descriptor()
+	// serverchassistype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serverchassistype.DefaultCreatedAt = serverchassistypeDescCreatedAt.Default.(func() time.Time)
+	// serverchassistypeDescUpdatedAt is the schema descriptor for updated_at field.
+	serverchassistypeDescUpdatedAt := serverchassistypeMixinFields0[1].Descriptor()
+	// serverchassistype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serverchassistype.DefaultUpdatedAt = serverchassistypeDescUpdatedAt.Default.(func() time.Time)
+	// serverchassistype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serverchassistype.UpdateDefaultUpdatedAt = serverchassistypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// serverchassistypeDescVendor is the schema descriptor for vendor field.
+	serverchassistypeDescVendor := serverchassistypeFields[1].Descriptor()
+	// serverchassistype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	serverchassistype.VendorValidator = serverchassistypeDescVendor.Validators[0].(func(string) error)
+	// serverchassistypeDescModel is the schema descriptor for model field.
+	serverchassistypeDescModel := serverchassistypeFields[2].Descriptor()
+	// serverchassistype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	serverchassistype.ModelValidator = serverchassistypeDescModel.Validators[0].(func(string) error)
+	// serverchassistypeDescHeight is the schema descriptor for height field.
+	serverchassistypeDescHeight := serverchassistypeFields[3].Descriptor()
+	// serverchassistype.HeightValidator is a validator for the "height" field. It is called by the builders before save.
+	serverchassistype.HeightValidator = serverchassistypeDescHeight.Validators[0].(func(string) error)
+	// serverchassistypeDescID is the schema descriptor for id field.
+	serverchassistypeDescID := serverchassistypeFields[0].Descriptor()
+	// serverchassistype.DefaultID holds the default value on creation for the id field.
+	serverchassistype.DefaultID = serverchassistypeDescID.Default.(func() gidx.PrefixedID)
 	servercomponentMixin := schema.ServerComponent{}.Mixin()
 	servercomponentMixinFields0 := servercomponentMixin[0].Fields()
 	_ = servercomponentMixinFields0

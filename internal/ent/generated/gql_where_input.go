@@ -24,6 +24,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -669,6 +670,370 @@ func (i *ServerWhereInput) P() (predicate.Server, error) {
 		return predicates[0], nil
 	default:
 		return server.And(predicates...), nil
+	}
+}
+
+// ServerChassisTypeWhereInput represents a where input for filtering ServerChassisType queries.
+type ServerChassisTypeWhereInput struct {
+	Predicates []predicate.ServerChassisType  `json:"-"`
+	Not        *ServerChassisTypeWhereInput   `json:"not,omitempty"`
+	Or         []*ServerChassisTypeWhereInput `json:"or,omitempty"`
+	And        []*ServerChassisTypeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "vendor" field predicates.
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNEQ          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGT           *string  `json:"vendorGT,omitempty"`
+	VendorGTE          *string  `json:"vendorGTE,omitempty"`
+	VendorLT           *string  `json:"vendorLT,omitempty"`
+	VendorLTE          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+
+	// "model" field predicates.
+	Model             *string  `json:"model,omitempty"`
+	ModelNEQ          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGT           *string  `json:"modelGT,omitempty"`
+	ModelGTE          *string  `json:"modelGTE,omitempty"`
+	ModelLT           *string  `json:"modelLT,omitempty"`
+	ModelLTE          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+
+	// "height" field predicates.
+	Height             *string  `json:"height,omitempty"`
+	HeightNEQ          *string  `json:"heightNEQ,omitempty"`
+	HeightIn           []string `json:"heightIn,omitempty"`
+	HeightNotIn        []string `json:"heightNotIn,omitempty"`
+	HeightGT           *string  `json:"heightGT,omitempty"`
+	HeightGTE          *string  `json:"heightGTE,omitempty"`
+	HeightLT           *string  `json:"heightLT,omitempty"`
+	HeightLTE          *string  `json:"heightLTE,omitempty"`
+	HeightContains     *string  `json:"heightContains,omitempty"`
+	HeightHasPrefix    *string  `json:"heightHasPrefix,omitempty"`
+	HeightHasSuffix    *string  `json:"heightHasSuffix,omitempty"`
+	HeightEqualFold    *string  `json:"heightEqualFold,omitempty"`
+	HeightContainsFold *string  `json:"heightContainsFold,omitempty"`
+
+	// "is_full_depth" field predicates.
+	IsFullDepth    *bool `json:"isFullDepth,omitempty"`
+	IsFullDepthNEQ *bool `json:"isFullDepthNEQ,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerChassisTypeWhereInput) AddPredicates(predicates ...predicate.ServerChassisType) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerChassisTypeWhereInput filter on the ServerChassisTypeQuery builder.
+func (i *ServerChassisTypeWhereInput) Filter(q *ServerChassisTypeQuery) (*ServerChassisTypeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerChassisTypeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerChassisTypeWhereInput is returned in case the ServerChassisTypeWhereInput is empty.
+var ErrEmptyServerChassisTypeWhereInput = errors.New("generated: empty predicate ServerChassisTypeWhereInput")
+
+// P returns a predicate for filtering serverchassistypes.
+// An error is returned if the input is empty or invalid.
+func (i *ServerChassisTypeWhereInput) P() (predicate.ServerChassisType, error) {
+	var predicates []predicate.ServerChassisType
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, serverchassistype.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerChassisType, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, serverchassistype.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerChassisType, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, serverchassistype.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, serverchassistype.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, serverchassistype.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, serverchassistype.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, serverchassistype.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, serverchassistype.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, serverchassistype.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, serverchassistype.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, serverchassistype.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, serverchassistype.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, serverchassistype.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, serverchassistype.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, serverchassistype.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, serverchassistype.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, serverchassistype.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, serverchassistype.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, serverchassistype.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, serverchassistype.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, serverchassistype.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, serverchassistype.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, serverchassistype.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, serverchassistype.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, serverchassistype.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, serverchassistype.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, serverchassistype.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Vendor != nil {
+		predicates = append(predicates, serverchassistype.VendorEQ(*i.Vendor))
+	}
+	if i.VendorNEQ != nil {
+		predicates = append(predicates, serverchassistype.VendorNEQ(*i.VendorNEQ))
+	}
+	if len(i.VendorIn) > 0 {
+		predicates = append(predicates, serverchassistype.VendorIn(i.VendorIn...))
+	}
+	if len(i.VendorNotIn) > 0 {
+		predicates = append(predicates, serverchassistype.VendorNotIn(i.VendorNotIn...))
+	}
+	if i.VendorGT != nil {
+		predicates = append(predicates, serverchassistype.VendorGT(*i.VendorGT))
+	}
+	if i.VendorGTE != nil {
+		predicates = append(predicates, serverchassistype.VendorGTE(*i.VendorGTE))
+	}
+	if i.VendorLT != nil {
+		predicates = append(predicates, serverchassistype.VendorLT(*i.VendorLT))
+	}
+	if i.VendorLTE != nil {
+		predicates = append(predicates, serverchassistype.VendorLTE(*i.VendorLTE))
+	}
+	if i.VendorContains != nil {
+		predicates = append(predicates, serverchassistype.VendorContains(*i.VendorContains))
+	}
+	if i.VendorHasPrefix != nil {
+		predicates = append(predicates, serverchassistype.VendorHasPrefix(*i.VendorHasPrefix))
+	}
+	if i.VendorHasSuffix != nil {
+		predicates = append(predicates, serverchassistype.VendorHasSuffix(*i.VendorHasSuffix))
+	}
+	if i.VendorEqualFold != nil {
+		predicates = append(predicates, serverchassistype.VendorEqualFold(*i.VendorEqualFold))
+	}
+	if i.VendorContainsFold != nil {
+		predicates = append(predicates, serverchassistype.VendorContainsFold(*i.VendorContainsFold))
+	}
+	if i.Model != nil {
+		predicates = append(predicates, serverchassistype.ModelEQ(*i.Model))
+	}
+	if i.ModelNEQ != nil {
+		predicates = append(predicates, serverchassistype.ModelNEQ(*i.ModelNEQ))
+	}
+	if len(i.ModelIn) > 0 {
+		predicates = append(predicates, serverchassistype.ModelIn(i.ModelIn...))
+	}
+	if len(i.ModelNotIn) > 0 {
+		predicates = append(predicates, serverchassistype.ModelNotIn(i.ModelNotIn...))
+	}
+	if i.ModelGT != nil {
+		predicates = append(predicates, serverchassistype.ModelGT(*i.ModelGT))
+	}
+	if i.ModelGTE != nil {
+		predicates = append(predicates, serverchassistype.ModelGTE(*i.ModelGTE))
+	}
+	if i.ModelLT != nil {
+		predicates = append(predicates, serverchassistype.ModelLT(*i.ModelLT))
+	}
+	if i.ModelLTE != nil {
+		predicates = append(predicates, serverchassistype.ModelLTE(*i.ModelLTE))
+	}
+	if i.ModelContains != nil {
+		predicates = append(predicates, serverchassistype.ModelContains(*i.ModelContains))
+	}
+	if i.ModelHasPrefix != nil {
+		predicates = append(predicates, serverchassistype.ModelHasPrefix(*i.ModelHasPrefix))
+	}
+	if i.ModelHasSuffix != nil {
+		predicates = append(predicates, serverchassistype.ModelHasSuffix(*i.ModelHasSuffix))
+	}
+	if i.ModelEqualFold != nil {
+		predicates = append(predicates, serverchassistype.ModelEqualFold(*i.ModelEqualFold))
+	}
+	if i.ModelContainsFold != nil {
+		predicates = append(predicates, serverchassistype.ModelContainsFold(*i.ModelContainsFold))
+	}
+	if i.Height != nil {
+		predicates = append(predicates, serverchassistype.HeightEQ(*i.Height))
+	}
+	if i.HeightNEQ != nil {
+		predicates = append(predicates, serverchassistype.HeightNEQ(*i.HeightNEQ))
+	}
+	if len(i.HeightIn) > 0 {
+		predicates = append(predicates, serverchassistype.HeightIn(i.HeightIn...))
+	}
+	if len(i.HeightNotIn) > 0 {
+		predicates = append(predicates, serverchassistype.HeightNotIn(i.HeightNotIn...))
+	}
+	if i.HeightGT != nil {
+		predicates = append(predicates, serverchassistype.HeightGT(*i.HeightGT))
+	}
+	if i.HeightGTE != nil {
+		predicates = append(predicates, serverchassistype.HeightGTE(*i.HeightGTE))
+	}
+	if i.HeightLT != nil {
+		predicates = append(predicates, serverchassistype.HeightLT(*i.HeightLT))
+	}
+	if i.HeightLTE != nil {
+		predicates = append(predicates, serverchassistype.HeightLTE(*i.HeightLTE))
+	}
+	if i.HeightContains != nil {
+		predicates = append(predicates, serverchassistype.HeightContains(*i.HeightContains))
+	}
+	if i.HeightHasPrefix != nil {
+		predicates = append(predicates, serverchassistype.HeightHasPrefix(*i.HeightHasPrefix))
+	}
+	if i.HeightHasSuffix != nil {
+		predicates = append(predicates, serverchassistype.HeightHasSuffix(*i.HeightHasSuffix))
+	}
+	if i.HeightEqualFold != nil {
+		predicates = append(predicates, serverchassistype.HeightEqualFold(*i.HeightEqualFold))
+	}
+	if i.HeightContainsFold != nil {
+		predicates = append(predicates, serverchassistype.HeightContainsFold(*i.HeightContainsFold))
+	}
+	if i.IsFullDepth != nil {
+		predicates = append(predicates, serverchassistype.IsFullDepthEQ(*i.IsFullDepth))
+	}
+	if i.IsFullDepthNEQ != nil {
+		predicates = append(predicates, serverchassistype.IsFullDepthNEQ(*i.IsFullDepthNEQ))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerChassisTypeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return serverchassistype.And(predicates...), nil
 	}
 }
 

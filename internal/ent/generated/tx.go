@@ -30,6 +30,8 @@ type Tx struct {
 	Provider *ProviderClient
 	// Server is the client for interacting with the Server builders.
 	Server *ServerClient
+	// ServerChassisType is the client for interacting with the ServerChassisType builders.
+	ServerChassisType *ServerChassisTypeClient
 	// ServerComponent is the client for interacting with the ServerComponent builders.
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
@@ -169,6 +171,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Provider = NewProviderClient(tx.config)
 	tx.Server = NewServerClient(tx.config)
+	tx.ServerChassisType = NewServerChassisTypeClient(tx.config)
 	tx.ServerComponent = NewServerComponentClient(tx.config)
 	tx.ServerComponentType = NewServerComponentTypeClient(tx.config)
 	tx.ServerType = NewServerTypeClient(tx.config)

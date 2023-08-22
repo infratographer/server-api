@@ -117,6 +117,40 @@ var (
 			},
 		},
 	}
+	// ServerChassisTypesColumns holds the columns for the "server_chassis_types" table.
+	ServerChassisTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+		{Name: "height", Type: field.TypeString, Size: 2147483647},
+		{Name: "is_full_depth", Type: field.TypeBool},
+		{Name: "parent_chassis_type_id", Type: field.TypeString, Size: 2147483647},
+	}
+	// ServerChassisTypesTable holds the schema information for the "server_chassis_types" table.
+	ServerChassisTypesTable = &schema.Table{
+		Name:       "server_chassis_types",
+		Columns:    ServerChassisTypesColumns,
+		PrimaryKey: []*schema.Column{ServerChassisTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "serverchassistype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerChassisTypesColumns[1]},
+			},
+			{
+				Name:    "serverchassistype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerChassisTypesColumns[2]},
+			},
+			{
+				Name:    "serverchassistype_parent_chassis_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerChassisTypesColumns[7]},
+			},
+		},
+	}
 	// ServerComponentsColumns holds the columns for the "server_components" table.
 	ServerComponentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -231,6 +265,7 @@ var (
 	Tables = []*schema.Table{
 		ProvidersTable,
 		ServersTable,
+		ServerChassisTypesTable,
 		ServerComponentsTable,
 		ServerComponentTypesTable,
 		ServerTypesTable,

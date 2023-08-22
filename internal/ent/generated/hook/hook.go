@@ -47,6 +47,18 @@ func (f ServerFunc) Mutate(ctx context.Context, m generated.Mutation) (generated
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMutation", m)
 }
 
+// The ServerChassisTypeFunc type is an adapter to allow the use of ordinary
+// function as ServerChassisType mutator.
+type ServerChassisTypeFunc func(context.Context, *generated.ServerChassisTypeMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerChassisTypeFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerChassisTypeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerChassisTypeMutation", m)
+}
+
 // The ServerComponentFunc type is an adapter to allow the use of ordinary
 // function as ServerComponent mutator.
 type ServerComponentFunc func(context.Context, *generated.ServerComponentMutation) (generated.Value, error)

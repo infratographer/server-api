@@ -18,6 +18,8 @@ const (
 	ServerComponentTypePrefix = ApplicationPrefix + "cpt"
 	// ServerComponentPrefix is the prefix for all ServerComponent nodes
 	ServerComponentPrefix = ApplicationPrefix + "cmp"
+	// ServerChassisTypePrefix is the prefix for all ServerChassisType nodes
+	ServerChassisTypePrefix = ApplicationPrefix + "sct"
 )
 
 func prefixIDDirective(prefix string) entgql.Annotation {

@@ -26,6 +26,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -427,6 +428,120 @@ func newServerPaginateArgs(rv map[string]any) *serverPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*ServerWhereInput); ok {
 		args.opts = append(args.opts, WithServerFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sct *ServerChassisTypeQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerChassisTypeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sct, nil
+	}
+	if err := sct.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sct, nil
+}
+
+func (sct *ServerChassisTypeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(serverchassistype.Columns))
+		selectedFields = []string{serverchassistype.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "createdAt":
+			if _, ok := fieldSeen[serverchassistype.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, serverchassistype.FieldCreatedAt)
+				fieldSeen[serverchassistype.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[serverchassistype.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, serverchassistype.FieldUpdatedAt)
+				fieldSeen[serverchassistype.FieldUpdatedAt] = struct{}{}
+			}
+		case "vendor":
+			if _, ok := fieldSeen[serverchassistype.FieldVendor]; !ok {
+				selectedFields = append(selectedFields, serverchassistype.FieldVendor)
+				fieldSeen[serverchassistype.FieldVendor] = struct{}{}
+			}
+		case "model":
+			if _, ok := fieldSeen[serverchassistype.FieldModel]; !ok {
+				selectedFields = append(selectedFields, serverchassistype.FieldModel)
+				fieldSeen[serverchassistype.FieldModel] = struct{}{}
+			}
+		case "height":
+			if _, ok := fieldSeen[serverchassistype.FieldHeight]; !ok {
+				selectedFields = append(selectedFields, serverchassistype.FieldHeight)
+				fieldSeen[serverchassistype.FieldHeight] = struct{}{}
+			}
+		case "isFullDepth":
+			if _, ok := fieldSeen[serverchassistype.FieldIsFullDepth]; !ok {
+				selectedFields = append(selectedFields, serverchassistype.FieldIsFullDepth)
+				fieldSeen[serverchassistype.FieldIsFullDepth] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sct.Select(selectedFields...)
+	}
+	return nil
+}
+
+type serverchassistypePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerChassisTypePaginateOption
+}
+
+func newServerChassisTypePaginateArgs(rv map[string]any) *serverchassistypePaginateArgs {
+	args := &serverchassistypePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerChassisTypeOrder{Field: &ServerChassisTypeOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerChassisTypeOrder(order))
+			}
+		case *ServerChassisTypeOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerChassisTypeOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerChassisTypeWhereInput); ok {
+		args.opts = append(args.opts, WithServerChassisTypeFilter(v.Filter))
 	}
 	return args
 }

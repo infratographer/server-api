@@ -138,6 +138,66 @@ func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
 	return c
 }
 
+// CreateServerChassisTypeInput represents a mutation input for creating serverchassistypes.
+type CreateServerChassisTypeInput struct {
+	Vendor              string
+	Model               string
+	Height              string
+	IsFullDepth         bool
+	ParentChassisTypeID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerChassisTypeInput on the ServerChassisTypeMutation builder.
+func (i *CreateServerChassisTypeInput) Mutate(m *ServerChassisTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	m.SetHeight(i.Height)
+	m.SetIsFullDepth(i.IsFullDepth)
+	m.SetParentChassisTypeID(i.ParentChassisTypeID)
+}
+
+// SetInput applies the change-set in the CreateServerChassisTypeInput on the ServerChassisTypeCreate builder.
+func (c *ServerChassisTypeCreate) SetInput(i CreateServerChassisTypeInput) *ServerChassisTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerChassisTypeInput represents a mutation input for updating serverchassistypes.
+type UpdateServerChassisTypeInput struct {
+	Vendor      *string
+	Model       *string
+	Height      *string
+	IsFullDepth *bool
+}
+
+// Mutate applies the UpdateServerChassisTypeInput on the ServerChassisTypeMutation builder.
+func (i *UpdateServerChassisTypeInput) Mutate(m *ServerChassisTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if v := i.Height; v != nil {
+		m.SetHeight(*v)
+	}
+	if v := i.IsFullDepth; v != nil {
+		m.SetIsFullDepth(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerChassisTypeInput on the ServerChassisTypeUpdate builder.
+func (c *ServerChassisTypeUpdate) SetInput(i UpdateServerChassisTypeInput) *ServerChassisTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerChassisTypeInput on the ServerChassisTypeUpdateOne builder.
+func (c *ServerChassisTypeUpdateOne) SetInput(i UpdateServerChassisTypeInput) *ServerChassisTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerComponentInput represents a mutation input for creating servercomponents.
 type CreateServerComponentInput struct {
 	Name            string

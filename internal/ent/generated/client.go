@@ -31,6 +31,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -45,6 +46,8 @@ type Client struct {
 	Provider *ProviderClient
 	// Server is the client for interacting with the Server builders.
 	Server *ServerClient
+	// ServerChassisType is the client for interacting with the ServerChassisType builders.
+	ServerChassisType *ServerChassisTypeClient
 	// ServerComponent is the client for interacting with the ServerComponent builders.
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
@@ -66,6 +69,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Provider = NewProviderClient(c.config)
 	c.Server = NewServerClient(c.config)
+	c.ServerChassisType = NewServerChassisTypeClient(c.config)
 	c.ServerComponent = NewServerComponentClient(c.config)
 	c.ServerComponentType = NewServerComponentTypeClient(c.config)
 	c.ServerType = NewServerTypeClient(c.config)
@@ -153,6 +157,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:              cfg,
 		Provider:            NewProviderClient(cfg),
 		Server:              NewServerClient(cfg),
+		ServerChassisType:   NewServerChassisTypeClient(cfg),
 		ServerComponent:     NewServerComponentClient(cfg),
 		ServerComponentType: NewServerComponentTypeClient(cfg),
 		ServerType:          NewServerTypeClient(cfg),
@@ -177,6 +182,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:              cfg,
 		Provider:            NewProviderClient(cfg),
 		Server:              NewServerClient(cfg),
+		ServerChassisType:   NewServerChassisTypeClient(cfg),
 		ServerComponent:     NewServerComponentClient(cfg),
 		ServerComponentType: NewServerComponentTypeClient(cfg),
 		ServerType:          NewServerTypeClient(cfg),
@@ -208,21 +214,23 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Provider.Use(hooks...)
-	c.Server.Use(hooks...)
-	c.ServerComponent.Use(hooks...)
-	c.ServerComponentType.Use(hooks...)
-	c.ServerType.Use(hooks...)
+	for _, n := range []interface{ Use(...Hook) }{
+		c.Provider, c.Server, c.ServerChassisType, c.ServerComponent,
+		c.ServerComponentType, c.ServerType,
+	} {
+		n.Use(hooks...)
+	}
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Provider.Intercept(interceptors...)
-	c.Server.Intercept(interceptors...)
-	c.ServerComponent.Intercept(interceptors...)
-	c.ServerComponentType.Intercept(interceptors...)
-	c.ServerType.Intercept(interceptors...)
+	for _, n := range []interface{ Intercept(...Interceptor) }{
+		c.Provider, c.Server, c.ServerChassisType, c.ServerComponent,
+		c.ServerComponentType, c.ServerType,
+	} {
+		n.Intercept(interceptors...)
+	}
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -232,6 +240,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Provider.mutate(ctx, m)
 	case *ServerMutation:
 		return c.Server.mutate(ctx, m)
+	case *ServerChassisTypeMutation:
+		return c.ServerChassisType.mutate(ctx, m)
 	case *ServerComponentMutation:
 		return c.ServerComponent.mutate(ctx, m)
 	case *ServerComponentTypeMutation:
@@ -540,6 +550,124 @@ func (c *ServerClient) mutate(ctx context.Context, m *ServerMutation) (Value, er
 		return (&ServerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("generated: unknown Server mutation op: %q", m.Op())
+	}
+}
+
+// ServerChassisTypeClient is a client for the ServerChassisType schema.
+type ServerChassisTypeClient struct {
+	config
+}
+
+// NewServerChassisTypeClient returns a client for the ServerChassisType from the given config.
+func NewServerChassisTypeClient(c config) *ServerChassisTypeClient {
+	return &ServerChassisTypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `serverchassistype.Hooks(f(g(h())))`.
+func (c *ServerChassisTypeClient) Use(hooks ...Hook) {
+	c.hooks.ServerChassisType = append(c.hooks.ServerChassisType, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `serverchassistype.Intercept(f(g(h())))`.
+func (c *ServerChassisTypeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerChassisType = append(c.inters.ServerChassisType, interceptors...)
+}
+
+// Create returns a builder for creating a ServerChassisType entity.
+func (c *ServerChassisTypeClient) Create() *ServerChassisTypeCreate {
+	mutation := newServerChassisTypeMutation(c.config, OpCreate)
+	return &ServerChassisTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerChassisType entities.
+func (c *ServerChassisTypeClient) CreateBulk(builders ...*ServerChassisTypeCreate) *ServerChassisTypeCreateBulk {
+	return &ServerChassisTypeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerChassisType.
+func (c *ServerChassisTypeClient) Update() *ServerChassisTypeUpdate {
+	mutation := newServerChassisTypeMutation(c.config, OpUpdate)
+	return &ServerChassisTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerChassisTypeClient) UpdateOne(sct *ServerChassisType) *ServerChassisTypeUpdateOne {
+	mutation := newServerChassisTypeMutation(c.config, OpUpdateOne, withServerChassisType(sct))
+	return &ServerChassisTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerChassisTypeClient) UpdateOneID(id gidx.PrefixedID) *ServerChassisTypeUpdateOne {
+	mutation := newServerChassisTypeMutation(c.config, OpUpdateOne, withServerChassisTypeID(id))
+	return &ServerChassisTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerChassisType.
+func (c *ServerChassisTypeClient) Delete() *ServerChassisTypeDelete {
+	mutation := newServerChassisTypeMutation(c.config, OpDelete)
+	return &ServerChassisTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerChassisTypeClient) DeleteOne(sct *ServerChassisType) *ServerChassisTypeDeleteOne {
+	return c.DeleteOneID(sct.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerChassisTypeClient) DeleteOneID(id gidx.PrefixedID) *ServerChassisTypeDeleteOne {
+	builder := c.Delete().Where(serverchassistype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerChassisTypeDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerChassisType.
+func (c *ServerChassisTypeClient) Query() *ServerChassisTypeQuery {
+	return &ServerChassisTypeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerChassisType},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerChassisType entity by its id.
+func (c *ServerChassisTypeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerChassisType, error) {
+	return c.Query().Where(serverchassistype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerChassisTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerChassisType {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ServerChassisTypeClient) Hooks() []Hook {
+	return c.hooks.ServerChassisType
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerChassisTypeClient) Interceptors() []Interceptor {
+	return c.inters.ServerChassisType
+}
+
+func (c *ServerChassisTypeClient) mutate(ctx context.Context, m *ServerChassisTypeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerChassisTypeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerChassisTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerChassisTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerChassisTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerChassisType mutation op: %q", m.Op())
 	}
 }
 
@@ -948,10 +1076,11 @@ func (c *ServerTypeClient) mutate(ctx context.Context, m *ServerTypeMutation) (V
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Provider, Server, ServerComponent, ServerComponentType, ServerType []ent.Hook
+		Provider, Server, ServerChassisType, ServerComponent, ServerComponentType,
+		ServerType []ent.Hook
 	}
 	inters struct {
-		Provider, Server, ServerComponent, ServerComponentType,
+		Provider, Server, ServerChassisType, ServerComponent, ServerComponentType,
 		ServerType []ent.Interceptor
 	}
 )
