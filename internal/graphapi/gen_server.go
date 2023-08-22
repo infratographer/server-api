@@ -53,6 +53,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Entity struct {
 		FindServerByID              func(childComplexity int, id gidx.PrefixedID) int
+		FindServerChassisByID       func(childComplexity int, id gidx.PrefixedID) int
 		FindServerChassisTypeByID   func(childComplexity int, id gidx.PrefixedID) int
 		FindServerComponentByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerComponentTypeByID func(childComplexity int, id gidx.PrefixedID) int
@@ -61,9 +62,12 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		ServerChassis             func(childComplexity int, input generated.CreateServerChassisInput) int
+		ServerChassisDelete       func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassisType         func(childComplexity int, input generated.CreateServerChassisTypeInput) int
 		ServerChassisTypeDelete   func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassisTypeUpdate   func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerChassisTypeInput) int
+		ServerChassisUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerChassisInput) int
 		ServerComponentCreate     func(childComplexity int, input generated.CreateServerComponentInput) int
 		ServerComponentDelete     func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponentTypeCreate func(childComplexity int, input generated.CreateServerComponentTypeInput) int
@@ -90,6 +94,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Server              func(childComplexity int, id gidx.PrefixedID) int
+		ServerChassis       func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassisType   func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponent     func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponentType func(childComplexity int, id gidx.PrefixedID) int
@@ -108,6 +113,32 @@ type ComplexityRoot struct {
 		Provider    func(childComplexity int) int
 		ServerType  func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
+	}
+
+	ServerChassis struct {
+		CreatedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Serial    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
+	ServerChassisConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerChassisCreatePayload struct {
+		ServerChassis func(childComplexity int) int
+	}
+
+	ServerChassisDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerChassisEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	ServerChassisType struct {
@@ -141,6 +172,10 @@ type ComplexityRoot struct {
 
 	ServerChassisTypeUpdatePayload struct {
 		ServerChassisType func(childComplexity int) int
+	}
+
+	ServerChassisUpdatePayload struct {
+		ServerChassis func(childComplexity int) int
 	}
 
 	ServerComponent struct {
@@ -300,6 +335,7 @@ type ComplexityRoot struct {
 
 type EntityResolver interface {
 	FindServerByID(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error)
+	FindServerChassisByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassis, error)
 	FindServerChassisTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error)
 	FindServerComponentByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	FindServerComponentTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
@@ -307,6 +343,9 @@ type EntityResolver interface {
 	FindServerTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error)
 }
 type MutationResolver interface {
+	ServerChassis(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error)
+	ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerChassisInput) (*ServerChassisUpdatePayload, error)
+	ServerChassisDelete(ctx context.Context, id gidx.PrefixedID) (*ServerChassisDeletePayload, error)
 	ServerChassisType(ctx context.Context, input generated.CreateServerChassisTypeInput) (*ServerChassisTypeCreatePayload, error)
 	ServerChassisTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerChassisTypeInput) (*ServerChassisTypeUpdatePayload, error)
 	ServerChassisTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerChassisTypeDeletePayload, error)
@@ -327,6 +366,7 @@ type MutationResolver interface {
 	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerTypeDeletePayload, error)
 }
 type QueryResolver interface {
+	ServerChassis(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassis, error)
 	ServerChassisType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error)
 	ServerComponent(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	ServerComponentType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
@@ -361,6 +401,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerChassisByID":
+		if e.complexity.Entity.FindServerChassisByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerChassisByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerChassisByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerChassisTypeByID":
 		if e.complexity.Entity.FindServerChassisTypeByID == nil {
@@ -422,6 +474,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Entity.FindServerTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
+	case "Mutation.serverChassis":
+		if e.complexity.Mutation.ServerChassis == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverChassis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerChassis(childComplexity, args["input"].(generated.CreateServerChassisInput)), true
+
+	case "Mutation.serverChassisDelete":
+		if e.complexity.Mutation.ServerChassisDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverChassisDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerChassisDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
 	case "Mutation.serverChassisType":
 		if e.complexity.Mutation.ServerChassisType == nil {
 			break
@@ -457,6 +533,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ServerChassisTypeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerChassisTypeInput)), true
+
+	case "Mutation.serverChassisUpdate":
+		if e.complexity.Mutation.ServerChassisUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverChassisUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerChassisUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerChassisInput)), true
 
 	case "Mutation.serverComponentCreate":
 		if e.complexity.Mutation.ServerComponentCreate == nil {
@@ -678,6 +766,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Server(childComplexity, args["id"].(gidx.PrefixedID)), true
 
+	case "Query.serverChassis":
+		if e.complexity.Query.ServerChassis == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverChassis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerChassis(childComplexity, args["id"].(gidx.PrefixedID)), true
+
 	case "Query.serverChassisType":
 		if e.complexity.Query.ServerChassisType == nil {
 			break
@@ -818,6 +918,83 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Server.UpdatedAt(childComplexity), true
 
+	case "ServerChassis.createdAt":
+		if e.complexity.ServerChassis.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerChassis.CreatedAt(childComplexity), true
+
+	case "ServerChassis.id":
+		if e.complexity.ServerChassis.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerChassis.ID(childComplexity), true
+
+	case "ServerChassis.serial":
+		if e.complexity.ServerChassis.Serial == nil {
+			break
+		}
+
+		return e.complexity.ServerChassis.Serial(childComplexity), true
+
+	case "ServerChassis.updatedAt":
+		if e.complexity.ServerChassis.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerChassis.UpdatedAt(childComplexity), true
+
+	case "ServerChassisConnection.edges":
+		if e.complexity.ServerChassisConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisConnection.Edges(childComplexity), true
+
+	case "ServerChassisConnection.pageInfo":
+		if e.complexity.ServerChassisConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisConnection.PageInfo(childComplexity), true
+
+	case "ServerChassisConnection.totalCount":
+		if e.complexity.ServerChassisConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisConnection.TotalCount(childComplexity), true
+
+	case "ServerChassisCreatePayload.serverChassis":
+		if e.complexity.ServerChassisCreatePayload.ServerChassis == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisCreatePayload.ServerChassis(childComplexity), true
+
+	case "ServerChassisDeletePayload.deletedID":
+		if e.complexity.ServerChassisDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerChassisEdge.cursor":
+		if e.complexity.ServerChassisEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisEdge.Cursor(childComplexity), true
+
+	case "ServerChassisEdge.node":
+		if e.complexity.ServerChassisEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisEdge.Node(childComplexity), true
+
 	case "ServerChassisType.createdAt":
 		if e.complexity.ServerChassisType.CreatedAt == nil {
 			break
@@ -922,6 +1099,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ServerChassisTypeUpdatePayload.ServerChassisType(childComplexity), true
+
+	case "ServerChassisUpdatePayload.serverChassis":
+		if e.complexity.ServerChassisUpdatePayload.ServerChassis == nil {
+			break
+		}
+
+		return e.complexity.ServerChassisUpdatePayload.ServerChassis(childComplexity), true
 
 	case "ServerComponent.serverComponentType":
 		if e.complexity.ServerComponent.ComponentType == nil {
@@ -1389,14 +1573,17 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputCreateServerChassisInput,
 		ec.unmarshalInputCreateServerChassisTypeInput,
 		ec.unmarshalInputCreateServerComponentInput,
 		ec.unmarshalInputCreateServerComponentTypeInput,
 		ec.unmarshalInputCreateServerInput,
 		ec.unmarshalInputCreateServerProviderInput,
 		ec.unmarshalInputCreateServerTypeInput,
+		ec.unmarshalInputServerChassisOrder,
 		ec.unmarshalInputServerChassisTypeOrder,
 		ec.unmarshalInputServerChassisTypeWhereInput,
+		ec.unmarshalInputServerChassisWhereInput,
 		ec.unmarshalInputServerComponentOrder,
 		ec.unmarshalInputServerComponentTypeOrder,
 		ec.unmarshalInputServerComponentTypeWhereInput,
@@ -1407,6 +1594,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerTypeOrder,
 		ec.unmarshalInputServerTypeWhereInput,
 		ec.unmarshalInputServerWhereInput,
+		ec.unmarshalInputUpdateServerChassisInput,
 		ec.unmarshalInputUpdateServerChassisTypeInput,
 		ec.unmarshalInputUpdateServerComponentInput,
 		ec.unmarshalInputUpdateServerComponentTypeInput,
@@ -1510,6 +1698,67 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../../schema/chassis.graphql", Input: `extend type Query {
+  """
+  Lookup a serverChassis by ID.
+  """
+  serverChassis(
+    """
+    The server chassis ID.
+    """
+    id: ID!
+  ): ServerChassis!
+}
+
+extend type Mutation {
+  """
+  Create a server chassis.
+  """
+  serverChassis(
+    input: CreateServerChassisInput!
+  ): ServerChassisCreatePayload!
+  """
+  Update a server chassis.
+  """
+  serverChassisUpdate(
+    id: ID!
+    input: UpdateServerChassisInput!
+  ): ServerChassisUpdatePayload!
+  """
+  Delete a server chassis.
+  """
+  serverChassisDelete(id: ID!): ServerChassisDeletePayload!
+}
+
+"""
+Return response from serverChassisCreate
+"""
+type ServerChassisCreatePayload {
+  """
+  The created server chassis.
+  """
+  serverChassis: ServerChassis!
+}
+
+"""
+Return response from serverChassisDelete
+"""
+type ServerChassisDeletePayload {
+  """
+  The ID of the deleted server chassis.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverChassisUpdate
+"""
+type ServerChassisUpdatePayload {
+  """
+  The updated server chassis.
+  """
+  serverChassis: ServerChassis!
+}`, BuiltIn: false},
 	{Name: "../../schema/chassis_type.graphql", Input: `extend type Query {
   """
   Lookup a serverChassisType by ID.
@@ -1695,6 +1944,17 @@ type ServerComponentTypeUpdatePayload {
 }`, BuiltIn: false},
 	{Name: "../../schema/ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 directive @goModel(model: String, models: [String!]) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
+"""Input information to create a server chassis."""
+input CreateServerChassisInput {
+  """The ID for the server chassis type of this server chassis."""
+  serverChassisTypeID: ID!
+  """The ID for the parent of this chassis."""
+  parentChassisID: ID!
+  """The ID for the server of this server chassis."""
+  serverID: ID!
+  """The serial number of the server chassis."""
+  serial: String!
+}
 """Input information to create a server chassis type."""
 input CreateServerChassisTypeInput {
   """The name of the vendor for the server chassis type."""
@@ -1823,6 +2083,46 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
     where: ServerComponentWhereInput
   ): ServerComponentConnection!
 }
+type ServerChassis implements Node @key(fields: "id") @prefixedID(prefix: "srvrsch") {
+  """The ID of the server chassis."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The serial number of the server chassis."""
+  serial: String!
+}
+"""A connection to a list of items."""
+type ServerChassisConnection {
+  """A list of edges."""
+  edges: [ServerChassisEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerChassisEdge {
+  """The item at the end of the edge."""
+  node: ServerChassis
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerChassis connections"""
+input ServerChassisOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerChasses."""
+  field: ServerChassisOrderField!
+}
+"""Properties by which ServerChassis connections can be ordered."""
+enum ServerChassisOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  SERVER_CHASSIS_TYPE
+  PARENT_CHASSIS
+  SERVER
+}
 type ServerChassisType implements Node @key(fields: "id") @prefixedID(prefix: "srvrsct") {
   """The ID of the server chassis type."""
   id: ID!
@@ -1948,6 +2248,56 @@ input ServerChassisTypeWhereInput {
   """is_full_depth field predicates"""
   isFullDepth: Boolean
   isFullDepthNEQ: Boolean
+}
+"""
+ServerChassisWhereInput is used for filtering ServerChassis objects.
+Input was generated by ent.
+"""
+input ServerChassisWhereInput {
+  not: ServerChassisWhereInput
+  and: [ServerChassisWhereInput!]
+  or: [ServerChassisWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """serial field predicates"""
+  serial: String
+  serialNEQ: String
+  serialIn: [String!]
+  serialNotIn: [String!]
+  serialGT: String
+  serialGTE: String
+  serialLT: String
+  serialLTE: String
+  serialContains: String
+  serialHasPrefix: String
+  serialHasSuffix: String
+  serialEqualFold: String
+  serialContainsFold: String
 }
 type ServerComponent implements Node @key(fields: "id") @prefixedID(prefix: "srvrcmp") {
   """The ID of the server component."""
@@ -2517,6 +2867,11 @@ input ServerWhereInput {
 }
 """The builtin Time type"""
 scalar Time
+"""Input information to update a server chassis."""
+input UpdateServerChassisInput {
+  """The serial number of the server chassis."""
+  serial: String
+}
 """Input information to update a server chassis type."""
 input UpdateServerChassisTypeInput {
   """The name of the vendor for the server chassis type."""
@@ -2792,11 +3147,12 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerChassisType | ServerComponent | ServerComponentType | ServerProvider | ServerType
+union _Entity = Server | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
 		findServerByID(id: ID!,): Server!
+	findServerChassisByID(id: ID!,): ServerChassis!
 	findServerChassisTypeByID(id: ID!,): ServerChassisType!
 	findServerComponentByID(id: ID!,): ServerComponent!
 	findServerComponentTypeByID(id: ID!,): ServerComponentType!
@@ -2837,6 +3193,21 @@ func (ec *executionContext) dir_composeDirective_args(ctx context.Context, rawAr
 }
 
 func (ec *executionContext) field_Entity_findServerByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerChassisByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -2926,6 +3297,21 @@ func (ec *executionContext) field_Entity_findServerTypeByID_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverChassisDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverChassisTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2972,6 +3358,45 @@ func (ec *executionContext) field_Mutation_serverChassisType_args(ctx context.Co
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNCreateServerChassisTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerChassisTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverChassisUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerChassisInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerChassisInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerChassisInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverChassis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerChassisInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerChassisInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerChassisInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3281,6 +3706,21 @@ func (ec *executionContext) field_Query__entities_args(ctx context.Context, rawA
 }
 
 func (ec *executionContext) field_Query_serverChassisType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverChassis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -3661,6 +4101,71 @@ func (ec *executionContext) fieldContext_Entity_findServerByID(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Entity_findServerChassisByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerChassisByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerChassisByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerChassis)
+	fc.Result = res
+	return ec.marshalNServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerChassisByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerChassis_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerChassis_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerChassis_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerChassis_serial(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassis", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerChassisByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Entity_findServerChassisTypeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Entity_findServerChassisTypeByID(ctx, field)
 	if err != nil {
@@ -4000,6 +4505,183 @@ func (ec *executionContext) fieldContext_Entity_findServerTypeByID(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverChassis(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverChassis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerChassis(rctx, fc.Args["input"].(generated.CreateServerChassisInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerChassisCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerChassisCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverChassis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverChassis":
+				return ec.fieldContext_ServerChassisCreatePayload_serverChassis(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassisCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverChassis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverChassisUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverChassisUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerChassisUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerChassisInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerChassisUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerChassisUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverChassisUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverChassis":
+				return ec.fieldContext_ServerChassisUpdatePayload_serverChassis(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassisUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverChassisUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverChassisDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverChassisDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerChassisDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerChassisDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerChassisDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverChassisDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerChassisDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassisDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverChassisDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -5238,6 +5920,71 @@ func (ec *executionContext) fieldContext_PageInfo_endCursor(ctx context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_serverChassis(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverChassis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerChassis(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerChassis)
+	fc.Result = res
+	return ec.marshalNServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverChassis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerChassis_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerChassis_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerChassis_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerChassis_serial(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassis", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverChassis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_serverChassisType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_serverChassisType(ctx, field)
 	if err != nil {
@@ -6280,6 +7027,520 @@ func (ec *executionContext) fieldContext_Server_components(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerChassis_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassis_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassis_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassis_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassis_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassis_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassis_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassis_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassis_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassis_serial(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassis_serial(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Serial, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassis_serial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerChassisEdge)
+	fc.Result = res
+	return ec.marshalOServerChassisEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerChassisEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerChassisEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassisEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisCreatePayload_serverChassis(ctx context.Context, field graphql.CollectedField, obj *ServerChassisCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisCreatePayload_serverChassis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerChassis, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerChassis)
+	fc.Result = res
+	return ec.marshalNServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisCreatePayload_serverChassis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerChassis_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerChassis_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerChassis_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerChassis_serial(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassis", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerChassisDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerChassis)
+	fc.Result = res
+	return ec.marshalOServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerChassis_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerChassis_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerChassis_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerChassis_serial(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassis", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerChassisType_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisType) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerChassisType_id(ctx, field)
 	if err != nil {
@@ -6993,6 +8254,60 @@ func (ec *executionContext) fieldContext_ServerChassisTypeUpdatePayload_serverCh
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerChassisUpdatePayload_serverChassis(ctx context.Context, field graphql.CollectedField, obj *ServerChassisUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisUpdatePayload_serverChassis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerChassis, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerChassis)
+	fc.Result = res
+	return ec.marshalNServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisUpdatePayload_serverChassis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerChassis_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerChassis_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerChassis_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerChassis_serial(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassis", field.Name)
 		},
 	}
 	return fc, nil
@@ -11916,6 +13231,62 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputCreateServerChassisInput(ctx context.Context, obj interface{}) (generated.CreateServerChassisInput, error) {
+	var it generated.CreateServerChassisInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serverChassisTypeID", "parentChassisID", "serverID", "serial"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serverChassisTypeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverChassisTypeID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerChassisTypeID = data
+		case "parentChassisID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentChassisID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ParentChassisID = data
+		case "serverID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerID = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateServerChassisTypeInput(ctx context.Context, obj interface{}) (generated.CreateServerChassisTypeInput, error) {
 	var it generated.CreateServerChassisTypeInput
 	asMap := map[string]interface{}{}
@@ -12237,6 +13608,48 @@ func (ec *executionContext) unmarshalInputCreateServerTypeInput(ctx context.Cont
 				return it, err
 			}
 			it.OwnerID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerChassisOrder(ctx context.Context, obj interface{}) (generated.ServerChassisOrder, error) {
+	var it generated.ServerChassisOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerChassisOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
 		}
 	}
 
@@ -12911,6 +14324,386 @@ func (ec *executionContext) unmarshalInputServerChassisTypeWhereInput(ctx contex
 				return it, err
 			}
 			it.IsFullDepthNEQ = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerChassisWhereInput(ctx context.Context, obj interface{}) (generated.ServerChassisWhereInput, error) {
+	var it generated.ServerChassisWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "serial", "serialNEQ", "serialIn", "serialNotIn", "serialGT", "serialGTE", "serialLT", "serialLTE", "serialContains", "serialHasPrefix", "serialHasSuffix", "serialEqualFold", "serialContainsFold"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerChassisWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerChassisWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serialNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNEQ = data
+		case "serialIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialIn = data
+		case "serialNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNotIn = data
+		case "serialGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGT = data
+		case "serialGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGTE = data
+		case "serialLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLT = data
+		case "serialLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLTE = data
+		case "serialContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContains = data
+		case "serialHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasPrefix = data
+		case "serialHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasSuffix = data
+		case "serialEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialEqualFold = data
+		case "serialContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContainsFold = data
 		}
 	}
 
@@ -15639,6 +17432,35 @@ func (ec *executionContext) unmarshalInputServerWhereInput(ctx context.Context, 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateServerChassisInput(ctx context.Context, obj interface{}) (generated.UpdateServerChassisInput, error) {
+	var it generated.UpdateServerChassisInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateServerChassisTypeInput(ctx context.Context, obj interface{}) (generated.UpdateServerChassisTypeInput, error) {
 	var it generated.UpdateServerChassisTypeInput
 	asMap := map[string]interface{}{}
@@ -15941,6 +17763,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._Server(ctx, sel, obj)
+	case *generated.ServerChassis:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerChassis(ctx, sel, obj)
 	case *generated.ServerChassisType:
 		if obj == nil {
 			return graphql.Null
@@ -15982,6 +17809,13 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._Server(ctx, sel, obj)
+	case generated.ServerChassis:
+		return ec._ServerChassis(ctx, sel, &obj)
+	case *generated.ServerChassis:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerChassis(ctx, sel, obj)
 	case generated.ServerChassisType:
 		return ec._ServerChassisType(ctx, sel, &obj)
 	case *generated.ServerChassisType:
@@ -16055,6 +17889,28 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerChassisByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerChassisByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -16219,6 +18075,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "serverChassis":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverChassis(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverChassisUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverChassisUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverChassisDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverChassisDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "serverChassisType":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverChassisType(ctx, field)
@@ -16435,6 +18312,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "serverChassis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverChassis(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "serverChassisType":
 			field := field
 
@@ -16806,6 +18705,225 @@ func (ec *executionContext) _Server(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var serverChassisImplementors = []string{"ServerChassis", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerChassis(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerChassis) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverChassisImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerChassis")
+		case "id":
+			out.Values[i] = ec._ServerChassis_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerChassis_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerChassis_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serial":
+			out.Values[i] = ec._ServerChassis_serial(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverChassisConnectionImplementors = []string{"ServerChassisConnection"}
+
+func (ec *executionContext) _ServerChassisConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerChassisConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverChassisConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerChassisConnection")
+		case "edges":
+			out.Values[i] = ec._ServerChassisConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerChassisConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerChassisConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverChassisCreatePayloadImplementors = []string{"ServerChassisCreatePayload"}
+
+func (ec *executionContext) _ServerChassisCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerChassisCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverChassisCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerChassisCreatePayload")
+		case "serverChassis":
+			out.Values[i] = ec._ServerChassisCreatePayload_serverChassis(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverChassisDeletePayloadImplementors = []string{"ServerChassisDeletePayload"}
+
+func (ec *executionContext) _ServerChassisDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerChassisDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverChassisDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerChassisDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerChassisDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverChassisEdgeImplementors = []string{"ServerChassisEdge"}
+
+func (ec *executionContext) _ServerChassisEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerChassisEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverChassisEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerChassisEdge")
+		case "node":
+			out.Values[i] = ec._ServerChassisEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerChassisEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var serverChassisTypeImplementors = []string{"ServerChassisType", "Node", "_Entity"}
 
 func (ec *executionContext) _ServerChassisType(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerChassisType) graphql.Marshaler {
@@ -17053,6 +19171,45 @@ func (ec *executionContext) _ServerChassisTypeUpdatePayload(ctx context.Context,
 			out.Values[i] = graphql.MarshalString("ServerChassisTypeUpdatePayload")
 		case "serverChassisType":
 			out.Values[i] = ec._ServerChassisTypeUpdatePayload_serverChassisType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverChassisUpdatePayloadImplementors = []string{"ServerChassisUpdatePayload"}
+
+func (ec *executionContext) _ServerChassisUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerChassisUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverChassisUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerChassisUpdatePayload")
+		case "serverChassis":
+			out.Values[i] = ec._ServerChassisUpdatePayload_serverChassis(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -18851,6 +21008,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNCreateServerChassisInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerChassisInput(ctx context.Context, v interface{}) (generated.CreateServerChassisInput, error) {
+	res, err := ec.unmarshalInputCreateServerChassisInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateServerChassisTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerChassisTypeInput(ctx context.Context, v interface{}) (generated.CreateServerChassisTypeInput, error) {
 	res, err := ec.unmarshalInputCreateServerChassisTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -18959,6 +21121,64 @@ func (ec *executionContext) marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserver
 	return ec._Server(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNServerChassis2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx context.Context, sel ast.SelectionSet, v generated.ServerChassis) graphql.Marshaler {
+	return ec._ServerChassis(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassis) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerChassis(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerChassisCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerChassisCreatePayload) graphql.Marshaler {
+	return ec._ServerChassisCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerChassisCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerChassisCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerChassisCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerChassisDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerChassisDeletePayload) graphql.Marshaler {
+	return ec._ServerChassisDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerChassisDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerChassisDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerChassisDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerChassisOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisOrderField(ctx context.Context, v interface{}) (*generated.ServerChassisOrderField, error) {
+	var res = new(generated.ServerChassisOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerChassisOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassisOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) marshalNServerChassisType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisType(ctx context.Context, sel ast.SelectionSet, v generated.ServerChassisType) graphql.Marshaler {
 	return ec._ServerChassisType(ctx, sel, &v)
 }
@@ -19033,6 +21253,25 @@ func (ec *executionContext) marshalNServerChassisTypeUpdatePayload2ᚖgoᚗinfra
 
 func (ec *executionContext) unmarshalNServerChassisTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerChassisTypeWhereInput, error) {
 	res, err := ec.unmarshalInputServerChassisTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerChassisUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerChassisUpdatePayload) graphql.Marshaler {
+	return ec._ServerChassisUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerChassisUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerChassisUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerChassisUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx context.Context, v interface{}) (*generated.ServerChassisWhereInput, error) {
+	res, err := ec.unmarshalInputServerChassisWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -19455,6 +21694,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNUpdateServerChassisInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerChassisInput(ctx context.Context, v interface{}) (generated.UpdateServerChassisInput, error) {
+	res, err := ec.unmarshalInputUpdateServerChassisInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNUpdateServerChassisTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerChassisTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerChassisTypeInput, error) {
@@ -19954,6 +22198,61 @@ func (ec *executionContext) marshalOServer2ᚖgoᚗinfratographerᚗcomᚋserver
 	return ec._Server(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOServerChassis2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassis(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassis) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerChassis(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerChassisEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerChassisEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerChassisEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerChassisEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassisEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerChassisEdge(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOServerChassisType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassisType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -20034,6 +22333,34 @@ func (ec *executionContext) unmarshalOServerChassisTypeWhereInput2ᚖgoᚗinfrat
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputServerChassisTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerChassisWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerChassisWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerChassisWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx context.Context, v interface{}) (*generated.ServerChassisWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerChassisWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

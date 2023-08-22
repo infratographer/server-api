@@ -21,6 +21,7 @@ import (
 
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
@@ -87,6 +88,29 @@ func init() {
 	serverDescID := serverFields[0].Descriptor()
 	// server.DefaultID holds the default value on creation for the id field.
 	server.DefaultID = serverDescID.Default.(func() gidx.PrefixedID)
+	serverchassisMixin := schema.ServerChassis{}.Mixin()
+	serverchassisMixinFields0 := serverchassisMixin[0].Fields()
+	_ = serverchassisMixinFields0
+	serverchassisFields := schema.ServerChassis{}.Fields()
+	_ = serverchassisFields
+	// serverchassisDescCreatedAt is the schema descriptor for created_at field.
+	serverchassisDescCreatedAt := serverchassisMixinFields0[0].Descriptor()
+	// serverchassis.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serverchassis.DefaultCreatedAt = serverchassisDescCreatedAt.Default.(func() time.Time)
+	// serverchassisDescUpdatedAt is the schema descriptor for updated_at field.
+	serverchassisDescUpdatedAt := serverchassisMixinFields0[1].Descriptor()
+	// serverchassis.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serverchassis.DefaultUpdatedAt = serverchassisDescUpdatedAt.Default.(func() time.Time)
+	// serverchassis.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serverchassis.UpdateDefaultUpdatedAt = serverchassisDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// serverchassisDescSerial is the schema descriptor for serial field.
+	serverchassisDescSerial := serverchassisFields[4].Descriptor()
+	// serverchassis.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	serverchassis.SerialValidator = serverchassisDescSerial.Validators[0].(func(string) error)
+	// serverchassisDescID is the schema descriptor for id field.
+	serverchassisDescID := serverchassisFields[0].Descriptor()
+	// serverchassis.DefaultID holds the default value on creation for the id field.
+	serverchassis.DefaultID = serverchassisDescID.Default.(func() gidx.PrefixedID)
 	serverchassistypeMixin := schema.ServerChassisType{}.Mixin()
 	serverchassistypeMixinFields0 := serverchassistypeMixin[0].Fields()
 	_ = serverchassistypeMixinFields0

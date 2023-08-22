@@ -138,6 +138,52 @@ func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
 	return c
 }
 
+// CreateServerChassisInput represents a mutation input for creating serverchasses.
+type CreateServerChassisInput struct {
+	ServerChassisTypeID gidx.PrefixedID
+	ParentChassisID     gidx.PrefixedID
+	ServerID            gidx.PrefixedID
+	Serial              string
+}
+
+// Mutate applies the CreateServerChassisInput on the ServerChassisMutation builder.
+func (i *CreateServerChassisInput) Mutate(m *ServerChassisMutation) {
+	m.SetServerChassisTypeID(i.ServerChassisTypeID)
+	m.SetParentChassisID(i.ParentChassisID)
+	m.SetServerID(i.ServerID)
+	m.SetSerial(i.Serial)
+}
+
+// SetInput applies the change-set in the CreateServerChassisInput on the ServerChassisCreate builder.
+func (c *ServerChassisCreate) SetInput(i CreateServerChassisInput) *ServerChassisCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerChassisInput represents a mutation input for updating serverchasses.
+type UpdateServerChassisInput struct {
+	Serial *string
+}
+
+// Mutate applies the UpdateServerChassisInput on the ServerChassisMutation builder.
+func (i *UpdateServerChassisInput) Mutate(m *ServerChassisMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerChassisInput on the ServerChassisUpdate builder.
+func (c *ServerChassisUpdate) SetInput(i UpdateServerChassisInput) *ServerChassisUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerChassisInput on the ServerChassisUpdateOne builder.
+func (c *ServerChassisUpdateOne) SetInput(i UpdateServerChassisInput) *ServerChassisUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerChassisTypeInput represents a mutation input for creating serverchassistypes.
 type CreateServerChassisTypeInput struct {
 	Vendor              string

@@ -7,6 +7,18 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
+// Return response from serverChassisCreate
+type ServerChassisCreatePayload struct {
+	// The created server chassis.
+	ServerChassis *generated.ServerChassis `json:"serverChassis"`
+}
+
+// Return response from serverChassisDelete
+type ServerChassisDeletePayload struct {
+	// The ID of the deleted server chassis.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
 // Return response from serverChassisTypeCreate
 type ServerChassisTypeCreatePayload struct {
 	// The created server chassis type.
@@ -23,6 +35,12 @@ type ServerChassisTypeDeletePayload struct {
 type ServerChassisTypeUpdatePayload struct {
 	// The updated server chassis type.
 	ServerChassisType *generated.ServerChassisType `json:"serverChassisType"`
+}
+
+// Return response from serverChassisUpdate
+type ServerChassisUpdatePayload struct {
+	// The updated server chassis.
+	ServerChassis *generated.ServerChassis `json:"serverChassis"`
 }
 
 // Return response from serverComponentCreate

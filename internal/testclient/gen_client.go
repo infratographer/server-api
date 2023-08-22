@@ -21,6 +21,7 @@ func NewClient(cli *http.Client, baseURL string, options ...client.HTTPRequestOp
 }
 
 type Query struct {
+	ServerChassis       ServerChassis       "json:\"serverChassis\" graphql:\"serverChassis\""
 	ServerChassisType   ServerChassisType   "json:\"serverChassisType\" graphql:\"serverChassisType\""
 	ServerComponent     ServerComponent     "json:\"serverComponent\" graphql:\"serverComponent\""
 	ServerComponentType ServerComponentType "json:\"serverComponentType\" graphql:\"serverComponentType\""
@@ -31,6 +32,9 @@ type Query struct {
 	Service             Service             "json:\"_service\" graphql:\"_service\""
 }
 type Mutation struct {
+	ServerChassis             ServerChassisCreatePayload       "json:\"serverChassis\" graphql:\"serverChassis\""
+	ServerChassisUpdate       ServerChassisUpdatePayload       "json:\"serverChassisUpdate\" graphql:\"serverChassisUpdate\""
+	ServerChassisDelete       ServerChassisDeletePayload       "json:\"serverChassisDelete\" graphql:\"serverChassisDelete\""
 	ServerChassisType         ServerChassisTypeCreatePayload   "json:\"serverChassisType\" graphql:\"serverChassisType\""
 	ServerChassisTypeUpdate   ServerChassisTypeUpdatePayload   "json:\"serverChassisTypeUpdate\" graphql:\"serverChassisTypeUpdate\""
 	ServerChassisTypeDelete   ServerChassisTypeDeletePayload   "json:\"serverChassisTypeDelete\" graphql:\"serverChassisTypeDelete\""

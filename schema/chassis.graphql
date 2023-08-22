@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverChassis by ID.
+  """
+  serverChassis(
+    """
+    The server chassis ID.
+    """
+    id: ID!
+  ): ServerChassis!
+}
+
+extend type Mutation {
+  """
+  Create a server chassis.
+  """
+  serverChassis(
+    input: CreateServerChassisInput!
+  ): ServerChassisCreatePayload!
+  """
+  Update a server chassis.
+  """
+  serverChassisUpdate(
+    id: ID!
+    input: UpdateServerChassisInput!
+  ): ServerChassisUpdatePayload!
+  """
+  Delete a server chassis.
+  """
+  serverChassisDelete(id: ID!): ServerChassisDeletePayload!
+}
+
+"""
+Return response from serverChassisCreate
+"""
+type ServerChassisCreatePayload {
+  """
+  The created server chassis.
+  """
+  serverChassis: ServerChassis!
+}
+
+"""
+Return response from serverChassisDelete
+"""
+type ServerChassisDeletePayload {
+  """
+  The ID of the deleted server chassis.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverChassisUpdate
+"""
+type ServerChassisUpdatePayload {
+  """
+  The updated server chassis.
+  """
+  serverChassis: ServerChassis!
+}

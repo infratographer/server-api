@@ -31,6 +31,7 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
@@ -884,6 +885,389 @@ func (s *Server) ToEdge(order *ServerOrder) *ServerEdge {
 	return &ServerEdge{
 		Node:   s,
 		Cursor: order.Field.toCursor(s),
+	}
+}
+
+// ServerChassisEdge is the edge representation of ServerChassis.
+type ServerChassisEdge struct {
+	Node   *ServerChassis `json:"node"`
+	Cursor Cursor         `json:"cursor"`
+}
+
+// ServerChassisConnection is the connection containing edges to ServerChassis.
+type ServerChassisConnection struct {
+	Edges      []*ServerChassisEdge `json:"edges"`
+	PageInfo   PageInfo             `json:"pageInfo"`
+	TotalCount int                  `json:"totalCount"`
+}
+
+func (c *ServerChassisConnection) build(nodes []*ServerChassis, pager *serverchassisPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerChassis
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerChassis {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerChassis {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerChassisEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerChassisEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerChassisPaginateOption enables pagination customization.
+type ServerChassisPaginateOption func(*serverchassisPager) error
+
+// WithServerChassisOrder configures pagination ordering.
+func WithServerChassisOrder(order *ServerChassisOrder) ServerChassisPaginateOption {
+	if order == nil {
+		order = DefaultServerChassisOrder
+	}
+	o := *order
+	return func(pager *serverchassisPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerChassisOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerChassisFilter configures pagination filter.
+func WithServerChassisFilter(filter func(*ServerChassisQuery) (*ServerChassisQuery, error)) ServerChassisPaginateOption {
+	return func(pager *serverchassisPager) error {
+		if filter == nil {
+			return errors.New("ServerChassisQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type serverchassisPager struct {
+	reverse bool
+	order   *ServerChassisOrder
+	filter  func(*ServerChassisQuery) (*ServerChassisQuery, error)
+}
+
+func newServerChassisPager(opts []ServerChassisPaginateOption, reverse bool) (*serverchassisPager, error) {
+	pager := &serverchassisPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerChassisOrder
+	}
+	return pager, nil
+}
+
+func (p *serverchassisPager) applyFilter(query *ServerChassisQuery) (*ServerChassisQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *serverchassisPager) toCursor(sc *ServerChassis) Cursor {
+	return p.order.Field.toCursor(sc)
+}
+
+func (p *serverchassisPager) applyCursors(query *ServerChassisQuery, after, before *Cursor) (*ServerChassisQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerChassisOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *serverchassisPager) applyOrder(query *ServerChassisQuery) *ServerChassisQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerChassisOrder.Field {
+		query = query.Order(DefaultServerChassisOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *serverchassisPager) orderExpr(query *ServerChassisQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerChassisOrder.Field {
+			b.Comma().Ident(DefaultServerChassisOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerChassis.
+func (sc *ServerChassisQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerChassisPaginateOption,
+) (*ServerChassisConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerChassisPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if sc, err = pager.applyFilter(sc); err != nil {
+		return nil, err
+	}
+	conn := &ServerChassisConnection{Edges: []*ServerChassisEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = sc.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if sc, err = pager.applyCursors(sc, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		sc.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sc.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	sc = pager.applyOrder(sc)
+	nodes, err := sc.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerChassisOrderFieldID orders ServerChassis by id.
+	ServerChassisOrderFieldID = &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.ID, nil
+		},
+		column: serverchassis.FieldID,
+		toTerm: serverchassis.ByID,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ID,
+			}
+		},
+	}
+	// ServerChassisOrderFieldCreatedAt orders ServerChassis by created_at.
+	ServerChassisOrderFieldCreatedAt = &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.CreatedAt, nil
+		},
+		column: serverchassis.FieldCreatedAt,
+		toTerm: serverchassis.ByCreatedAt,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.CreatedAt,
+			}
+		},
+	}
+	// ServerChassisOrderFieldUpdatedAt orders ServerChassis by updated_at.
+	ServerChassisOrderFieldUpdatedAt = &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.UpdatedAt, nil
+		},
+		column: serverchassis.FieldUpdatedAt,
+		toTerm: serverchassis.ByUpdatedAt,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.UpdatedAt,
+			}
+		},
+	}
+	// ServerChassisOrderFieldServerChassisTypeID orders ServerChassis by server_chassis_type_id.
+	ServerChassisOrderFieldServerChassisTypeID = &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.ServerChassisTypeID, nil
+		},
+		column: serverchassis.FieldServerChassisTypeID,
+		toTerm: serverchassis.ByServerChassisTypeID,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ServerChassisTypeID,
+			}
+		},
+	}
+	// ServerChassisOrderFieldParentChassisID orders ServerChassis by parent_chassis_id.
+	ServerChassisOrderFieldParentChassisID = &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.ParentChassisID, nil
+		},
+		column: serverchassis.FieldParentChassisID,
+		toTerm: serverchassis.ByParentChassisID,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ParentChassisID,
+			}
+		},
+	}
+	// ServerChassisOrderFieldServerID orders ServerChassis by server_id.
+	ServerChassisOrderFieldServerID = &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.ServerID, nil
+		},
+		column: serverchassis.FieldServerID,
+		toTerm: serverchassis.ByServerID,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ServerID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerChassisOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerChassisOrderFieldID.column:
+		str = "ID"
+	case ServerChassisOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerChassisOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerChassisOrderFieldServerChassisTypeID.column:
+		str = "SERVER_CHASSIS_TYPE"
+	case ServerChassisOrderFieldParentChassisID.column:
+		str = "PARENT_CHASSIS"
+	case ServerChassisOrderFieldServerID.column:
+		str = "SERVER"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerChassisOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerChassisOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerChassisOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerChassisOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerChassisOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerChassisOrderFieldUpdatedAt
+	case "SERVER_CHASSIS_TYPE":
+		*f = *ServerChassisOrderFieldServerChassisTypeID
+	case "PARENT_CHASSIS":
+		*f = *ServerChassisOrderFieldParentChassisID
+	case "SERVER":
+		*f = *ServerChassisOrderFieldServerID
+	default:
+		return fmt.Errorf("%s is not a valid ServerChassisOrderField", str)
+	}
+	return nil
+}
+
+// ServerChassisOrderField defines the ordering field of ServerChassis.
+type ServerChassisOrderField struct {
+	// Value extracts the ordering value from the given ServerChassis.
+	Value    func(*ServerChassis) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) serverchassis.OrderOption
+	toCursor func(*ServerChassis) Cursor
+}
+
+// ServerChassisOrder defines the ordering of ServerChassis.
+type ServerChassisOrder struct {
+	Direction OrderDirection           `json:"direction"`
+	Field     *ServerChassisOrderField `json:"field"`
+}
+
+// DefaultServerChassisOrder is the default ordering of ServerChassis.
+var DefaultServerChassisOrder = &ServerChassisOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerChassisOrderField{
+		Value: func(sc *ServerChassis) (ent.Value, error) {
+			return sc.ID, nil
+		},
+		column: serverchassis.FieldID,
+		toTerm: serverchassis.ByID,
+		toCursor: func(sc *ServerChassis) Cursor {
+			return Cursor{ID: sc.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerChassis into ServerChassisEdge.
+func (sc *ServerChassis) ToEdge(order *ServerChassisOrder) *ServerChassisEdge {
+	if order == nil {
+		order = DefaultServerChassisOrder
+	}
+	return &ServerChassisEdge{
+		Node:   sc,
+		Cursor: order.Field.toCursor(sc),
 	}
 }
 

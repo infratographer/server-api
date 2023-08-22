@@ -24,6 +24,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
@@ -670,6 +671,252 @@ func (i *ServerWhereInput) P() (predicate.Server, error) {
 		return predicates[0], nil
 	default:
 		return server.And(predicates...), nil
+	}
+}
+
+// ServerChassisWhereInput represents a where input for filtering ServerChassis queries.
+type ServerChassisWhereInput struct {
+	Predicates []predicate.ServerChassis  `json:"-"`
+	Not        *ServerChassisWhereInput   `json:"not,omitempty"`
+	Or         []*ServerChassisWhereInput `json:"or,omitempty"`
+	And        []*ServerChassisWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "serial" field predicates.
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNEQ          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGT           *string  `json:"serialGT,omitempty"`
+	SerialGTE          *string  `json:"serialGTE,omitempty"`
+	SerialLT           *string  `json:"serialLT,omitempty"`
+	SerialLTE          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerChassisWhereInput) AddPredicates(predicates ...predicate.ServerChassis) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerChassisWhereInput filter on the ServerChassisQuery builder.
+func (i *ServerChassisWhereInput) Filter(q *ServerChassisQuery) (*ServerChassisQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerChassisWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerChassisWhereInput is returned in case the ServerChassisWhereInput is empty.
+var ErrEmptyServerChassisWhereInput = errors.New("generated: empty predicate ServerChassisWhereInput")
+
+// P returns a predicate for filtering serverchasses.
+// An error is returned if the input is empty or invalid.
+func (i *ServerChassisWhereInput) P() (predicate.ServerChassis, error) {
+	var predicates []predicate.ServerChassis
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, serverchassis.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerChassis, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, serverchassis.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerChassis, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, serverchassis.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, serverchassis.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, serverchassis.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, serverchassis.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, serverchassis.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, serverchassis.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, serverchassis.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, serverchassis.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, serverchassis.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, serverchassis.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, serverchassis.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, serverchassis.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, serverchassis.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, serverchassis.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, serverchassis.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, serverchassis.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, serverchassis.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, serverchassis.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, serverchassis.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, serverchassis.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, serverchassis.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, serverchassis.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, serverchassis.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, serverchassis.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, serverchassis.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Serial != nil {
+		predicates = append(predicates, serverchassis.SerialEQ(*i.Serial))
+	}
+	if i.SerialNEQ != nil {
+		predicates = append(predicates, serverchassis.SerialNEQ(*i.SerialNEQ))
+	}
+	if len(i.SerialIn) > 0 {
+		predicates = append(predicates, serverchassis.SerialIn(i.SerialIn...))
+	}
+	if len(i.SerialNotIn) > 0 {
+		predicates = append(predicates, serverchassis.SerialNotIn(i.SerialNotIn...))
+	}
+	if i.SerialGT != nil {
+		predicates = append(predicates, serverchassis.SerialGT(*i.SerialGT))
+	}
+	if i.SerialGTE != nil {
+		predicates = append(predicates, serverchassis.SerialGTE(*i.SerialGTE))
+	}
+	if i.SerialLT != nil {
+		predicates = append(predicates, serverchassis.SerialLT(*i.SerialLT))
+	}
+	if i.SerialLTE != nil {
+		predicates = append(predicates, serverchassis.SerialLTE(*i.SerialLTE))
+	}
+	if i.SerialContains != nil {
+		predicates = append(predicates, serverchassis.SerialContains(*i.SerialContains))
+	}
+	if i.SerialHasPrefix != nil {
+		predicates = append(predicates, serverchassis.SerialHasPrefix(*i.SerialHasPrefix))
+	}
+	if i.SerialHasSuffix != nil {
+		predicates = append(predicates, serverchassis.SerialHasSuffix(*i.SerialHasSuffix))
+	}
+	if i.SerialEqualFold != nil {
+		predicates = append(predicates, serverchassis.SerialEqualFold(*i.SerialEqualFold))
+	}
+	if i.SerialContainsFold != nil {
+		predicates = append(predicates, serverchassis.SerialContainsFold(*i.SerialContainsFold))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerChassisWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return serverchassis.And(predicates...), nil
 	}
 }
 

@@ -31,8 +31,3 @@ func (r *mutationResolver) ServerChassisTypeDelete(ctx context.Context, id gidx.
 func (r *queryResolver) ServerChassisType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error) {
 	panic(fmt.Errorf("not implemented: ServerChassisType - serverChassisType"))
 }
-
-// Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }

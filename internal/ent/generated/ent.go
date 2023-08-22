@@ -28,6 +28,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
@@ -94,6 +95,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			provider.Table:            provider.ValidColumn,
 			server.Table:              server.ValidColumn,
+			serverchassis.Table:       serverchassis.ValidColumn,
 			serverchassistype.Table:   serverchassistype.ValidColumn,
 			servercomponent.Table:     servercomponent.ValidColumn,
 			servercomponenttype.Table: servercomponenttype.ValidColumn,
