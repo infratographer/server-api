@@ -70,9 +70,9 @@ func (pc *ProviderCreate) SetName(s string) *ProviderCreate {
 	return pc
 }
 
-// SetOwnerID sets the "owner_id" field.
-func (pc *ProviderCreate) SetOwnerID(gi gidx.PrefixedID) *ProviderCreate {
-	pc.mutation.SetOwnerID(gi)
+// SetResourceProviderID sets the "resource_provider_id" field.
+func (pc *ProviderCreate) SetResourceProviderID(gi gidx.PrefixedID) *ProviderCreate {
+	pc.mutation.SetResourceProviderID(gi)
 	return pc
 }
 
@@ -170,8 +170,8 @@ func (pc *ProviderCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`generated: validator failed for field "Provider.name": %w`, err)}
 		}
 	}
-	if _, ok := pc.mutation.OwnerID(); !ok {
-		return &ValidationError{Name: "owner_id", err: errors.New(`generated: missing required field "Provider.owner_id"`)}
+	if _, ok := pc.mutation.ResourceProviderID(); !ok {
+		return &ValidationError{Name: "resource_provider_id", err: errors.New(`generated: missing required field "Provider.resource_provider_id"`)}
 	}
 	return nil
 }
@@ -220,9 +220,9 @@ func (pc *ProviderCreate) createSpec() (*Provider, *sqlgraph.CreateSpec) {
 		_spec.SetField(provider.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := pc.mutation.OwnerID(); ok {
-		_spec.SetField(provider.FieldOwnerID, field.TypeString, value)
-		_node.OwnerID = value
+	if value, ok := pc.mutation.ResourceProviderID(); ok {
+		_spec.SetField(provider.FieldResourceProviderID, field.TypeString, value)
+		_node.ResourceProviderID = value
 	}
 	if nodes := pc.mutation.ServersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

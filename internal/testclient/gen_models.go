@@ -68,8 +68,8 @@ type CreateServerInput struct {
 type CreateServerProviderInput struct {
 	// The name of the server provider.
 	Name string `json:"name"`
-	// The ID for the owner of this server.
-	OwnerID gidx.PrefixedID `json:"ownerID"`
+	// The ID for the resource provider of this server.
+	ResourceProviderID gidx.PrefixedID `json:"resourceProviderID"`
 }
 
 // Input information to create a server type.
@@ -963,11 +963,11 @@ func (e ServerOrderField) MarshalGQL(w io.Writer) {
 type ServerProviderOrderField string
 
 const (
-	ServerProviderOrderFieldID        ServerProviderOrderField = "ID"
-	ServerProviderOrderFieldCreatedAt ServerProviderOrderField = "CREATED_AT"
-	ServerProviderOrderFieldUpdatedAt ServerProviderOrderField = "UPDATED_AT"
-	ServerProviderOrderFieldName      ServerProviderOrderField = "NAME"
-	ServerProviderOrderFieldOwner     ServerProviderOrderField = "OWNER"
+	ServerProviderOrderFieldID               ServerProviderOrderField = "ID"
+	ServerProviderOrderFieldCreatedAt        ServerProviderOrderField = "CREATED_AT"
+	ServerProviderOrderFieldUpdatedAt        ServerProviderOrderField = "UPDATED_AT"
+	ServerProviderOrderFieldName             ServerProviderOrderField = "NAME"
+	ServerProviderOrderFieldResourceProvider ServerProviderOrderField = "RESOURCE_PROVIDER"
 )
 
 var AllServerProviderOrderField = []ServerProviderOrderField{
@@ -975,12 +975,12 @@ var AllServerProviderOrderField = []ServerProviderOrderField{
 	ServerProviderOrderFieldCreatedAt,
 	ServerProviderOrderFieldUpdatedAt,
 	ServerProviderOrderFieldName,
-	ServerProviderOrderFieldOwner,
+	ServerProviderOrderFieldResourceProvider,
 }
 
 func (e ServerProviderOrderField) IsValid() bool {
 	switch e {
-	case ServerProviderOrderFieldID, ServerProviderOrderFieldCreatedAt, ServerProviderOrderFieldUpdatedAt, ServerProviderOrderFieldName, ServerProviderOrderFieldOwner:
+	case ServerProviderOrderFieldID, ServerProviderOrderFieldCreatedAt, ServerProviderOrderFieldUpdatedAt, ServerProviderOrderFieldName, ServerProviderOrderFieldResourceProvider:
 		return true
 	}
 	return false

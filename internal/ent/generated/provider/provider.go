@@ -35,8 +35,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldOwnerID holds the string denoting the owner_id field in the database.
-	FieldOwnerID = "owner_id"
+	// FieldResourceProviderID holds the string denoting the resource_provider_id field in the database.
+	FieldResourceProviderID = "resource_provider_id"
 	// EdgeServers holds the string denoting the servers edge name in mutations.
 	EdgeServers = "servers"
 	// Table holds the table name of the provider in the database.
@@ -56,7 +56,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldName,
-	FieldOwnerID,
+	FieldResourceProviderID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -105,9 +105,9 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
-// ByOwnerID orders the results by the owner_id field.
-func ByOwnerID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOwnerID, opts...).ToFunc()
+// ByResourceProviderID orders the results by the resource_provider_id field.
+func ByResourceProviderID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldResourceProviderID, opts...).ToFunc()
 }
 
 // ByServersCount orders the results by servers count.

@@ -1458,8 +1458,8 @@ input CreateServerInput {
 input CreateServerProviderInput {
   """The name of the server provider."""
   name: String!
-  """The ID for the owner of this server."""
-  ownerID: ID!
+  """The ID for the resource provider of this server."""
+  resourceProviderID: ID!
 }
 """Input information to create a server type."""
 input CreateServerTypeInput {
@@ -1862,7 +1862,7 @@ enum ServerProviderOrderField {
   CREATED_AT
   UPDATED_AT
   NAME
-  OWNER
+  RESOURCE_PROVIDER
 }
 """
 ServerProviderWhereInput is used for filtering Provider objects.
@@ -10564,7 +10564,7 @@ func (ec *executionContext) unmarshalInputCreateServerProviderInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "ownerID"}
+	fieldsInOrder := [...]string{"name", "resourceProviderID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -10580,15 +10580,15 @@ func (ec *executionContext) unmarshalInputCreateServerProviderInput(ctx context.
 				return it, err
 			}
 			it.Name = data
-		case "ownerID":
+		case "resourceProviderID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ownerID"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceProviderID"))
 			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.OwnerID = data
+			it.ResourceProviderID = data
 		}
 	}
 

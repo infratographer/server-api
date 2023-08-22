@@ -22,14 +22,14 @@ import (
 
 // CreateServerProviderInput represents a mutation input for creating serverproviders.
 type CreateServerProviderInput struct {
-	Name    string
-	OwnerID gidx.PrefixedID
+	Name               string
+	ResourceProviderID gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerProviderInput on the ProviderMutation builder.
 func (i *CreateServerProviderInput) Mutate(m *ProviderMutation) {
 	m.SetName(i.Name)
-	m.SetOwnerID(i.OwnerID)
+	m.SetResourceProviderID(i.ResourceProviderID)
 }
 
 // SetInput applies the change-set in the CreateServerProviderInput on the ProviderCreate builder.

@@ -42,15 +42,15 @@ func (Provider) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("NAME"),
 			),
-		field.String("owner_id").
+		field.String("resource_provider_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
-			Comment("The ID for the owner of this server.").
+			Comment("The ID for the resource provider of this server.").
 			Annotations(
 				entgql.QueryField(),
 				entgql.Type("ID"),
 				entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationUpdateInput, entgql.SkipType),
-				entgql.OrderField("OWNER"),
+				entgql.OrderField("RESOURCE_PROVIDER"),
 			),
 	}
 }
@@ -70,7 +70,7 @@ func (Provider) Edges() []ent.Edge {
 // Indexes of the Provider
 func (Provider) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("owner_id"),
+		index.Fields("resource_provider_id"),
 	}
 }
 

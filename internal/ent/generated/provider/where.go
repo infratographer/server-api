@@ -85,9 +85,9 @@ func Name(v string) predicate.Provider {
 	return predicate.Provider(sql.FieldEQ(FieldName, v))
 }
 
-// OwnerID applies equality check predicate on the "owner_id" field. It's identical to OwnerIDEQ.
-func OwnerID(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldEQ(FieldOwnerID, v))
+// ResourceProviderID applies equality check predicate on the "resource_provider_id" field. It's identical to ResourceProviderIDEQ.
+func ResourceProviderID(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldEQ(FieldResourceProviderID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -235,74 +235,74 @@ func NameContainsFold(v string) predicate.Provider {
 	return predicate.Provider(sql.FieldContainsFold(FieldName, v))
 }
 
-// OwnerIDEQ applies the EQ predicate on the "owner_id" field.
-func OwnerIDEQ(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldEQ(FieldOwnerID, v))
+// ResourceProviderIDEQ applies the EQ predicate on the "resource_provider_id" field.
+func ResourceProviderIDEQ(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldEQ(FieldResourceProviderID, v))
 }
 
-// OwnerIDNEQ applies the NEQ predicate on the "owner_id" field.
-func OwnerIDNEQ(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldNEQ(FieldOwnerID, v))
+// ResourceProviderIDNEQ applies the NEQ predicate on the "resource_provider_id" field.
+func ResourceProviderIDNEQ(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldNEQ(FieldResourceProviderID, v))
 }
 
-// OwnerIDIn applies the In predicate on the "owner_id" field.
-func OwnerIDIn(vs ...gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldIn(FieldOwnerID, vs...))
+// ResourceProviderIDIn applies the In predicate on the "resource_provider_id" field.
+func ResourceProviderIDIn(vs ...gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldIn(FieldResourceProviderID, vs...))
 }
 
-// OwnerIDNotIn applies the NotIn predicate on the "owner_id" field.
-func OwnerIDNotIn(vs ...gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldNotIn(FieldOwnerID, vs...))
+// ResourceProviderIDNotIn applies the NotIn predicate on the "resource_provider_id" field.
+func ResourceProviderIDNotIn(vs ...gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldNotIn(FieldResourceProviderID, vs...))
 }
 
-// OwnerIDGT applies the GT predicate on the "owner_id" field.
-func OwnerIDGT(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldGT(FieldOwnerID, v))
+// ResourceProviderIDGT applies the GT predicate on the "resource_provider_id" field.
+func ResourceProviderIDGT(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldGT(FieldResourceProviderID, v))
 }
 
-// OwnerIDGTE applies the GTE predicate on the "owner_id" field.
-func OwnerIDGTE(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldGTE(FieldOwnerID, v))
+// ResourceProviderIDGTE applies the GTE predicate on the "resource_provider_id" field.
+func ResourceProviderIDGTE(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldGTE(FieldResourceProviderID, v))
 }
 
-// OwnerIDLT applies the LT predicate on the "owner_id" field.
-func OwnerIDLT(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldLT(FieldOwnerID, v))
+// ResourceProviderIDLT applies the LT predicate on the "resource_provider_id" field.
+func ResourceProviderIDLT(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldLT(FieldResourceProviderID, v))
 }
 
-// OwnerIDLTE applies the LTE predicate on the "owner_id" field.
-func OwnerIDLTE(v gidx.PrefixedID) predicate.Provider {
-	return predicate.Provider(sql.FieldLTE(FieldOwnerID, v))
+// ResourceProviderIDLTE applies the LTE predicate on the "resource_provider_id" field.
+func ResourceProviderIDLTE(v gidx.PrefixedID) predicate.Provider {
+	return predicate.Provider(sql.FieldLTE(FieldResourceProviderID, v))
 }
 
-// OwnerIDContains applies the Contains predicate on the "owner_id" field.
-func OwnerIDContains(v gidx.PrefixedID) predicate.Provider {
+// ResourceProviderIDContains applies the Contains predicate on the "resource_provider_id" field.
+func ResourceProviderIDContains(v gidx.PrefixedID) predicate.Provider {
 	vc := string(v)
-	return predicate.Provider(sql.FieldContains(FieldOwnerID, vc))
+	return predicate.Provider(sql.FieldContains(FieldResourceProviderID, vc))
 }
 
-// OwnerIDHasPrefix applies the HasPrefix predicate on the "owner_id" field.
-func OwnerIDHasPrefix(v gidx.PrefixedID) predicate.Provider {
+// ResourceProviderIDHasPrefix applies the HasPrefix predicate on the "resource_provider_id" field.
+func ResourceProviderIDHasPrefix(v gidx.PrefixedID) predicate.Provider {
 	vc := string(v)
-	return predicate.Provider(sql.FieldHasPrefix(FieldOwnerID, vc))
+	return predicate.Provider(sql.FieldHasPrefix(FieldResourceProviderID, vc))
 }
 
-// OwnerIDHasSuffix applies the HasSuffix predicate on the "owner_id" field.
-func OwnerIDHasSuffix(v gidx.PrefixedID) predicate.Provider {
+// ResourceProviderIDHasSuffix applies the HasSuffix predicate on the "resource_provider_id" field.
+func ResourceProviderIDHasSuffix(v gidx.PrefixedID) predicate.Provider {
 	vc := string(v)
-	return predicate.Provider(sql.FieldHasSuffix(FieldOwnerID, vc))
+	return predicate.Provider(sql.FieldHasSuffix(FieldResourceProviderID, vc))
 }
 
-// OwnerIDEqualFold applies the EqualFold predicate on the "owner_id" field.
-func OwnerIDEqualFold(v gidx.PrefixedID) predicate.Provider {
+// ResourceProviderIDEqualFold applies the EqualFold predicate on the "resource_provider_id" field.
+func ResourceProviderIDEqualFold(v gidx.PrefixedID) predicate.Provider {
 	vc := string(v)
-	return predicate.Provider(sql.FieldEqualFold(FieldOwnerID, vc))
+	return predicate.Provider(sql.FieldEqualFold(FieldResourceProviderID, vc))
 }
 
-// OwnerIDContainsFold applies the ContainsFold predicate on the "owner_id" field.
-func OwnerIDContainsFold(v gidx.PrefixedID) predicate.Provider {
+// ResourceProviderIDContainsFold applies the ContainsFold predicate on the "resource_provider_id" field.
+func ResourceProviderIDContainsFold(v gidx.PrefixedID) predicate.Provider {
 	vc := string(v)
-	return predicate.Provider(sql.FieldContainsFold(FieldOwnerID, vc))
+	return predicate.Provider(sql.FieldContainsFold(FieldResourceProviderID, vc))
 }
 
 // HasServers applies the HasEdge predicate on the "servers" edge.

@@ -36,8 +36,8 @@ input CreateServerInput {
 input CreateServerProviderInput {
   """The name of the server provider."""
   name: String!
-  """The ID for the owner of this server."""
-  ownerID: ID!
+  """The ID for the resource provider of this server."""
+  resourceProviderID: ID!
 }
 """Input information to create a server type."""
 input CreateServerTypeInput {
@@ -440,7 +440,7 @@ enum ServerProviderOrderField {
   CREATED_AT
   UPDATED_AT
   NAME
-  OWNER
+  RESOURCE_PROVIDER
 }
 """
 ServerProviderWhereInput is used for filtering Provider objects.

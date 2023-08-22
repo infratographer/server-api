@@ -39,8 +39,8 @@ type Provider struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// The name of the server provider.
 	Name string `json:"name,omitempty"`
-	// The ID for the owner of this server.
-	OwnerID gidx.PrefixedID `json:"owner_id,omitempty"`
+	// The ID for the resource provider of this server.
+	ResourceProviderID gidx.PrefixedID `json:"resource_provider_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ProviderQuery when eager-loading is set.
 	Edges        ProviderEdges `json:"edges"`
@@ -74,7 +74,7 @@ func (*Provider) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case provider.FieldID, provider.FieldOwnerID:
+		case provider.FieldID, provider.FieldResourceProviderID:
 			values[i] = new(gidx.PrefixedID)
 		case provider.FieldName:
 			values[i] = new(sql.NullString)
@@ -119,11 +119,11 @@ func (pr *Provider) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pr.Name = value.String
 			}
-		case provider.FieldOwnerID:
+		case provider.FieldResourceProviderID:
 			if value, ok := values[i].(*gidx.PrefixedID); !ok {
-				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
+				return fmt.Errorf("unexpected type %T for field resource_provider_id", values[i])
 			} else if value != nil {
-				pr.OwnerID = *value
+				pr.ResourceProviderID = *value
 			}
 		default:
 			pr.selectValues.Set(columns[i], values[i])
@@ -175,8 +175,8 @@ func (pr *Provider) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(pr.Name)
 	builder.WriteString(", ")
-	builder.WriteString("owner_id=")
-	builder.WriteString(fmt.Sprintf("%v", pr.OwnerID))
+	builder.WriteString("resource_provider_id=")
+	builder.WriteString(fmt.Sprintf("%v", pr.ResourceProviderID))
 	builder.WriteByte(')')
 	return builder.String()
 }

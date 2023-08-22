@@ -28,7 +28,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Size: 2147483647},
-		{Name: "owner_id", Type: field.TypeString},
+		{Name: "resource_provider_id", Type: field.TypeString},
 	}
 	// ProvidersTable holds the schema information for the "providers" table.
 	ProvidersTable = &schema.Table{
@@ -47,7 +47,7 @@ var (
 				Columns: []*schema.Column{ProvidersColumns[2]},
 			},
 			{
-				Name:    "provider_owner_id",
+				Name:    "provider_resource_provider_id",
 				Unique:  false,
 				Columns: []*schema.Column{ProvidersColumns[4]},
 			},

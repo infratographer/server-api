@@ -382,17 +382,17 @@ var (
 			}
 		},
 	}
-	// ProviderOrderFieldOwnerID orders Provider by owner_id.
-	ProviderOrderFieldOwnerID = &ServerProviderOrderField{
+	// ProviderOrderFieldResourceProviderID orders Provider by resource_provider_id.
+	ProviderOrderFieldResourceProviderID = &ServerProviderOrderField{
 		Value: func(pr *ServerProvider) (ent.Value, error) {
-			return pr.OwnerID, nil
+			return pr.ResourceProviderID, nil
 		},
-		column: provider.FieldOwnerID,
-		toTerm: provider.ByOwnerID,
+		column: provider.FieldResourceProviderID,
+		toTerm: provider.ByResourceProviderID,
 		toCursor: func(pr *ServerProvider) Cursor {
 			return Cursor{
 				ID:    pr.ID,
-				Value: pr.OwnerID,
+				Value: pr.ResourceProviderID,
 			}
 		},
 	}
@@ -410,8 +410,8 @@ func (f ServerProviderOrderField) String() string {
 		str = "UPDATED_AT"
 	case ProviderOrderFieldName.column:
 		str = "NAME"
-	case ProviderOrderFieldOwnerID.column:
-		str = "OWNER"
+	case ProviderOrderFieldResourceProviderID.column:
+		str = "RESOURCE_PROVIDER"
 	}
 	return str
 }
@@ -436,8 +436,8 @@ func (f *ServerProviderOrderField) UnmarshalGQL(v interface{}) error {
 		*f = *ProviderOrderFieldUpdatedAt
 	case "NAME":
 		*f = *ProviderOrderFieldName
-	case "OWNER":
-		*f = *ProviderOrderFieldOwnerID
+	case "RESOURCE_PROVIDER":
+		*f = *ProviderOrderFieldResourceProviderID
 	default:
 		return fmt.Errorf("%s is not a valid ServerProviderOrderField", str)
 	}

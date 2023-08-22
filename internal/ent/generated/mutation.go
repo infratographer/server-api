@@ -53,20 +53,20 @@ const (
 // ProviderMutation represents an operation that mutates the Provider nodes in the graph.
 type ProviderMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *gidx.PrefixedID
-	created_at     *time.Time
-	updated_at     *time.Time
-	name           *string
-	owner_id       *gidx.PrefixedID
-	clearedFields  map[string]struct{}
-	servers        map[gidx.PrefixedID]struct{}
-	removedservers map[gidx.PrefixedID]struct{}
-	clearedservers bool
-	done           bool
-	oldValue       func(context.Context) (*Provider, error)
-	predicates     []predicate.Provider
+	op                   Op
+	typ                  string
+	id                   *gidx.PrefixedID
+	created_at           *time.Time
+	updated_at           *time.Time
+	name                 *string
+	resource_provider_id *gidx.PrefixedID
+	clearedFields        map[string]struct{}
+	servers              map[gidx.PrefixedID]struct{}
+	removedservers       map[gidx.PrefixedID]struct{}
+	clearedservers       bool
+	done                 bool
+	oldValue             func(context.Context) (*Provider, error)
+	predicates           []predicate.Provider
 }
 
 var _ ent.Mutation = (*ProviderMutation)(nil)
@@ -281,40 +281,40 @@ func (m *ProviderMutation) ResetName() {
 	m.name = nil
 }
 
-// SetOwnerID sets the "owner_id" field.
-func (m *ProviderMutation) SetOwnerID(gi gidx.PrefixedID) {
-	m.owner_id = &gi
+// SetResourceProviderID sets the "resource_provider_id" field.
+func (m *ProviderMutation) SetResourceProviderID(gi gidx.PrefixedID) {
+	m.resource_provider_id = &gi
 }
 
-// OwnerID returns the value of the "owner_id" field in the mutation.
-func (m *ProviderMutation) OwnerID() (r gidx.PrefixedID, exists bool) {
-	v := m.owner_id
+// ResourceProviderID returns the value of the "resource_provider_id" field in the mutation.
+func (m *ProviderMutation) ResourceProviderID() (r gidx.PrefixedID, exists bool) {
+	v := m.resource_provider_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOwnerID returns the old "owner_id" field's value of the Provider entity.
+// OldResourceProviderID returns the old "resource_provider_id" field's value of the Provider entity.
 // If the Provider object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProviderMutation) OldOwnerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+func (m *ProviderMutation) OldResourceProviderID(ctx context.Context) (v gidx.PrefixedID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOwnerID is only allowed on UpdateOne operations")
+		return v, errors.New("OldResourceProviderID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOwnerID requires an ID field in the mutation")
+		return v, errors.New("OldResourceProviderID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOwnerID: %w", err)
+		return v, fmt.Errorf("querying old value for OldResourceProviderID: %w", err)
 	}
-	return oldValue.OwnerID, nil
+	return oldValue.ResourceProviderID, nil
 }
 
-// ResetOwnerID resets all changes to the "owner_id" field.
-func (m *ProviderMutation) ResetOwnerID() {
-	m.owner_id = nil
+// ResetResourceProviderID resets all changes to the "resource_provider_id" field.
+func (m *ProviderMutation) ResetResourceProviderID() {
+	m.resource_provider_id = nil
 }
 
 // AddServerIDs adds the "servers" edge to the Server entity by ids.
@@ -415,8 +415,8 @@ func (m *ProviderMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, provider.FieldName)
 	}
-	if m.owner_id != nil {
-		fields = append(fields, provider.FieldOwnerID)
+	if m.resource_provider_id != nil {
+		fields = append(fields, provider.FieldResourceProviderID)
 	}
 	return fields
 }
@@ -432,8 +432,8 @@ func (m *ProviderMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case provider.FieldName:
 		return m.Name()
-	case provider.FieldOwnerID:
-		return m.OwnerID()
+	case provider.FieldResourceProviderID:
+		return m.ResourceProviderID()
 	}
 	return nil, false
 }
@@ -449,8 +449,8 @@ func (m *ProviderMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldUpdatedAt(ctx)
 	case provider.FieldName:
 		return m.OldName(ctx)
-	case provider.FieldOwnerID:
-		return m.OldOwnerID(ctx)
+	case provider.FieldResourceProviderID:
+		return m.OldResourceProviderID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Provider field %s", name)
 }
@@ -481,12 +481,12 @@ func (m *ProviderMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case provider.FieldOwnerID:
+	case provider.FieldResourceProviderID:
 		v, ok := value.(gidx.PrefixedID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOwnerID(v)
+		m.SetResourceProviderID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Provider field %s", name)
@@ -546,8 +546,8 @@ func (m *ProviderMutation) ResetField(name string) error {
 	case provider.FieldName:
 		m.ResetName()
 		return nil
-	case provider.FieldOwnerID:
-		m.ResetOwnerID()
+	case provider.FieldResourceProviderID:
+		m.ResetResourceProviderID()
 		return nil
 	}
 	return fmt.Errorf("unknown Provider field %s", name)
