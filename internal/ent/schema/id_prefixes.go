@@ -14,8 +14,6 @@ const (
 	ServerProviderPrefix = ApplicationPrefix + "prv"
 	// ServerTypePrefix is the prefix for all ServerType nodes
 	ServerTypePrefix = ApplicationPrefix + "typ"
-	// ServerAttributePrefix is the prefix for all ServerAttribute nodes
-	ServerAttributePrefix = ApplicationPrefix + "atr"
 	// ServerComponentTypePrefix is the prefix for all ServerComponentType nodes
 	ServerComponentTypePrefix = ApplicationPrefix + "cpt"
 	// ServerComponentPrefix is the prefix for all ServerComponent nodes

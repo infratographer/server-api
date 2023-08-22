@@ -31,3 +31,8 @@ func (r *mutationResolver) ServerComponentDelete(ctx context.Context, id gidx.Pr
 func (r *queryResolver) ServerComponent(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error) {
 	panic(fmt.Errorf("not implemented: ServerComponent - serverComponent"))
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
+type mutationResolver struct{ *Resolver }

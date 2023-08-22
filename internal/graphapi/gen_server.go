@@ -52,7 +52,6 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Entity struct {
-		FindServerAttributeByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerByID              func(childComplexity int, id gidx.PrefixedID) int
 		FindServerComponentByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerComponentTypeByID func(childComplexity int, id gidx.PrefixedID) int
@@ -61,9 +60,6 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ServerAttributeCreate     func(childComplexity int, input generated.CreateServerAttributeInput) int
-		ServerAttributeDelete     func(childComplexity int, id gidx.PrefixedID) int
-		ServerAttributeUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerAttributeInput) int
 		ServerComponentCreate     func(childComplexity int, input generated.CreateServerComponentInput) int
 		ServerComponentDelete     func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponentTypeCreate func(childComplexity int, input generated.CreateServerComponentTypeInput) int
@@ -90,7 +86,6 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Server              func(childComplexity int, id gidx.PrefixedID) int
-		ServerAttribute     func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponent     func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponentType func(childComplexity int, id gidx.PrefixedID) int
 		ServerProvider      func(childComplexity int, id gidx.PrefixedID) int
@@ -100,7 +95,6 @@ type ComplexityRoot struct {
 	}
 
 	Server struct {
-		Attributes  func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerAttributeOrder, where *generated.ServerAttributeWhereInput) int
 		Components  func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerComponentOrder, where *generated.ServerComponentWhereInput) int
 		CreatedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
@@ -109,38 +103,6 @@ type ComplexityRoot struct {
 		Provider    func(childComplexity int) int
 		ServerType  func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
-	}
-
-	ServerAttribute struct {
-		CreatedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Server    func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-		Value     func(childComplexity int) int
-	}
-
-	ServerAttributeConnection struct {
-		Edges      func(childComplexity int) int
-		PageInfo   func(childComplexity int) int
-		TotalCount func(childComplexity int) int
-	}
-
-	ServerAttributeCreatePayload struct {
-		ServerAttribute func(childComplexity int) int
-	}
-
-	ServerAttributeDeletePayload struct {
-		DeletedID func(childComplexity int) int
-	}
-
-	ServerAttributeEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
-
-	ServerAttributeUpdatePayload struct {
-		ServerAttribute func(childComplexity int) int
 	}
 
 	ServerComponent struct {
@@ -300,16 +262,12 @@ type ComplexityRoot struct {
 
 type EntityResolver interface {
 	FindServerByID(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error)
-	FindServerAttributeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerAttribute, error)
 	FindServerComponentByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	FindServerComponentTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
 	FindServerProviderByID(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
 	FindServerTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error)
 }
 type MutationResolver interface {
-	ServerAttributeCreate(ctx context.Context, input generated.CreateServerAttributeInput) (*ServerAttributeCreatePayload, error)
-	ServerAttributeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerAttributeInput) (*ServerAttributeUpdatePayload, error)
-	ServerAttributeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerAttributeDeletePayload, error)
 	ServerComponentCreate(ctx context.Context, input generated.CreateServerComponentInput) (*ServerComponentCreatePayload, error)
 	ServerComponentUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerComponentInput) (*ServerComponentUpdatePayload, error)
 	ServerComponentDelete(ctx context.Context, id gidx.PrefixedID) (*ServerComponentDeletePayload, error)
@@ -327,7 +285,6 @@ type MutationResolver interface {
 	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerTypeDeletePayload, error)
 }
 type QueryResolver interface {
-	ServerAttribute(ctx context.Context, id gidx.PrefixedID) (*generated.ServerAttribute, error)
 	ServerComponent(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	ServerComponentType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
 	ServerProvider(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
@@ -349,18 +306,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
-
-	case "Entity.findServerAttributeByID":
-		if e.complexity.Entity.FindServerAttributeByID == nil {
-			break
-		}
-
-		args, err := ec.field_Entity_findServerAttributeByID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Entity.FindServerAttributeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerByID":
 		if e.complexity.Entity.FindServerByID == nil {
@@ -421,42 +366,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
-
-	case "Mutation.serverAttributeCreate":
-		if e.complexity.Mutation.ServerAttributeCreate == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_serverAttributeCreate_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.ServerAttributeCreate(childComplexity, args["input"].(generated.CreateServerAttributeInput)), true
-
-	case "Mutation.serverAttributeDelete":
-		if e.complexity.Mutation.ServerAttributeDelete == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_serverAttributeDelete_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.ServerAttributeDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
-
-	case "Mutation.serverAttributeUpdate":
-		if e.complexity.Mutation.ServerAttributeUpdate == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_serverAttributeUpdate_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.ServerAttributeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerAttributeInput)), true
 
 	case "Mutation.serverComponentCreate":
 		if e.complexity.Mutation.ServerComponentCreate == nil {
@@ -678,18 +587,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Server(childComplexity, args["id"].(gidx.PrefixedID)), true
 
-	case "Query.serverAttribute":
-		if e.complexity.Query.ServerAttribute == nil {
-			break
-		}
-
-		args, err := ec.field_Query_serverAttribute_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.ServerAttribute(childComplexity, args["id"].(gidx.PrefixedID)), true
-
 	case "Query.serverComponent":
 		if e.complexity.Query.ServerComponent == nil {
 			break
@@ -757,18 +654,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.__resolve_entities(childComplexity, args["representations"].([]map[string]interface{})), true
 
-	case "Server.attributes":
-		if e.complexity.Server.Attributes == nil {
-			break
-		}
-
-		args, err := ec.field_Server_attributes_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Server.Attributes(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerAttributeOrder), args["where"].(*generated.ServerAttributeWhereInput)), true
-
 	case "Server.components":
 		if e.complexity.Server.Components == nil {
 			break
@@ -829,104 +714,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Server.UpdatedAt(childComplexity), true
-
-	case "ServerAttribute.createdAt":
-		if e.complexity.ServerAttribute.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.ServerAttribute.CreatedAt(childComplexity), true
-
-	case "ServerAttribute.id":
-		if e.complexity.ServerAttribute.ID == nil {
-			break
-		}
-
-		return e.complexity.ServerAttribute.ID(childComplexity), true
-
-	case "ServerAttribute.name":
-		if e.complexity.ServerAttribute.Name == nil {
-			break
-		}
-
-		return e.complexity.ServerAttribute.Name(childComplexity), true
-
-	case "ServerAttribute.server":
-		if e.complexity.ServerAttribute.Server == nil {
-			break
-		}
-
-		return e.complexity.ServerAttribute.Server(childComplexity), true
-
-	case "ServerAttribute.updatedAt":
-		if e.complexity.ServerAttribute.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.ServerAttribute.UpdatedAt(childComplexity), true
-
-	case "ServerAttribute.value":
-		if e.complexity.ServerAttribute.Value == nil {
-			break
-		}
-
-		return e.complexity.ServerAttribute.Value(childComplexity), true
-
-	case "ServerAttributeConnection.edges":
-		if e.complexity.ServerAttributeConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeConnection.Edges(childComplexity), true
-
-	case "ServerAttributeConnection.pageInfo":
-		if e.complexity.ServerAttributeConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeConnection.PageInfo(childComplexity), true
-
-	case "ServerAttributeConnection.totalCount":
-		if e.complexity.ServerAttributeConnection.TotalCount == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeConnection.TotalCount(childComplexity), true
-
-	case "ServerAttributeCreatePayload.serverAttribute":
-		if e.complexity.ServerAttributeCreatePayload.ServerAttribute == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeCreatePayload.ServerAttribute(childComplexity), true
-
-	case "ServerAttributeDeletePayload.deletedID":
-		if e.complexity.ServerAttributeDeletePayload.DeletedID == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeDeletePayload.DeletedID(childComplexity), true
-
-	case "ServerAttributeEdge.cursor":
-		if e.complexity.ServerAttributeEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeEdge.Cursor(childComplexity), true
-
-	case "ServerAttributeEdge.node":
-		if e.complexity.ServerAttributeEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeEdge.Node(childComplexity), true
-
-	case "ServerAttributeUpdatePayload.serverAttribute":
-		if e.complexity.ServerAttributeUpdatePayload.ServerAttribute == nil {
-			break
-		}
-
-		return e.complexity.ServerAttributeUpdatePayload.ServerAttribute(childComplexity), true
 
 	case "ServerComponent.serverComponentType":
 		if e.complexity.ServerComponent.ComponentType == nil {
@@ -1394,14 +1181,11 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputCreateServerAttributeInput,
 		ec.unmarshalInputCreateServerComponentInput,
 		ec.unmarshalInputCreateServerComponentTypeInput,
 		ec.unmarshalInputCreateServerInput,
 		ec.unmarshalInputCreateServerProviderInput,
 		ec.unmarshalInputCreateServerTypeInput,
-		ec.unmarshalInputServerAttributeOrder,
-		ec.unmarshalInputServerAttributeWhereInput,
 		ec.unmarshalInputServerComponentOrder,
 		ec.unmarshalInputServerComponentTypeOrder,
 		ec.unmarshalInputServerComponentTypeWhereInput,
@@ -1412,7 +1196,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerTypeOrder,
 		ec.unmarshalInputServerTypeWhereInput,
 		ec.unmarshalInputServerWhereInput,
-		ec.unmarshalInputUpdateServerAttributeInput,
 		ec.unmarshalInputUpdateServerComponentInput,
 		ec.unmarshalInputUpdateServerComponentTypeInput,
 		ec.unmarshalInputUpdateServerInput,
@@ -1515,67 +1298,6 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../../schema/attribute.graphql", Input: `extend type Query {
-  """
-  Lookup a server attribute by ID.
-  """
-  serverAttribute(
-    """
-    The server ID.
-    """
-    id: ID!
-  ): ServerAttribute!
-}
-
-extend type Mutation {
-  """
-  Create a server attribute.
-  """
-  serverAttributeCreate(
-    input: CreateServerAttributeInput!
-  ): ServerAttributeCreatePayload!
-  """
-  Update a server attribute.
-  """
-  serverAttributeUpdate(
-    id: ID!
-    input: UpdateServerAttributeInput!
-  ): ServerAttributeUpdatePayload!
-  """
-  Delete a server attribute.
-  """
-  serverAttributeDelete(id: ID!): ServerAttributeDeletePayload!
-}
-
-"""
-Return response from serverAttributeCreate
-"""
-type ServerAttributeCreatePayload {
-  """
-  The created server attribute.
-  """
-  serverAttribute: ServerAttribute!
-}
-
-"""
-Return response from serverAttributeDelete
-"""
-type ServerAttributeDeletePayload {
-  """
-  The ID of the deleted server attribute.
-  """
-  deletedID: ID!
-}
-
-"""
-Return response from serverAttributeUpdate
-"""
-type ServerAttributeUpdatePayload {
-  """
-  The updated server attribute.
-  """
-  serverAttribute: ServerAttribute!
-}`, BuiltIn: false},
 	{Name: "../../schema/component.graphql", Input: `extend type Query {
   """
   Lookup a serverComponent by ID.
@@ -1700,14 +1422,6 @@ type ServerComponentTypeUpdatePayload {
 }`, BuiltIn: false},
 	{Name: "../../schema/ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 directive @goModel(model: String, models: [String!]) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
-"""Input information to create a server attribute."""
-input CreateServerAttributeInput {
-  """The name of the server attribute."""
-  name: String!
-  """The value of the server attribute."""
-  value: String!
-  serverID: ID!
-}
 """Input information to create a server component."""
 input CreateServerComponentInput {
   """The name of the server component."""
@@ -1739,7 +1453,6 @@ input CreateServerInput {
   providerID: ID!
   serverTypeID: ID!
   componentIDs: [ID!]
-  attributeIDs: [ID!]
 }
 """Input information to create a server provider."""
 input CreateServerProviderInput {
@@ -1823,134 +1536,6 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
     """Filtering options for ServerComponents returned from the connection."""
     where: ServerComponentWhereInput
   ): ServerComponentConnection!
-  attributes(
-    """Returns the elements in the list that come after the specified cursor."""
-    after: Cursor
-
-    """Returns the first _n_ elements from the list."""
-    first: Int
-
-    """Returns the elements in the list that come before the specified cursor."""
-    before: Cursor
-
-    """Returns the last _n_ elements from the list."""
-    last: Int
-
-    """Ordering options for ServerAttributes returned from the connection."""
-    orderBy: ServerAttributeOrder
-
-    """Filtering options for ServerAttributes returned from the connection."""
-    where: ServerAttributeWhereInput
-  ): ServerAttributeConnection!
-}
-type ServerAttribute implements Node @key(fields: "id") @prefixedID(prefix: "srvratr") {
-  """The ID of the server attribute."""
-  id: ID!
-  createdAt: Time!
-  updatedAt: Time!
-  """The name of the server attribute."""
-  name: String!
-  """The value of the server attribute."""
-  value: String!
-  server: Server!
-}
-"""A connection to a list of items."""
-type ServerAttributeConnection {
-  """A list of edges."""
-  edges: [ServerAttributeEdge]
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-  """Identifies the total count of items in the connection."""
-  totalCount: Int!
-}
-"""An edge in a connection."""
-type ServerAttributeEdge {
-  """The item at the end of the edge."""
-  node: ServerAttribute
-  """A cursor for use in pagination."""
-  cursor: Cursor!
-}
-"""Ordering options for ServerAttribute connections"""
-input ServerAttributeOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order ServerAttributes."""
-  field: ServerAttributeOrderField!
-}
-"""Properties by which ServerAttribute connections can be ordered."""
-enum ServerAttributeOrderField {
-  ID
-  CREATED_AT
-  UPDATED_AT
-  NAME
-  VALUE
-}
-"""
-ServerAttributeWhereInput is used for filtering ServerAttribute objects.
-Input was generated by ent.
-"""
-input ServerAttributeWhereInput {
-  not: ServerAttributeWhereInput
-  and: [ServerAttributeWhereInput!]
-  or: [ServerAttributeWhereInput!]
-  """id field predicates"""
-  id: ID
-  idNEQ: ID
-  idIn: [ID!]
-  idNotIn: [ID!]
-  idGT: ID
-  idGTE: ID
-  idLT: ID
-  idLTE: ID
-  """created_at field predicates"""
-  createdAt: Time
-  createdAtNEQ: Time
-  createdAtIn: [Time!]
-  createdAtNotIn: [Time!]
-  createdAtGT: Time
-  createdAtGTE: Time
-  createdAtLT: Time
-  createdAtLTE: Time
-  """updated_at field predicates"""
-  updatedAt: Time
-  updatedAtNEQ: Time
-  updatedAtIn: [Time!]
-  updatedAtNotIn: [Time!]
-  updatedAtGT: Time
-  updatedAtGTE: Time
-  updatedAtLT: Time
-  updatedAtLTE: Time
-  """name field predicates"""
-  name: String
-  nameNEQ: String
-  nameIn: [String!]
-  nameNotIn: [String!]
-  nameGT: String
-  nameGTE: String
-  nameLT: String
-  nameLTE: String
-  nameContains: String
-  nameHasPrefix: String
-  nameHasSuffix: String
-  nameEqualFold: String
-  nameContainsFold: String
-  """value field predicates"""
-  value: String
-  valueNEQ: String
-  valueIn: [String!]
-  valueNotIn: [String!]
-  valueGT: String
-  valueGTE: String
-  valueLT: String
-  valueLTE: String
-  valueContains: String
-  valueHasPrefix: String
-  valueHasSuffix: String
-  valueEqualFold: String
-  valueContainsFold: String
-  """server edge predicates"""
-  hasServer: Boolean
-  hasServerWith: [ServerWhereInput!]
 }
 type ServerComponent implements Node @key(fields: "id") @prefixedID(prefix: "srvrcmp") {
   """The ID of the server component."""
@@ -2517,19 +2102,9 @@ input ServerWhereInput {
   """components edge predicates"""
   hasComponents: Boolean
   hasComponentsWith: [ServerComponentWhereInput!]
-  """attributes edge predicates"""
-  hasAttributes: Boolean
-  hasAttributesWith: [ServerAttributeWhereInput!]
 }
 """The builtin Time type"""
 scalar Time
-"""Input information to update a server attribute."""
-input UpdateServerAttributeInput {
-  """The name of the server attribute."""
-  name: String
-  """The value of the server attribute."""
-  value: String
-}
 """Input information to update a server component."""
 input UpdateServerComponentInput {
   """The name of the server component."""
@@ -2556,9 +2131,6 @@ input UpdateServerInput {
   addComponentIDs: [ID!]
   removeComponentIDs: [ID!]
   clearComponents: Boolean
-  addAttributeIDs: [ID!]
-  removeAttributeIDs: [ID!]
-  clearAttributes: Boolean
 }
 """Input information to update a server provider."""
 input UpdateServerProviderInput {
@@ -2797,12 +2369,11 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerAttribute | ServerComponent | ServerComponentType | ServerProvider | ServerType
+union _Entity = Server | ServerComponent | ServerComponentType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
 		findServerByID(id: ID!,): Server!
-	findServerAttributeByID(id: ID!,): ServerAttribute!
 	findServerComponentByID(id: ID!,): ServerComponent!
 	findServerComponentTypeByID(id: ID!,): ServerComponentType!
 	findServerProviderByID(id: ID!,): ServerProvider!
@@ -2838,21 +2409,6 @@ func (ec *executionContext) dir_composeDirective_args(ctx context.Context, rawAr
 		}
 	}
 	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Entity_findServerAttributeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 gidx.PrefixedID
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -2928,60 +2484,6 @@ func (ec *executionContext) field_Entity_findServerTypeByID_args(ctx context.Con
 		}
 	}
 	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverAttributeCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerAttributeInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerAttributeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerAttributeInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverAttributeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 gidx.PrefixedID
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverAttributeUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 gidx.PrefixedID
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	var arg1 generated.UpdateServerAttributeInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateServerAttributeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerAttributeInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg1
 	return args, nil
 }
 
@@ -3285,21 +2787,6 @@ func (ec *executionContext) field_Query__entities_args(ctx context.Context, rawA
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_serverAttribute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 gidx.PrefixedID
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_serverComponentType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3495,66 +2982,6 @@ func (ec *executionContext) field_ServerType_servers_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Server_attributes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *entgql.Cursor[gidx.PrefixedID]
-	if tmp, ok := rawArgs["after"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["after"] = arg0
-	var arg1 *int
-	if tmp, ok := rawArgs["first"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["first"] = arg1
-	var arg2 *entgql.Cursor[gidx.PrefixedID]
-	if tmp, ok := rawArgs["before"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["before"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["last"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["last"] = arg3
-	var arg4 *generated.ServerAttributeOrder
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
-		arg4, err = ec.unmarshalOServerAttributeOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeOrder(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderBy"] = arg4
-	var arg5 *generated.ServerAttributeWhereInput
-	if tmp, ok := rawArgs["where"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-		arg5, err = ec.unmarshalOServerAttributeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["where"] = arg5
-	return args, nil
-}
-
 func (ec *executionContext) field_Server_components_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3708,8 +3135,6 @@ func (ec *executionContext) fieldContext_Entity_findServerByID(ctx context.Conte
 				return ec.fieldContext_Server_serverType(ctx, field)
 			case "components":
 				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
 		},
@@ -3722,75 +3147,6 @@ func (ec *executionContext) fieldContext_Entity_findServerByID(ctx context.Conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Entity_findServerAttributeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Entity_findServerAttributeByID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Entity().FindServerAttributeByID(rctx, fc.Args["id"].(gidx.PrefixedID))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*generated.ServerAttribute)
-	fc.Result = res
-	return ec.marshalNServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Entity_findServerAttributeByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Entity",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ServerAttribute_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_ServerAttribute_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_ServerAttribute_updatedAt(ctx, field)
-			case "name":
-				return ec.fieldContext_ServerAttribute_name(ctx, field)
-			case "value":
-				return ec.fieldContext_ServerAttribute_value(ctx, field)
-			case "server":
-				return ec.fieldContext_ServerAttribute_server(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttribute", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Entity_findServerAttributeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4065,183 +3421,6 @@ func (ec *executionContext) fieldContext_Entity_findServerTypeByID(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_serverAttributeCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverAttributeCreate(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerAttributeCreate(rctx, fc.Args["input"].(generated.CreateServerAttributeInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ServerAttributeCreatePayload)
-	fc.Result = res
-	return ec.marshalNServerAttributeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeCreatePayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_serverAttributeCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "serverAttribute":
-				return ec.fieldContext_ServerAttributeCreatePayload_serverAttribute(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttributeCreatePayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverAttributeCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_serverAttributeUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverAttributeUpdate(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerAttributeUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerAttributeInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ServerAttributeUpdatePayload)
-	fc.Result = res
-	return ec.marshalNServerAttributeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeUpdatePayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_serverAttributeUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "serverAttribute":
-				return ec.fieldContext_ServerAttributeUpdatePayload_serverAttribute(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttributeUpdatePayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverAttributeUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_serverAttributeDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverAttributeDelete(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerAttributeDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ServerAttributeDeletePayload)
-	fc.Result = res
-	return ec.marshalNServerAttributeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeDeletePayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_serverAttributeDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "deletedID":
-				return ec.fieldContext_ServerAttributeDeletePayload_deletedID(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttributeDeletePayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverAttributeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -5303,75 +4482,6 @@ func (ec *executionContext) fieldContext_PageInfo_endCursor(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_serverAttribute(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_serverAttribute(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ServerAttribute(rctx, fc.Args["id"].(gidx.PrefixedID))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*generated.ServerAttribute)
-	fc.Result = res
-	return ec.marshalNServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_serverAttribute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ServerAttribute_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_ServerAttribute_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_ServerAttribute_updatedAt(ctx, field)
-			case "name":
-				return ec.fieldContext_ServerAttribute_name(ctx, field)
-			case "value":
-				return ec.fieldContext_ServerAttribute_value(ctx, field)
-			case "server":
-				return ec.fieldContext_ServerAttribute_server(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttribute", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_serverAttribute_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_serverComponent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_serverComponent(ctx, field)
 	if err != nil {
@@ -5634,8 +4744,6 @@ func (ec *executionContext) fieldContext_Query_server(ctx context.Context, field
 				return ec.fieldContext_Server_serverType(ctx, field)
 			case "components":
 				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
 		},
@@ -6345,757 +5453,6 @@ func (ec *executionContext) fieldContext_Server_components(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Server_attributes(ctx context.Context, field graphql.CollectedField, obj *generated.Server) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Server_attributes(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Attributes(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerAttributeOrder), fc.Args["where"].(*generated.ServerAttributeWhereInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*generated.ServerAttributeConnection)
-	fc.Result = res
-	return ec.marshalNServerAttributeConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeConnection(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Server_attributes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Server",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "edges":
-				return ec.fieldContext_ServerAttributeConnection_edges(ctx, field)
-			case "pageInfo":
-				return ec.fieldContext_ServerAttributeConnection_pageInfo(ctx, field)
-			case "totalCount":
-				return ec.fieldContext_ServerAttributeConnection_totalCount(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttributeConnection", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Server_attributes_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttribute_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttribute) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttribute_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(gidx.PrefixedID)
-	fc.Result = res
-	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttribute_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttribute",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttribute_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttribute) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttribute_createdAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttribute_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttribute",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttribute_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttribute) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttribute_updatedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttribute_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttribute",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttribute_name(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttribute) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttribute_name(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttribute_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttribute",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttribute_value(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttribute) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttribute_value(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttribute_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttribute",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttribute_server(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttribute) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttribute_server(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Server(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*generated.Server)
-	fc.Result = res
-	return ec.marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServer(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttribute_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttribute",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Server_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Server_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Server_updatedAt(ctx, field)
-			case "name":
-				return ec.fieldContext_Server_name(ctx, field)
-			case "description":
-				return ec.fieldContext_Server_description(ctx, field)
-			case "serverProvider":
-				return ec.fieldContext_Server_serverProvider(ctx, field)
-			case "serverType":
-				return ec.fieldContext_Server_serverType(ctx, field)
-			case "components":
-				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttributeConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeConnection_edges(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*generated.ServerAttributeEdge)
-	fc.Result = res
-	return ec.marshalOServerAttributeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "node":
-				return ec.fieldContext_ServerAttributeEdge_node(ctx, field)
-			case "cursor":
-				return ec.fieldContext_ServerAttributeEdge_cursor(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttributeEdge", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttributeConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeConnection_pageInfo(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
-	fc.Result = res
-	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "hasNextPage":
-				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
-			case "hasPreviousPage":
-				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
-			case "startCursor":
-				return ec.fieldContext_PageInfo_startCursor(ctx, field)
-			case "endCursor":
-				return ec.fieldContext_PageInfo_endCursor(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttributeConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeConnection_totalCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalCount, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeCreatePayload_serverAttribute(ctx context.Context, field graphql.CollectedField, obj *ServerAttributeCreatePayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeCreatePayload_serverAttribute(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ServerAttribute, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*generated.ServerAttribute)
-	fc.Result = res
-	return ec.marshalNServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeCreatePayload_serverAttribute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeCreatePayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ServerAttribute_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_ServerAttribute_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_ServerAttribute_updatedAt(ctx, field)
-			case "name":
-				return ec.fieldContext_ServerAttribute_name(ctx, field)
-			case "value":
-				return ec.fieldContext_ServerAttribute_value(ctx, field)
-			case "server":
-				return ec.fieldContext_ServerAttribute_server(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttribute", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerAttributeDeletePayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeDeletePayload_deletedID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(gidx.PrefixedID)
-	fc.Result = res
-	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeDeletePayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttributeEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeEdge_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*generated.ServerAttribute)
-	fc.Result = res
-	return ec.marshalOServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ServerAttribute_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_ServerAttribute_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_ServerAttribute_updatedAt(ctx, field)
-			case "name":
-				return ec.fieldContext_ServerAttribute_name(ctx, field)
-			case "value":
-				return ec.fieldContext_ServerAttribute_value(ctx, field)
-			case "server":
-				return ec.fieldContext_ServerAttribute_server(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttribute", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerAttributeEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeEdge_cursor(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
-	fc.Result = res
-	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Cursor does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ServerAttributeUpdatePayload_serverAttribute(ctx context.Context, field graphql.CollectedField, obj *ServerAttributeUpdatePayload) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ServerAttributeUpdatePayload_serverAttribute(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ServerAttribute, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*generated.ServerAttribute)
-	fc.Result = res
-	return ec.marshalNServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ServerAttributeUpdatePayload_serverAttribute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ServerAttributeUpdatePayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ServerAttribute_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_ServerAttribute_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_ServerAttribute_updatedAt(ctx, field)
-			case "name":
-				return ec.fieldContext_ServerAttribute_name(ctx, field)
-			case "value":
-				return ec.fieldContext_ServerAttribute_value(ctx, field)
-			case "server":
-				return ec.fieldContext_ServerAttribute_server(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerAttribute", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _ServerComponent_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerComponent) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerComponent_id(ctx, field)
 	if err != nil {
@@ -7513,8 +5870,6 @@ func (ec *executionContext) fieldContext_ServerComponent_server(ctx context.Cont
 				return ec.fieldContext_Server_serverType(ctx, field)
 			case "components":
 				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
 		},
@@ -8712,8 +7067,6 @@ func (ec *executionContext) fieldContext_ServerCreatePayload_server(ctx context.
 				return ec.fieldContext_Server_serverType(ctx, field)
 			case "components":
 				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
 		},
@@ -8817,8 +7170,6 @@ func (ec *executionContext) fieldContext_ServerEdge_node(ctx context.Context, fi
 				return ec.fieldContext_Server_serverType(ctx, field)
 			case "components":
 				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
 		},
@@ -10199,8 +8550,6 @@ func (ec *executionContext) fieldContext_ServerUpdatePayload_server(ctx context.
 				return ec.fieldContext_Server_serverType(ctx, field)
 			case "components":
 				return ec.fieldContext_Server_components(ctx, field)
-			case "attributes":
-				return ec.fieldContext_Server_attributes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
 		},
@@ -12022,53 +10371,6 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputCreateServerAttributeInput(ctx context.Context, obj interface{}) (generated.CreateServerAttributeInput, error) {
-	var it generated.CreateServerAttributeInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"name", "value", "serverID"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Name = data
-		case "value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Value = data
-		case "serverID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
-			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ServerID = data
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputCreateServerComponentInput(ctx context.Context, obj interface{}) (generated.CreateServerComponentInput, error) {
 	var it generated.CreateServerComponentInput
 	asMap := map[string]interface{}{}
@@ -12179,7 +10481,7 @@ func (ec *executionContext) unmarshalInputCreateServerInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "description", "ownerID", "locationID", "providerID", "serverTypeID", "componentIDs", "attributeIDs"}
+	fieldsInOrder := [...]string{"name", "description", "ownerID", "locationID", "providerID", "serverTypeID", "componentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -12249,15 +10551,6 @@ func (ec *executionContext) unmarshalInputCreateServerInput(ctx context.Context,
 				return it, err
 			}
 			it.ComponentIDs = data
-		case "attributeIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("attributeIDs"))
-			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AttributeIDs = data
 		}
 	}
 
@@ -12334,563 +10627,6 @@ func (ec *executionContext) unmarshalInputCreateServerTypeInput(ctx context.Cont
 				return it, err
 			}
 			it.OwnerID = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputServerAttributeOrder(ctx context.Context, obj interface{}) (generated.ServerAttributeOrder, error) {
-	var it generated.ServerAttributeOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	fieldsInOrder := [...]string{"direction", "field"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Direction = data
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			data, err := ec.unmarshalNServerAttributeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Field = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputServerAttributeWhereInput(ctx context.Context, obj interface{}) (generated.ServerAttributeWhereInput, error) {
-	var it generated.ServerAttributeWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "value", "valueNEQ", "valueIn", "valueNotIn", "valueGT", "valueGTE", "valueLT", "valueLTE", "valueContains", "valueHasPrefix", "valueHasSuffix", "valueEqualFold", "valueContainsFold", "hasServer", "hasServerWith"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "not":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
-			data, err := ec.unmarshalOServerAttributeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Not = data
-		case "and":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
-			data, err := ec.unmarshalOServerAttributeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.And = data
-		case "or":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
-			data, err := ec.unmarshalOServerAttributeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Or = data
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ID = data
-		case "idNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDNEQ = data
-		case "idIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDIn = data
-		case "idNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDNotIn = data
-		case "idGT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDGT = data
-		case "idGTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDGTE = data
-		case "idLT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDLT = data
-		case "idLTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDLTE = data
-		case "createdAt":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAt = data
-		case "createdAtNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtNEQ = data
-		case "createdAtIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtIn = data
-		case "createdAtNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtNotIn = data
-		case "createdAtGT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtGT = data
-		case "createdAtGTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtGTE = data
-		case "createdAtLT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtLT = data
-		case "createdAtLTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtLTE = data
-		case "updatedAt":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAt = data
-		case "updatedAtNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtNEQ = data
-		case "updatedAtIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtIn = data
-		case "updatedAtNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtNotIn = data
-		case "updatedAtGT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtGT = data
-		case "updatedAtGTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtGTE = data
-		case "updatedAtLT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtLT = data
-		case "updatedAtLTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtLTE = data
-		case "name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Name = data
-		case "nameNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameNEQ = data
-		case "nameIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameIn = data
-		case "nameNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameNotIn = data
-		case "nameGT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameGT = data
-		case "nameGTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameGTE = data
-		case "nameLT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameLT = data
-		case "nameLTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameLTE = data
-		case "nameContains":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameContains = data
-		case "nameHasPrefix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameHasPrefix = data
-		case "nameHasSuffix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameHasSuffix = data
-		case "nameEqualFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameEqualFold = data
-		case "nameContainsFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.NameContainsFold = data
-		case "value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Value = data
-		case "valueNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueNEQ = data
-		case "valueIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueIn = data
-		case "valueNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueNotIn = data
-		case "valueGT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueGT = data
-		case "valueGTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueGTE = data
-		case "valueLT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueLT = data
-		case "valueLTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueLTE = data
-		case "valueContains":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueContains = data
-		case "valueHasPrefix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueHasPrefix = data
-		case "valueHasSuffix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueHasSuffix = data
-		case "valueEqualFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueEqualFold = data
-		case "valueContainsFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("valueContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ValueContainsFold = data
-		case "hasServer":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServer"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasServer = data
-		case "hasServerWith":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerWith"))
-			data, err := ec.unmarshalOServerWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasServerWith = data
 		}
 	}
 
@@ -15057,7 +12793,7 @@ func (ec *executionContext) unmarshalInputServerWhereInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "description", "descriptionNEQ", "descriptionIn", "descriptionNotIn", "descriptionGT", "descriptionGTE", "descriptionLT", "descriptionLTE", "descriptionContains", "descriptionHasPrefix", "descriptionHasSuffix", "descriptionIsNil", "descriptionNotNil", "descriptionEqualFold", "descriptionContainsFold", "hasProvider", "hasProviderWith", "hasServerType", "hasServerTypeWith", "hasComponents", "hasComponentsWith", "hasAttributes", "hasAttributesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "description", "descriptionNEQ", "descriptionIn", "descriptionNotIn", "descriptionGT", "descriptionGTE", "descriptionLT", "descriptionLTE", "descriptionContains", "descriptionHasPrefix", "descriptionHasSuffix", "descriptionIsNil", "descriptionNotNil", "descriptionEqualFold", "descriptionContainsFold", "hasProvider", "hasProviderWith", "hasServerType", "hasServerTypeWith", "hasComponents", "hasComponentsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -15613,62 +13349,6 @@ func (ec *executionContext) unmarshalInputServerWhereInput(ctx context.Context, 
 				return it, err
 			}
 			it.HasComponentsWith = data
-		case "hasAttributes":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAttributes"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasAttributes = data
-		case "hasAttributesWith":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAttributesWith"))
-			data, err := ec.unmarshalOServerAttributeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasAttributesWith = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputUpdateServerAttributeInput(ctx context.Context, obj interface{}) (generated.UpdateServerAttributeInput, error) {
-	var it generated.UpdateServerAttributeInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"name", "value"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Name = data
-		case "value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Value = data
 		}
 	}
 
@@ -15767,7 +13447,7 @@ func (ec *executionContext) unmarshalInputUpdateServerInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "description", "clearDescription", "addComponentIDs", "removeComponentIDs", "clearComponents", "addAttributeIDs", "removeAttributeIDs", "clearAttributes"}
+	fieldsInOrder := [...]string{"name", "description", "clearDescription", "addComponentIDs", "removeComponentIDs", "clearComponents"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -15828,33 +13508,6 @@ func (ec *executionContext) unmarshalInputUpdateServerInput(ctx context.Context,
 				return it, err
 			}
 			it.ClearComponents = data
-		case "addAttributeIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addAttributeIDs"))
-			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AddAttributeIDs = data
-		case "removeAttributeIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeAttributeIDs"))
-			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.RemoveAttributeIDs = data
-		case "clearAttributes":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearAttributes"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearAttributes = data
 		}
 	}
 
@@ -15948,11 +13601,6 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._Server(ctx, sel, obj)
-	case *generated.ServerAttribute:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ServerAttribute(ctx, sel, obj)
 	case *generated.ServerComponent:
 		if obj == nil {
 			return graphql.Null
@@ -15989,13 +13637,6 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._Server(ctx, sel, obj)
-	case generated.ServerAttribute:
-		return ec._ServerAttribute(ctx, sel, &obj)
-	case *generated.ServerAttribute:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ServerAttribute(ctx, sel, obj)
 	case generated.ServerComponent:
 		return ec._ServerComponent(ctx, sel, &obj)
 	case *generated.ServerComponent:
@@ -16062,28 +13703,6 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerByID(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "findServerAttributeByID":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Entity_findServerAttributeByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -16226,27 +13845,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "serverAttributeCreate":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverAttributeCreate(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "serverAttributeUpdate":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverAttributeUpdate(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "serverAttributeDelete":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverAttributeDelete(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "serverComponentCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverComponentCreate(ctx, field)
@@ -16442,28 +14040,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "serverAttribute":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_serverAttribute(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "serverComponent":
 			field := field
 
@@ -16790,341 +14366,6 @@ func (ec *executionContext) _Server(ctx context.Context, sel ast.SelectionSet, o
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "attributes":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Server_attributes(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var serverAttributeImplementors = []string{"ServerAttribute", "Node", "_Entity"}
-
-func (ec *executionContext) _ServerAttribute(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerAttribute) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, serverAttributeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ServerAttribute")
-		case "id":
-			out.Values[i] = ec._ServerAttribute_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "createdAt":
-			out.Values[i] = ec._ServerAttribute_createdAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "updatedAt":
-			out.Values[i] = ec._ServerAttribute_updatedAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "name":
-			out.Values[i] = ec._ServerAttribute_name(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "value":
-			out.Values[i] = ec._ServerAttribute_value(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "server":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ServerAttribute_server(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var serverAttributeConnectionImplementors = []string{"ServerAttributeConnection"}
-
-func (ec *executionContext) _ServerAttributeConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerAttributeConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, serverAttributeConnectionImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ServerAttributeConnection")
-		case "edges":
-			out.Values[i] = ec._ServerAttributeConnection_edges(ctx, field, obj)
-		case "pageInfo":
-			out.Values[i] = ec._ServerAttributeConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "totalCount":
-			out.Values[i] = ec._ServerAttributeConnection_totalCount(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var serverAttributeCreatePayloadImplementors = []string{"ServerAttributeCreatePayload"}
-
-func (ec *executionContext) _ServerAttributeCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerAttributeCreatePayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, serverAttributeCreatePayloadImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ServerAttributeCreatePayload")
-		case "serverAttribute":
-			out.Values[i] = ec._ServerAttributeCreatePayload_serverAttribute(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var serverAttributeDeletePayloadImplementors = []string{"ServerAttributeDeletePayload"}
-
-func (ec *executionContext) _ServerAttributeDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerAttributeDeletePayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, serverAttributeDeletePayloadImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ServerAttributeDeletePayload")
-		case "deletedID":
-			out.Values[i] = ec._ServerAttributeDeletePayload_deletedID(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var serverAttributeEdgeImplementors = []string{"ServerAttributeEdge"}
-
-func (ec *executionContext) _ServerAttributeEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerAttributeEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, serverAttributeEdgeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ServerAttributeEdge")
-		case "node":
-			out.Values[i] = ec._ServerAttributeEdge_node(ctx, field, obj)
-		case "cursor":
-			out.Values[i] = ec._ServerAttributeEdge_cursor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var serverAttributeUpdatePayloadImplementors = []string{"ServerAttributeUpdatePayload"}
-
-func (ec *executionContext) _ServerAttributeUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerAttributeUpdatePayload) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, serverAttributeUpdatePayloadImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ServerAttributeUpdatePayload")
-		case "serverAttribute":
-			out.Values[i] = ec._ServerAttributeUpdatePayload_serverAttribute(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -18920,11 +16161,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCreateServerAttributeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerAttributeInput(ctx context.Context, v interface{}) (generated.CreateServerAttributeInput, error) {
-	res, err := ec.unmarshalInputCreateServerAttributeInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNCreateServerComponentInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerComponentInput(ctx context.Context, v interface{}) (generated.CreateServerComponentInput, error) {
 	res, err := ec.unmarshalInputCreateServerComponentInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -19026,93 +16262,6 @@ func (ec *executionContext) marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserver
 		return graphql.Null
 	}
 	return ec._Server(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNServerAttribute2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx context.Context, sel ast.SelectionSet, v generated.ServerAttribute) graphql.Marshaler {
-	return ec._ServerAttribute(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx context.Context, sel ast.SelectionSet, v *generated.ServerAttribute) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ServerAttribute(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNServerAttributeConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerAttributeConnection) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ServerAttributeConnection(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNServerAttributeCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerAttributeCreatePayload) graphql.Marshaler {
-	return ec._ServerAttributeCreatePayload(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNServerAttributeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerAttributeCreatePayload) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ServerAttributeCreatePayload(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNServerAttributeDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerAttributeDeletePayload) graphql.Marshaler {
-	return ec._ServerAttributeDeletePayload(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNServerAttributeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerAttributeDeletePayload) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ServerAttributeDeletePayload(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNServerAttributeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeOrderField(ctx context.Context, v interface{}) (*generated.ServerAttributeOrderField, error) {
-	var res = new(generated.ServerAttributeOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNServerAttributeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerAttributeOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) marshalNServerAttributeUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerAttributeUpdatePayload) graphql.Marshaler {
-	return ec._ServerAttributeUpdatePayload(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNServerAttributeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerAttributeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerAttributeUpdatePayload) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ServerAttributeUpdatePayload(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNServerAttributeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInput(ctx context.Context, v interface{}) (*generated.ServerAttributeWhereInput, error) {
-	res, err := ec.unmarshalInputServerAttributeWhereInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNServerComponent2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerComponent(ctx context.Context, sel ast.SelectionSet, v generated.ServerComponent) graphql.Marshaler {
@@ -19534,11 +16683,6 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNUpdateServerAttributeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerAttributeInput(ctx context.Context, v interface{}) (generated.UpdateServerAttributeInput, error) {
-	res, err := ec.unmarshalInputUpdateServerAttributeInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNUpdateServerComponentInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerComponentInput(ctx context.Context, v interface{}) (generated.UpdateServerComponentInput, error) {
@@ -20031,97 +17175,6 @@ func (ec *executionContext) marshalOServer2ᚖgoᚗinfratographerᚗcomᚋserver
 		return graphql.Null
 	}
 	return ec._Server(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOServerAttribute2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttribute(ctx context.Context, sel ast.SelectionSet, v *generated.ServerAttribute) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._ServerAttribute(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOServerAttributeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerAttributeEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOServerAttributeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeEdge(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOServerAttributeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerAttributeEdge) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._ServerAttributeEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOServerAttributeOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeOrder(ctx context.Context, v interface{}) (*generated.ServerAttributeOrder, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputServerAttributeOrder(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOServerAttributeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerAttributeWhereInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*generated.ServerAttributeWhereInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNServerAttributeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOServerAttributeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerAttributeWhereInput(ctx context.Context, v interface{}) (*generated.ServerAttributeWhereInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputServerAttributeWhereInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOServerComponent2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerComponent(ctx context.Context, sel ast.SelectionSet, v *generated.ServerComponent) graphql.Marshaler {

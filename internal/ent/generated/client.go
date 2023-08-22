@@ -31,7 +31,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
-	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -46,8 +45,6 @@ type Client struct {
 	Provider *ProviderClient
 	// Server is the client for interacting with the Server builders.
 	Server *ServerClient
-	// ServerAttribute is the client for interacting with the ServerAttribute builders.
-	ServerAttribute *ServerAttributeClient
 	// ServerComponent is the client for interacting with the ServerComponent builders.
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
@@ -69,7 +66,6 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Provider = NewProviderClient(c.config)
 	c.Server = NewServerClient(c.config)
-	c.ServerAttribute = NewServerAttributeClient(c.config)
 	c.ServerComponent = NewServerComponentClient(c.config)
 	c.ServerComponentType = NewServerComponentTypeClient(c.config)
 	c.ServerType = NewServerTypeClient(c.config)
@@ -157,7 +153,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:              cfg,
 		Provider:            NewProviderClient(cfg),
 		Server:              NewServerClient(cfg),
-		ServerAttribute:     NewServerAttributeClient(cfg),
 		ServerComponent:     NewServerComponentClient(cfg),
 		ServerComponentType: NewServerComponentTypeClient(cfg),
 		ServerType:          NewServerTypeClient(cfg),
@@ -182,7 +177,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:              cfg,
 		Provider:            NewProviderClient(cfg),
 		Server:              NewServerClient(cfg),
-		ServerAttribute:     NewServerAttributeClient(cfg),
 		ServerComponent:     NewServerComponentClient(cfg),
 		ServerComponentType: NewServerComponentTypeClient(cfg),
 		ServerType:          NewServerTypeClient(cfg),
@@ -214,23 +208,21 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	for _, n := range []interface{ Use(...Hook) }{
-		c.Provider, c.Server, c.ServerAttribute, c.ServerComponent,
-		c.ServerComponentType, c.ServerType,
-	} {
-		n.Use(hooks...)
-	}
+	c.Provider.Use(hooks...)
+	c.Server.Use(hooks...)
+	c.ServerComponent.Use(hooks...)
+	c.ServerComponentType.Use(hooks...)
+	c.ServerType.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Provider, c.Server, c.ServerAttribute, c.ServerComponent,
-		c.ServerComponentType, c.ServerType,
-	} {
-		n.Intercept(interceptors...)
-	}
+	c.Provider.Intercept(interceptors...)
+	c.Server.Intercept(interceptors...)
+	c.ServerComponent.Intercept(interceptors...)
+	c.ServerComponentType.Intercept(interceptors...)
+	c.ServerType.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -240,8 +232,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Provider.mutate(ctx, m)
 	case *ServerMutation:
 		return c.Server.mutate(ctx, m)
-	case *ServerAttributeMutation:
-		return c.ServerAttribute.mutate(ctx, m)
 	case *ServerComponentMutation:
 		return c.ServerComponent.mutate(ctx, m)
 	case *ServerComponentTypeMutation:
@@ -528,22 +518,6 @@ func (c *ServerClient) QueryComponents(s *Server) *ServerComponentQuery {
 	return query
 }
 
-// QueryAttributes queries the attributes edge of a Server.
-func (c *ServerClient) QueryAttributes(s *Server) *ServerAttributeQuery {
-	query := (&ServerAttributeClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := s.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(server.Table, server.FieldID, id),
-			sqlgraph.To(serverattribute.Table, serverattribute.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, server.AttributesTable, server.AttributesColumn),
-		)
-		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *ServerClient) Hooks() []Hook {
 	return c.hooks.Server
@@ -566,140 +540,6 @@ func (c *ServerClient) mutate(ctx context.Context, m *ServerMutation) (Value, er
 		return (&ServerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("generated: unknown Server mutation op: %q", m.Op())
-	}
-}
-
-// ServerAttributeClient is a client for the ServerAttribute schema.
-type ServerAttributeClient struct {
-	config
-}
-
-// NewServerAttributeClient returns a client for the ServerAttribute from the given config.
-func NewServerAttributeClient(c config) *ServerAttributeClient {
-	return &ServerAttributeClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `serverattribute.Hooks(f(g(h())))`.
-func (c *ServerAttributeClient) Use(hooks ...Hook) {
-	c.hooks.ServerAttribute = append(c.hooks.ServerAttribute, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `serverattribute.Intercept(f(g(h())))`.
-func (c *ServerAttributeClient) Intercept(interceptors ...Interceptor) {
-	c.inters.ServerAttribute = append(c.inters.ServerAttribute, interceptors...)
-}
-
-// Create returns a builder for creating a ServerAttribute entity.
-func (c *ServerAttributeClient) Create() *ServerAttributeCreate {
-	mutation := newServerAttributeMutation(c.config, OpCreate)
-	return &ServerAttributeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of ServerAttribute entities.
-func (c *ServerAttributeClient) CreateBulk(builders ...*ServerAttributeCreate) *ServerAttributeCreateBulk {
-	return &ServerAttributeCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for ServerAttribute.
-func (c *ServerAttributeClient) Update() *ServerAttributeUpdate {
-	mutation := newServerAttributeMutation(c.config, OpUpdate)
-	return &ServerAttributeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *ServerAttributeClient) UpdateOne(sa *ServerAttribute) *ServerAttributeUpdateOne {
-	mutation := newServerAttributeMutation(c.config, OpUpdateOne, withServerAttribute(sa))
-	return &ServerAttributeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *ServerAttributeClient) UpdateOneID(id gidx.PrefixedID) *ServerAttributeUpdateOne {
-	mutation := newServerAttributeMutation(c.config, OpUpdateOne, withServerAttributeID(id))
-	return &ServerAttributeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for ServerAttribute.
-func (c *ServerAttributeClient) Delete() *ServerAttributeDelete {
-	mutation := newServerAttributeMutation(c.config, OpDelete)
-	return &ServerAttributeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *ServerAttributeClient) DeleteOne(sa *ServerAttribute) *ServerAttributeDeleteOne {
-	return c.DeleteOneID(sa.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ServerAttributeClient) DeleteOneID(id gidx.PrefixedID) *ServerAttributeDeleteOne {
-	builder := c.Delete().Where(serverattribute.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &ServerAttributeDeleteOne{builder}
-}
-
-// Query returns a query builder for ServerAttribute.
-func (c *ServerAttributeClient) Query() *ServerAttributeQuery {
-	return &ServerAttributeQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeServerAttribute},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a ServerAttribute entity by its id.
-func (c *ServerAttributeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerAttribute, error) {
-	return c.Query().Where(serverattribute.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *ServerAttributeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerAttribute {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryServer queries the server edge of a ServerAttribute.
-func (c *ServerAttributeClient) QueryServer(sa *ServerAttribute) *ServerQuery {
-	query := (&ServerClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := sa.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(serverattribute.Table, serverattribute.FieldID, id),
-			sqlgraph.To(server.Table, server.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, serverattribute.ServerTable, serverattribute.ServerColumn),
-		)
-		fromV = sqlgraph.Neighbors(sa.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *ServerAttributeClient) Hooks() []Hook {
-	return c.hooks.ServerAttribute
-}
-
-// Interceptors returns the client interceptors.
-func (c *ServerAttributeClient) Interceptors() []Interceptor {
-	return c.inters.ServerAttribute
-}
-
-func (c *ServerAttributeClient) mutate(ctx context.Context, m *ServerAttributeMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&ServerAttributeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&ServerAttributeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&ServerAttributeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&ServerAttributeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("generated: unknown ServerAttribute mutation op: %q", m.Op())
 	}
 }
 
@@ -1108,11 +948,10 @@ func (c *ServerTypeClient) mutate(ctx context.Context, m *ServerTypeMutation) (V
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Provider, Server, ServerAttribute, ServerComponent, ServerComponentType,
-		ServerType []ent.Hook
+		Provider, Server, ServerComponent, ServerComponentType, ServerType []ent.Hook
 	}
 	inters struct {
-		Provider, Server, ServerAttribute, ServerComponent, ServerComponentType,
+		Provider, Server, ServerComponent, ServerComponentType,
 		ServerType []ent.Interceptor
 	}
 )

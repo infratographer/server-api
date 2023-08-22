@@ -17,11 +17,6 @@ func (r *entityResolver) FindServerByID(ctx context.Context, id gidx.PrefixedID)
 	panic(fmt.Errorf("not implemented: FindServerByID - findServerByID"))
 }
 
-// FindServerAttributeByID is the resolver for the findServerAttributeByID field.
-func (r *entityResolver) FindServerAttributeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerAttribute, error) {
-	panic(fmt.Errorf("not implemented: FindServerAttributeByID - findServerAttributeByID"))
-}
-
 // FindServerComponentByID is the resolver for the findServerComponentByID field.
 func (r *entityResolver) FindServerComponentByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error) {
 	panic(fmt.Errorf("not implemented: FindServerComponentByID - findServerComponentByID"))

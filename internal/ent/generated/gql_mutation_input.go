@@ -71,7 +71,6 @@ type CreateServerInput struct {
 	ProviderID   gidx.PrefixedID
 	ServerTypeID gidx.PrefixedID
 	ComponentIDs []gidx.PrefixedID
-	AttributeIDs []gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerInput on the ServerMutation builder.
@@ -86,9 +85,6 @@ func (i *CreateServerInput) Mutate(m *ServerMutation) {
 	m.SetServerTypeID(i.ServerTypeID)
 	if v := i.ComponentIDs; len(v) > 0 {
 		m.AddComponentIDs(v...)
-	}
-	if v := i.AttributeIDs; len(v) > 0 {
-		m.AddAttributeIDs(v...)
 	}
 }
 
@@ -106,9 +102,6 @@ type UpdateServerInput struct {
 	ClearComponents    bool
 	AddComponentIDs    []gidx.PrefixedID
 	RemoveComponentIDs []gidx.PrefixedID
-	ClearAttributes    bool
-	AddAttributeIDs    []gidx.PrefixedID
-	RemoveAttributeIDs []gidx.PrefixedID
 }
 
 // Mutate applies the UpdateServerInput on the ServerMutation builder.
@@ -131,15 +124,6 @@ func (i *UpdateServerInput) Mutate(m *ServerMutation) {
 	if v := i.RemoveComponentIDs; len(v) > 0 {
 		m.RemoveComponentIDs(v...)
 	}
-	if i.ClearAttributes {
-		m.ClearAttributes()
-	}
-	if v := i.AddAttributeIDs; len(v) > 0 {
-		m.AddAttributeIDs(v...)
-	}
-	if v := i.RemoveAttributeIDs; len(v) > 0 {
-		m.RemoveAttributeIDs(v...)
-	}
 }
 
 // SetInput applies the change-set in the UpdateServerInput on the ServerUpdate builder.
@@ -150,54 +134,6 @@ func (c *ServerUpdate) SetInput(i UpdateServerInput) *ServerUpdate {
 
 // SetInput applies the change-set in the UpdateServerInput on the ServerUpdateOne builder.
 func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
-	i.Mutate(c.Mutation())
-	return c
-}
-
-// CreateServerAttributeInput represents a mutation input for creating serverattributes.
-type CreateServerAttributeInput struct {
-	Name     string
-	Value    string
-	ServerID gidx.PrefixedID
-}
-
-// Mutate applies the CreateServerAttributeInput on the ServerAttributeMutation builder.
-func (i *CreateServerAttributeInput) Mutate(m *ServerAttributeMutation) {
-	m.SetName(i.Name)
-	m.SetValue(i.Value)
-	m.SetServerID(i.ServerID)
-}
-
-// SetInput applies the change-set in the CreateServerAttributeInput on the ServerAttributeCreate builder.
-func (c *ServerAttributeCreate) SetInput(i CreateServerAttributeInput) *ServerAttributeCreate {
-	i.Mutate(c.Mutation())
-	return c
-}
-
-// UpdateServerAttributeInput represents a mutation input for updating serverattributes.
-type UpdateServerAttributeInput struct {
-	Name  *string
-	Value *string
-}
-
-// Mutate applies the UpdateServerAttributeInput on the ServerAttributeMutation builder.
-func (i *UpdateServerAttributeInput) Mutate(m *ServerAttributeMutation) {
-	if v := i.Name; v != nil {
-		m.SetName(*v)
-	}
-	if v := i.Value; v != nil {
-		m.SetValue(*v)
-	}
-}
-
-// SetInput applies the change-set in the UpdateServerAttributeInput on the ServerAttributeUpdate builder.
-func (c *ServerAttributeUpdate) SetInput(i UpdateServerAttributeInput) *ServerAttributeUpdate {
-	i.Mutate(c.Mutation())
-	return c
-}
-
-// SetInput applies the change-set in the UpdateServerAttributeInput on the ServerAttributeUpdateOne builder.
-func (c *ServerAttributeUpdateOne) SetInput(i UpdateServerAttributeInput) *ServerAttributeUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

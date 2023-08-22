@@ -51,8 +51,6 @@ const (
 	EdgeServerType = "server_type"
 	// EdgeComponents holds the string denoting the components edge name in mutations.
 	EdgeComponents = "components"
-	// EdgeAttributes holds the string denoting the attributes edge name in mutations.
-	EdgeAttributes = "attributes"
 	// Table holds the table name of the server in the database.
 	Table = "servers"
 	// ProviderTable is the table that holds the provider relation/edge.
@@ -76,13 +74,6 @@ const (
 	ComponentsInverseTable = "server_components"
 	// ComponentsColumn is the table column denoting the components relation/edge.
 	ComponentsColumn = "server_id"
-	// AttributesTable is the table that holds the attributes relation/edge.
-	AttributesTable = "server_attributes"
-	// AttributesInverseTable is the table name for the ServerAttribute entity.
-	// It exists in this package in order to avoid circular dependency with the "serverattribute" package.
-	AttributesInverseTable = "server_attributes"
-	// AttributesColumn is the table column denoting the attributes relation/edge.
-	AttributesColumn = "server_id"
 )
 
 // Columns holds all SQL columns for server fields.
@@ -200,20 +191,6 @@ func ByComponents(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newComponentsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByAttributesCount orders the results by attributes count.
-func ByAttributesCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAttributesStep(), opts...)
-	}
-}
-
-// ByAttributes orders the results by attributes terms.
-func ByAttributes(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAttributesStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newProviderStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -233,12 +210,5 @@ func newComponentsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ComponentsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, ComponentsTable, ComponentsColumn),
-	)
-}
-func newAttributesStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AttributesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, AttributesTable, AttributesColumn),
 	)
 }

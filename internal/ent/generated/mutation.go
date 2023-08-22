@@ -28,7 +28,6 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
-	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -46,7 +45,6 @@ const (
 	// Node types.
 	TypeProvider            = "Provider"
 	TypeServer              = "Server"
-	TypeServerAttribute     = "ServerAttribute"
 	TypeServerComponent     = "ServerComponent"
 	TypeServerComponentType = "ServerComponentType"
 	TypeServerType          = "ServerType"
@@ -659,9 +657,6 @@ type ServerMutation struct {
 	components         map[gidx.PrefixedID]struct{}
 	removedcomponents  map[gidx.PrefixedID]struct{}
 	clearedcomponents  bool
-	attributes         map[gidx.PrefixedID]struct{}
-	removedattributes  map[gidx.PrefixedID]struct{}
-	clearedattributes  bool
 	done               bool
 	oldValue           func(context.Context) (*Server, error)
 	predicates         []predicate.Server
@@ -1178,60 +1173,6 @@ func (m *ServerMutation) ResetComponents() {
 	m.removedcomponents = nil
 }
 
-// AddAttributeIDs adds the "attributes" edge to the ServerAttribute entity by ids.
-func (m *ServerMutation) AddAttributeIDs(ids ...gidx.PrefixedID) {
-	if m.attributes == nil {
-		m.attributes = make(map[gidx.PrefixedID]struct{})
-	}
-	for i := range ids {
-		m.attributes[ids[i]] = struct{}{}
-	}
-}
-
-// ClearAttributes clears the "attributes" edge to the ServerAttribute entity.
-func (m *ServerMutation) ClearAttributes() {
-	m.clearedattributes = true
-}
-
-// AttributesCleared reports if the "attributes" edge to the ServerAttribute entity was cleared.
-func (m *ServerMutation) AttributesCleared() bool {
-	return m.clearedattributes
-}
-
-// RemoveAttributeIDs removes the "attributes" edge to the ServerAttribute entity by IDs.
-func (m *ServerMutation) RemoveAttributeIDs(ids ...gidx.PrefixedID) {
-	if m.removedattributes == nil {
-		m.removedattributes = make(map[gidx.PrefixedID]struct{})
-	}
-	for i := range ids {
-		delete(m.attributes, ids[i])
-		m.removedattributes[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedAttributes returns the removed IDs of the "attributes" edge to the ServerAttribute entity.
-func (m *ServerMutation) RemovedAttributesIDs() (ids []gidx.PrefixedID) {
-	for id := range m.removedattributes {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// AttributesIDs returns the "attributes" edge IDs in the mutation.
-func (m *ServerMutation) AttributesIDs() (ids []gidx.PrefixedID) {
-	for id := range m.attributes {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetAttributes resets all changes to the "attributes" edge.
-func (m *ServerMutation) ResetAttributes() {
-	m.attributes = nil
-	m.clearedattributes = false
-	m.removedattributes = nil
-}
-
 // Where appends a list predicates to the ServerMutation builder.
 func (m *ServerMutation) Where(ps ...predicate.Server) {
 	m.predicates = append(m.predicates, ps...)
@@ -1493,7 +1434,7 @@ func (m *ServerMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ServerMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.provider != nil {
 		edges = append(edges, server.EdgeProvider)
 	}
@@ -1502,9 +1443,6 @@ func (m *ServerMutation) AddedEdges() []string {
 	}
 	if m.components != nil {
 		edges = append(edges, server.EdgeComponents)
-	}
-	if m.attributes != nil {
-		edges = append(edges, server.EdgeAttributes)
 	}
 	return edges
 }
@@ -1527,24 +1465,15 @@ func (m *ServerMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case server.EdgeAttributes:
-		ids := make([]ent.Value, 0, len(m.attributes))
-		for id := range m.attributes {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ServerMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.removedcomponents != nil {
 		edges = append(edges, server.EdgeComponents)
-	}
-	if m.removedattributes != nil {
-		edges = append(edges, server.EdgeAttributes)
 	}
 	return edges
 }
@@ -1559,19 +1488,13 @@ func (m *ServerMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case server.EdgeAttributes:
-		ids := make([]ent.Value, 0, len(m.removedattributes))
-		for id := range m.removedattributes {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ServerMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.clearedprovider {
 		edges = append(edges, server.EdgeProvider)
 	}
@@ -1580,9 +1503,6 @@ func (m *ServerMutation) ClearedEdges() []string {
 	}
 	if m.clearedcomponents {
 		edges = append(edges, server.EdgeComponents)
-	}
-	if m.clearedattributes {
-		edges = append(edges, server.EdgeAttributes)
 	}
 	return edges
 }
@@ -1597,8 +1517,6 @@ func (m *ServerMutation) EdgeCleared(name string) bool {
 		return m.clearedserver_type
 	case server.EdgeComponents:
 		return m.clearedcomponents
-	case server.EdgeAttributes:
-		return m.clearedattributes
 	}
 	return false
 }
@@ -1630,612 +1548,8 @@ func (m *ServerMutation) ResetEdge(name string) error {
 	case server.EdgeComponents:
 		m.ResetComponents()
 		return nil
-	case server.EdgeAttributes:
-		m.ResetAttributes()
-		return nil
 	}
 	return fmt.Errorf("unknown Server edge %s", name)
-}
-
-// ServerAttributeMutation represents an operation that mutates the ServerAttribute nodes in the graph.
-type ServerAttributeMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *gidx.PrefixedID
-	created_at    *time.Time
-	updated_at    *time.Time
-	name          *string
-	value         *string
-	clearedFields map[string]struct{}
-	server        *gidx.PrefixedID
-	clearedserver bool
-	done          bool
-	oldValue      func(context.Context) (*ServerAttribute, error)
-	predicates    []predicate.ServerAttribute
-}
-
-var _ ent.Mutation = (*ServerAttributeMutation)(nil)
-
-// serverattributeOption allows management of the mutation configuration using functional options.
-type serverattributeOption func(*ServerAttributeMutation)
-
-// newServerAttributeMutation creates new mutation for the ServerAttribute entity.
-func newServerAttributeMutation(c config, op Op, opts ...serverattributeOption) *ServerAttributeMutation {
-	m := &ServerAttributeMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeServerAttribute,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withServerAttributeID sets the ID field of the mutation.
-func withServerAttributeID(id gidx.PrefixedID) serverattributeOption {
-	return func(m *ServerAttributeMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ServerAttribute
-		)
-		m.oldValue = func(ctx context.Context) (*ServerAttribute, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ServerAttribute.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withServerAttribute sets the old ServerAttribute of the mutation.
-func withServerAttribute(node *ServerAttribute) serverattributeOption {
-	return func(m *ServerAttributeMutation) {
-		m.oldValue = func(context.Context) (*ServerAttribute, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ServerAttributeMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ServerAttributeMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("generated: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ServerAttribute entities.
-func (m *ServerAttributeMutation) SetID(id gidx.PrefixedID) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ServerAttributeMutation) ID() (id gidx.PrefixedID, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ServerAttributeMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []gidx.PrefixedID{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ServerAttribute.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *ServerAttributeMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ServerAttributeMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the ServerAttribute entity.
-// If the ServerAttribute object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerAttributeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ServerAttributeMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *ServerAttributeMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *ServerAttributeMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the ServerAttribute entity.
-// If the ServerAttribute object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerAttributeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *ServerAttributeMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
-// SetName sets the "name" field.
-func (m *ServerAttributeMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *ServerAttributeMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the ServerAttribute entity.
-// If the ServerAttribute object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerAttributeMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *ServerAttributeMutation) ResetName() {
-	m.name = nil
-}
-
-// SetValue sets the "value" field.
-func (m *ServerAttributeMutation) SetValue(s string) {
-	m.value = &s
-}
-
-// Value returns the value of the "value" field in the mutation.
-func (m *ServerAttributeMutation) Value() (r string, exists bool) {
-	v := m.value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldValue returns the old "value" field's value of the ServerAttribute entity.
-// If the ServerAttribute object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerAttributeMutation) OldValue(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldValue is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldValue requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldValue: %w", err)
-	}
-	return oldValue.Value, nil
-}
-
-// ResetValue resets all changes to the "value" field.
-func (m *ServerAttributeMutation) ResetValue() {
-	m.value = nil
-}
-
-// SetServerID sets the "server_id" field.
-func (m *ServerAttributeMutation) SetServerID(gi gidx.PrefixedID) {
-	m.server = &gi
-}
-
-// ServerID returns the value of the "server_id" field in the mutation.
-func (m *ServerAttributeMutation) ServerID() (r gidx.PrefixedID, exists bool) {
-	v := m.server
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldServerID returns the old "server_id" field's value of the ServerAttribute entity.
-// If the ServerAttribute object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerAttributeMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldServerID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
-	}
-	return oldValue.ServerID, nil
-}
-
-// ResetServerID resets all changes to the "server_id" field.
-func (m *ServerAttributeMutation) ResetServerID() {
-	m.server = nil
-}
-
-// ClearServer clears the "server" edge to the Server entity.
-func (m *ServerAttributeMutation) ClearServer() {
-	m.clearedserver = true
-}
-
-// ServerCleared reports if the "server" edge to the Server entity was cleared.
-func (m *ServerAttributeMutation) ServerCleared() bool {
-	return m.clearedserver
-}
-
-// ServerIDs returns the "server" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ServerID instead. It exists only for internal usage by the builders.
-func (m *ServerAttributeMutation) ServerIDs() (ids []gidx.PrefixedID) {
-	if id := m.server; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetServer resets all changes to the "server" edge.
-func (m *ServerAttributeMutation) ResetServer() {
-	m.server = nil
-	m.clearedserver = false
-}
-
-// Where appends a list predicates to the ServerAttributeMutation builder.
-func (m *ServerAttributeMutation) Where(ps ...predicate.ServerAttribute) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ServerAttributeMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ServerAttributeMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ServerAttribute, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ServerAttributeMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ServerAttributeMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ServerAttribute).
-func (m *ServerAttributeMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ServerAttributeMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.created_at != nil {
-		fields = append(fields, serverattribute.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, serverattribute.FieldUpdatedAt)
-	}
-	if m.name != nil {
-		fields = append(fields, serverattribute.FieldName)
-	}
-	if m.value != nil {
-		fields = append(fields, serverattribute.FieldValue)
-	}
-	if m.server != nil {
-		fields = append(fields, serverattribute.FieldServerID)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ServerAttributeMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case serverattribute.FieldCreatedAt:
-		return m.CreatedAt()
-	case serverattribute.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case serverattribute.FieldName:
-		return m.Name()
-	case serverattribute.FieldValue:
-		return m.Value()
-	case serverattribute.FieldServerID:
-		return m.ServerID()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ServerAttributeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case serverattribute.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case serverattribute.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case serverattribute.FieldName:
-		return m.OldName(ctx)
-	case serverattribute.FieldValue:
-		return m.OldValue(ctx)
-	case serverattribute.FieldServerID:
-		return m.OldServerID(ctx)
-	}
-	return nil, fmt.Errorf("unknown ServerAttribute field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ServerAttributeMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case serverattribute.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case serverattribute.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case serverattribute.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case serverattribute.FieldValue:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetValue(v)
-		return nil
-	case serverattribute.FieldServerID:
-		v, ok := value.(gidx.PrefixedID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetServerID(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ServerAttribute field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ServerAttributeMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ServerAttributeMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ServerAttributeMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ServerAttribute numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ServerAttributeMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ServerAttributeMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ServerAttributeMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown ServerAttribute nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ServerAttributeMutation) ResetField(name string) error {
-	switch name {
-	case serverattribute.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case serverattribute.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case serverattribute.FieldName:
-		m.ResetName()
-		return nil
-	case serverattribute.FieldValue:
-		m.ResetValue()
-		return nil
-	case serverattribute.FieldServerID:
-		m.ResetServerID()
-		return nil
-	}
-	return fmt.Errorf("unknown ServerAttribute field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ServerAttributeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.server != nil {
-		edges = append(edges, serverattribute.EdgeServer)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ServerAttributeMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case serverattribute.EdgeServer:
-		if id := m.server; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ServerAttributeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ServerAttributeMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ServerAttributeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedserver {
-		edges = append(edges, serverattribute.EdgeServer)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ServerAttributeMutation) EdgeCleared(name string) bool {
-	switch name {
-	case serverattribute.EdgeServer:
-		return m.clearedserver
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ServerAttributeMutation) ClearEdge(name string) error {
-	switch name {
-	case serverattribute.EdgeServer:
-		m.ClearServer()
-		return nil
-	}
-	return fmt.Errorf("unknown ServerAttribute unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ServerAttributeMutation) ResetEdge(name string) error {
-	switch name {
-	case serverattribute.EdgeServer:
-		m.ResetServer()
-		return nil
-	}
-	return fmt.Errorf("unknown ServerAttribute edge %s", name)
 }
 
 // ServerComponentMutation represents an operation that mutates the ServerComponent nodes in the graph.

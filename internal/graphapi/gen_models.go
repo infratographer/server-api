@@ -7,24 +7,6 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// Return response from serverAttributeCreate
-type ServerAttributeCreatePayload struct {
-	// The created server attribute.
-	ServerAttribute *generated.ServerAttribute `json:"serverAttribute"`
-}
-
-// Return response from serverAttributeDelete
-type ServerAttributeDeletePayload struct {
-	// The ID of the deleted server attribute.
-	DeletedID gidx.PrefixedID `json:"deletedID"`
-}
-
-// Return response from serverAttributeUpdate
-type ServerAttributeUpdatePayload struct {
-	// The updated server attribute.
-	ServerAttribute *generated.ServerAttribute `json:"serverAttribute"`
-}
-
 // Return response from serverComponentCreate
 type ServerComponentCreatePayload struct {
 	// The created server component.

@@ -112,11 +112,6 @@ func (Server) Edges() []ent.Edge {
 			Annotations(
 				entgql.RelayConnection(),
 			),
-		edge.From("attributes", ServerAttribute.Type).
-			Ref("server").
-			Annotations(
-				entgql.RelayConnection(),
-			),
 	}
 }
 

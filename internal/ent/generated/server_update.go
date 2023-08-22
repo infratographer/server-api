@@ -26,7 +26,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
-	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/x/gidx"
 )
@@ -85,21 +84,6 @@ func (su *ServerUpdate) AddComponents(s ...*ServerComponent) *ServerUpdate {
 	return su.AddComponentIDs(ids...)
 }
 
-// AddAttributeIDs adds the "attributes" edge to the ServerAttribute entity by IDs.
-func (su *ServerUpdate) AddAttributeIDs(ids ...gidx.PrefixedID) *ServerUpdate {
-	su.mutation.AddAttributeIDs(ids...)
-	return su
-}
-
-// AddAttributes adds the "attributes" edges to the ServerAttribute entity.
-func (su *ServerUpdate) AddAttributes(s ...*ServerAttribute) *ServerUpdate {
-	ids := make([]gidx.PrefixedID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return su.AddAttributeIDs(ids...)
-}
-
 // Mutation returns the ServerMutation object of the builder.
 func (su *ServerUpdate) Mutation() *ServerMutation {
 	return su.mutation
@@ -124,27 +108,6 @@ func (su *ServerUpdate) RemoveComponents(s ...*ServerComponent) *ServerUpdate {
 		ids[i] = s[i].ID
 	}
 	return su.RemoveComponentIDs(ids...)
-}
-
-// ClearAttributes clears all "attributes" edges to the ServerAttribute entity.
-func (su *ServerUpdate) ClearAttributes() *ServerUpdate {
-	su.mutation.ClearAttributes()
-	return su
-}
-
-// RemoveAttributeIDs removes the "attributes" edge to ServerAttribute entities by IDs.
-func (su *ServerUpdate) RemoveAttributeIDs(ids ...gidx.PrefixedID) *ServerUpdate {
-	su.mutation.RemoveAttributeIDs(ids...)
-	return su
-}
-
-// RemoveAttributes removes "attributes" edges to ServerAttribute entities.
-func (su *ServerUpdate) RemoveAttributes(s ...*ServerAttribute) *ServerUpdate {
-	ids := make([]gidx.PrefixedID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return su.RemoveAttributeIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -268,51 +231,6 @@ func (su *ServerUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if su.mutation.AttributesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   server.AttributesTable,
-			Columns: []string{server.AttributesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := su.mutation.RemovedAttributesIDs(); len(nodes) > 0 && !su.mutation.AttributesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   server.AttributesTable,
-			Columns: []string{server.AttributesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := su.mutation.AttributesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   server.AttributesTable,
-			Columns: []string{server.AttributesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{server.Label}
@@ -374,21 +292,6 @@ func (suo *ServerUpdateOne) AddComponents(s ...*ServerComponent) *ServerUpdateOn
 	return suo.AddComponentIDs(ids...)
 }
 
-// AddAttributeIDs adds the "attributes" edge to the ServerAttribute entity by IDs.
-func (suo *ServerUpdateOne) AddAttributeIDs(ids ...gidx.PrefixedID) *ServerUpdateOne {
-	suo.mutation.AddAttributeIDs(ids...)
-	return suo
-}
-
-// AddAttributes adds the "attributes" edges to the ServerAttribute entity.
-func (suo *ServerUpdateOne) AddAttributes(s ...*ServerAttribute) *ServerUpdateOne {
-	ids := make([]gidx.PrefixedID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return suo.AddAttributeIDs(ids...)
-}
-
 // Mutation returns the ServerMutation object of the builder.
 func (suo *ServerUpdateOne) Mutation() *ServerMutation {
 	return suo.mutation
@@ -413,27 +316,6 @@ func (suo *ServerUpdateOne) RemoveComponents(s ...*ServerComponent) *ServerUpdat
 		ids[i] = s[i].ID
 	}
 	return suo.RemoveComponentIDs(ids...)
-}
-
-// ClearAttributes clears all "attributes" edges to the ServerAttribute entity.
-func (suo *ServerUpdateOne) ClearAttributes() *ServerUpdateOne {
-	suo.mutation.ClearAttributes()
-	return suo
-}
-
-// RemoveAttributeIDs removes the "attributes" edge to ServerAttribute entities by IDs.
-func (suo *ServerUpdateOne) RemoveAttributeIDs(ids ...gidx.PrefixedID) *ServerUpdateOne {
-	suo.mutation.RemoveAttributeIDs(ids...)
-	return suo
-}
-
-// RemoveAttributes removes "attributes" edges to ServerAttribute entities.
-func (suo *ServerUpdateOne) RemoveAttributes(s ...*ServerAttribute) *ServerUpdateOne {
-	ids := make([]gidx.PrefixedID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return suo.RemoveAttributeIDs(ids...)
 }
 
 // Where appends a list predicates to the ServerUpdate builder.
@@ -580,51 +462,6 @@ func (suo *ServerUpdateOne) sqlSave(ctx context.Context) (_node *Server, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(servercomponent.FieldID, field.TypeString),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if suo.mutation.AttributesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   server.AttributesTable,
-			Columns: []string{server.AttributesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := suo.mutation.RemovedAttributesIDs(); len(nodes) > 0 && !suo.mutation.AttributesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   server.AttributesTable,
-			Columns: []string{server.AttributesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := suo.mutation.AttributesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   server.AttributesTable,
-			Columns: []string{server.AttributesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(serverattribute.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

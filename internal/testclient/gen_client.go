@@ -21,7 +21,6 @@ func NewClient(cli *http.Client, baseURL string, options ...client.HTTPRequestOp
 }
 
 type Query struct {
-	ServerAttribute     ServerAttribute     "json:\"serverAttribute\" graphql:\"serverAttribute\""
 	ServerComponent     ServerComponent     "json:\"serverComponent\" graphql:\"serverComponent\""
 	ServerComponentType ServerComponentType "json:\"serverComponentType\" graphql:\"serverComponentType\""
 	ServerProvider      generated.Provider  "json:\"serverProvider\" graphql:\"serverProvider\""
@@ -31,9 +30,6 @@ type Query struct {
 	Service             Service             "json:\"_service\" graphql:\"_service\""
 }
 type Mutation struct {
-	ServerAttributeCreate     ServerAttributeCreatePayload     "json:\"serverAttributeCreate\" graphql:\"serverAttributeCreate\""
-	ServerAttributeUpdate     ServerAttributeUpdatePayload     "json:\"serverAttributeUpdate\" graphql:\"serverAttributeUpdate\""
-	ServerAttributeDelete     ServerAttributeDeletePayload     "json:\"serverAttributeDelete\" graphql:\"serverAttributeDelete\""
 	ServerComponentCreate     ServerComponentCreatePayload     "json:\"serverComponentCreate\" graphql:\"serverComponentCreate\""
 	ServerComponentUpdate     ServerComponentUpdatePayload     "json:\"serverComponentUpdate\" graphql:\"serverComponentUpdate\""
 	ServerComponentDelete     ServerComponentDeletePayload     "json:\"serverComponentDelete\" graphql:\"serverComponentDelete\""

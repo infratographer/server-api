@@ -679,29 +679,6 @@ func HasComponentsWith(preds ...predicate.ServerComponent) predicate.Server {
 	})
 }
 
-// HasAttributes applies the HasEdge predicate on the "attributes" edge.
-func HasAttributes() predicate.Server {
-	return predicate.Server(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, AttributesTable, AttributesColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasAttributesWith applies the HasEdge predicate on the "attributes" edge with a given conditions (other predicates).
-func HasAttributesWith(preds ...predicate.ServerAttribute) predicate.Server {
-	return predicate.Server(func(s *sql.Selector) {
-		step := newAttributesStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Server) predicate.Server {
 	return predicate.Server(func(s *sql.Selector) {

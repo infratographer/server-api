@@ -47,18 +47,6 @@ func (f ServerFunc) Mutate(ctx context.Context, m generated.Mutation) (generated
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMutation", m)
 }
 
-// The ServerAttributeFunc type is an adapter to allow the use of ordinary
-// function as ServerAttribute mutator.
-type ServerAttributeFunc func(context.Context, *generated.ServerAttributeMutation) (generated.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f ServerAttributeFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
-	if mv, ok := m.(*generated.ServerAttributeMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerAttributeMutation", m)
-}
-
 // The ServerComponentFunc type is an adapter to allow the use of ordinary
 // function as ServerComponent mutator.
 type ServerComponentFunc func(context.Context, *generated.ServerComponentMutation) (generated.Value, error)

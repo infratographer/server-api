@@ -80,35 +80,6 @@ func (s *Server) Components(
 	return s.QueryComponents().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (s *Server) Attributes(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerAttributeOrder, where *ServerAttributeWhereInput,
-) (*ServerAttributeConnection, error) {
-	opts := []ServerAttributePaginateOption{
-		WithServerAttributeOrder(orderBy),
-		WithServerAttributeFilter(where.Filter),
-	}
-	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := s.Edges.totalCount[3][alias]
-	if nodes, err := s.NamedAttributes(alias); err == nil || hasTotalCount {
-		pager, err := newServerAttributePager(opts, last != nil)
-		if err != nil {
-			return nil, err
-		}
-		conn := &ServerAttributeConnection{Edges: []*ServerAttributeEdge{}, TotalCount: totalCount}
-		conn.build(nodes, pager, after, first, before, last)
-		return conn, nil
-	}
-	return s.QueryAttributes().Paginate(ctx, after, first, before, last, opts...)
-}
-
-func (sa *ServerAttribute) Server(ctx context.Context) (*Server, error) {
-	result, err := sa.Edges.ServerOrErr()
-	if IsNotLoaded(err) {
-		result, err = sa.QueryServer().Only(ctx)
-	}
-	return result, err
-}
-
 func (sc *ServerComponent) ComponentType(ctx context.Context) (*ServerComponentType, error) {
 	result, err := sc.Edges.ComponentTypeOrErr()
 	if IsNotLoaded(err) {

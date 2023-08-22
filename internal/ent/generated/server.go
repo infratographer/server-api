@@ -65,16 +65,13 @@ type ServerEdges struct {
 	ServerType *ServerType `json:"server_type,omitempty"`
 	// Components holds the value of the components edge.
 	Components []*ServerComponent `json:"components,omitempty"`
-	// Attributes holds the value of the attributes edge.
-	Attributes []*ServerAttribute `json:"attributes,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [4]map[string]int
+	totalCount [3]map[string]int
 
 	namedComponents map[string][]*ServerComponent
-	namedAttributes map[string][]*ServerAttribute
 }
 
 // ProviderOrErr returns the Provider value or an error if the edge
@@ -110,15 +107,6 @@ func (e ServerEdges) ComponentsOrErr() ([]*ServerComponent, error) {
 		return e.Components, nil
 	}
 	return nil, &NotLoadedError{edge: "components"}
-}
-
-// AttributesOrErr returns the Attributes value or an error if the edge
-// was not loaded in eager-loading.
-func (e ServerEdges) AttributesOrErr() ([]*ServerAttribute, error) {
-	if e.loadedTypes[3] {
-		return e.Attributes, nil
-	}
-	return nil, &NotLoadedError{edge: "attributes"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -229,11 +217,6 @@ func (s *Server) QueryComponents() *ServerComponentQuery {
 	return NewServerClient(s.config).QueryComponents(s)
 }
 
-// QueryAttributes queries the "attributes" edge of the Server entity.
-func (s *Server) QueryAttributes() *ServerAttributeQuery {
-	return NewServerClient(s.config).QueryAttributes(s)
-}
-
 // Update returns a builder for updating this Server.
 // Note that you need to call Server.Unwrap() before calling this method if this Server
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -311,30 +294,6 @@ func (s *Server) appendNamedComponents(name string, edges ...*ServerComponent) {
 		s.Edges.namedComponents[name] = []*ServerComponent{}
 	} else {
 		s.Edges.namedComponents[name] = append(s.Edges.namedComponents[name], edges...)
-	}
-}
-
-// NamedAttributes returns the Attributes named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (s *Server) NamedAttributes(name string) ([]*ServerAttribute, error) {
-	if s.Edges.namedAttributes == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := s.Edges.namedAttributes[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (s *Server) appendNamedAttributes(name string, edges ...*ServerAttribute) {
-	if s.Edges.namedAttributes == nil {
-		s.Edges.namedAttributes = make(map[string][]*ServerAttribute)
-	}
-	if len(edges) == 0 {
-		s.Edges.namedAttributes[name] = []*ServerAttribute{}
-	} else {
-		s.Edges.namedAttributes[name] = append(s.Edges.namedAttributes[name], edges...)
 	}
 }
 

@@ -26,9 +26,6 @@ type Provider func(*sql.Selector)
 // Server is the predicate function for server builders.
 type Server func(*sql.Selector)
 
-// ServerAttribute is the predicate function for serverattribute builders.
-type ServerAttribute func(*sql.Selector)
-
 // ServerComponent is the predicate function for servercomponent builders.
 type ServerComponent func(*sql.Selector)
 

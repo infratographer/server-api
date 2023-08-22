@@ -21,7 +21,6 @@ import (
 
 	"go.infratographer.com/server-api/internal/ent/generated/provider"
 	"go.infratographer.com/server-api/internal/ent/generated/server"
-	"go.infratographer.com/server-api/internal/ent/generated/serverattribute"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -87,37 +86,6 @@ func init() {
 	serverDescID := serverFields[0].Descriptor()
 	// server.DefaultID holds the default value on creation for the id field.
 	server.DefaultID = serverDescID.Default.(func() gidx.PrefixedID)
-	serverattributeMixin := schema.ServerAttribute{}.Mixin()
-	serverattributeMixinFields0 := serverattributeMixin[0].Fields()
-	_ = serverattributeMixinFields0
-	serverattributeFields := schema.ServerAttribute{}.Fields()
-	_ = serverattributeFields
-	// serverattributeDescCreatedAt is the schema descriptor for created_at field.
-	serverattributeDescCreatedAt := serverattributeMixinFields0[0].Descriptor()
-	// serverattribute.DefaultCreatedAt holds the default value on creation for the created_at field.
-	serverattribute.DefaultCreatedAt = serverattributeDescCreatedAt.Default.(func() time.Time)
-	// serverattributeDescUpdatedAt is the schema descriptor for updated_at field.
-	serverattributeDescUpdatedAt := serverattributeMixinFields0[1].Descriptor()
-	// serverattribute.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	serverattribute.DefaultUpdatedAt = serverattributeDescUpdatedAt.Default.(func() time.Time)
-	// serverattribute.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	serverattribute.UpdateDefaultUpdatedAt = serverattributeDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// serverattributeDescName is the schema descriptor for name field.
-	serverattributeDescName := serverattributeFields[1].Descriptor()
-	// serverattribute.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	serverattribute.NameValidator = serverattributeDescName.Validators[0].(func(string) error)
-	// serverattributeDescValue is the schema descriptor for value field.
-	serverattributeDescValue := serverattributeFields[2].Descriptor()
-	// serverattribute.ValueValidator is a validator for the "value" field. It is called by the builders before save.
-	serverattribute.ValueValidator = serverattributeDescValue.Validators[0].(func(string) error)
-	// serverattributeDescServerID is the schema descriptor for server_id field.
-	serverattributeDescServerID := serverattributeFields[3].Descriptor()
-	// serverattribute.ServerIDValidator is a validator for the "server_id" field. It is called by the builders before save.
-	serverattribute.ServerIDValidator = serverattributeDescServerID.Validators[0].(func(string) error)
-	// serverattributeDescID is the schema descriptor for id field.
-	serverattributeDescID := serverattributeFields[0].Descriptor()
-	// serverattribute.DefaultID holds the default value on creation for the id field.
-	serverattribute.DefaultID = serverattributeDescID.Default.(func() gidx.PrefixedID)
 	servercomponentMixin := schema.ServerComponent{}.Mixin()
 	servercomponentMixinFields0 := servercomponentMixin[0].Fields()
 	_ = servercomponentMixinFields0
