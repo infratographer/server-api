@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -40,8 +41,26 @@ const (
 	FieldServerID = "server_id"
 	// FieldSerial holds the string denoting the serial field in the database.
 	FieldSerial = "serial"
+	// EdgeServer holds the string denoting the server edge name in mutations.
+	EdgeServer = "server"
+	// EdgeServerChassisType holds the string denoting the server_chassis_type edge name in mutations.
+	EdgeServerChassisType = "server_chassis_type"
 	// Table holds the table name of the serverchassis in the database.
 	Table = "server_chasses"
+	// ServerTable is the table that holds the server relation/edge.
+	ServerTable = "server_chasses"
+	// ServerInverseTable is the table name for the Server entity.
+	// It exists in this package in order to avoid circular dependency with the "server" package.
+	ServerInverseTable = "servers"
+	// ServerColumn is the table column denoting the server relation/edge.
+	ServerColumn = "server_id"
+	// ServerChassisTypeTable is the table that holds the server_chassis_type relation/edge.
+	ServerChassisTypeTable = "server_chasses"
+	// ServerChassisTypeInverseTable is the table name for the ServerChassisType entity.
+	// It exists in this package in order to avoid circular dependency with the "serverchassistype" package.
+	ServerChassisTypeInverseTable = "server_chassis_types"
+	// ServerChassisTypeColumn is the table column denoting the server_chassis_type relation/edge.
+	ServerChassisTypeColumn = "server_chassis_type_id"
 )
 
 // Columns holds all SQL columns for serverchassis fields.
@@ -114,4 +133,32 @@ func ByServerID(opts ...sql.OrderTermOption) OrderOption {
 // BySerial orders the results by the serial field.
 func BySerial(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSerial, opts...).ToFunc()
+}
+
+// ByServerField orders the results by server field.
+func ByServerField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newServerStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByServerChassisTypeField orders the results by server_chassis_type field.
+func ByServerChassisTypeField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newServerChassisTypeStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newServerStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ServerInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, ServerTable, ServerColumn),
+	)
+}
+func newServerChassisTypeStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ServerChassisTypeInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, ServerChassisTypeTable, ServerChassisTypeColumn),
+	)
 }

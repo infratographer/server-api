@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/x/gidx"
 )
@@ -452,6 +453,52 @@ func SerialEqualFold(v string) predicate.ServerChassis {
 // SerialContainsFold applies the ContainsFold predicate on the "serial" field.
 func SerialContainsFold(v string) predicate.ServerChassis {
 	return predicate.ServerChassis(sql.FieldContainsFold(FieldSerial, v))
+}
+
+// HasServer applies the HasEdge predicate on the "server" edge.
+func HasServer() predicate.ServerChassis {
+	return predicate.ServerChassis(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, ServerTable, ServerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasServerWith applies the HasEdge predicate on the "server" edge with a given conditions (other predicates).
+func HasServerWith(preds ...predicate.Server) predicate.ServerChassis {
+	return predicate.ServerChassis(func(s *sql.Selector) {
+		step := newServerStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasServerChassisType applies the HasEdge predicate on the "server_chassis_type" edge.
+func HasServerChassisType() predicate.ServerChassis {
+	return predicate.ServerChassis(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, ServerChassisTypeTable, ServerChassisTypeColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasServerChassisTypeWith applies the HasEdge predicate on the "server_chassis_type" edge with a given conditions (other predicates).
+func HasServerChassisTypeWith(preds ...predicate.ServerChassisType) predicate.ServerChassis {
+	return predicate.ServerChassis(func(s *sql.Selector) {
+		step := newServerChassisTypeStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

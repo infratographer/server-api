@@ -31,14 +31,12 @@ type Entity interface {
 
 // Input information to create a server chassis.
 type CreateServerChassisInput struct {
-	// The ID for the server chassis type of this server chassis.
-	ServerChassisTypeID gidx.PrefixedID `json:"serverChassisTypeID"`
 	// The ID for the parent of this chassis.
 	ParentChassisID gidx.PrefixedID `json:"parentChassisID"`
-	// The ID for the server of this server chassis.
-	ServerID gidx.PrefixedID `json:"serverID"`
 	// The serial number of the server chassis.
-	Serial string `json:"serial"`
+	Serial              string          `json:"serial"`
+	ServerID            gidx.PrefixedID `json:"serverID"`
+	ServerChassisTypeID gidx.PrefixedID `json:"serverChassisTypeID"`
 }
 
 // Input information to create a server chassis type.
@@ -149,7 +147,9 @@ type ServerChassis struct {
 	CreatedAt time.Time       `json:"createdAt"`
 	UpdatedAt time.Time       `json:"updatedAt"`
 	// The serial number of the server chassis.
-	Serial string `json:"serial"`
+	Serial            string            `json:"serial"`
+	Server            Server            `json:"server"`
+	ServerChassisType ServerChassisType `json:"serverChassisType"`
 }
 
 func (ServerChassis) IsNode() {}
@@ -396,6 +396,12 @@ type ServerChassisWhereInput struct {
 	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
 	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
 	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+	// server_chassis_type edge predicates
+	HasServerChassisType     *bool                          `json:"hasServerChassisType,omitempty"`
+	HasServerChassisTypeWith []*ServerChassisTypeWhereInput `json:"hasServerChassisTypeWith,omitempty"`
 }
 
 type ServerComponent struct {

@@ -2,14 +2,12 @@ directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | I
 directive @goModel(model: String, models: [String!]) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 """Input information to create a server chassis."""
 input CreateServerChassisInput {
-  """The ID for the server chassis type of this server chassis."""
-  serverChassisTypeID: ID!
   """The ID for the parent of this chassis."""
   parentChassisID: ID!
-  """The ID for the server of this server chassis."""
-  serverID: ID!
   """The serial number of the server chassis."""
   serial: String!
+  serverID: ID!
+  serverChassisTypeID: ID!
 }
 """Input information to create a server chassis type."""
 input CreateServerChassisTypeInput {
@@ -146,6 +144,8 @@ type ServerChassis implements Node @key(fields: "id") @prefixedID(prefix: "srvrs
   updatedAt: Time!
   """The serial number of the server chassis."""
   serial: String!
+  server: Server!
+  serverChassisType: ServerChassisType!
 }
 """A connection to a list of items."""
 type ServerChassisConnection {
@@ -354,6 +354,12 @@ input ServerChassisWhereInput {
   serialHasSuffix: String
   serialEqualFold: String
   serialContainsFold: String
+  """server edge predicates"""
+  hasServer: Boolean
+  hasServerWith: [ServerWhereInput!]
+  """server_chassis_type edge predicates"""
+  hasServerChassisType: Boolean
+  hasServerChassisTypeWith: [ServerChassisTypeWhereInput!]
 }
 type ServerComponent implements Node @key(fields: "id") @prefixedID(prefix: "srvrcmp") {
   """The ID of the server component."""

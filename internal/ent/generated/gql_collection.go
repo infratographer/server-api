@@ -454,6 +454,34 @@ func (sc *ServerChassisQuery) collectField(ctx context.Context, opCtx *graphql.O
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
+		case "server":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerClient{config: sc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sc.withServer = query
+			if _, ok := fieldSeen[serverchassis.FieldServerID]; !ok {
+				selectedFields = append(selectedFields, serverchassis.FieldServerID)
+				fieldSeen[serverchassis.FieldServerID] = struct{}{}
+			}
+		case "serverChassisType":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerChassisTypeClient{config: sc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sc.withServerChassisType = query
+			if _, ok := fieldSeen[serverchassis.FieldServerChassisTypeID]; !ok {
+				selectedFields = append(selectedFields, serverchassis.FieldServerChassisTypeID)
+				fieldSeen[serverchassis.FieldServerChassisTypeID] = struct{}{}
+			}
 		case "createdAt":
 			if _, ok := fieldSeen[serverchassis.FieldCreatedAt]; !ok {
 				selectedFields = append(selectedFields, serverchassis.FieldCreatedAt)

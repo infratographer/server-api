@@ -23,7 +23,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -44,8 +46,50 @@ type ServerChassis struct {
 	// The ID for the server of this server chassis.
 	ServerID gidx.PrefixedID `json:"server_id,omitempty"`
 	// The serial number of the server chassis.
-	Serial       string `json:"serial,omitempty"`
+	Serial string `json:"serial,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ServerChassisQuery when eager-loading is set.
+	Edges        ServerChassisEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// ServerChassisEdges holds the relations/edges for other nodes in the graph.
+type ServerChassisEdges struct {
+	// Server holds the value of the server edge.
+	Server *Server `json:"server,omitempty"`
+	// ServerChassisType holds the value of the server_chassis_type edge.
+	ServerChassisType *ServerChassisType `json:"server_chassis_type,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+	// totalCount holds the count of the edges above.
+	totalCount [2]map[string]int
+}
+
+// ServerOrErr returns the Server value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ServerChassisEdges) ServerOrErr() (*Server, error) {
+	if e.loadedTypes[0] {
+		if e.Server == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: server.Label}
+		}
+		return e.Server, nil
+	}
+	return nil, &NotLoadedError{edge: "server"}
+}
+
+// ServerChassisTypeOrErr returns the ServerChassisType value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ServerChassisEdges) ServerChassisTypeOrErr() (*ServerChassisType, error) {
+	if e.loadedTypes[1] {
+		if e.ServerChassisType == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: serverchassistype.Label}
+		}
+		return e.ServerChassisType, nil
+	}
+	return nil, &NotLoadedError{edge: "server_chassis_type"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -127,6 +171,16 @@ func (sc *ServerChassis) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (sc *ServerChassis) Value(name string) (ent.Value, error) {
 	return sc.selectValues.Get(name)
+}
+
+// QueryServer queries the "server" edge of the ServerChassis entity.
+func (sc *ServerChassis) QueryServer() *ServerQuery {
+	return NewServerChassisClient(sc.config).QueryServer(sc)
+}
+
+// QueryServerChassisType queries the "server_chassis_type" edge of the ServerChassis entity.
+func (sc *ServerChassis) QueryServerChassisType() *ServerChassisTypeQuery {
+	return NewServerChassisClient(sc.config).QueryServerChassisType(sc)
 }
 
 // Update returns a builder for updating this ServerChassis.

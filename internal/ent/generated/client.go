@@ -654,6 +654,38 @@ func (c *ServerChassisClient) GetX(ctx context.Context, id gidx.PrefixedID) *Ser
 	return obj
 }
 
+// QueryServer queries the server edge of a ServerChassis.
+func (c *ServerChassisClient) QueryServer(sc *ServerChassis) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverchassis.Table, serverchassis.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverchassis.ServerTable, serverchassis.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(sc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryServerChassisType queries the server_chassis_type edge of a ServerChassis.
+func (c *ServerChassisClient) QueryServerChassisType(sc *ServerChassis) *ServerChassisTypeQuery {
+	query := (&ServerChassisTypeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverchassis.Table, serverchassis.FieldID, id),
+			sqlgraph.To(serverchassistype.Table, serverchassistype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverchassis.ServerChassisTypeTable, serverchassis.ServerChassisTypeColumn),
+		)
+		fromV = sqlgraph.Neighbors(sc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ServerChassisClient) Hooks() []Hook {
 	return c.hooks.ServerChassis

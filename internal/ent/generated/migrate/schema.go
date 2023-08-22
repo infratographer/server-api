@@ -122,16 +122,30 @@ var (
 		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "server_chassis_type_id", Type: field.TypeString, Size: 2147483647},
 		{Name: "parent_chassis_id", Type: field.TypeString, Size: 2147483647},
-		{Name: "server_id", Type: field.TypeString, Size: 2147483647},
 		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "server_id", Type: field.TypeString},
+		{Name: "server_chassis_type_id", Type: field.TypeString},
 	}
 	// ServerChassesTable holds the schema information for the "server_chasses" table.
 	ServerChassesTable = &schema.Table{
 		Name:       "server_chasses",
 		Columns:    ServerChassesColumns,
 		PrimaryKey: []*schema.Column{ServerChassesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_chasses_servers_server",
+				Columns:    []*schema.Column{ServerChassesColumns[5]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_chasses_server_chassis_types_server_chassis_type",
+				Columns:    []*schema.Column{ServerChassesColumns[6]},
+				RefColumns: []*schema.Column{ServerChassisTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "serverchassis_created_at",
@@ -146,7 +160,7 @@ var (
 			{
 				Name:    "serverchassis_server_chassis_type_id",
 				Unique:  false,
-				Columns: []*schema.Column{ServerChassesColumns[3]},
+				Columns: []*schema.Column{ServerChassesColumns[6]},
 			},
 			{
 				Name:    "serverchassis_server_id",
@@ -156,7 +170,7 @@ var (
 			{
 				Name:    "serverchassis_parent_chassis_id",
 				Unique:  false,
-				Columns: []*schema.Column{ServerChassesColumns[4]},
+				Columns: []*schema.Column{ServerChassesColumns[3]},
 			},
 		},
 	}
@@ -319,6 +333,8 @@ var (
 func init() {
 	ServersTable.ForeignKeys[0].RefTable = ProvidersTable
 	ServersTable.ForeignKeys[1].RefTable = ServerTypesTable
+	ServerChassesTable.ForeignKeys[0].RefTable = ServersTable
+	ServerChassesTable.ForeignKeys[1].RefTable = ServerChassisTypesTable
 	ServerComponentsTable.ForeignKeys[0].RefTable = ServerComponentTypesTable
 	ServerComponentsTable.ForeignKeys[1].RefTable = ServersTable
 }

@@ -95,6 +95,12 @@ func (scu *ServerChassisUpdate) check() error {
 			return &ValidationError{Name: "serial", err: fmt.Errorf(`generated: validator failed for field "ServerChassis.serial": %w`, err)}
 		}
 	}
+	if _, ok := scu.mutation.ServerID(); scu.mutation.ServerCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerChassis.server"`)
+	}
+	if _, ok := scu.mutation.ServerChassisTypeID(); scu.mutation.ServerChassisTypeCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerChassis.server_chassis_type"`)
+	}
 	return nil
 }
 
@@ -202,6 +208,12 @@ func (scuo *ServerChassisUpdateOne) check() error {
 		if err := serverchassis.SerialValidator(v); err != nil {
 			return &ValidationError{Name: "serial", err: fmt.Errorf(`generated: validator failed for field "ServerChassis.serial": %w`, err)}
 		}
+	}
+	if _, ok := scuo.mutation.ServerID(); scuo.mutation.ServerCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerChassis.server"`)
+	}
+	if _, ok := scuo.mutation.ServerChassisTypeID(); scuo.mutation.ServerChassisTypeCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerChassis.server_chassis_type"`)
 	}
 	return nil
 }

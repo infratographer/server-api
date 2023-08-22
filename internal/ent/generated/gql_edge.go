@@ -80,6 +80,22 @@ func (s *Server) Components(
 	return s.QueryComponents().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (sc *ServerChassis) Server(ctx context.Context) (*Server, error) {
+	result, err := sc.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = sc.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (sc *ServerChassis) ServerChassisType(ctx context.Context) (*ServerChassisType, error) {
+	result, err := sc.Edges.ServerChassisTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = sc.QueryServerChassisType().Only(ctx)
+	}
+	return result, err
+}
+
 func (sc *ServerComponent) ComponentType(ctx context.Context) (*ServerComponentType, error) {
 	result, err := sc.Edges.ComponentTypeOrErr()
 	if IsNotLoaded(err) {

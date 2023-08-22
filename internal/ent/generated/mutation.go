@@ -1559,19 +1559,21 @@ func (m *ServerMutation) ResetEdge(name string) error {
 // ServerChassisMutation represents an operation that mutates the ServerChassis nodes in the graph.
 type ServerChassisMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *gidx.PrefixedID
-	created_at             *time.Time
-	updated_at             *time.Time
-	server_chassis_type_id *gidx.PrefixedID
-	parent_chassis_id      *gidx.PrefixedID
-	server_id              *gidx.PrefixedID
-	serial                 *string
-	clearedFields          map[string]struct{}
-	done                   bool
-	oldValue               func(context.Context) (*ServerChassis, error)
-	predicates             []predicate.ServerChassis
+	op                         Op
+	typ                        string
+	id                         *gidx.PrefixedID
+	created_at                 *time.Time
+	updated_at                 *time.Time
+	parent_chassis_id          *gidx.PrefixedID
+	serial                     *string
+	clearedFields              map[string]struct{}
+	server                     *gidx.PrefixedID
+	clearedserver              bool
+	server_chassis_type        *gidx.PrefixedID
+	clearedserver_chassis_type bool
+	done                       bool
+	oldValue                   func(context.Context) (*ServerChassis, error)
+	predicates                 []predicate.ServerChassis
 }
 
 var _ ent.Mutation = (*ServerChassisMutation)(nil)
@@ -1752,12 +1754,12 @@ func (m *ServerChassisMutation) ResetUpdatedAt() {
 
 // SetServerChassisTypeID sets the "server_chassis_type_id" field.
 func (m *ServerChassisMutation) SetServerChassisTypeID(gi gidx.PrefixedID) {
-	m.server_chassis_type_id = &gi
+	m.server_chassis_type = &gi
 }
 
 // ServerChassisTypeID returns the value of the "server_chassis_type_id" field in the mutation.
 func (m *ServerChassisMutation) ServerChassisTypeID() (r gidx.PrefixedID, exists bool) {
-	v := m.server_chassis_type_id
+	v := m.server_chassis_type
 	if v == nil {
 		return
 	}
@@ -1783,7 +1785,7 @@ func (m *ServerChassisMutation) OldServerChassisTypeID(ctx context.Context) (v g
 
 // ResetServerChassisTypeID resets all changes to the "server_chassis_type_id" field.
 func (m *ServerChassisMutation) ResetServerChassisTypeID() {
-	m.server_chassis_type_id = nil
+	m.server_chassis_type = nil
 }
 
 // SetParentChassisID sets the "parent_chassis_id" field.
@@ -1824,12 +1826,12 @@ func (m *ServerChassisMutation) ResetParentChassisID() {
 
 // SetServerID sets the "server_id" field.
 func (m *ServerChassisMutation) SetServerID(gi gidx.PrefixedID) {
-	m.server_id = &gi
+	m.server = &gi
 }
 
 // ServerID returns the value of the "server_id" field in the mutation.
 func (m *ServerChassisMutation) ServerID() (r gidx.PrefixedID, exists bool) {
-	v := m.server_id
+	v := m.server
 	if v == nil {
 		return
 	}
@@ -1855,7 +1857,7 @@ func (m *ServerChassisMutation) OldServerID(ctx context.Context) (v gidx.Prefixe
 
 // ResetServerID resets all changes to the "server_id" field.
 func (m *ServerChassisMutation) ResetServerID() {
-	m.server_id = nil
+	m.server = nil
 }
 
 // SetSerial sets the "serial" field.
@@ -1892,6 +1894,58 @@ func (m *ServerChassisMutation) OldSerial(ctx context.Context) (v string, err er
 // ResetSerial resets all changes to the "serial" field.
 func (m *ServerChassisMutation) ResetSerial() {
 	m.serial = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerChassisMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerChassisMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerChassisMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerChassisMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// ClearServerChassisType clears the "server_chassis_type" edge to the ServerChassisType entity.
+func (m *ServerChassisMutation) ClearServerChassisType() {
+	m.clearedserver_chassis_type = true
+}
+
+// ServerChassisTypeCleared reports if the "server_chassis_type" edge to the ServerChassisType entity was cleared.
+func (m *ServerChassisMutation) ServerChassisTypeCleared() bool {
+	return m.clearedserver_chassis_type
+}
+
+// ServerChassisTypeIDs returns the "server_chassis_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerChassisTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerChassisMutation) ServerChassisTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.server_chassis_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServerChassisType resets all changes to the "server_chassis_type" edge.
+func (m *ServerChassisMutation) ResetServerChassisType() {
+	m.server_chassis_type = nil
+	m.clearedserver_chassis_type = false
 }
 
 // Where appends a list predicates to the ServerChassisMutation builder.
@@ -1935,13 +1989,13 @@ func (m *ServerChassisMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, serverchassis.FieldUpdatedAt)
 	}
-	if m.server_chassis_type_id != nil {
+	if m.server_chassis_type != nil {
 		fields = append(fields, serverchassis.FieldServerChassisTypeID)
 	}
 	if m.parent_chassis_id != nil {
 		fields = append(fields, serverchassis.FieldParentChassisID)
 	}
-	if m.server_id != nil {
+	if m.server != nil {
 		fields = append(fields, serverchassis.FieldServerID)
 	}
 	if m.serial != nil {
@@ -2112,19 +2166,35 @@ func (m *ServerChassisMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ServerChassisMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.server != nil {
+		edges = append(edges, serverchassis.EdgeServer)
+	}
+	if m.server_chassis_type != nil {
+		edges = append(edges, serverchassis.EdgeServerChassisType)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ServerChassisMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case serverchassis.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case serverchassis.EdgeServerChassisType:
+		if id := m.server_chassis_type; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ServerChassisMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -2136,25 +2206,53 @@ func (m *ServerChassisMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ServerChassisMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedserver {
+		edges = append(edges, serverchassis.EdgeServer)
+	}
+	if m.clearedserver_chassis_type {
+		edges = append(edges, serverchassis.EdgeServerChassisType)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ServerChassisMutation) EdgeCleared(name string) bool {
+	switch name {
+	case serverchassis.EdgeServer:
+		return m.clearedserver
+	case serverchassis.EdgeServerChassisType:
+		return m.clearedserver_chassis_type
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ServerChassisMutation) ClearEdge(name string) error {
+	switch name {
+	case serverchassis.EdgeServer:
+		m.ClearServer()
+		return nil
+	case serverchassis.EdgeServerChassisType:
+		m.ClearServerChassisType()
+		return nil
+	}
 	return fmt.Errorf("unknown ServerChassis unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ServerChassisMutation) ResetEdge(name string) error {
+	switch name {
+	case serverchassis.EdgeServer:
+		m.ResetServer()
+		return nil
+	case serverchassis.EdgeServerChassisType:
+		m.ResetServerChassisType()
+		return nil
+	}
 	return fmt.Errorf("unknown ServerChassis edge %s", name)
 }
 

@@ -24,7 +24,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -101,6 +103,16 @@ func (scc *ServerChassisCreate) SetNillableID(gi *gidx.PrefixedID) *ServerChassi
 	return scc
 }
 
+// SetServer sets the "server" edge to the Server entity.
+func (scc *ServerChassisCreate) SetServer(s *Server) *ServerChassisCreate {
+	return scc.SetServerID(s.ID)
+}
+
+// SetServerChassisType sets the "server_chassis_type" edge to the ServerChassisType entity.
+func (scc *ServerChassisCreate) SetServerChassisType(s *ServerChassisType) *ServerChassisCreate {
+	return scc.SetServerChassisTypeID(s.ID)
+}
+
 // Mutation returns the ServerChassisMutation object of the builder.
 func (scc *ServerChassisCreate) Mutation() *ServerChassisMutation {
 	return scc.mutation
@@ -175,6 +187,12 @@ func (scc *ServerChassisCreate) check() error {
 			return &ValidationError{Name: "serial", err: fmt.Errorf(`generated: validator failed for field "ServerChassis.serial": %w`, err)}
 		}
 	}
+	if _, ok := scc.mutation.ServerID(); !ok {
+		return &ValidationError{Name: "server", err: errors.New(`generated: missing required edge "ServerChassis.server"`)}
+	}
+	if _, ok := scc.mutation.ServerChassisTypeID(); !ok {
+		return &ValidationError{Name: "server_chassis_type", err: errors.New(`generated: missing required edge "ServerChassis.server_chassis_type"`)}
+	}
 	return nil
 }
 
@@ -218,21 +236,47 @@ func (scc *ServerChassisCreate) createSpec() (*ServerChassis, *sqlgraph.CreateSp
 		_spec.SetField(serverchassis.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := scc.mutation.ServerChassisTypeID(); ok {
-		_spec.SetField(serverchassis.FieldServerChassisTypeID, field.TypeString, value)
-		_node.ServerChassisTypeID = value
-	}
 	if value, ok := scc.mutation.ParentChassisID(); ok {
 		_spec.SetField(serverchassis.FieldParentChassisID, field.TypeString, value)
 		_node.ParentChassisID = value
 	}
-	if value, ok := scc.mutation.ServerID(); ok {
-		_spec.SetField(serverchassis.FieldServerID, field.TypeString, value)
-		_node.ServerID = value
-	}
 	if value, ok := scc.mutation.Serial(); ok {
 		_spec.SetField(serverchassis.FieldSerial, field.TypeString, value)
 		_node.Serial = value
+	}
+	if nodes := scc.mutation.ServerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   serverchassis.ServerTable,
+			Columns: []string{serverchassis.ServerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(server.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ServerID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := scc.mutation.ServerChassisTypeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   serverchassis.ServerChassisTypeTable,
+			Columns: []string{serverchassis.ServerChassisTypeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassistype.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ServerChassisTypeID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

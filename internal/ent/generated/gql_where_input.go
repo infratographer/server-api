@@ -725,6 +725,14 @@ type ServerChassisWhereInput struct {
 	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
 	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
 	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+
+	// "server" edge predicates.
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+
+	// "server_chassis_type" edge predicates.
+	HasServerChassisType     *bool                          `json:"hasServerChassisType,omitempty"`
+	HasServerChassisTypeWith []*ServerChassisTypeWhereInput `json:"hasServerChassisTypeWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -910,6 +918,42 @@ func (i *ServerChassisWhereInput) P() (predicate.ServerChassis, error) {
 		predicates = append(predicates, serverchassis.SerialContainsFold(*i.SerialContainsFold))
 	}
 
+	if i.HasServer != nil {
+		p := serverchassis.HasServer()
+		if !*i.HasServer {
+			p = serverchassis.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerWith) > 0 {
+		with := make([]predicate.Server, 0, len(i.HasServerWith))
+		for _, w := range i.HasServerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverchassis.HasServerWith(with...))
+	}
+	if i.HasServerChassisType != nil {
+		p := serverchassis.HasServerChassisType()
+		if !*i.HasServerChassisType {
+			p = serverchassis.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerChassisTypeWith) > 0 {
+		with := make([]predicate.ServerChassisType, 0, len(i.HasServerChassisTypeWith))
+		for _, w := range i.HasServerChassisTypeWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerChassisTypeWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverchassis.HasServerChassisTypeWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyServerChassisWhereInput

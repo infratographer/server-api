@@ -140,18 +140,18 @@ func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
 
 // CreateServerChassisInput represents a mutation input for creating serverchasses.
 type CreateServerChassisInput struct {
-	ServerChassisTypeID gidx.PrefixedID
 	ParentChassisID     gidx.PrefixedID
-	ServerID            gidx.PrefixedID
 	Serial              string
+	ServerID            gidx.PrefixedID
+	ServerChassisTypeID gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerChassisInput on the ServerChassisMutation builder.
 func (i *CreateServerChassisInput) Mutate(m *ServerChassisMutation) {
-	m.SetServerChassisTypeID(i.ServerChassisTypeID)
 	m.SetParentChassisID(i.ParentChassisID)
-	m.SetServerID(i.ServerID)
 	m.SetSerial(i.Serial)
+	m.SetServerID(i.ServerID)
+	m.SetServerChassisTypeID(i.ServerChassisTypeID)
 }
 
 // SetInput applies the change-set in the CreateServerChassisInput on the ServerChassisCreate builder.
