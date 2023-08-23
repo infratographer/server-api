@@ -480,6 +480,112 @@ func (c *ServerComponentTypeUpdateOne) SetInput(i UpdateServerComponentTypeInput
 	return c
 }
 
+// CreateServerMotherboardInput represents a mutation input for creating servermotherboards.
+type CreateServerMotherboardInput struct {
+	Serial                  string
+	ServerID                gidx.PrefixedID
+	ServerMotherboardTypeID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerMotherboardInput on the ServerMotherboardMutation builder.
+func (i *CreateServerMotherboardInput) Mutate(m *ServerMotherboardMutation) {
+	m.SetSerial(i.Serial)
+	m.SetServerID(i.ServerID)
+	m.SetServerMotherboardTypeID(i.ServerMotherboardTypeID)
+}
+
+// SetInput applies the change-set in the CreateServerMotherboardInput on the ServerMotherboardCreate builder.
+func (c *ServerMotherboardCreate) SetInput(i CreateServerMotherboardInput) *ServerMotherboardCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerMotherboardInput represents a mutation input for updating servermotherboards.
+type UpdateServerMotherboardInput struct {
+	Serial *string
+}
+
+// Mutate applies the UpdateServerMotherboardInput on the ServerMotherboardMutation builder.
+func (i *UpdateServerMotherboardInput) Mutate(m *ServerMotherboardMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerMotherboardInput on the ServerMotherboardUpdate builder.
+func (c *ServerMotherboardUpdate) SetInput(i UpdateServerMotherboardInput) *ServerMotherboardUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerMotherboardInput on the ServerMotherboardUpdateOne builder.
+func (c *ServerMotherboardUpdateOne) SetInput(i UpdateServerMotherboardInput) *ServerMotherboardUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateServerMotherboardTypeInput represents a mutation input for creating servermotherboardtypes.
+type CreateServerMotherboardTypeInput struct {
+	Vendor         string
+	Model          string
+	MotherboardIDs []gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerMotherboardTypeInput on the ServerMotherboardTypeMutation builder.
+func (i *CreateServerMotherboardTypeInput) Mutate(m *ServerMotherboardTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	if v := i.MotherboardIDs; len(v) > 0 {
+		m.AddMotherboardIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateServerMotherboardTypeInput on the ServerMotherboardTypeCreate builder.
+func (c *ServerMotherboardTypeCreate) SetInput(i CreateServerMotherboardTypeInput) *ServerMotherboardTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerMotherboardTypeInput represents a mutation input for updating servermotherboardtypes.
+type UpdateServerMotherboardTypeInput struct {
+	Vendor               *string
+	Model                *string
+	ClearMotherboard     bool
+	AddMotherboardIDs    []gidx.PrefixedID
+	RemoveMotherboardIDs []gidx.PrefixedID
+}
+
+// Mutate applies the UpdateServerMotherboardTypeInput on the ServerMotherboardTypeMutation builder.
+func (i *UpdateServerMotherboardTypeInput) Mutate(m *ServerMotherboardTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if i.ClearMotherboard {
+		m.ClearMotherboard()
+	}
+	if v := i.AddMotherboardIDs; len(v) > 0 {
+		m.AddMotherboardIDs(v...)
+	}
+	if v := i.RemoveMotherboardIDs; len(v) > 0 {
+		m.RemoveMotherboardIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerMotherboardTypeInput on the ServerMotherboardTypeUpdate builder.
+func (c *ServerMotherboardTypeUpdate) SetInput(i UpdateServerMotherboardTypeInput) *ServerMotherboardTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerMotherboardTypeInput on the ServerMotherboardTypeUpdateOne builder.
+func (c *ServerMotherboardTypeUpdateOne) SetInput(i UpdateServerMotherboardTypeInput) *ServerMotherboardTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerTypeInput represents a mutation input for creating servertypes.
 type CreateServerTypeInput struct {
 	Name    string

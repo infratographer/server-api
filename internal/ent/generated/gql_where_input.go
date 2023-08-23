@@ -30,6 +30,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -2747,6 +2749,618 @@ func (i *ServerComponentTypeWhereInput) P() (predicate.ServerComponentType, erro
 		return predicates[0], nil
 	default:
 		return servercomponenttype.And(predicates...), nil
+	}
+}
+
+// ServerMotherboardWhereInput represents a where input for filtering ServerMotherboard queries.
+type ServerMotherboardWhereInput struct {
+	Predicates []predicate.ServerMotherboard  `json:"-"`
+	Not        *ServerMotherboardWhereInput   `json:"not,omitempty"`
+	Or         []*ServerMotherboardWhereInput `json:"or,omitempty"`
+	And        []*ServerMotherboardWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "serial" field predicates.
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNEQ          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGT           *string  `json:"serialGT,omitempty"`
+	SerialGTE          *string  `json:"serialGTE,omitempty"`
+	SerialLT           *string  `json:"serialLT,omitempty"`
+	SerialLTE          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+
+	// "server" edge predicates.
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+
+	// "server_motherboard_type" edge predicates.
+	HasServerMotherboardType     *bool                              `json:"hasServerMotherboardType,omitempty"`
+	HasServerMotherboardTypeWith []*ServerMotherboardTypeWhereInput `json:"hasServerMotherboardTypeWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerMotherboardWhereInput) AddPredicates(predicates ...predicate.ServerMotherboard) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerMotherboardWhereInput filter on the ServerMotherboardQuery builder.
+func (i *ServerMotherboardWhereInput) Filter(q *ServerMotherboardQuery) (*ServerMotherboardQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerMotherboardWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerMotherboardWhereInput is returned in case the ServerMotherboardWhereInput is empty.
+var ErrEmptyServerMotherboardWhereInput = errors.New("generated: empty predicate ServerMotherboardWhereInput")
+
+// P returns a predicate for filtering servermotherboards.
+// An error is returned if the input is empty or invalid.
+func (i *ServerMotherboardWhereInput) P() (predicate.ServerMotherboard, error) {
+	var predicates []predicate.ServerMotherboard
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, servermotherboard.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerMotherboard, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, servermotherboard.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerMotherboard, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, servermotherboard.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, servermotherboard.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, servermotherboard.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, servermotherboard.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, servermotherboard.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, servermotherboard.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, servermotherboard.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, servermotherboard.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, servermotherboard.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, servermotherboard.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, servermotherboard.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, servermotherboard.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, servermotherboard.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, servermotherboard.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, servermotherboard.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, servermotherboard.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, servermotherboard.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, servermotherboard.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, servermotherboard.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, servermotherboard.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, servermotherboard.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, servermotherboard.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, servermotherboard.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, servermotherboard.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, servermotherboard.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Serial != nil {
+		predicates = append(predicates, servermotherboard.SerialEQ(*i.Serial))
+	}
+	if i.SerialNEQ != nil {
+		predicates = append(predicates, servermotherboard.SerialNEQ(*i.SerialNEQ))
+	}
+	if len(i.SerialIn) > 0 {
+		predicates = append(predicates, servermotherboard.SerialIn(i.SerialIn...))
+	}
+	if len(i.SerialNotIn) > 0 {
+		predicates = append(predicates, servermotherboard.SerialNotIn(i.SerialNotIn...))
+	}
+	if i.SerialGT != nil {
+		predicates = append(predicates, servermotherboard.SerialGT(*i.SerialGT))
+	}
+	if i.SerialGTE != nil {
+		predicates = append(predicates, servermotherboard.SerialGTE(*i.SerialGTE))
+	}
+	if i.SerialLT != nil {
+		predicates = append(predicates, servermotherboard.SerialLT(*i.SerialLT))
+	}
+	if i.SerialLTE != nil {
+		predicates = append(predicates, servermotherboard.SerialLTE(*i.SerialLTE))
+	}
+	if i.SerialContains != nil {
+		predicates = append(predicates, servermotherboard.SerialContains(*i.SerialContains))
+	}
+	if i.SerialHasPrefix != nil {
+		predicates = append(predicates, servermotherboard.SerialHasPrefix(*i.SerialHasPrefix))
+	}
+	if i.SerialHasSuffix != nil {
+		predicates = append(predicates, servermotherboard.SerialHasSuffix(*i.SerialHasSuffix))
+	}
+	if i.SerialEqualFold != nil {
+		predicates = append(predicates, servermotherboard.SerialEqualFold(*i.SerialEqualFold))
+	}
+	if i.SerialContainsFold != nil {
+		predicates = append(predicates, servermotherboard.SerialContainsFold(*i.SerialContainsFold))
+	}
+
+	if i.HasServer != nil {
+		p := servermotherboard.HasServer()
+		if !*i.HasServer {
+			p = servermotherboard.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerWith) > 0 {
+		with := make([]predicate.Server, 0, len(i.HasServerWith))
+		for _, w := range i.HasServerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servermotherboard.HasServerWith(with...))
+	}
+	if i.HasServerMotherboardType != nil {
+		p := servermotherboard.HasServerMotherboardType()
+		if !*i.HasServerMotherboardType {
+			p = servermotherboard.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerMotherboardTypeWith) > 0 {
+		with := make([]predicate.ServerMotherboardType, 0, len(i.HasServerMotherboardTypeWith))
+		for _, w := range i.HasServerMotherboardTypeWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerMotherboardTypeWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servermotherboard.HasServerMotherboardTypeWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerMotherboardWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return servermotherboard.And(predicates...), nil
+	}
+}
+
+// ServerMotherboardTypeWhereInput represents a where input for filtering ServerMotherboardType queries.
+type ServerMotherboardTypeWhereInput struct {
+	Predicates []predicate.ServerMotherboardType  `json:"-"`
+	Not        *ServerMotherboardTypeWhereInput   `json:"not,omitempty"`
+	Or         []*ServerMotherboardTypeWhereInput `json:"or,omitempty"`
+	And        []*ServerMotherboardTypeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "vendor" field predicates.
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNEQ          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGT           *string  `json:"vendorGT,omitempty"`
+	VendorGTE          *string  `json:"vendorGTE,omitempty"`
+	VendorLT           *string  `json:"vendorLT,omitempty"`
+	VendorLTE          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+
+	// "model" field predicates.
+	Model             *string  `json:"model,omitempty"`
+	ModelNEQ          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGT           *string  `json:"modelGT,omitempty"`
+	ModelGTE          *string  `json:"modelGTE,omitempty"`
+	ModelLT           *string  `json:"modelLT,omitempty"`
+	ModelLTE          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+
+	// "motherboard" edge predicates.
+	HasMotherboard     *bool                          `json:"hasMotherboard,omitempty"`
+	HasMotherboardWith []*ServerMotherboardWhereInput `json:"hasMotherboardWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerMotherboardTypeWhereInput) AddPredicates(predicates ...predicate.ServerMotherboardType) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerMotherboardTypeWhereInput filter on the ServerMotherboardTypeQuery builder.
+func (i *ServerMotherboardTypeWhereInput) Filter(q *ServerMotherboardTypeQuery) (*ServerMotherboardTypeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerMotherboardTypeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerMotherboardTypeWhereInput is returned in case the ServerMotherboardTypeWhereInput is empty.
+var ErrEmptyServerMotherboardTypeWhereInput = errors.New("generated: empty predicate ServerMotherboardTypeWhereInput")
+
+// P returns a predicate for filtering servermotherboardtypes.
+// An error is returned if the input is empty or invalid.
+func (i *ServerMotherboardTypeWhereInput) P() (predicate.ServerMotherboardType, error) {
+	var predicates []predicate.ServerMotherboardType
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, servermotherboardtype.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerMotherboardType, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, servermotherboardtype.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerMotherboardType, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, servermotherboardtype.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, servermotherboardtype.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, servermotherboardtype.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, servermotherboardtype.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, servermotherboardtype.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, servermotherboardtype.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, servermotherboardtype.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, servermotherboardtype.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, servermotherboardtype.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, servermotherboardtype.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, servermotherboardtype.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, servermotherboardtype.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, servermotherboardtype.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, servermotherboardtype.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Vendor != nil {
+		predicates = append(predicates, servermotherboardtype.VendorEQ(*i.Vendor))
+	}
+	if i.VendorNEQ != nil {
+		predicates = append(predicates, servermotherboardtype.VendorNEQ(*i.VendorNEQ))
+	}
+	if len(i.VendorIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.VendorIn(i.VendorIn...))
+	}
+	if len(i.VendorNotIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.VendorNotIn(i.VendorNotIn...))
+	}
+	if i.VendorGT != nil {
+		predicates = append(predicates, servermotherboardtype.VendorGT(*i.VendorGT))
+	}
+	if i.VendorGTE != nil {
+		predicates = append(predicates, servermotherboardtype.VendorGTE(*i.VendorGTE))
+	}
+	if i.VendorLT != nil {
+		predicates = append(predicates, servermotherboardtype.VendorLT(*i.VendorLT))
+	}
+	if i.VendorLTE != nil {
+		predicates = append(predicates, servermotherboardtype.VendorLTE(*i.VendorLTE))
+	}
+	if i.VendorContains != nil {
+		predicates = append(predicates, servermotherboardtype.VendorContains(*i.VendorContains))
+	}
+	if i.VendorHasPrefix != nil {
+		predicates = append(predicates, servermotherboardtype.VendorHasPrefix(*i.VendorHasPrefix))
+	}
+	if i.VendorHasSuffix != nil {
+		predicates = append(predicates, servermotherboardtype.VendorHasSuffix(*i.VendorHasSuffix))
+	}
+	if i.VendorEqualFold != nil {
+		predicates = append(predicates, servermotherboardtype.VendorEqualFold(*i.VendorEqualFold))
+	}
+	if i.VendorContainsFold != nil {
+		predicates = append(predicates, servermotherboardtype.VendorContainsFold(*i.VendorContainsFold))
+	}
+	if i.Model != nil {
+		predicates = append(predicates, servermotherboardtype.ModelEQ(*i.Model))
+	}
+	if i.ModelNEQ != nil {
+		predicates = append(predicates, servermotherboardtype.ModelNEQ(*i.ModelNEQ))
+	}
+	if len(i.ModelIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.ModelIn(i.ModelIn...))
+	}
+	if len(i.ModelNotIn) > 0 {
+		predicates = append(predicates, servermotherboardtype.ModelNotIn(i.ModelNotIn...))
+	}
+	if i.ModelGT != nil {
+		predicates = append(predicates, servermotherboardtype.ModelGT(*i.ModelGT))
+	}
+	if i.ModelGTE != nil {
+		predicates = append(predicates, servermotherboardtype.ModelGTE(*i.ModelGTE))
+	}
+	if i.ModelLT != nil {
+		predicates = append(predicates, servermotherboardtype.ModelLT(*i.ModelLT))
+	}
+	if i.ModelLTE != nil {
+		predicates = append(predicates, servermotherboardtype.ModelLTE(*i.ModelLTE))
+	}
+	if i.ModelContains != nil {
+		predicates = append(predicates, servermotherboardtype.ModelContains(*i.ModelContains))
+	}
+	if i.ModelHasPrefix != nil {
+		predicates = append(predicates, servermotherboardtype.ModelHasPrefix(*i.ModelHasPrefix))
+	}
+	if i.ModelHasSuffix != nil {
+		predicates = append(predicates, servermotherboardtype.ModelHasSuffix(*i.ModelHasSuffix))
+	}
+	if i.ModelEqualFold != nil {
+		predicates = append(predicates, servermotherboardtype.ModelEqualFold(*i.ModelEqualFold))
+	}
+	if i.ModelContainsFold != nil {
+		predicates = append(predicates, servermotherboardtype.ModelContainsFold(*i.ModelContainsFold))
+	}
+
+	if i.HasMotherboard != nil {
+		p := servermotherboardtype.HasMotherboard()
+		if !*i.HasMotherboard {
+			p = servermotherboardtype.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasMotherboardWith) > 0 {
+		with := make([]predicate.ServerMotherboard, 0, len(i.HasMotherboardWith))
+		for _, w := range i.HasMotherboardWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasMotherboardWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servermotherboardtype.HasMotherboardWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerMotherboardTypeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return servermotherboardtype.And(predicates...), nil
 	}
 }
 

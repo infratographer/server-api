@@ -119,6 +119,30 @@ func (f ServerComponentTypeFunc) Mutate(ctx context.Context, m generated.Mutatio
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerComponentTypeMutation", m)
 }
 
+// The ServerMotherboardFunc type is an adapter to allow the use of ordinary
+// function as ServerMotherboard mutator.
+type ServerMotherboardFunc func(context.Context, *generated.ServerMotherboardMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerMotherboardFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerMotherboardMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMotherboardMutation", m)
+}
+
+// The ServerMotherboardTypeFunc type is an adapter to allow the use of ordinary
+// function as ServerMotherboardType mutator.
+type ServerMotherboardTypeFunc func(context.Context, *generated.ServerMotherboardTypeMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerMotherboardTypeFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerMotherboardTypeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMotherboardTypeMutation", m)
+}
+
 // The ServerTypeFunc type is an adapter to allow the use of ordinary
 // function as ServerType mutator.
 type ServerTypeFunc func(context.Context, *generated.ServerTypeMutation) (generated.Value, error)

@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 )
 
@@ -61,6 +63,10 @@ type Client struct {
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
 	ServerComponentType *ServerComponentTypeClient
+	// ServerMotherboard is the client for interacting with the ServerMotherboard builders.
+	ServerMotherboard *ServerMotherboardClient
+	// ServerMotherboardType is the client for interacting with the ServerMotherboardType builders.
+	ServerMotherboardType *ServerMotherboardTypeClient
 	// ServerType is the client for interacting with the ServerType builders.
 	ServerType *ServerTypeClient
 }
@@ -84,6 +90,8 @@ func (c *Client) init() {
 	c.ServerChassisType = NewServerChassisTypeClient(c.config)
 	c.ServerComponent = NewServerComponentClient(c.config)
 	c.ServerComponentType = NewServerComponentTypeClient(c.config)
+	c.ServerMotherboard = NewServerMotherboardClient(c.config)
+	c.ServerMotherboardType = NewServerMotherboardTypeClient(c.config)
 	c.ServerType = NewServerTypeClient(c.config)
 }
 
@@ -165,17 +173,19 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                 ctx,
-		config:              cfg,
-		Provider:            NewProviderClient(cfg),
-		Server:              NewServerClient(cfg),
-		ServerCPU:           NewServerCPUClient(cfg),
-		ServerCPUType:       NewServerCPUTypeClient(cfg),
-		ServerChassis:       NewServerChassisClient(cfg),
-		ServerChassisType:   NewServerChassisTypeClient(cfg),
-		ServerComponent:     NewServerComponentClient(cfg),
-		ServerComponentType: NewServerComponentTypeClient(cfg),
-		ServerType:          NewServerTypeClient(cfg),
+		ctx:                   ctx,
+		config:                cfg,
+		Provider:              NewProviderClient(cfg),
+		Server:                NewServerClient(cfg),
+		ServerCPU:             NewServerCPUClient(cfg),
+		ServerCPUType:         NewServerCPUTypeClient(cfg),
+		ServerChassis:         NewServerChassisClient(cfg),
+		ServerChassisType:     NewServerChassisTypeClient(cfg),
+		ServerComponent:       NewServerComponentClient(cfg),
+		ServerComponentType:   NewServerComponentTypeClient(cfg),
+		ServerMotherboard:     NewServerMotherboardClient(cfg),
+		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
+		ServerType:            NewServerTypeClient(cfg),
 	}, nil
 }
 
@@ -193,17 +203,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                 ctx,
-		config:              cfg,
-		Provider:            NewProviderClient(cfg),
-		Server:              NewServerClient(cfg),
-		ServerCPU:           NewServerCPUClient(cfg),
-		ServerCPUType:       NewServerCPUTypeClient(cfg),
-		ServerChassis:       NewServerChassisClient(cfg),
-		ServerChassisType:   NewServerChassisTypeClient(cfg),
-		ServerComponent:     NewServerComponentClient(cfg),
-		ServerComponentType: NewServerComponentTypeClient(cfg),
-		ServerType:          NewServerTypeClient(cfg),
+		ctx:                   ctx,
+		config:                cfg,
+		Provider:              NewProviderClient(cfg),
+		Server:                NewServerClient(cfg),
+		ServerCPU:             NewServerCPUClient(cfg),
+		ServerCPUType:         NewServerCPUTypeClient(cfg),
+		ServerChassis:         NewServerChassisClient(cfg),
+		ServerChassisType:     NewServerChassisTypeClient(cfg),
+		ServerComponent:       NewServerComponentClient(cfg),
+		ServerComponentType:   NewServerComponentTypeClient(cfg),
+		ServerMotherboard:     NewServerMotherboardClient(cfg),
+		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
+		ServerType:            NewServerTypeClient(cfg),
 	}, nil
 }
 
@@ -234,7 +246,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
-		c.ServerChassisType, c.ServerComponent, c.ServerComponentType, c.ServerType,
+		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
 	} {
 		n.Use(hooks...)
 	}
@@ -245,7 +258,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
-		c.ServerChassisType, c.ServerComponent, c.ServerComponentType, c.ServerType,
+		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -270,6 +284,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ServerComponent.mutate(ctx, m)
 	case *ServerComponentTypeMutation:
 		return c.ServerComponentType.mutate(ctx, m)
+	case *ServerMotherboardMutation:
+		return c.ServerMotherboard.mutate(ctx, m)
+	case *ServerMotherboardTypeMutation:
+		return c.ServerMotherboardType.mutate(ctx, m)
 	case *ServerTypeMutation:
 		return c.ServerType.mutate(ctx, m)
 	default:
@@ -1413,6 +1431,290 @@ func (c *ServerComponentTypeClient) mutate(ctx context.Context, m *ServerCompone
 	}
 }
 
+// ServerMotherboardClient is a client for the ServerMotherboard schema.
+type ServerMotherboardClient struct {
+	config
+}
+
+// NewServerMotherboardClient returns a client for the ServerMotherboard from the given config.
+func NewServerMotherboardClient(c config) *ServerMotherboardClient {
+	return &ServerMotherboardClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servermotherboard.Hooks(f(g(h())))`.
+func (c *ServerMotherboardClient) Use(hooks ...Hook) {
+	c.hooks.ServerMotherboard = append(c.hooks.ServerMotherboard, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servermotherboard.Intercept(f(g(h())))`.
+func (c *ServerMotherboardClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerMotherboard = append(c.inters.ServerMotherboard, interceptors...)
+}
+
+// Create returns a builder for creating a ServerMotherboard entity.
+func (c *ServerMotherboardClient) Create() *ServerMotherboardCreate {
+	mutation := newServerMotherboardMutation(c.config, OpCreate)
+	return &ServerMotherboardCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerMotherboard entities.
+func (c *ServerMotherboardClient) CreateBulk(builders ...*ServerMotherboardCreate) *ServerMotherboardCreateBulk {
+	return &ServerMotherboardCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerMotherboard.
+func (c *ServerMotherboardClient) Update() *ServerMotherboardUpdate {
+	mutation := newServerMotherboardMutation(c.config, OpUpdate)
+	return &ServerMotherboardUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerMotherboardClient) UpdateOne(sm *ServerMotherboard) *ServerMotherboardUpdateOne {
+	mutation := newServerMotherboardMutation(c.config, OpUpdateOne, withServerMotherboard(sm))
+	return &ServerMotherboardUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerMotherboardClient) UpdateOneID(id gidx.PrefixedID) *ServerMotherboardUpdateOne {
+	mutation := newServerMotherboardMutation(c.config, OpUpdateOne, withServerMotherboardID(id))
+	return &ServerMotherboardUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerMotherboard.
+func (c *ServerMotherboardClient) Delete() *ServerMotherboardDelete {
+	mutation := newServerMotherboardMutation(c.config, OpDelete)
+	return &ServerMotherboardDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerMotherboardClient) DeleteOne(sm *ServerMotherboard) *ServerMotherboardDeleteOne {
+	return c.DeleteOneID(sm.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerMotherboardClient) DeleteOneID(id gidx.PrefixedID) *ServerMotherboardDeleteOne {
+	builder := c.Delete().Where(servermotherboard.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerMotherboardDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerMotherboard.
+func (c *ServerMotherboardClient) Query() *ServerMotherboardQuery {
+	return &ServerMotherboardQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerMotherboard},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerMotherboard entity by its id.
+func (c *ServerMotherboardClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboard, error) {
+	return c.Query().Where(servermotherboard.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerMotherboardClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerMotherboard {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryServer queries the server edge of a ServerMotherboard.
+func (c *ServerMotherboardClient) QueryServer(sm *ServerMotherboard) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servermotherboard.Table, servermotherboard.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servermotherboard.ServerTable, servermotherboard.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryServerMotherboardType queries the server_motherboard_type edge of a ServerMotherboard.
+func (c *ServerMotherboardClient) QueryServerMotherboardType(sm *ServerMotherboard) *ServerMotherboardTypeQuery {
+	query := (&ServerMotherboardTypeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servermotherboard.Table, servermotherboard.FieldID, id),
+			sqlgraph.To(servermotherboardtype.Table, servermotherboardtype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servermotherboard.ServerMotherboardTypeTable, servermotherboard.ServerMotherboardTypeColumn),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerMotherboardClient) Hooks() []Hook {
+	return c.hooks.ServerMotherboard
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerMotherboardClient) Interceptors() []Interceptor {
+	return c.inters.ServerMotherboard
+}
+
+func (c *ServerMotherboardClient) mutate(ctx context.Context, m *ServerMotherboardMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerMotherboardCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerMotherboardUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerMotherboardUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerMotherboardDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerMotherboard mutation op: %q", m.Op())
+	}
+}
+
+// ServerMotherboardTypeClient is a client for the ServerMotherboardType schema.
+type ServerMotherboardTypeClient struct {
+	config
+}
+
+// NewServerMotherboardTypeClient returns a client for the ServerMotherboardType from the given config.
+func NewServerMotherboardTypeClient(c config) *ServerMotherboardTypeClient {
+	return &ServerMotherboardTypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servermotherboardtype.Hooks(f(g(h())))`.
+func (c *ServerMotherboardTypeClient) Use(hooks ...Hook) {
+	c.hooks.ServerMotherboardType = append(c.hooks.ServerMotherboardType, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servermotherboardtype.Intercept(f(g(h())))`.
+func (c *ServerMotherboardTypeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerMotherboardType = append(c.inters.ServerMotherboardType, interceptors...)
+}
+
+// Create returns a builder for creating a ServerMotherboardType entity.
+func (c *ServerMotherboardTypeClient) Create() *ServerMotherboardTypeCreate {
+	mutation := newServerMotherboardTypeMutation(c.config, OpCreate)
+	return &ServerMotherboardTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerMotherboardType entities.
+func (c *ServerMotherboardTypeClient) CreateBulk(builders ...*ServerMotherboardTypeCreate) *ServerMotherboardTypeCreateBulk {
+	return &ServerMotherboardTypeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerMotherboardType.
+func (c *ServerMotherboardTypeClient) Update() *ServerMotherboardTypeUpdate {
+	mutation := newServerMotherboardTypeMutation(c.config, OpUpdate)
+	return &ServerMotherboardTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerMotherboardTypeClient) UpdateOne(smt *ServerMotherboardType) *ServerMotherboardTypeUpdateOne {
+	mutation := newServerMotherboardTypeMutation(c.config, OpUpdateOne, withServerMotherboardType(smt))
+	return &ServerMotherboardTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerMotherboardTypeClient) UpdateOneID(id gidx.PrefixedID) *ServerMotherboardTypeUpdateOne {
+	mutation := newServerMotherboardTypeMutation(c.config, OpUpdateOne, withServerMotherboardTypeID(id))
+	return &ServerMotherboardTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerMotherboardType.
+func (c *ServerMotherboardTypeClient) Delete() *ServerMotherboardTypeDelete {
+	mutation := newServerMotherboardTypeMutation(c.config, OpDelete)
+	return &ServerMotherboardTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerMotherboardTypeClient) DeleteOne(smt *ServerMotherboardType) *ServerMotherboardTypeDeleteOne {
+	return c.DeleteOneID(smt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerMotherboardTypeClient) DeleteOneID(id gidx.PrefixedID) *ServerMotherboardTypeDeleteOne {
+	builder := c.Delete().Where(servermotherboardtype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerMotherboardTypeDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerMotherboardType.
+func (c *ServerMotherboardTypeClient) Query() *ServerMotherboardTypeQuery {
+	return &ServerMotherboardTypeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerMotherboardType},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerMotherboardType entity by its id.
+func (c *ServerMotherboardTypeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardType, error) {
+	return c.Query().Where(servermotherboardtype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerMotherboardTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerMotherboardType {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryMotherboard queries the motherboard edge of a ServerMotherboardType.
+func (c *ServerMotherboardTypeClient) QueryMotherboard(smt *ServerMotherboardType) *ServerMotherboardQuery {
+	query := (&ServerMotherboardClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := smt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servermotherboardtype.Table, servermotherboardtype.FieldID, id),
+			sqlgraph.To(servermotherboard.Table, servermotherboard.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, servermotherboardtype.MotherboardTable, servermotherboardtype.MotherboardColumn),
+		)
+		fromV = sqlgraph.Neighbors(smt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerMotherboardTypeClient) Hooks() []Hook {
+	return c.hooks.ServerMotherboardType
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerMotherboardTypeClient) Interceptors() []Interceptor {
+	return c.inters.ServerMotherboardType
+}
+
+func (c *ServerMotherboardTypeClient) mutate(ctx context.Context, m *ServerMotherboardTypeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerMotherboardTypeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerMotherboardTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerMotherboardTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerMotherboardTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerMotherboardType mutation op: %q", m.Op())
+	}
+}
+
 // ServerTypeClient is a client for the ServerType schema.
 type ServerTypeClient struct {
 	config
@@ -1551,10 +1853,12 @@ func (c *ServerTypeClient) mutate(ctx context.Context, m *ServerTypeMutation) (V
 type (
 	hooks struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
-		ServerComponent, ServerComponentType, ServerType []ent.Hook
+		ServerComponent, ServerComponentType, ServerMotherboard, ServerMotherboardType,
+		ServerType []ent.Hook
 	}
 	inters struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
-		ServerComponent, ServerComponentType, ServerType []ent.Interceptor
+		ServerComponent, ServerComponentType, ServerMotherboard, ServerMotherboardType,
+		ServerType []ent.Interceptor
 	}
 )

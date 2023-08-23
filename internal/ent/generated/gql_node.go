@@ -31,6 +31,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -63,6 +65,12 @@ func (n *ServerComponent) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerComponentType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerMotherboard) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerMotherboardType) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerType) IsNode() {}
@@ -245,6 +253,38 @@ func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (N
 		query := c.ServerComponentType.Query().
 			Where(servercomponenttype.ID(uid))
 		query, err := query.CollectFields(ctx, "ServerComponentType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servermotherboard.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerMotherboard.Query().
+			Where(servermotherboard.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerMotherboard")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servermotherboardtype.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerMotherboardType.Query().
+			Where(servermotherboardtype.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerMotherboardType")
 		if err != nil {
 			return nil, err
 		}
@@ -458,6 +498,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		query := c.ServerComponentType.Query().
 			Where(servercomponenttype.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "ServerComponentType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servermotherboard.Table:
+		query := c.ServerMotherboard.Query().
+			Where(servermotherboard.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerMotherboard")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servermotherboardtype.Table:
+		query := c.ServerMotherboardType.Query().
+			Where(servermotherboardtype.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerMotherboardType")
 		if err != nil {
 			return nil, err
 		}

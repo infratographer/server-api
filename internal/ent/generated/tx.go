@@ -42,6 +42,10 @@ type Tx struct {
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
 	ServerComponentType *ServerComponentTypeClient
+	// ServerMotherboard is the client for interacting with the ServerMotherboard builders.
+	ServerMotherboard *ServerMotherboardClient
+	// ServerMotherboardType is the client for interacting with the ServerMotherboardType builders.
+	ServerMotherboardType *ServerMotherboardTypeClient
 	// ServerType is the client for interacting with the ServerType builders.
 	ServerType *ServerTypeClient
 
@@ -183,6 +187,8 @@ func (tx *Tx) init() {
 	tx.ServerChassisType = NewServerChassisTypeClient(tx.config)
 	tx.ServerComponent = NewServerComponentClient(tx.config)
 	tx.ServerComponentType = NewServerComponentTypeClient(tx.config)
+	tx.ServerMotherboard = NewServerMotherboardClient(tx.config)
+	tx.ServerMotherboardType = NewServerMotherboardTypeClient(tx.config)
 	tx.ServerType = NewServerTypeClient(tx.config)
 }
 

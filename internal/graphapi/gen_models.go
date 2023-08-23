@@ -127,6 +127,42 @@ type ServerDeletePayload struct {
 	DeletedID gidx.PrefixedID `json:"deletedID"`
 }
 
+// Return response from serverMotherboardCreate
+type ServerMotherboardCreatePayload struct {
+	// The created server motherboard.
+	ServerMotherboard *generated.ServerMotherboard `json:"serverMotherboard"`
+}
+
+// Return response from serverMotherboardDelete
+type ServerMotherboardDeletePayload struct {
+	// The ID of the deleted server motherboard.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverMotherboardTypeCreate
+type ServerMotherboardTypeCreatePayload struct {
+	// The created server motherboard type.
+	ServerMotherboardType *generated.ServerMotherboardType `json:"serverMotherboardType"`
+}
+
+// Return response from serverMotherboardTypeDelete
+type ServerMotherboardTypeDeletePayload struct {
+	// The ID of the deleted server motherboard type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverMotherboardTypeUpdate
+type ServerMotherboardTypeUpdatePayload struct {
+	// The updated server motherboard type.
+	ServerMotherboardType *generated.ServerMotherboardType `json:"serverMotherboardType"`
+}
+
+// Return response from serverMotherboardUpdate
+type ServerMotherboardUpdatePayload struct {
+	// The updated server motherboard.
+	ServerMotherboard *generated.ServerMotherboard `json:"serverMotherboard"`
+}
+
 // Return response from serverProviderCreate
 type ServerProviderCreatePayload struct {
 	// The created server provider.

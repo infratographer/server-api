@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -3095,6 +3097,718 @@ func (sct *ServerComponentType) ToEdge(order *ServerComponentTypeOrder) *ServerC
 	return &ServerComponentTypeEdge{
 		Node:   sct,
 		Cursor: order.Field.toCursor(sct),
+	}
+}
+
+// ServerMotherboardEdge is the edge representation of ServerMotherboard.
+type ServerMotherboardEdge struct {
+	Node   *ServerMotherboard `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// ServerMotherboardConnection is the connection containing edges to ServerMotherboard.
+type ServerMotherboardConnection struct {
+	Edges      []*ServerMotherboardEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+func (c *ServerMotherboardConnection) build(nodes []*ServerMotherboard, pager *servermotherboardPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerMotherboard
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerMotherboard {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerMotherboard {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerMotherboardEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerMotherboardEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerMotherboardPaginateOption enables pagination customization.
+type ServerMotherboardPaginateOption func(*servermotherboardPager) error
+
+// WithServerMotherboardOrder configures pagination ordering.
+func WithServerMotherboardOrder(order *ServerMotherboardOrder) ServerMotherboardPaginateOption {
+	if order == nil {
+		order = DefaultServerMotherboardOrder
+	}
+	o := *order
+	return func(pager *servermotherboardPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerMotherboardOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerMotherboardFilter configures pagination filter.
+func WithServerMotherboardFilter(filter func(*ServerMotherboardQuery) (*ServerMotherboardQuery, error)) ServerMotherboardPaginateOption {
+	return func(pager *servermotherboardPager) error {
+		if filter == nil {
+			return errors.New("ServerMotherboardQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servermotherboardPager struct {
+	reverse bool
+	order   *ServerMotherboardOrder
+	filter  func(*ServerMotherboardQuery) (*ServerMotherboardQuery, error)
+}
+
+func newServerMotherboardPager(opts []ServerMotherboardPaginateOption, reverse bool) (*servermotherboardPager, error) {
+	pager := &servermotherboardPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerMotherboardOrder
+	}
+	return pager, nil
+}
+
+func (p *servermotherboardPager) applyFilter(query *ServerMotherboardQuery) (*ServerMotherboardQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servermotherboardPager) toCursor(sm *ServerMotherboard) Cursor {
+	return p.order.Field.toCursor(sm)
+}
+
+func (p *servermotherboardPager) applyCursors(query *ServerMotherboardQuery, after, before *Cursor) (*ServerMotherboardQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerMotherboardOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servermotherboardPager) applyOrder(query *ServerMotherboardQuery) *ServerMotherboardQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerMotherboardOrder.Field {
+		query = query.Order(DefaultServerMotherboardOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servermotherboardPager) orderExpr(query *ServerMotherboardQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerMotherboardOrder.Field {
+			b.Comma().Ident(DefaultServerMotherboardOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerMotherboard.
+func (sm *ServerMotherboardQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerMotherboardPaginateOption,
+) (*ServerMotherboardConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerMotherboardPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if sm, err = pager.applyFilter(sm); err != nil {
+		return nil, err
+	}
+	conn := &ServerMotherboardConnection{Edges: []*ServerMotherboardEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = sm.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if sm, err = pager.applyCursors(sm, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		sm.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sm.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	sm = pager.applyOrder(sm)
+	nodes, err := sm.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerMotherboardOrderFieldID orders ServerMotherboard by id.
+	ServerMotherboardOrderFieldID = &ServerMotherboardOrderField{
+		Value: func(sm *ServerMotherboard) (ent.Value, error) {
+			return sm.ID, nil
+		},
+		column: servermotherboard.FieldID,
+		toTerm: servermotherboard.ByID,
+		toCursor: func(sm *ServerMotherboard) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.ID,
+			}
+		},
+	}
+	// ServerMotherboardOrderFieldCreatedAt orders ServerMotherboard by created_at.
+	ServerMotherboardOrderFieldCreatedAt = &ServerMotherboardOrderField{
+		Value: func(sm *ServerMotherboard) (ent.Value, error) {
+			return sm.CreatedAt, nil
+		},
+		column: servermotherboard.FieldCreatedAt,
+		toTerm: servermotherboard.ByCreatedAt,
+		toCursor: func(sm *ServerMotherboard) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.CreatedAt,
+			}
+		},
+	}
+	// ServerMotherboardOrderFieldUpdatedAt orders ServerMotherboard by updated_at.
+	ServerMotherboardOrderFieldUpdatedAt = &ServerMotherboardOrderField{
+		Value: func(sm *ServerMotherboard) (ent.Value, error) {
+			return sm.UpdatedAt, nil
+		},
+		column: servermotherboard.FieldUpdatedAt,
+		toTerm: servermotherboard.ByUpdatedAt,
+		toCursor: func(sm *ServerMotherboard) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.UpdatedAt,
+			}
+		},
+	}
+	// ServerMotherboardOrderFieldServerMotherboardTypeID orders ServerMotherboard by server_motherboard_type_id.
+	ServerMotherboardOrderFieldServerMotherboardTypeID = &ServerMotherboardOrderField{
+		Value: func(sm *ServerMotherboard) (ent.Value, error) {
+			return sm.ServerMotherboardTypeID, nil
+		},
+		column: servermotherboard.FieldServerMotherboardTypeID,
+		toTerm: servermotherboard.ByServerMotherboardTypeID,
+		toCursor: func(sm *ServerMotherboard) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.ServerMotherboardTypeID,
+			}
+		},
+	}
+	// ServerMotherboardOrderFieldServerID orders ServerMotherboard by server_id.
+	ServerMotherboardOrderFieldServerID = &ServerMotherboardOrderField{
+		Value: func(sm *ServerMotherboard) (ent.Value, error) {
+			return sm.ServerID, nil
+		},
+		column: servermotherboard.FieldServerID,
+		toTerm: servermotherboard.ByServerID,
+		toCursor: func(sm *ServerMotherboard) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.ServerID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerMotherboardOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerMotherboardOrderFieldID.column:
+		str = "ID"
+	case ServerMotherboardOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerMotherboardOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerMotherboardOrderFieldServerMotherboardTypeID.column:
+		str = "SERVER_MOTHERBOARD_TYPE"
+	case ServerMotherboardOrderFieldServerID.column:
+		str = "SERVER"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerMotherboardOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerMotherboardOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerMotherboardOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerMotherboardOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerMotherboardOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerMotherboardOrderFieldUpdatedAt
+	case "SERVER_MOTHERBOARD_TYPE":
+		*f = *ServerMotherboardOrderFieldServerMotherboardTypeID
+	case "SERVER":
+		*f = *ServerMotherboardOrderFieldServerID
+	default:
+		return fmt.Errorf("%s is not a valid ServerMotherboardOrderField", str)
+	}
+	return nil
+}
+
+// ServerMotherboardOrderField defines the ordering field of ServerMotherboard.
+type ServerMotherboardOrderField struct {
+	// Value extracts the ordering value from the given ServerMotherboard.
+	Value    func(*ServerMotherboard) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servermotherboard.OrderOption
+	toCursor func(*ServerMotherboard) Cursor
+}
+
+// ServerMotherboardOrder defines the ordering of ServerMotherboard.
+type ServerMotherboardOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *ServerMotherboardOrderField `json:"field"`
+}
+
+// DefaultServerMotherboardOrder is the default ordering of ServerMotherboard.
+var DefaultServerMotherboardOrder = &ServerMotherboardOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerMotherboardOrderField{
+		Value: func(sm *ServerMotherboard) (ent.Value, error) {
+			return sm.ID, nil
+		},
+		column: servermotherboard.FieldID,
+		toTerm: servermotherboard.ByID,
+		toCursor: func(sm *ServerMotherboard) Cursor {
+			return Cursor{ID: sm.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerMotherboard into ServerMotherboardEdge.
+func (sm *ServerMotherboard) ToEdge(order *ServerMotherboardOrder) *ServerMotherboardEdge {
+	if order == nil {
+		order = DefaultServerMotherboardOrder
+	}
+	return &ServerMotherboardEdge{
+		Node:   sm,
+		Cursor: order.Field.toCursor(sm),
+	}
+}
+
+// ServerMotherboardTypeEdge is the edge representation of ServerMotherboardType.
+type ServerMotherboardTypeEdge struct {
+	Node   *ServerMotherboardType `json:"node"`
+	Cursor Cursor                 `json:"cursor"`
+}
+
+// ServerMotherboardTypeConnection is the connection containing edges to ServerMotherboardType.
+type ServerMotherboardTypeConnection struct {
+	Edges      []*ServerMotherboardTypeEdge `json:"edges"`
+	PageInfo   PageInfo                     `json:"pageInfo"`
+	TotalCount int                          `json:"totalCount"`
+}
+
+func (c *ServerMotherboardTypeConnection) build(nodes []*ServerMotherboardType, pager *servermotherboardtypePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerMotherboardType
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerMotherboardType {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerMotherboardType {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerMotherboardTypeEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerMotherboardTypeEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerMotherboardTypePaginateOption enables pagination customization.
+type ServerMotherboardTypePaginateOption func(*servermotherboardtypePager) error
+
+// WithServerMotherboardTypeOrder configures pagination ordering.
+func WithServerMotherboardTypeOrder(order *ServerMotherboardTypeOrder) ServerMotherboardTypePaginateOption {
+	if order == nil {
+		order = DefaultServerMotherboardTypeOrder
+	}
+	o := *order
+	return func(pager *servermotherboardtypePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerMotherboardTypeOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerMotherboardTypeFilter configures pagination filter.
+func WithServerMotherboardTypeFilter(filter func(*ServerMotherboardTypeQuery) (*ServerMotherboardTypeQuery, error)) ServerMotherboardTypePaginateOption {
+	return func(pager *servermotherboardtypePager) error {
+		if filter == nil {
+			return errors.New("ServerMotherboardTypeQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servermotherboardtypePager struct {
+	reverse bool
+	order   *ServerMotherboardTypeOrder
+	filter  func(*ServerMotherboardTypeQuery) (*ServerMotherboardTypeQuery, error)
+}
+
+func newServerMotherboardTypePager(opts []ServerMotherboardTypePaginateOption, reverse bool) (*servermotherboardtypePager, error) {
+	pager := &servermotherboardtypePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerMotherboardTypeOrder
+	}
+	return pager, nil
+}
+
+func (p *servermotherboardtypePager) applyFilter(query *ServerMotherboardTypeQuery) (*ServerMotherboardTypeQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servermotherboardtypePager) toCursor(smt *ServerMotherboardType) Cursor {
+	return p.order.Field.toCursor(smt)
+}
+
+func (p *servermotherboardtypePager) applyCursors(query *ServerMotherboardTypeQuery, after, before *Cursor) (*ServerMotherboardTypeQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerMotherboardTypeOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servermotherboardtypePager) applyOrder(query *ServerMotherboardTypeQuery) *ServerMotherboardTypeQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerMotherboardTypeOrder.Field {
+		query = query.Order(DefaultServerMotherboardTypeOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servermotherboardtypePager) orderExpr(query *ServerMotherboardTypeQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerMotherboardTypeOrder.Field {
+			b.Comma().Ident(DefaultServerMotherboardTypeOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerMotherboardType.
+func (smt *ServerMotherboardTypeQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerMotherboardTypePaginateOption,
+) (*ServerMotherboardTypeConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerMotherboardTypePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if smt, err = pager.applyFilter(smt); err != nil {
+		return nil, err
+	}
+	conn := &ServerMotherboardTypeConnection{Edges: []*ServerMotherboardTypeEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = smt.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if smt, err = pager.applyCursors(smt, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		smt.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := smt.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	smt = pager.applyOrder(smt)
+	nodes, err := smt.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerMotherboardTypeOrderFieldID orders ServerMotherboardType by id.
+	ServerMotherboardTypeOrderFieldID = &ServerMotherboardTypeOrderField{
+		Value: func(smt *ServerMotherboardType) (ent.Value, error) {
+			return smt.ID, nil
+		},
+		column: servermotherboardtype.FieldID,
+		toTerm: servermotherboardtype.ByID,
+		toCursor: func(smt *ServerMotherboardType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.ID,
+			}
+		},
+	}
+	// ServerMotherboardTypeOrderFieldCreatedAt orders ServerMotherboardType by created_at.
+	ServerMotherboardTypeOrderFieldCreatedAt = &ServerMotherboardTypeOrderField{
+		Value: func(smt *ServerMotherboardType) (ent.Value, error) {
+			return smt.CreatedAt, nil
+		},
+		column: servermotherboardtype.FieldCreatedAt,
+		toTerm: servermotherboardtype.ByCreatedAt,
+		toCursor: func(smt *ServerMotherboardType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.CreatedAt,
+			}
+		},
+	}
+	// ServerMotherboardTypeOrderFieldUpdatedAt orders ServerMotherboardType by updated_at.
+	ServerMotherboardTypeOrderFieldUpdatedAt = &ServerMotherboardTypeOrderField{
+		Value: func(smt *ServerMotherboardType) (ent.Value, error) {
+			return smt.UpdatedAt, nil
+		},
+		column: servermotherboardtype.FieldUpdatedAt,
+		toTerm: servermotherboardtype.ByUpdatedAt,
+		toCursor: func(smt *ServerMotherboardType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.UpdatedAt,
+			}
+		},
+	}
+	// ServerMotherboardTypeOrderFieldVendor orders ServerMotherboardType by vendor.
+	ServerMotherboardTypeOrderFieldVendor = &ServerMotherboardTypeOrderField{
+		Value: func(smt *ServerMotherboardType) (ent.Value, error) {
+			return smt.Vendor, nil
+		},
+		column: servermotherboardtype.FieldVendor,
+		toTerm: servermotherboardtype.ByVendor,
+		toCursor: func(smt *ServerMotherboardType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.Vendor,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerMotherboardTypeOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerMotherboardTypeOrderFieldID.column:
+		str = "ID"
+	case ServerMotherboardTypeOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerMotherboardTypeOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerMotherboardTypeOrderFieldVendor.column:
+		str = "NAME"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerMotherboardTypeOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerMotherboardTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerMotherboardTypeOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerMotherboardTypeOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerMotherboardTypeOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerMotherboardTypeOrderFieldUpdatedAt
+	case "NAME":
+		*f = *ServerMotherboardTypeOrderFieldVendor
+	default:
+		return fmt.Errorf("%s is not a valid ServerMotherboardTypeOrderField", str)
+	}
+	return nil
+}
+
+// ServerMotherboardTypeOrderField defines the ordering field of ServerMotherboardType.
+type ServerMotherboardTypeOrderField struct {
+	// Value extracts the ordering value from the given ServerMotherboardType.
+	Value    func(*ServerMotherboardType) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servermotherboardtype.OrderOption
+	toCursor func(*ServerMotherboardType) Cursor
+}
+
+// ServerMotherboardTypeOrder defines the ordering of ServerMotherboardType.
+type ServerMotherboardTypeOrder struct {
+	Direction OrderDirection                   `json:"direction"`
+	Field     *ServerMotherboardTypeOrderField `json:"field"`
+}
+
+// DefaultServerMotherboardTypeOrder is the default ordering of ServerMotherboardType.
+var DefaultServerMotherboardTypeOrder = &ServerMotherboardTypeOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerMotherboardTypeOrderField{
+		Value: func(smt *ServerMotherboardType) (ent.Value, error) {
+			return smt.ID, nil
+		},
+		column: servermotherboardtype.FieldID,
+		toTerm: servermotherboardtype.ByID,
+		toCursor: func(smt *ServerMotherboardType) Cursor {
+			return Cursor{ID: smt.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerMotherboardType into ServerMotherboardTypeEdge.
+func (smt *ServerMotherboardType) ToEdge(order *ServerMotherboardTypeOrder) *ServerMotherboardTypeEdge {
+	if order == nil {
+		order = DefaultServerMotherboardTypeOrder
+	}
+	return &ServerMotherboardTypeEdge{
+		Node:   smt,
+		Cursor: order.Field.toCursor(smt),
 	}
 }
 

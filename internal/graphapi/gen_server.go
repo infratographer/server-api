@@ -52,45 +52,53 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Entity struct {
-		FindServerByID              func(childComplexity int, id gidx.PrefixedID) int
-		FindServerCPUByID           func(childComplexity int, id gidx.PrefixedID) int
-		FindServerCPUTypeByID       func(childComplexity int, id gidx.PrefixedID) int
-		FindServerChassisByID       func(childComplexity int, id gidx.PrefixedID) int
-		FindServerChassisTypeByID   func(childComplexity int, id gidx.PrefixedID) int
-		FindServerComponentByID     func(childComplexity int, id gidx.PrefixedID) int
-		FindServerComponentTypeByID func(childComplexity int, id gidx.PrefixedID) int
-		FindServerProviderByID      func(childComplexity int, id gidx.PrefixedID) int
-		FindServerTypeByID          func(childComplexity int, id gidx.PrefixedID) int
+		FindServerByID                func(childComplexity int, id gidx.PrefixedID) int
+		FindServerCPUByID             func(childComplexity int, id gidx.PrefixedID) int
+		FindServerCPUTypeByID         func(childComplexity int, id gidx.PrefixedID) int
+		FindServerChassisByID         func(childComplexity int, id gidx.PrefixedID) int
+		FindServerChassisTypeByID     func(childComplexity int, id gidx.PrefixedID) int
+		FindServerComponentByID       func(childComplexity int, id gidx.PrefixedID) int
+		FindServerComponentTypeByID   func(childComplexity int, id gidx.PrefixedID) int
+		FindServerMotherboardByID     func(childComplexity int, id gidx.PrefixedID) int
+		FindServerMotherboardTypeByID func(childComplexity int, id gidx.PrefixedID) int
+		FindServerProviderByID        func(childComplexity int, id gidx.PrefixedID) int
+		FindServerTypeByID            func(childComplexity int, id gidx.PrefixedID) int
 	}
 
 	Mutation struct {
-		ServerCPU                 func(childComplexity int, input generated.CreateServerCPUInput) int
-		ServerCPUDelete           func(childComplexity int, id gidx.PrefixedID) int
-		ServerCPUType             func(childComplexity int, input generated.CreateServerCPUTypeInput) int
-		ServerCPUTypeDelete       func(childComplexity int, id gidx.PrefixedID) int
-		ServerCPUTypeUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) int
-		ServerCPUUpdate           func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUInput) int
-		ServerChassis             func(childComplexity int, input generated.CreateServerChassisInput) int
-		ServerChassisDelete       func(childComplexity int, id gidx.PrefixedID) int
-		ServerChassisType         func(childComplexity int, input generated.CreateServerChassisTypeInput) int
-		ServerChassisTypeDelete   func(childComplexity int, id gidx.PrefixedID) int
-		ServerChassisTypeUpdate   func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerChassisTypeInput) int
-		ServerChassisUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerChassisInput) int
-		ServerComponentCreate     func(childComplexity int, input generated.CreateServerComponentInput) int
-		ServerComponentDelete     func(childComplexity int, id gidx.PrefixedID) int
-		ServerComponentTypeCreate func(childComplexity int, input generated.CreateServerComponentTypeInput) int
-		ServerComponentTypeDelete func(childComplexity int, id gidx.PrefixedID) int
-		ServerComponentTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerComponentTypeInput) int
-		ServerComponentUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerComponentInput) int
-		ServerCreate              func(childComplexity int, input generated.CreateServerInput) int
-		ServerDelete              func(childComplexity int, id gidx.PrefixedID) int
-		ServerProviderCreate      func(childComplexity int, input generated.CreateServerProviderInput) int
-		ServerProviderDelete      func(childComplexity int, id gidx.PrefixedID) int
-		ServerProviderUpdate      func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerProviderInput) int
-		ServerTypeCreate          func(childComplexity int, input generated.CreateServerTypeInput) int
-		ServerTypeDelete          func(childComplexity int, id gidx.PrefixedID) int
-		ServerTypeUpdate          func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerTypeInput) int
-		ServerUpdate              func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerInput) int
+		ServerCPU                   func(childComplexity int, input generated.CreateServerCPUInput) int
+		ServerCPUDelete             func(childComplexity int, id gidx.PrefixedID) int
+		ServerCPUType               func(childComplexity int, input generated.CreateServerCPUTypeInput) int
+		ServerCPUTypeDelete         func(childComplexity int, id gidx.PrefixedID) int
+		ServerCPUTypeUpdate         func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) int
+		ServerCPUUpdate             func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUInput) int
+		ServerChassis               func(childComplexity int, input generated.CreateServerChassisInput) int
+		ServerChassisDelete         func(childComplexity int, id gidx.PrefixedID) int
+		ServerChassisType           func(childComplexity int, input generated.CreateServerChassisTypeInput) int
+		ServerChassisTypeDelete     func(childComplexity int, id gidx.PrefixedID) int
+		ServerChassisTypeUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerChassisTypeInput) int
+		ServerChassisUpdate         func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerChassisInput) int
+		ServerComponentCreate       func(childComplexity int, input generated.CreateServerComponentInput) int
+		ServerComponentDelete       func(childComplexity int, id gidx.PrefixedID) int
+		ServerComponentTypeCreate   func(childComplexity int, input generated.CreateServerComponentTypeInput) int
+		ServerComponentTypeDelete   func(childComplexity int, id gidx.PrefixedID) int
+		ServerComponentTypeUpdate   func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerComponentTypeInput) int
+		ServerComponentUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerComponentInput) int
+		ServerCreate                func(childComplexity int, input generated.CreateServerInput) int
+		ServerDelete                func(childComplexity int, id gidx.PrefixedID) int
+		ServerMotherboard           func(childComplexity int, input generated.CreateServerMotherboardInput) int
+		ServerMotherboardDelete     func(childComplexity int, id gidx.PrefixedID) int
+		ServerMotherboardType       func(childComplexity int, input generated.CreateServerMotherboardTypeInput) int
+		ServerMotherboardTypeDelete func(childComplexity int, id gidx.PrefixedID) int
+		ServerMotherboardTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) int
+		ServerMotherboardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) int
+		ServerProviderCreate        func(childComplexity int, input generated.CreateServerProviderInput) int
+		ServerProviderDelete        func(childComplexity int, id gidx.PrefixedID) int
+		ServerProviderUpdate        func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerProviderInput) int
+		ServerTypeCreate            func(childComplexity int, input generated.CreateServerTypeInput) int
+		ServerTypeDelete            func(childComplexity int, id gidx.PrefixedID) int
+		ServerTypeUpdate            func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerTypeInput) int
+		ServerUpdate                func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerInput) int
 	}
 
 	PageInfo struct {
@@ -101,17 +109,19 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Server              func(childComplexity int, id gidx.PrefixedID) int
-		ServerCPU           func(childComplexity int, id gidx.PrefixedID) int
-		ServerCPUType       func(childComplexity int, id gidx.PrefixedID) int
-		ServerChassis       func(childComplexity int, id gidx.PrefixedID) int
-		ServerChassisType   func(childComplexity int, id gidx.PrefixedID) int
-		ServerComponent     func(childComplexity int, id gidx.PrefixedID) int
-		ServerComponentType func(childComplexity int, id gidx.PrefixedID) int
-		ServerProvider      func(childComplexity int, id gidx.PrefixedID) int
-		ServerType          func(childComplexity int, id gidx.PrefixedID) int
-		__resolve__service  func(childComplexity int) int
-		__resolve_entities  func(childComplexity int, representations []map[string]interface{}) int
+		Server                func(childComplexity int, id gidx.PrefixedID) int
+		ServerCPU             func(childComplexity int, id gidx.PrefixedID) int
+		ServerCPUType         func(childComplexity int, id gidx.PrefixedID) int
+		ServerChassis         func(childComplexity int, id gidx.PrefixedID) int
+		ServerChassisType     func(childComplexity int, id gidx.PrefixedID) int
+		ServerComponent       func(childComplexity int, id gidx.PrefixedID) int
+		ServerComponentType   func(childComplexity int, id gidx.PrefixedID) int
+		ServerMotherboard     func(childComplexity int, id gidx.PrefixedID) int
+		ServerMotherboardType func(childComplexity int, id gidx.PrefixedID) int
+		ServerProvider        func(childComplexity int, id gidx.PrefixedID) int
+		ServerType            func(childComplexity int, id gidx.PrefixedID) int
+		__resolve__service    func(childComplexity int) int
+		__resolve_entities    func(childComplexity int, representations []map[string]interface{}) int
 	}
 
 	Server struct {
@@ -341,6 +351,70 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	ServerMotherboard struct {
+		CreatedAt             func(childComplexity int) int
+		ID                    func(childComplexity int) int
+		Serial                func(childComplexity int) int
+		Server                func(childComplexity int) int
+		ServerMotherboardType func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
+	}
+
+	ServerMotherboardConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerMotherboardCreatePayload struct {
+		ServerMotherboard func(childComplexity int) int
+	}
+
+	ServerMotherboardDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerMotherboardEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerMotherboardType struct {
+		CreatedAt   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Model       func(childComplexity int) int
+		Motherboard func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerMotherboardOrder, where *generated.ServerMotherboardWhereInput) int
+		UpdatedAt   func(childComplexity int) int
+		Vendor      func(childComplexity int) int
+	}
+
+	ServerMotherboardTypeConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerMotherboardTypeCreatePayload struct {
+		ServerMotherboardType func(childComplexity int) int
+	}
+
+	ServerMotherboardTypeDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerMotherboardTypeEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerMotherboardTypeUpdatePayload struct {
+		ServerMotherboardType func(childComplexity int) int
+	}
+
+	ServerMotherboardUpdatePayload struct {
+		ServerMotherboard func(childComplexity int) int
+	}
+
 	ServerProvider struct {
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -420,6 +494,8 @@ type EntityResolver interface {
 	FindServerChassisTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error)
 	FindServerComponentByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	FindServerComponentTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
+	FindServerMotherboardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
+	FindServerMotherboardTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboardType, error)
 	FindServerProviderByID(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
 	FindServerTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error)
 }
@@ -442,6 +518,12 @@ type MutationResolver interface {
 	ServerCPUType(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error)
 	ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) (*ServerCPUTypeUpdatePayload, error)
 	ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUTypeDeletePayload, error)
+	ServerMotherboard(ctx context.Context, input generated.CreateServerMotherboardInput) (*ServerMotherboardCreatePayload, error)
+	ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) (*ServerMotherboardUpdatePayload, error)
+	ServerMotherboardDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardDeletePayload, error)
+	ServerMotherboardType(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error)
+	ServerMotherboardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) (*ServerMotherboardTypeUpdatePayload, error)
+	ServerMotherboardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardTypeDeletePayload, error)
 	ServerProviderCreate(ctx context.Context, input generated.CreateServerProviderInput) (*ServerProviderCreatePayload, error)
 	ServerProviderUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerProviderInput) (*ServerProviderUpdatePayload, error)
 	ServerProviderDelete(ctx context.Context, id gidx.PrefixedID) (*ServerProviderDeletePayload, error)
@@ -459,6 +541,8 @@ type QueryResolver interface {
 	ServerComponentType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
 	ServerCPU(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPU, error)
 	ServerCPUType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error)
+	ServerMotherboard(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
+	ServerMotherboardType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboardType, error)
 	ServerProvider(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
 	Server(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error)
 	ServerType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error)
@@ -562,6 +646,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerComponentTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerMotherboardByID":
+		if e.complexity.Entity.FindServerMotherboardByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerMotherboardByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerMotherboardByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerMotherboardTypeByID":
+		if e.complexity.Entity.FindServerMotherboardTypeByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerMotherboardTypeByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerMotherboardTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerProviderByID":
 		if e.complexity.Entity.FindServerProviderByID == nil {
@@ -827,6 +935,78 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
 
+	case "Mutation.serverMotherboard":
+		if e.complexity.Mutation.ServerMotherboard == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverMotherboard_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerMotherboard(childComplexity, args["input"].(generated.CreateServerMotherboardInput)), true
+
+	case "Mutation.serverMotherboardDelete":
+		if e.complexity.Mutation.ServerMotherboardDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverMotherboardDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerMotherboardDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverMotherboardType":
+		if e.complexity.Mutation.ServerMotherboardType == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverMotherboardType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerMotherboardType(childComplexity, args["input"].(generated.CreateServerMotherboardTypeInput)), true
+
+	case "Mutation.serverMotherboardTypeDelete":
+		if e.complexity.Mutation.ServerMotherboardTypeDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverMotherboardTypeDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerMotherboardTypeDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverMotherboardTypeUpdate":
+		if e.complexity.Mutation.ServerMotherboardTypeUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverMotherboardTypeUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerMotherboardTypeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerMotherboardTypeInput)), true
+
+	case "Mutation.serverMotherboardUpdate":
+		if e.complexity.Mutation.ServerMotherboardUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverMotherboardUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerMotherboardUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerMotherboardInput)), true
+
 	case "Mutation.serverProviderCreate":
 		if e.complexity.Mutation.ServerProviderCreate == nil {
 			break
@@ -1022,6 +1202,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ServerComponentType(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverMotherboard":
+		if e.complexity.Query.ServerMotherboard == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverMotherboard_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerMotherboard(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverMotherboardType":
+		if e.complexity.Query.ServerMotherboardType == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverMotherboardType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerMotherboardType(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Query.serverProvider":
 		if e.complexity.Query.ServerProvider == nil {
@@ -1809,6 +2013,207 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ServerEdge.Node(childComplexity), true
 
+	case "ServerMotherboard.createdAt":
+		if e.complexity.ServerMotherboard.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboard.CreatedAt(childComplexity), true
+
+	case "ServerMotherboard.id":
+		if e.complexity.ServerMotherboard.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboard.ID(childComplexity), true
+
+	case "ServerMotherboard.serial":
+		if e.complexity.ServerMotherboard.Serial == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboard.Serial(childComplexity), true
+
+	case "ServerMotherboard.server":
+		if e.complexity.ServerMotherboard.Server == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboard.Server(childComplexity), true
+
+	case "ServerMotherboard.serverMotherboardType":
+		if e.complexity.ServerMotherboard.ServerMotherboardType == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboard.ServerMotherboardType(childComplexity), true
+
+	case "ServerMotherboard.updatedAt":
+		if e.complexity.ServerMotherboard.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboard.UpdatedAt(childComplexity), true
+
+	case "ServerMotherboardConnection.edges":
+		if e.complexity.ServerMotherboardConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardConnection.Edges(childComplexity), true
+
+	case "ServerMotherboardConnection.pageInfo":
+		if e.complexity.ServerMotherboardConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardConnection.PageInfo(childComplexity), true
+
+	case "ServerMotherboardConnection.totalCount":
+		if e.complexity.ServerMotherboardConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardConnection.TotalCount(childComplexity), true
+
+	case "ServerMotherboardCreatePayload.serverMotherboard":
+		if e.complexity.ServerMotherboardCreatePayload.ServerMotherboard == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardCreatePayload.ServerMotherboard(childComplexity), true
+
+	case "ServerMotherboardDeletePayload.deletedID":
+		if e.complexity.ServerMotherboardDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerMotherboardEdge.cursor":
+		if e.complexity.ServerMotherboardEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardEdge.Cursor(childComplexity), true
+
+	case "ServerMotherboardEdge.node":
+		if e.complexity.ServerMotherboardEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardEdge.Node(childComplexity), true
+
+	case "ServerMotherboardType.createdAt":
+		if e.complexity.ServerMotherboardType.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardType.CreatedAt(childComplexity), true
+
+	case "ServerMotherboardType.id":
+		if e.complexity.ServerMotherboardType.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardType.ID(childComplexity), true
+
+	case "ServerMotherboardType.model":
+		if e.complexity.ServerMotherboardType.Model == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardType.Model(childComplexity), true
+
+	case "ServerMotherboardType.motherboard":
+		if e.complexity.ServerMotherboardType.Motherboard == nil {
+			break
+		}
+
+		args, err := ec.field_ServerMotherboardType_motherboard_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ServerMotherboardType.Motherboard(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerMotherboardOrder), args["where"].(*generated.ServerMotherboardWhereInput)), true
+
+	case "ServerMotherboardType.updatedAt":
+		if e.complexity.ServerMotherboardType.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardType.UpdatedAt(childComplexity), true
+
+	case "ServerMotherboardType.vendor":
+		if e.complexity.ServerMotherboardType.Vendor == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardType.Vendor(childComplexity), true
+
+	case "ServerMotherboardTypeConnection.edges":
+		if e.complexity.ServerMotherboardTypeConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeConnection.Edges(childComplexity), true
+
+	case "ServerMotherboardTypeConnection.pageInfo":
+		if e.complexity.ServerMotherboardTypeConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeConnection.PageInfo(childComplexity), true
+
+	case "ServerMotherboardTypeConnection.totalCount":
+		if e.complexity.ServerMotherboardTypeConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeConnection.TotalCount(childComplexity), true
+
+	case "ServerMotherboardTypeCreatePayload.serverMotherboardType":
+		if e.complexity.ServerMotherboardTypeCreatePayload.ServerMotherboardType == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeCreatePayload.ServerMotherboardType(childComplexity), true
+
+	case "ServerMotherboardTypeDeletePayload.deletedID":
+		if e.complexity.ServerMotherboardTypeDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerMotherboardTypeEdge.cursor":
+		if e.complexity.ServerMotherboardTypeEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeEdge.Cursor(childComplexity), true
+
+	case "ServerMotherboardTypeEdge.node":
+		if e.complexity.ServerMotherboardTypeEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeEdge.Node(childComplexity), true
+
+	case "ServerMotherboardTypeUpdatePayload.serverMotherboardType":
+		if e.complexity.ServerMotherboardTypeUpdatePayload.ServerMotherboardType == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardTypeUpdatePayload.ServerMotherboardType(childComplexity), true
+
+	case "ServerMotherboardUpdatePayload.serverMotherboard":
+		if e.complexity.ServerMotherboardUpdatePayload.ServerMotherboard == nil {
+			break
+		}
+
+		return e.complexity.ServerMotherboardUpdatePayload.ServerMotherboard(childComplexity), true
+
 	case "ServerProvider.createdAt":
 		if e.complexity.ServerProvider.CreatedAt == nil {
 			break
@@ -2030,6 +2435,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateServerComponentInput,
 		ec.unmarshalInputCreateServerComponentTypeInput,
 		ec.unmarshalInputCreateServerInput,
+		ec.unmarshalInputCreateServerMotherboardInput,
+		ec.unmarshalInputCreateServerMotherboardTypeInput,
 		ec.unmarshalInputCreateServerProviderInput,
 		ec.unmarshalInputCreateServerTypeInput,
 		ec.unmarshalInputServerCPUOrder,
@@ -2044,6 +2451,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerComponentTypeOrder,
 		ec.unmarshalInputServerComponentTypeWhereInput,
 		ec.unmarshalInputServerComponentWhereInput,
+		ec.unmarshalInputServerMotherboardOrder,
+		ec.unmarshalInputServerMotherboardTypeOrder,
+		ec.unmarshalInputServerMotherboardTypeWhereInput,
+		ec.unmarshalInputServerMotherboardWhereInput,
 		ec.unmarshalInputServerOrder,
 		ec.unmarshalInputServerProviderOrder,
 		ec.unmarshalInputServerProviderWhereInput,
@@ -2057,6 +2468,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateServerComponentInput,
 		ec.unmarshalInputUpdateServerComponentTypeInput,
 		ec.unmarshalInputUpdateServerInput,
+		ec.unmarshalInputUpdateServerMotherboardInput,
+		ec.unmarshalInputUpdateServerMotherboardTypeInput,
 		ec.unmarshalInputUpdateServerProviderInput,
 		ec.unmarshalInputUpdateServerTypeInput,
 	)
@@ -2597,6 +3010,21 @@ input CreateServerInput {
   providerID: ID!
   serverTypeID: ID!
   componentIDs: [ID!]
+}
+"""Input information to create a server motherboard."""
+input CreateServerMotherboardInput {
+  """The serial of the server motherboard"""
+  serial: String!
+  serverID: ID!
+  serverMotherboardTypeID: ID!
+}
+"""Input information to create a server motherboard type."""
+input CreateServerMotherboardTypeInput {
+  """The name of the vendor for the server motherboard type."""
+  vendor: String!
+  """The mode of the server chassis type."""
+  model: String!
+  motherboardIDs: [ID!]
 }
 """Input information to create a server provider."""
 input CreateServerProviderInput {
@@ -3429,6 +3857,229 @@ type ServerEdge {
   """A cursor for use in pagination."""
   cursor: Cursor!
 }
+type ServerMotherboard implements Node @key(fields: "id") @prefixedID(prefix: "srvrmbd") {
+  """The ID of the server motherboard."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The serial of the server motherboard"""
+  serial: String!
+  server: Server!
+  serverMotherboardType: ServerMotherboardType!
+}
+"""A connection to a list of items."""
+type ServerMotherboardConnection {
+  """A list of edges."""
+  edges: [ServerMotherboardEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerMotherboardEdge {
+  """The item at the end of the edge."""
+  node: ServerMotherboard
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerMotherboard connections"""
+input ServerMotherboardOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerMotherboards."""
+  field: ServerMotherboardOrderField!
+}
+"""Properties by which ServerMotherboard connections can be ordered."""
+enum ServerMotherboardOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  SERVER_MOTHERBOARD_TYPE
+  SERVER
+}
+type ServerMotherboardType implements Node @key(fields: "id") @prefixedID(prefix: "srvrmbt") {
+  """The ID of the server motherboard type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The name of the vendor for the server motherboard type."""
+  vendor: String!
+  """The mode of the server chassis type."""
+  model: String!
+  motherboard(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerMotherboards returned from the connection."""
+    orderBy: ServerMotherboardOrder
+
+    """Filtering options for ServerMotherboards returned from the connection."""
+    where: ServerMotherboardWhereInput
+  ): ServerMotherboardConnection!
+}
+"""A connection to a list of items."""
+type ServerMotherboardTypeConnection {
+  """A list of edges."""
+  edges: [ServerMotherboardTypeEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerMotherboardTypeEdge {
+  """The item at the end of the edge."""
+  node: ServerMotherboardType
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerMotherboardType connections"""
+input ServerMotherboardTypeOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerMotherboardTypes."""
+  field: ServerMotherboardTypeOrderField!
+}
+"""Properties by which ServerMotherboardType connections can be ordered."""
+enum ServerMotherboardTypeOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  NAME
+}
+"""
+ServerMotherboardTypeWhereInput is used for filtering ServerMotherboardType objects.
+Input was generated by ent.
+"""
+input ServerMotherboardTypeWhereInput {
+  not: ServerMotherboardTypeWhereInput
+  and: [ServerMotherboardTypeWhereInput!]
+  or: [ServerMotherboardTypeWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """vendor field predicates"""
+  vendor: String
+  vendorNEQ: String
+  vendorIn: [String!]
+  vendorNotIn: [String!]
+  vendorGT: String
+  vendorGTE: String
+  vendorLT: String
+  vendorLTE: String
+  vendorContains: String
+  vendorHasPrefix: String
+  vendorHasSuffix: String
+  vendorEqualFold: String
+  vendorContainsFold: String
+  """model field predicates"""
+  model: String
+  modelNEQ: String
+  modelIn: [String!]
+  modelNotIn: [String!]
+  modelGT: String
+  modelGTE: String
+  modelLT: String
+  modelLTE: String
+  modelContains: String
+  modelHasPrefix: String
+  modelHasSuffix: String
+  modelEqualFold: String
+  modelContainsFold: String
+  """motherboard edge predicates"""
+  hasMotherboard: Boolean
+  hasMotherboardWith: [ServerMotherboardWhereInput!]
+}
+"""
+ServerMotherboardWhereInput is used for filtering ServerMotherboard objects.
+Input was generated by ent.
+"""
+input ServerMotherboardWhereInput {
+  not: ServerMotherboardWhereInput
+  and: [ServerMotherboardWhereInput!]
+  or: [ServerMotherboardWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """serial field predicates"""
+  serial: String
+  serialNEQ: String
+  serialIn: [String!]
+  serialNotIn: [String!]
+  serialGT: String
+  serialGTE: String
+  serialLT: String
+  serialLTE: String
+  serialContains: String
+  serialHasPrefix: String
+  serialHasSuffix: String
+  serialEqualFold: String
+  serialContainsFold: String
+  """server edge predicates"""
+  hasServer: Boolean
+  hasServerWith: [ServerWhereInput!]
+  """server_motherboard_type edge predicates"""
+  hasServerMotherboardType: Boolean
+  hasServerMotherboardTypeWith: [ServerMotherboardTypeWhereInput!]
+}
 """Ordering options for Server connections"""
 input ServerOrder {
   """The ordering direction."""
@@ -3810,6 +4461,21 @@ input UpdateServerInput {
   removeComponentIDs: [ID!]
   clearComponents: Boolean
 }
+"""Input information to update a server motherboard."""
+input UpdateServerMotherboardInput {
+  """The serial of the server motherboard"""
+  serial: String
+}
+"""Input information to update a server motherboard type."""
+input UpdateServerMotherboardTypeInput {
+  """The name of the vendor for the server motherboard type."""
+  vendor: String
+  """The mode of the server chassis type."""
+  model: String
+  addMotherboardIDs: [ID!]
+  removeMotherboardIDs: [ID!]
+  clearMotherboard: Boolean
+}
 """Input information to update a server provider."""
 input UpdateServerProviderInput {
   """The name of the server provider."""
@@ -3823,6 +4489,128 @@ input UpdateServerTypeInput {
 `, BuiltIn: false},
 	{Name: "../../schema/ipam.graphql", Input: `interface IPAddressable {
   id: ID!
+}`, BuiltIn: false},
+	{Name: "../../schema/motherboard.graphql", Input: `extend type Query {
+  """
+  Lookup a serverMotherboard by ID.
+  """
+  serverMotherboard(
+    """
+    The server motherboard ID.
+    """
+    id: ID!
+  ): ServerMotherboard!
+}
+
+extend type Mutation {
+  """
+  Create a server motherboard.
+  """
+  serverMotherboard(
+    input: CreateServerMotherboardInput!
+  ): ServerMotherboardCreatePayload!
+  """
+  Update a server motherboard.
+  """
+  serverMotherboardUpdate(
+    id: ID!
+    input: UpdateServerMotherboardInput!
+  ): ServerMotherboardUpdatePayload!
+  """
+  Delete a server motherboard.
+  """
+  serverMotherboardDelete(id: ID!): ServerMotherboardDeletePayload!
+}
+
+"""
+Return response from serverMotherboardCreate
+"""
+type ServerMotherboardCreatePayload {
+  """
+  The created server motherboard.
+  """
+  serverMotherboard: ServerMotherboard!
+}
+
+"""
+Return response from serverMotherboardDelete
+"""
+type ServerMotherboardDeletePayload {
+  """
+  The ID of the deleted server motherboard.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverMotherboardUpdate
+"""
+type ServerMotherboardUpdatePayload {
+  """
+  The updated server motherboard.
+  """
+  serverMotherboard: ServerMotherboard!
+}`, BuiltIn: false},
+	{Name: "../../schema/motherboard_type.graphql", Input: `extend type Query {
+  """
+  Lookup a serverMotherboardType by ID.
+  """
+  serverMotherboardType(
+    """
+    The server motherboard type ID.
+    """
+    id: ID!
+  ): ServerMotherboardType!
+}
+
+extend type Mutation {
+  """
+  Create a server motherboard type.
+  """
+  serverMotherboardType(
+    input: CreateServerMotherboardTypeInput!
+  ): ServerMotherboardTypeCreatePayload!
+  """
+  Update a server motherboard type.
+  """
+  serverMotherboardTypeUpdate(
+    id: ID!
+    input: UpdateServerMotherboardTypeInput!
+  ): ServerMotherboardTypeUpdatePayload!
+  """
+  Delete a server motherboard type.
+  """
+  serverMotherboardTypeDelete(id: ID!): ServerMotherboardTypeDeletePayload!
+}
+
+"""
+Return response from serverMotherboardTypeCreate
+"""
+type ServerMotherboardTypeCreatePayload {
+  """
+  The created server motherboard type.
+  """
+  serverMotherboardType: ServerMotherboardType!
+}
+
+"""
+Return response from serverMotherboardTypeDelete
+"""
+type ServerMotherboardTypeDeletePayload {
+  """
+  The ID of the deleted server motherboard type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverMotherboardTypeUpdate
+"""
+type ServerMotherboardTypeUpdatePayload {
+  """
+  The updated server motherboard type.
+  """
+  serverMotherboardType: ServerMotherboardType!
 }`, BuiltIn: false},
 	{Name: "../../schema/provider.graphql", Input: `extend type Query {
   """
@@ -4047,7 +4835,7 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerProvider | ServerType
+union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerMotherboard | ServerMotherboardType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
@@ -4058,6 +4846,8 @@ type Entity {
 	findServerChassisTypeByID(id: ID!,): ServerChassisType!
 	findServerComponentByID(id: ID!,): ServerComponent!
 	findServerComponentTypeByID(id: ID!,): ServerComponentType!
+	findServerMotherboardByID(id: ID!,): ServerMotherboard!
+	findServerMotherboardTypeByID(id: ID!,): ServerMotherboardType!
 	findServerProviderByID(id: ID!,): ServerProvider!
 	findServerTypeByID(id: ID!,): ServerType!
 
@@ -4185,6 +4975,36 @@ func (ec *executionContext) field_Entity_findServerComponentByID_args(ctx contex
 }
 
 func (ec *executionContext) field_Entity_findServerComponentTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerMotherboardByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerMotherboardTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -4583,6 +5403,114 @@ func (ec *executionContext) field_Mutation_serverDelete_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverMotherboardDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverMotherboardTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverMotherboardTypeUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerMotherboardTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerMotherboardTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverMotherboardType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerMotherboardTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverMotherboardUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerMotherboardInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerMotherboardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerMotherboardInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverMotherboard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerMotherboardInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerMotherboardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverProviderCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4835,6 +5763,36 @@ func (ec *executionContext) field_Query_serverComponent_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_serverMotherboardType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverMotherboard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_serverProvider_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4992,6 +5950,66 @@ func (ec *executionContext) field_ServerChassisType_chassis_args(ctx context.Con
 	if tmp, ok := rawArgs["where"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
 		arg5, err = ec.unmarshalOServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_ServerMotherboardType_motherboard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *generated.ServerMotherboardOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOServerMotherboardOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *generated.ServerMotherboardWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOServerMotherboardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5709,6 +6727,144 @@ func (ec *executionContext) fieldContext_Entity_findServerComponentTypeByID(ctx 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerComponentTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerMotherboardByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerMotherboardByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerMotherboardByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboard)
+	fc.Result = res
+	return ec.marshalNServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerMotherboardByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerMotherboard_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerMotherboard_server(ctx, field)
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboard_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboard", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerMotherboardByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerMotherboardTypeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerMotherboardTypeByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerMotherboardTypeByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardType)
+	fc.Result = res
+	return ec.marshalNServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerMotherboardTypeByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerMotherboardType_model(ctx, field)
+			case "motherboard":
+				return ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerMotherboardTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6911,6 +8067,360 @@ func (ec *executionContext) fieldContext_Mutation_serverCPUTypeDelete(ctx contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_serverMotherboard(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerMotherboard(rctx, fc.Args["input"].(generated.CreateServerMotherboardInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerMotherboardCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerMotherboardCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverMotherboard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverMotherboard":
+				return ec.fieldContext_ServerMotherboardCreatePayload_serverMotherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverMotherboard_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverMotherboardUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboardUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerMotherboardUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerMotherboardInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerMotherboardUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerMotherboardUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverMotherboardUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverMotherboard":
+				return ec.fieldContext_ServerMotherboardUpdatePayload_serverMotherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverMotherboardUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverMotherboardDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboardDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerMotherboardDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerMotherboardDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerMotherboardDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverMotherboardDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerMotherboardDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverMotherboardDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerMotherboardType(rctx, fc.Args["input"].(generated.CreateServerMotherboardTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerMotherboardTypeCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerMotherboardTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboardTypeCreatePayload_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardTypeCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverMotherboardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverMotherboardTypeUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboardTypeUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerMotherboardTypeUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerMotherboardTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerMotherboardTypeUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerMotherboardTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverMotherboardTypeUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboardTypeUpdatePayload_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardTypeUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverMotherboardTypeUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverMotherboardTypeDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboardTypeDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerMotherboardTypeDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerMotherboardTypeDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerMotherboardTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverMotherboardTypeDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerMotherboardTypeDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardTypeDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverMotherboardTypeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_serverProviderCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_serverProviderCreate(ctx, field)
 	if err != nil {
@@ -8030,6 +9540,144 @@ func (ec *executionContext) fieldContext_Query_serverCPUType(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_serverCPUType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverMotherboard(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverMotherboard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerMotherboard(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboard)
+	fc.Result = res
+	return ec.marshalNServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverMotherboard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerMotherboard_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerMotherboard_server(ctx, field)
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboard_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboard", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverMotherboard_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverMotherboardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerMotherboardType(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardType)
+	fc.Result = res
+	return ec.marshalNServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerMotherboardType_model(ctx, field)
+			case "motherboard":
+				return ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverMotherboardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13617,6 +15265,1393 @@ func (ec *executionContext) fieldContext_ServerEdge_cursor(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerMotherboard_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboard_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboard_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboard_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboard_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboard_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboard_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboard_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboard_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboard_serial(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboard_serial(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Serial, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboard_serial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboard_server(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboard_server(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Server(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.Server)
+	fc.Result = res
+	return ec.marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServer(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboard_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboard",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Server_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Server_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Server_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Server_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Server_description(ctx, field)
+			case "serverProvider":
+				return ec.fieldContext_Server_serverProvider(ctx, field)
+			case "serverType":
+				return ec.fieldContext_Server_serverType(ctx, field)
+			case "components":
+				return ec.fieldContext_Server_components(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboard_serverMotherboardType(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboard_serverMotherboardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerMotherboardType(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardType)
+	fc.Result = res
+	return ec.marshalNServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboard_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboard",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerMotherboardType_model(ctx, field)
+			case "motherboard":
+				return ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerMotherboardEdge)
+	fc.Result = res
+	return ec.marshalOServerMotherboardEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerMotherboardEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerMotherboardEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardCreatePayload_serverMotherboard(ctx context.Context, field graphql.CollectedField, obj *ServerMotherboardCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardCreatePayload_serverMotherboard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerMotherboard, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboard)
+	fc.Result = res
+	return ec.marshalNServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardCreatePayload_serverMotherboard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerMotherboard_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerMotherboard_server(ctx, field)
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboard_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerMotherboardDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboard)
+	fc.Result = res
+	return ec.marshalOServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerMotherboard_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerMotherboard_server(ctx, field)
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboard_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardType_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardType_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardType_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardType_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardType_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardType_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardType_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardType_vendor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vendor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardType_vendor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardType_model(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardType_model(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Model, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardType_model(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardType_motherboard(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Motherboard(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerMotherboardOrder), fc.Args["where"].(*generated.ServerMotherboardWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardConnection)
+	fc.Result = res
+	return ec.marshalNServerMotherboardConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardType_motherboard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardType",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_ServerMotherboardConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ServerMotherboardConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ServerMotherboardConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ServerMotherboardType_motherboard_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerMotherboardTypeEdge)
+	fc.Result = res
+	return ec.marshalOServerMotherboardTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerMotherboardTypeEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerMotherboardTypeEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardTypeEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeCreatePayload_serverMotherboardType(ctx context.Context, field graphql.CollectedField, obj *ServerMotherboardTypeCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeCreatePayload_serverMotherboardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerMotherboardType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardType)
+	fc.Result = res
+	return ec.marshalNServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeCreatePayload_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerMotherboardType_model(ctx, field)
+			case "motherboard":
+				return ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerMotherboardTypeDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardType)
+	fc.Result = res
+	return ec.marshalOServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerMotherboardType_model(ctx, field)
+			case "motherboard":
+				return ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerMotherboardTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardTypeUpdatePayload_serverMotherboardType(ctx context.Context, field graphql.CollectedField, obj *ServerMotherboardTypeUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardTypeUpdatePayload_serverMotherboardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerMotherboardType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboardType)
+	fc.Result = res
+	return ec.marshalNServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardTypeUpdatePayload_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardTypeUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerMotherboardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerMotherboardType_model(ctx, field)
+			case "motherboard":
+				return ec.fieldContext_ServerMotherboardType_motherboard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerMotherboardUpdatePayload_serverMotherboard(ctx context.Context, field graphql.CollectedField, obj *ServerMotherboardUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerMotherboardUpdatePayload_serverMotherboard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerMotherboard, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerMotherboard)
+	fc.Result = res
+	return ec.marshalNServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerMotherboardUpdatePayload_serverMotherboard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerMotherboardUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerMotherboard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerMotherboard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerMotherboard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerMotherboard_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerMotherboard_server(ctx, field)
+			case "serverMotherboardType":
+				return ec.fieldContext_ServerMotherboard_serverMotherboardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerMotherboard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerProvider_id(ctx context.Context, field graphql.CollectedField, obj *generated.Provider) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerProvider_id(ctx, field)
 	if err != nil {
@@ -17189,6 +20224,100 @@ func (ec *executionContext) unmarshalInputCreateServerInput(ctx context.Context,
 				return it, err
 			}
 			it.ComponentIDs = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerMotherboardInput(ctx context.Context, obj interface{}) (generated.CreateServerMotherboardInput, error) {
+	var it generated.CreateServerMotherboardInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial", "serverID", "serverMotherboardTypeID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serverID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerID = data
+		case "serverMotherboardTypeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverMotherboardTypeID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerMotherboardTypeID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerMotherboardTypeInput(ctx context.Context, obj interface{}) (generated.CreateServerMotherboardTypeInput, error) {
+	var it generated.CreateServerMotherboardTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "motherboardIDs"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "motherboardIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("motherboardIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MotherboardIDs = data
 		}
 	}
 
@@ -20856,6 +23985,1021 @@ func (ec *executionContext) unmarshalInputServerComponentWhereInput(ctx context.
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputServerMotherboardOrder(ctx context.Context, obj interface{}) (generated.ServerMotherboardOrder, error) {
+	var it generated.ServerMotherboardOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerMotherboardOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerMotherboardTypeOrder(ctx context.Context, obj interface{}) (generated.ServerMotherboardTypeOrder, error) {
+	var it generated.ServerMotherboardTypeOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerMotherboardTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerMotherboardTypeWhereInput(ctx context.Context, obj interface{}) (generated.ServerMotherboardTypeWhereInput, error) {
+	var it generated.ServerMotherboardTypeWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "hasMotherboard", "hasMotherboardWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerMotherboardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerMotherboardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerMotherboardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "vendorNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNEQ = data
+		case "vendorIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorIn = data
+		case "vendorNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNotIn = data
+		case "vendorGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGT = data
+		case "vendorGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGTE = data
+		case "vendorLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLT = data
+		case "vendorLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLTE = data
+		case "vendorContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContains = data
+		case "vendorHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasPrefix = data
+		case "vendorHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasSuffix = data
+		case "vendorEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorEqualFold = data
+		case "vendorContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContainsFold = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "modelNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNEQ = data
+		case "modelIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelIn = data
+		case "modelNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNotIn = data
+		case "modelGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGT = data
+		case "modelGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGTE = data
+		case "modelLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLT = data
+		case "modelLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLTE = data
+		case "modelContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContains = data
+		case "modelHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasPrefix = data
+		case "modelHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasSuffix = data
+		case "modelEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelEqualFold = data
+		case "modelContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContainsFold = data
+		case "hasMotherboard":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMotherboard"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasMotherboard = data
+		case "hasMotherboardWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMotherboardWith"))
+			data, err := ec.unmarshalOServerMotherboardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasMotherboardWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerMotherboardWhereInput(ctx context.Context, obj interface{}) (generated.ServerMotherboardWhereInput, error) {
+	var it generated.ServerMotherboardWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "serial", "serialNEQ", "serialIn", "serialNotIn", "serialGT", "serialGTE", "serialLT", "serialLTE", "serialContains", "serialHasPrefix", "serialHasSuffix", "serialEqualFold", "serialContainsFold", "hasServer", "hasServerWith", "hasServerMotherboardType", "hasServerMotherboardTypeWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerMotherboardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerMotherboardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerMotherboardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serialNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNEQ = data
+		case "serialIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialIn = data
+		case "serialNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNotIn = data
+		case "serialGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGT = data
+		case "serialGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGTE = data
+		case "serialLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLT = data
+		case "serialLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLTE = data
+		case "serialContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContains = data
+		case "serialHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasPrefix = data
+		case "serialHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasSuffix = data
+		case "serialEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialEqualFold = data
+		case "serialContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContainsFold = data
+		case "hasServer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServer"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServer = data
+		case "hasServerWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerWith"))
+			data, err := ec.unmarshalOServerWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerWith = data
+		case "hasServerMotherboardType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerMotherboardType"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerMotherboardType = data
+		case "hasServerMotherboardTypeWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerMotherboardTypeWith"))
+			data, err := ec.unmarshalOServerMotherboardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerMotherboardTypeWith = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputServerOrder(ctx context.Context, obj interface{}) (generated.ServerOrder, error) {
 	var it generated.ServerOrder
 	asMap := map[string]interface{}{}
@@ -22730,6 +26874,100 @@ func (ec *executionContext) unmarshalInputUpdateServerInput(ctx context.Context,
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateServerMotherboardInput(ctx context.Context, obj interface{}) (generated.UpdateServerMotherboardInput, error) {
+	var it generated.UpdateServerMotherboardInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateServerMotherboardTypeInput(ctx context.Context, obj interface{}) (generated.UpdateServerMotherboardTypeInput, error) {
+	var it generated.UpdateServerMotherboardTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "addMotherboardIDs", "removeMotherboardIDs", "clearMotherboard"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "addMotherboardIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addMotherboardIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddMotherboardIDs = data
+		case "removeMotherboardIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeMotherboardIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveMotherboardIDs = data
+		case "clearMotherboard":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearMotherboard"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearMotherboard = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateServerProviderInput(ctx context.Context, obj interface{}) (generated.UpdateServerProviderInput, error) {
 	var it generated.UpdateServerProviderInput
 	asMap := map[string]interface{}{}
@@ -22847,6 +27085,16 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._ServerComponentType(ctx, sel, obj)
+	case *generated.ServerMotherboard:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerMotherboard(ctx, sel, obj)
+	case *generated.ServerMotherboardType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerMotherboardType(ctx, sel, obj)
 	case *generated.Provider:
 		if obj == nil {
 			return graphql.Null
@@ -22915,6 +27163,20 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._ServerComponentType(ctx, sel, obj)
+	case generated.ServerMotherboard:
+		return ec._ServerMotherboard(ctx, sel, &obj)
+	case *generated.ServerMotherboard:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerMotherboard(ctx, sel, obj)
+	case generated.ServerMotherboardType:
+		return ec._ServerMotherboardType(ctx, sel, &obj)
+	case *generated.ServerMotherboardType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerMotherboardType(ctx, sel, obj)
 	case generated.Provider:
 		return ec._ServerProvider(ctx, sel, &obj)
 	case *generated.Provider:
@@ -23099,6 +27361,50 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerComponentTypeByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerMotherboardByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerMotherboardByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerMotherboardTypeByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerMotherboardTypeByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -23319,6 +27625,48 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "serverCPUTypeDelete":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverCPUTypeDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverMotherboard":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverMotherboard(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverMotherboardUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverMotherboardUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverMotherboardDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverMotherboardDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverMotherboardType":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverMotherboardType(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverMotherboardTypeUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverMotherboardTypeUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverMotherboardTypeDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverMotherboardTypeDelete(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -23596,6 +27944,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_serverCPUType(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverMotherboard":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverMotherboard(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverMotherboardType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverMotherboardType(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -25959,6 +30351,635 @@ func (ec *executionContext) _ServerEdge(ctx context.Context, sel ast.SelectionSe
 	return out
 }
 
+var serverMotherboardImplementors = []string{"ServerMotherboard", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerMotherboard(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMotherboard) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboard")
+		case "id":
+			out.Values[i] = ec._ServerMotherboard_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerMotherboard_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerMotherboard_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "serial":
+			out.Values[i] = ec._ServerMotherboard_serial(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "server":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerMotherboard_server(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "serverMotherboardType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerMotherboard_serverMotherboardType(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardConnectionImplementors = []string{"ServerMotherboardConnection"}
+
+func (ec *executionContext) _ServerMotherboardConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMotherboardConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardConnection")
+		case "edges":
+			out.Values[i] = ec._ServerMotherboardConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerMotherboardConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerMotherboardConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardCreatePayloadImplementors = []string{"ServerMotherboardCreatePayload"}
+
+func (ec *executionContext) _ServerMotherboardCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerMotherboardCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardCreatePayload")
+		case "serverMotherboard":
+			out.Values[i] = ec._ServerMotherboardCreatePayload_serverMotherboard(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardDeletePayloadImplementors = []string{"ServerMotherboardDeletePayload"}
+
+func (ec *executionContext) _ServerMotherboardDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerMotherboardDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerMotherboardDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardEdgeImplementors = []string{"ServerMotherboardEdge"}
+
+func (ec *executionContext) _ServerMotherboardEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMotherboardEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardEdge")
+		case "node":
+			out.Values[i] = ec._ServerMotherboardEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerMotherboardEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardTypeImplementors = []string{"ServerMotherboardType", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerMotherboardType(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMotherboardType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardType")
+		case "id":
+			out.Values[i] = ec._ServerMotherboardType_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerMotherboardType_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerMotherboardType_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "vendor":
+			out.Values[i] = ec._ServerMotherboardType_vendor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "model":
+			out.Values[i] = ec._ServerMotherboardType_model(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "motherboard":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerMotherboardType_motherboard(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardTypeConnectionImplementors = []string{"ServerMotherboardTypeConnection"}
+
+func (ec *executionContext) _ServerMotherboardTypeConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMotherboardTypeConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardTypeConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardTypeConnection")
+		case "edges":
+			out.Values[i] = ec._ServerMotherboardTypeConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerMotherboardTypeConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerMotherboardTypeConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardTypeCreatePayloadImplementors = []string{"ServerMotherboardTypeCreatePayload"}
+
+func (ec *executionContext) _ServerMotherboardTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerMotherboardTypeCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardTypeCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardTypeCreatePayload")
+		case "serverMotherboardType":
+			out.Values[i] = ec._ServerMotherboardTypeCreatePayload_serverMotherboardType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardTypeDeletePayloadImplementors = []string{"ServerMotherboardTypeDeletePayload"}
+
+func (ec *executionContext) _ServerMotherboardTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerMotherboardTypeDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardTypeDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardTypeDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerMotherboardTypeDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardTypeEdgeImplementors = []string{"ServerMotherboardTypeEdge"}
+
+func (ec *executionContext) _ServerMotherboardTypeEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMotherboardTypeEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardTypeEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardTypeEdge")
+		case "node":
+			out.Values[i] = ec._ServerMotherboardTypeEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerMotherboardTypeEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardTypeUpdatePayloadImplementors = []string{"ServerMotherboardTypeUpdatePayload"}
+
+func (ec *executionContext) _ServerMotherboardTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerMotherboardTypeUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardTypeUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardTypeUpdatePayload")
+		case "serverMotherboardType":
+			out.Values[i] = ec._ServerMotherboardTypeUpdatePayload_serverMotherboardType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverMotherboardUpdatePayloadImplementors = []string{"ServerMotherboardUpdatePayload"}
+
+func (ec *executionContext) _ServerMotherboardUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerMotherboardUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverMotherboardUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerMotherboardUpdatePayload")
+		case "serverMotherboard":
+			out.Values[i] = ec._ServerMotherboardUpdatePayload_serverMotherboard(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var serverProviderImplementors = []string{"ServerProvider", "Node", "_Entity"}
 
 func (ec *executionContext) _ServerProvider(ctx context.Context, sel ast.SelectionSet, obj *generated.Provider) graphql.Marshaler {
@@ -26998,6 +32019,16 @@ func (ec *executionContext) unmarshalNCreateServerInput2goᚗinfratographerᚗco
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNCreateServerMotherboardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardInput(ctx context.Context, v interface{}) (generated.CreateServerMotherboardInput, error) {
+	res, err := ec.unmarshalInputCreateServerMotherboardInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardTypeInput(ctx context.Context, v interface{}) (generated.CreateServerMotherboardTypeInput, error) {
+	res, err := ec.unmarshalInputCreateServerMotherboardTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateServerProviderInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerProviderInput(ctx context.Context, v interface{}) (generated.CreateServerProviderInput, error) {
 	res, err := ec.unmarshalInputCreateServerProviderInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -27616,6 +32647,170 @@ func (ec *executionContext) marshalNServerDeletePayload2ᚖgoᚗinfratographer�
 	return ec._ServerDeletePayload(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNServerMotherboard2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx context.Context, sel ast.SelectionSet, v generated.ServerMotherboard) graphql.Marshaler {
+	return ec._ServerMotherboard(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboard) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboard(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerMotherboardCreatePayload) graphql.Marshaler {
+	return ec._ServerMotherboardCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerMotherboardCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerMotherboardDeletePayload) graphql.Marshaler {
+	return ec._ServerMotherboardDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerMotherboardDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerMotherboardOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardOrderField(ctx context.Context, v interface{}) (*generated.ServerMotherboardOrderField, error) {
+	var res = new(generated.ServerMotherboardOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerMotherboardOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerMotherboardType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx context.Context, sel ast.SelectionSet, v generated.ServerMotherboardType) graphql.Marshaler {
+	return ec._ServerMotherboardType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardType) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerMotherboardTypeCreatePayload) graphql.Marshaler {
+	return ec._ServerMotherboardTypeCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerMotherboardTypeCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardTypeCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerMotherboardTypeDeletePayload) graphql.Marshaler {
+	return ec._ServerMotherboardTypeDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerMotherboardTypeDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardTypeDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerMotherboardTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeOrderField(ctx context.Context, v interface{}) (*generated.ServerMotherboardTypeOrderField, error) {
+	var res = new(generated.ServerMotherboardTypeOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardTypeOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerMotherboardTypeUpdatePayload) graphql.Marshaler {
+	return ec._ServerMotherboardTypeUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerMotherboardTypeUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardTypeUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerMotherboardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerMotherboardTypeWhereInput, error) {
+	res, err := ec.unmarshalInputServerMotherboardTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerMotherboardUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerMotherboardUpdatePayload) graphql.Marshaler {
+	return ec._ServerMotherboardUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerMotherboardUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerMotherboardUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerMotherboardUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerMotherboardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInput(ctx context.Context, v interface{}) (*generated.ServerMotherboardWhereInput, error) {
+	res, err := ec.unmarshalInputServerMotherboardWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNServerOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerOrderField(ctx context.Context, v interface{}) (*generated.ServerOrderField, error) {
 	var res = new(generated.ServerOrderField)
 	err := res.UnmarshalGQL(v)
@@ -27867,6 +33062,16 @@ func (ec *executionContext) unmarshalNUpdateServerComponentTypeInput2goᚗinfrat
 
 func (ec *executionContext) unmarshalNUpdateServerInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerInput(ctx context.Context, v interface{}) (generated.UpdateServerInput, error) {
 	res, err := ec.unmarshalInputUpdateServerInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerMotherboardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerMotherboardInput(ctx context.Context, v interface{}) (generated.UpdateServerMotherboardInput, error) {
+	res, err := ec.unmarshalInputUpdateServerMotherboardInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerMotherboardTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerMotherboardTypeInput, error) {
+	res, err := ec.unmarshalInputUpdateServerMotherboardTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -28953,6 +34158,180 @@ func (ec *executionContext) marshalOServerEdge2ᚖgoᚗinfratographerᚗcomᚋse
 		return graphql.Null
 	}
 	return ec._ServerEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerMotherboard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboard(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboard) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerMotherboard(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerMotherboardEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerMotherboardEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerMotherboardEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerMotherboardEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerMotherboardEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerMotherboardOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardOrder(ctx context.Context, v interface{}) (*generated.ServerMotherboardOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerMotherboardOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerMotherboardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerMotherboardType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerMotherboardTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerMotherboardTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerMotherboardTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerMotherboardTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMotherboardTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerMotherboardTypeEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerMotherboardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerMotherboardTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerMotherboardTypeWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerMotherboardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerMotherboardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerMotherboardTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerMotherboardTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerMotherboardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerMotherboardWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerMotherboardWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerMotherboardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerMotherboardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInput(ctx context.Context, v interface{}) (*generated.ServerMotherboardWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerMotherboardWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOServerOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerOrder(ctx context.Context, v interface{}) (*generated.ServerOrder, error) {

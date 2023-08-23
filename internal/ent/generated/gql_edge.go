@@ -170,6 +170,43 @@ func (sc *ServerComponent) Server(ctx context.Context) (*Server, error) {
 	return result, err
 }
 
+func (sm *ServerMotherboard) Server(ctx context.Context) (*Server, error) {
+	result, err := sm.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = sm.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (sm *ServerMotherboard) ServerMotherboardType(ctx context.Context) (*ServerMotherboardType, error) {
+	result, err := sm.Edges.ServerMotherboardTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = sm.QueryServerMotherboardType().Only(ctx)
+	}
+	return result, err
+}
+
+func (smt *ServerMotherboardType) Motherboard(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerMotherboardOrder, where *ServerMotherboardWhereInput,
+) (*ServerMotherboardConnection, error) {
+	opts := []ServerMotherboardPaginateOption{
+		WithServerMotherboardOrder(orderBy),
+		WithServerMotherboardFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := smt.Edges.totalCount[0][alias]
+	if nodes, err := smt.NamedMotherboard(alias); err == nil || hasTotalCount {
+		pager, err := newServerMotherboardPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerMotherboardConnection{Edges: []*ServerMotherboardEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return smt.QueryMotherboard().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (st *ServerType) Servers(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerOrder, where *ServerWhereInput,
 ) (*ServerConnection, error) {

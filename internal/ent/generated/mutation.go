@@ -34,6 +34,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -47,15 +49,17 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeProvider            = "Provider"
-	TypeServer              = "Server"
-	TypeServerCPU           = "ServerCPU"
-	TypeServerCPUType       = "ServerCPUType"
-	TypeServerChassis       = "ServerChassis"
-	TypeServerChassisType   = "ServerChassisType"
-	TypeServerComponent     = "ServerComponent"
-	TypeServerComponentType = "ServerComponentType"
-	TypeServerType          = "ServerType"
+	TypeProvider              = "Provider"
+	TypeServer                = "Server"
+	TypeServerCPU             = "ServerCPU"
+	TypeServerCPUType         = "ServerCPUType"
+	TypeServerChassis         = "ServerChassis"
+	TypeServerChassisType     = "ServerChassisType"
+	TypeServerComponent       = "ServerComponent"
+	TypeServerComponentType   = "ServerComponentType"
+	TypeServerMotherboard     = "ServerMotherboard"
+	TypeServerMotherboardType = "ServerMotherboardType"
+	TypeServerType            = "ServerType"
 )
 
 // ProviderMutation represents an operation that mutates the Provider nodes in the graph.
@@ -5632,6 +5636,1239 @@ func (m *ServerComponentTypeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *ServerComponentTypeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ServerComponentType edge %s", name)
+}
+
+// ServerMotherboardMutation represents an operation that mutates the ServerMotherboard nodes in the graph.
+type ServerMotherboardMutation struct {
+	config
+	op                             Op
+	typ                            string
+	id                             *gidx.PrefixedID
+	created_at                     *time.Time
+	updated_at                     *time.Time
+	serial                         *string
+	clearedFields                  map[string]struct{}
+	server                         *gidx.PrefixedID
+	clearedserver                  bool
+	server_motherboard_type        *gidx.PrefixedID
+	clearedserver_motherboard_type bool
+	done                           bool
+	oldValue                       func(context.Context) (*ServerMotherboard, error)
+	predicates                     []predicate.ServerMotherboard
+}
+
+var _ ent.Mutation = (*ServerMotherboardMutation)(nil)
+
+// servermotherboardOption allows management of the mutation configuration using functional options.
+type servermotherboardOption func(*ServerMotherboardMutation)
+
+// newServerMotherboardMutation creates new mutation for the ServerMotherboard entity.
+func newServerMotherboardMutation(c config, op Op, opts ...servermotherboardOption) *ServerMotherboardMutation {
+	m := &ServerMotherboardMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerMotherboard,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerMotherboardID sets the ID field of the mutation.
+func withServerMotherboardID(id gidx.PrefixedID) servermotherboardOption {
+	return func(m *ServerMotherboardMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerMotherboard
+		)
+		m.oldValue = func(ctx context.Context) (*ServerMotherboard, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerMotherboard.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerMotherboard sets the old ServerMotherboard of the mutation.
+func withServerMotherboard(node *ServerMotherboard) servermotherboardOption {
+	return func(m *ServerMotherboardMutation) {
+		m.oldValue = func(context.Context) (*ServerMotherboard, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerMotherboardMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerMotherboardMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerMotherboard entities.
+func (m *ServerMotherboardMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerMotherboardMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerMotherboardMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerMotherboard.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerMotherboardMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerMotherboardMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerMotherboard entity.
+// If the ServerMotherboard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerMotherboardMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerMotherboardMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerMotherboardMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerMotherboard entity.
+// If the ServerMotherboard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerMotherboardMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetSerial sets the "serial" field.
+func (m *ServerMotherboardMutation) SetSerial(s string) {
+	m.serial = &s
+}
+
+// Serial returns the value of the "serial" field in the mutation.
+func (m *ServerMotherboardMutation) Serial() (r string, exists bool) {
+	v := m.serial
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSerial returns the old "serial" field's value of the ServerMotherboard entity.
+// If the ServerMotherboard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardMutation) OldSerial(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSerial is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSerial requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSerial: %w", err)
+	}
+	return oldValue.Serial, nil
+}
+
+// ResetSerial resets all changes to the "serial" field.
+func (m *ServerMotherboardMutation) ResetSerial() {
+	m.serial = nil
+}
+
+// SetServerMotherboardTypeID sets the "server_motherboard_type_id" field.
+func (m *ServerMotherboardMutation) SetServerMotherboardTypeID(gi gidx.PrefixedID) {
+	m.server_motherboard_type = &gi
+}
+
+// ServerMotherboardTypeID returns the value of the "server_motherboard_type_id" field in the mutation.
+func (m *ServerMotherboardMutation) ServerMotherboardTypeID() (r gidx.PrefixedID, exists bool) {
+	v := m.server_motherboard_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerMotherboardTypeID returns the old "server_motherboard_type_id" field's value of the ServerMotherboard entity.
+// If the ServerMotherboard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardMutation) OldServerMotherboardTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerMotherboardTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerMotherboardTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerMotherboardTypeID: %w", err)
+	}
+	return oldValue.ServerMotherboardTypeID, nil
+}
+
+// ResetServerMotherboardTypeID resets all changes to the "server_motherboard_type_id" field.
+func (m *ServerMotherboardMutation) ResetServerMotherboardTypeID() {
+	m.server_motherboard_type = nil
+}
+
+// SetServerID sets the "server_id" field.
+func (m *ServerMotherboardMutation) SetServerID(gi gidx.PrefixedID) {
+	m.server = &gi
+}
+
+// ServerID returns the value of the "server_id" field in the mutation.
+func (m *ServerMotherboardMutation) ServerID() (r gidx.PrefixedID, exists bool) {
+	v := m.server
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerID returns the old "server_id" field's value of the ServerMotherboard entity.
+// If the ServerMotherboard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
+	}
+	return oldValue.ServerID, nil
+}
+
+// ResetServerID resets all changes to the "server_id" field.
+func (m *ServerMotherboardMutation) ResetServerID() {
+	m.server = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerMotherboardMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerMotherboardMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerMotherboardMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerMotherboardMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// ClearServerMotherboardType clears the "server_motherboard_type" edge to the ServerMotherboardType entity.
+func (m *ServerMotherboardMutation) ClearServerMotherboardType() {
+	m.clearedserver_motherboard_type = true
+}
+
+// ServerMotherboardTypeCleared reports if the "server_motherboard_type" edge to the ServerMotherboardType entity was cleared.
+func (m *ServerMotherboardMutation) ServerMotherboardTypeCleared() bool {
+	return m.clearedserver_motherboard_type
+}
+
+// ServerMotherboardTypeIDs returns the "server_motherboard_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerMotherboardTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerMotherboardMutation) ServerMotherboardTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.server_motherboard_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServerMotherboardType resets all changes to the "server_motherboard_type" edge.
+func (m *ServerMotherboardMutation) ResetServerMotherboardType() {
+	m.server_motherboard_type = nil
+	m.clearedserver_motherboard_type = false
+}
+
+// Where appends a list predicates to the ServerMotherboardMutation builder.
+func (m *ServerMotherboardMutation) Where(ps ...predicate.ServerMotherboard) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerMotherboardMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerMotherboardMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerMotherboard, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerMotherboardMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerMotherboardMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerMotherboard).
+func (m *ServerMotherboardMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerMotherboardMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, servermotherboard.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servermotherboard.FieldUpdatedAt)
+	}
+	if m.serial != nil {
+		fields = append(fields, servermotherboard.FieldSerial)
+	}
+	if m.server_motherboard_type != nil {
+		fields = append(fields, servermotherboard.FieldServerMotherboardTypeID)
+	}
+	if m.server != nil {
+		fields = append(fields, servermotherboard.FieldServerID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerMotherboardMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servermotherboard.FieldCreatedAt:
+		return m.CreatedAt()
+	case servermotherboard.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servermotherboard.FieldSerial:
+		return m.Serial()
+	case servermotherboard.FieldServerMotherboardTypeID:
+		return m.ServerMotherboardTypeID()
+	case servermotherboard.FieldServerID:
+		return m.ServerID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerMotherboardMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servermotherboard.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servermotherboard.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servermotherboard.FieldSerial:
+		return m.OldSerial(ctx)
+	case servermotherboard.FieldServerMotherboardTypeID:
+		return m.OldServerMotherboardTypeID(ctx)
+	case servermotherboard.FieldServerID:
+		return m.OldServerID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerMotherboard field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMotherboardMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servermotherboard.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servermotherboard.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servermotherboard.FieldSerial:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSerial(v)
+		return nil
+	case servermotherboard.FieldServerMotherboardTypeID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerMotherboardTypeID(v)
+		return nil
+	case servermotherboard.FieldServerID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboard field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerMotherboardMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerMotherboardMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMotherboardMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerMotherboard numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerMotherboardMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerMotherboardMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerMotherboardMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerMotherboard nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerMotherboardMutation) ResetField(name string) error {
+	switch name {
+	case servermotherboard.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servermotherboard.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servermotherboard.FieldSerial:
+		m.ResetSerial()
+		return nil
+	case servermotherboard.FieldServerMotherboardTypeID:
+		m.ResetServerMotherboardTypeID()
+		return nil
+	case servermotherboard.FieldServerID:
+		m.ResetServerID()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboard field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerMotherboardMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.server != nil {
+		edges = append(edges, servermotherboard.EdgeServer)
+	}
+	if m.server_motherboard_type != nil {
+		edges = append(edges, servermotherboard.EdgeServerMotherboardType)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerMotherboardMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servermotherboard.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case servermotherboard.EdgeServerMotherboardType:
+		if id := m.server_motherboard_type; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerMotherboardMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerMotherboardMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerMotherboardMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedserver {
+		edges = append(edges, servermotherboard.EdgeServer)
+	}
+	if m.clearedserver_motherboard_type {
+		edges = append(edges, servermotherboard.EdgeServerMotherboardType)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerMotherboardMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servermotherboard.EdgeServer:
+		return m.clearedserver
+	case servermotherboard.EdgeServerMotherboardType:
+		return m.clearedserver_motherboard_type
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerMotherboardMutation) ClearEdge(name string) error {
+	switch name {
+	case servermotherboard.EdgeServer:
+		m.ClearServer()
+		return nil
+	case servermotherboard.EdgeServerMotherboardType:
+		m.ClearServerMotherboardType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboard unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerMotherboardMutation) ResetEdge(name string) error {
+	switch name {
+	case servermotherboard.EdgeServer:
+		m.ResetServer()
+		return nil
+	case servermotherboard.EdgeServerMotherboardType:
+		m.ResetServerMotherboardType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboard edge %s", name)
+}
+
+// ServerMotherboardTypeMutation represents an operation that mutates the ServerMotherboardType nodes in the graph.
+type ServerMotherboardTypeMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *gidx.PrefixedID
+	created_at         *time.Time
+	updated_at         *time.Time
+	vendor             *string
+	model              *string
+	clearedFields      map[string]struct{}
+	motherboard        map[gidx.PrefixedID]struct{}
+	removedmotherboard map[gidx.PrefixedID]struct{}
+	clearedmotherboard bool
+	done               bool
+	oldValue           func(context.Context) (*ServerMotherboardType, error)
+	predicates         []predicate.ServerMotherboardType
+}
+
+var _ ent.Mutation = (*ServerMotherboardTypeMutation)(nil)
+
+// servermotherboardtypeOption allows management of the mutation configuration using functional options.
+type servermotherboardtypeOption func(*ServerMotherboardTypeMutation)
+
+// newServerMotherboardTypeMutation creates new mutation for the ServerMotherboardType entity.
+func newServerMotherboardTypeMutation(c config, op Op, opts ...servermotherboardtypeOption) *ServerMotherboardTypeMutation {
+	m := &ServerMotherboardTypeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerMotherboardType,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerMotherboardTypeID sets the ID field of the mutation.
+func withServerMotherboardTypeID(id gidx.PrefixedID) servermotherboardtypeOption {
+	return func(m *ServerMotherboardTypeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerMotherboardType
+		)
+		m.oldValue = func(ctx context.Context) (*ServerMotherboardType, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerMotherboardType.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerMotherboardType sets the old ServerMotherboardType of the mutation.
+func withServerMotherboardType(node *ServerMotherboardType) servermotherboardtypeOption {
+	return func(m *ServerMotherboardTypeMutation) {
+		m.oldValue = func(context.Context) (*ServerMotherboardType, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerMotherboardTypeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerMotherboardTypeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerMotherboardType entities.
+func (m *ServerMotherboardTypeMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerMotherboardTypeMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerMotherboardTypeMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerMotherboardType.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerMotherboardTypeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerMotherboardTypeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerMotherboardType entity.
+// If the ServerMotherboardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerMotherboardTypeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerMotherboardTypeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerMotherboardTypeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerMotherboardType entity.
+// If the ServerMotherboardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerMotherboardTypeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetVendor sets the "vendor" field.
+func (m *ServerMotherboardTypeMutation) SetVendor(s string) {
+	m.vendor = &s
+}
+
+// Vendor returns the value of the "vendor" field in the mutation.
+func (m *ServerMotherboardTypeMutation) Vendor() (r string, exists bool) {
+	v := m.vendor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVendor returns the old "vendor" field's value of the ServerMotherboardType entity.
+// If the ServerMotherboardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardTypeMutation) OldVendor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVendor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVendor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVendor: %w", err)
+	}
+	return oldValue.Vendor, nil
+}
+
+// ResetVendor resets all changes to the "vendor" field.
+func (m *ServerMotherboardTypeMutation) ResetVendor() {
+	m.vendor = nil
+}
+
+// SetModel sets the "model" field.
+func (m *ServerMotherboardTypeMutation) SetModel(s string) {
+	m.model = &s
+}
+
+// Model returns the value of the "model" field in the mutation.
+func (m *ServerMotherboardTypeMutation) Model() (r string, exists bool) {
+	v := m.model
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModel returns the old "model" field's value of the ServerMotherboardType entity.
+// If the ServerMotherboardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMotherboardTypeMutation) OldModel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModel: %w", err)
+	}
+	return oldValue.Model, nil
+}
+
+// ResetModel resets all changes to the "model" field.
+func (m *ServerMotherboardTypeMutation) ResetModel() {
+	m.model = nil
+}
+
+// AddMotherboardIDs adds the "motherboard" edge to the ServerMotherboard entity by ids.
+func (m *ServerMotherboardTypeMutation) AddMotherboardIDs(ids ...gidx.PrefixedID) {
+	if m.motherboard == nil {
+		m.motherboard = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.motherboard[ids[i]] = struct{}{}
+	}
+}
+
+// ClearMotherboard clears the "motherboard" edge to the ServerMotherboard entity.
+func (m *ServerMotherboardTypeMutation) ClearMotherboard() {
+	m.clearedmotherboard = true
+}
+
+// MotherboardCleared reports if the "motherboard" edge to the ServerMotherboard entity was cleared.
+func (m *ServerMotherboardTypeMutation) MotherboardCleared() bool {
+	return m.clearedmotherboard
+}
+
+// RemoveMotherboardIDs removes the "motherboard" edge to the ServerMotherboard entity by IDs.
+func (m *ServerMotherboardTypeMutation) RemoveMotherboardIDs(ids ...gidx.PrefixedID) {
+	if m.removedmotherboard == nil {
+		m.removedmotherboard = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.motherboard, ids[i])
+		m.removedmotherboard[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedMotherboard returns the removed IDs of the "motherboard" edge to the ServerMotherboard entity.
+func (m *ServerMotherboardTypeMutation) RemovedMotherboardIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removedmotherboard {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// MotherboardIDs returns the "motherboard" edge IDs in the mutation.
+func (m *ServerMotherboardTypeMutation) MotherboardIDs() (ids []gidx.PrefixedID) {
+	for id := range m.motherboard {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetMotherboard resets all changes to the "motherboard" edge.
+func (m *ServerMotherboardTypeMutation) ResetMotherboard() {
+	m.motherboard = nil
+	m.clearedmotherboard = false
+	m.removedmotherboard = nil
+}
+
+// Where appends a list predicates to the ServerMotherboardTypeMutation builder.
+func (m *ServerMotherboardTypeMutation) Where(ps ...predicate.ServerMotherboardType) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerMotherboardTypeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerMotherboardTypeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerMotherboardType, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerMotherboardTypeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerMotherboardTypeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerMotherboardType).
+func (m *ServerMotherboardTypeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerMotherboardTypeMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.created_at != nil {
+		fields = append(fields, servermotherboardtype.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servermotherboardtype.FieldUpdatedAt)
+	}
+	if m.vendor != nil {
+		fields = append(fields, servermotherboardtype.FieldVendor)
+	}
+	if m.model != nil {
+		fields = append(fields, servermotherboardtype.FieldModel)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerMotherboardTypeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servermotherboardtype.FieldCreatedAt:
+		return m.CreatedAt()
+	case servermotherboardtype.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servermotherboardtype.FieldVendor:
+		return m.Vendor()
+	case servermotherboardtype.FieldModel:
+		return m.Model()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerMotherboardTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servermotherboardtype.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servermotherboardtype.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servermotherboardtype.FieldVendor:
+		return m.OldVendor(ctx)
+	case servermotherboardtype.FieldModel:
+		return m.OldModel(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerMotherboardType field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMotherboardTypeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servermotherboardtype.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servermotherboardtype.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servermotherboardtype.FieldVendor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVendor(v)
+		return nil
+	case servermotherboardtype.FieldModel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModel(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboardType field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerMotherboardTypeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerMotherboardTypeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMotherboardTypeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerMotherboardType numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerMotherboardTypeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerMotherboardTypeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerMotherboardTypeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerMotherboardType nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerMotherboardTypeMutation) ResetField(name string) error {
+	switch name {
+	case servermotherboardtype.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servermotherboardtype.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servermotherboardtype.FieldVendor:
+		m.ResetVendor()
+		return nil
+	case servermotherboardtype.FieldModel:
+		m.ResetModel()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboardType field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerMotherboardTypeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.motherboard != nil {
+		edges = append(edges, servermotherboardtype.EdgeMotherboard)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerMotherboardTypeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servermotherboardtype.EdgeMotherboard:
+		ids := make([]ent.Value, 0, len(m.motherboard))
+		for id := range m.motherboard {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerMotherboardTypeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedmotherboard != nil {
+		edges = append(edges, servermotherboardtype.EdgeMotherboard)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerMotherboardTypeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case servermotherboardtype.EdgeMotherboard:
+		ids := make([]ent.Value, 0, len(m.removedmotherboard))
+		for id := range m.removedmotherboard {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerMotherboardTypeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmotherboard {
+		edges = append(edges, servermotherboardtype.EdgeMotherboard)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerMotherboardTypeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servermotherboardtype.EdgeMotherboard:
+		return m.clearedmotherboard
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerMotherboardTypeMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerMotherboardType unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerMotherboardTypeMutation) ResetEdge(name string) error {
+	switch name {
+	case servermotherboardtype.EdgeMotherboard:
+		m.ResetMotherboard()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMotherboardType edge %s", name)
 }
 
 // ServerTypeMutation represents an operation that mutates the ServerType nodes in the graph.

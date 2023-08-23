@@ -27,6 +27,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/server-api/internal/ent/schema"
 	"go.infratographer.com/x/gidx"
@@ -268,6 +270,56 @@ func init() {
 	servercomponenttypeDescID := servercomponenttypeFields[0].Descriptor()
 	// servercomponenttype.DefaultID holds the default value on creation for the id field.
 	servercomponenttype.DefaultID = servercomponenttypeDescID.Default.(func() gidx.PrefixedID)
+	servermotherboardMixin := schema.ServerMotherboard{}.Mixin()
+	servermotherboardMixinFields0 := servermotherboardMixin[0].Fields()
+	_ = servermotherboardMixinFields0
+	servermotherboardFields := schema.ServerMotherboard{}.Fields()
+	_ = servermotherboardFields
+	// servermotherboardDescCreatedAt is the schema descriptor for created_at field.
+	servermotherboardDescCreatedAt := servermotherboardMixinFields0[0].Descriptor()
+	// servermotherboard.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servermotherboard.DefaultCreatedAt = servermotherboardDescCreatedAt.Default.(func() time.Time)
+	// servermotherboardDescUpdatedAt is the schema descriptor for updated_at field.
+	servermotherboardDescUpdatedAt := servermotherboardMixinFields0[1].Descriptor()
+	// servermotherboard.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servermotherboard.DefaultUpdatedAt = servermotherboardDescUpdatedAt.Default.(func() time.Time)
+	// servermotherboard.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servermotherboard.UpdateDefaultUpdatedAt = servermotherboardDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servermotherboardDescSerial is the schema descriptor for serial field.
+	servermotherboardDescSerial := servermotherboardFields[1].Descriptor()
+	// servermotherboard.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	servermotherboard.SerialValidator = servermotherboardDescSerial.Validators[0].(func(string) error)
+	// servermotherboardDescID is the schema descriptor for id field.
+	servermotherboardDescID := servermotherboardFields[0].Descriptor()
+	// servermotherboard.DefaultID holds the default value on creation for the id field.
+	servermotherboard.DefaultID = servermotherboardDescID.Default.(func() gidx.PrefixedID)
+	servermotherboardtypeMixin := schema.ServerMotherboardType{}.Mixin()
+	servermotherboardtypeMixinFields0 := servermotherboardtypeMixin[0].Fields()
+	_ = servermotherboardtypeMixinFields0
+	servermotherboardtypeFields := schema.ServerMotherboardType{}.Fields()
+	_ = servermotherboardtypeFields
+	// servermotherboardtypeDescCreatedAt is the schema descriptor for created_at field.
+	servermotherboardtypeDescCreatedAt := servermotherboardtypeMixinFields0[0].Descriptor()
+	// servermotherboardtype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servermotherboardtype.DefaultCreatedAt = servermotherboardtypeDescCreatedAt.Default.(func() time.Time)
+	// servermotherboardtypeDescUpdatedAt is the schema descriptor for updated_at field.
+	servermotherboardtypeDescUpdatedAt := servermotherboardtypeMixinFields0[1].Descriptor()
+	// servermotherboardtype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servermotherboardtype.DefaultUpdatedAt = servermotherboardtypeDescUpdatedAt.Default.(func() time.Time)
+	// servermotherboardtype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servermotherboardtype.UpdateDefaultUpdatedAt = servermotherboardtypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servermotherboardtypeDescVendor is the schema descriptor for vendor field.
+	servermotherboardtypeDescVendor := servermotherboardtypeFields[1].Descriptor()
+	// servermotherboardtype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	servermotherboardtype.VendorValidator = servermotherboardtypeDescVendor.Validators[0].(func(string) error)
+	// servermotherboardtypeDescModel is the schema descriptor for model field.
+	servermotherboardtypeDescModel := servermotherboardtypeFields[2].Descriptor()
+	// servermotherboardtype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	servermotherboardtype.ModelValidator = servermotherboardtypeDescModel.Validators[0].(func(string) error)
+	// servermotherboardtypeDescID is the schema descriptor for id field.
+	servermotherboardtypeDescID := servermotherboardtypeFields[0].Descriptor()
+	// servermotherboardtype.DefaultID holds the default value on creation for the id field.
+	servermotherboardtype.DefaultID = servermotherboardtypeDescID.Default.(func() gidx.PrefixedID)
 	servertypeMixin := schema.ServerType{}.Mixin()
 	servertypeMixinFields0 := servertypeMixin[0].Fields()
 	_ = servertypeMixinFields0

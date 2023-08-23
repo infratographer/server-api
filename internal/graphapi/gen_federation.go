@@ -220,6 +220,46 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 				list[idx[i]] = entity
 				return nil
 			}
+		case "ServerMotherboard":
+			resolverName, err := entityResolverNameForServerMotherboard(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerMotherboard": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerMotherboardByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerMotherboardByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerMotherboardByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerMotherboard": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
+		case "ServerMotherboardType":
+			resolverName, err := entityResolverNameForServerMotherboardType(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerMotherboardType": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerMotherboardTypeByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerMotherboardTypeByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerMotherboardTypeByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerMotherboardType": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
 		case "ServerProvider":
 			resolverName, err := entityResolverNameForServerProvider(ctx, rep)
 			if err != nil {
@@ -446,6 +486,40 @@ func entityResolverNameForServerComponentType(ctx context.Context, rep map[strin
 		return "findServerComponentTypeByID", nil
 	}
 	return "", fmt.Errorf("%w for ServerComponentType", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerMotherboard(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerMotherboardByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerMotherboard", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerMotherboardType(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerMotherboardTypeByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerMotherboardType", ErrTypeNotFound)
 }
 
 func entityResolverNameForServerProvider(ctx context.Context, rep map[string]interface{}) (string, error) {

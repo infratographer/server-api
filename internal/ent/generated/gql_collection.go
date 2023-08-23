@@ -32,6 +32,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
+	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -1322,6 +1324,321 @@ func newServerComponentTypePaginateArgs(rv map[string]any) *servercomponenttypeP
 	}
 	if v, ok := rv[whereField].(*ServerComponentTypeWhereInput); ok {
 		args.opts = append(args.opts, WithServerComponentTypeFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sm *ServerMotherboardQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerMotherboardQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sm, nil
+	}
+	if err := sm.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sm, nil
+}
+
+func (sm *ServerMotherboardQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servermotherboard.Columns))
+		selectedFields = []string{servermotherboard.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "server":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerClient{config: sm.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.withServer = query
+			if _, ok := fieldSeen[servermotherboard.FieldServerID]; !ok {
+				selectedFields = append(selectedFields, servermotherboard.FieldServerID)
+				fieldSeen[servermotherboard.FieldServerID] = struct{}{}
+			}
+		case "serverMotherboardType":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerMotherboardTypeClient{config: sm.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.withServerMotherboardType = query
+			if _, ok := fieldSeen[servermotherboard.FieldServerMotherboardTypeID]; !ok {
+				selectedFields = append(selectedFields, servermotherboard.FieldServerMotherboardTypeID)
+				fieldSeen[servermotherboard.FieldServerMotherboardTypeID] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[servermotherboard.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servermotherboard.FieldCreatedAt)
+				fieldSeen[servermotherboard.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servermotherboard.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servermotherboard.FieldUpdatedAt)
+				fieldSeen[servermotherboard.FieldUpdatedAt] = struct{}{}
+			}
+		case "serial":
+			if _, ok := fieldSeen[servermotherboard.FieldSerial]; !ok {
+				selectedFields = append(selectedFields, servermotherboard.FieldSerial)
+				fieldSeen[servermotherboard.FieldSerial] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servermotherboardPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerMotherboardPaginateOption
+}
+
+func newServerMotherboardPaginateArgs(rv map[string]any) *servermotherboardPaginateArgs {
+	args := &servermotherboardPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerMotherboardOrder{Field: &ServerMotherboardOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerMotherboardOrder(order))
+			}
+		case *ServerMotherboardOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerMotherboardOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerMotherboardWhereInput); ok {
+		args.opts = append(args.opts, WithServerMotherboardFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (smt *ServerMotherboardTypeQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerMotherboardTypeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return smt, nil
+	}
+	if err := smt.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return smt, nil
+}
+
+func (smt *ServerMotherboardTypeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servermotherboardtype.Columns))
+		selectedFields = []string{servermotherboardtype.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "motherboard":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerMotherboardClient{config: smt.config}).Query()
+			)
+			args := newServerMotherboardPaginateArgs(fieldArgs(ctx, new(ServerMotherboardWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newServerMotherboardPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					smt.loadTotal = append(smt.loadTotal, func(ctx context.Context, nodes []*ServerMotherboardType) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID gidx.PrefixedID `sql:"server_motherboard_type_id"`
+							Count  int             `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(servermotherboardtype.MotherboardColumn), ids...))
+						})
+						if err := query.GroupBy(servermotherboardtype.MotherboardColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[gidx.PrefixedID]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				} else {
+					smt.loadTotal = append(smt.loadTotal, func(_ context.Context, nodes []*ServerMotherboardType) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.Motherboard)
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "ServerMotherboard")...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				modify := limitRows(servermotherboardtype.MotherboardColumn, limit, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
+			} else {
+				query = pager.applyOrder(query)
+			}
+			smt.WithNamedMotherboard(alias, func(wq *ServerMotherboardQuery) {
+				*wq = *query
+			})
+		case "createdAt":
+			if _, ok := fieldSeen[servermotherboardtype.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servermotherboardtype.FieldCreatedAt)
+				fieldSeen[servermotherboardtype.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servermotherboardtype.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servermotherboardtype.FieldUpdatedAt)
+				fieldSeen[servermotherboardtype.FieldUpdatedAt] = struct{}{}
+			}
+		case "vendor":
+			if _, ok := fieldSeen[servermotherboardtype.FieldVendor]; !ok {
+				selectedFields = append(selectedFields, servermotherboardtype.FieldVendor)
+				fieldSeen[servermotherboardtype.FieldVendor] = struct{}{}
+			}
+		case "model":
+			if _, ok := fieldSeen[servermotherboardtype.FieldModel]; !ok {
+				selectedFields = append(selectedFields, servermotherboardtype.FieldModel)
+				fieldSeen[servermotherboardtype.FieldModel] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		smt.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servermotherboardtypePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerMotherboardTypePaginateOption
+}
+
+func newServerMotherboardTypePaginateArgs(rv map[string]any) *servermotherboardtypePaginateArgs {
+	args := &servermotherboardtypePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerMotherboardTypeOrder{Field: &ServerMotherboardTypeOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerMotherboardTypeOrder(order))
+			}
+		case *ServerMotherboardTypeOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerMotherboardTypeOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerMotherboardTypeWhereInput); ok {
+		args.opts = append(args.opts, WithServerMotherboardTypeFilter(v.Filter))
 	}
 	return args
 }

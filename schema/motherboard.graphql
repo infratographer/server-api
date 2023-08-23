@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverMotherboard by ID.
+  """
+  serverMotherboard(
+    """
+    The server motherboard ID.
+    """
+    id: ID!
+  ): ServerMotherboard!
+}
+
+extend type Mutation {
+  """
+  Create a server motherboard.
+  """
+  serverMotherboard(
+    input: CreateServerMotherboardInput!
+  ): ServerMotherboardCreatePayload!
+  """
+  Update a server motherboard.
+  """
+  serverMotherboardUpdate(
+    id: ID!
+    input: UpdateServerMotherboardInput!
+  ): ServerMotherboardUpdatePayload!
+  """
+  Delete a server motherboard.
+  """
+  serverMotherboardDelete(id: ID!): ServerMotherboardDeletePayload!
+}
+
+"""
+Return response from serverMotherboardCreate
+"""
+type ServerMotherboardCreatePayload {
+  """
+  The created server motherboard.
+  """
+  serverMotherboard: ServerMotherboard!
+}
+
+"""
+Return response from serverMotherboardDelete
+"""
+type ServerMotherboardDeletePayload {
+  """
+  The ID of the deleted server motherboard.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverMotherboardUpdate
+"""
+type ServerMotherboardUpdatePayload {
+  """
+  The updated server motherboard.
+  """
+  serverMotherboard: ServerMotherboard!
+}

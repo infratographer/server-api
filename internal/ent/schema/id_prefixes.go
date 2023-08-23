@@ -26,6 +26,10 @@ const (
 	ServerCPUTypePrefix = ApplicationPrefix + "cpt"
 	// ServerCPUPrefix is the prefix for all ServerCPU nodes
 	ServerCPUPrefix = ApplicationPrefix + "cpu"
+	// ServerMotherboardTypePrefix is the prefix for all ServerMotherboardType nodes
+	ServerMotherboardTypePrefix = ApplicationPrefix + "mbt"
+	// ServerMotherboardPrefix is the prefix for all ServerMotherboard nodes
+	ServerMotherboardPrefix = ApplicationPrefix + "mbd"
 )
 
 func prefixIDDirective(prefix string) entgql.Annotation {

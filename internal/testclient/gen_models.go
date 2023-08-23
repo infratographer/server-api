@@ -110,6 +110,23 @@ type CreateServerInput struct {
 	ComponentIDs []gidx.PrefixedID `json:"componentIDs,omitempty"`
 }
 
+// Input information to create a server motherboard.
+type CreateServerMotherboardInput struct {
+	// The serial of the server motherboard
+	Serial                  string          `json:"serial"`
+	ServerID                gidx.PrefixedID `json:"serverID"`
+	ServerMotherboardTypeID gidx.PrefixedID `json:"serverMotherboardTypeID"`
+}
+
+// Input information to create a server motherboard type.
+type CreateServerMotherboardTypeInput struct {
+	// The name of the vendor for the server motherboard type.
+	Vendor string `json:"vendor"`
+	// The mode of the server chassis type.
+	Model          string            `json:"model"`
+	MotherboardIDs []gidx.PrefixedID `json:"motherboardIDs,omitempty"`
+}
+
 // Input information to create a server provider.
 type CreateServerProviderInput struct {
 	// The name of the server provider.
@@ -1008,6 +1025,252 @@ type ServerEdge struct {
 	Cursor string `json:"cursor"`
 }
 
+type ServerMotherboard struct {
+	// The ID of the server motherboard.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The serial of the server motherboard
+	Serial                string                `json:"serial"`
+	Server                Server                `json:"server"`
+	ServerMotherboardType ServerMotherboardType `json:"serverMotherboardType"`
+}
+
+func (ServerMotherboard) IsNode() {}
+
+// The id of the object.
+func (this ServerMotherboard) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerMotherboard) IsEntity() {}
+
+// A connection to a list of items.
+type ServerMotherboardConnection struct {
+	// A list of edges.
+	Edges []*ServerMotherboardEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverMotherboardCreate
+type ServerMotherboardCreatePayload struct {
+	// The created server motherboard.
+	ServerMotherboard ServerMotherboard `json:"serverMotherboard"`
+}
+
+// Return response from serverMotherboardDelete
+type ServerMotherboardDeletePayload struct {
+	// The ID of the deleted server motherboard.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerMotherboardEdge struct {
+	// The item at the end of the edge.
+	Node *ServerMotherboard `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerMotherboard connections
+type ServerMotherboardOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerMotherboards.
+	Field ServerMotherboardOrderField `json:"field"`
+}
+
+type ServerMotherboardType struct {
+	// The ID of the server motherboard type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The name of the vendor for the server motherboard type.
+	Vendor string `json:"vendor"`
+	// The mode of the server chassis type.
+	Model       string                      `json:"model"`
+	Motherboard ServerMotherboardConnection `json:"motherboard"`
+}
+
+func (ServerMotherboardType) IsNode() {}
+
+// The id of the object.
+func (this ServerMotherboardType) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerMotherboardType) IsEntity() {}
+
+// A connection to a list of items.
+type ServerMotherboardTypeConnection struct {
+	// A list of edges.
+	Edges []*ServerMotherboardTypeEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverMotherboardTypeCreate
+type ServerMotherboardTypeCreatePayload struct {
+	// The created server motherboard type.
+	ServerMotherboardType ServerMotherboardType `json:"serverMotherboardType"`
+}
+
+// Return response from serverMotherboardTypeDelete
+type ServerMotherboardTypeDeletePayload struct {
+	// The ID of the deleted server motherboard type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerMotherboardTypeEdge struct {
+	// The item at the end of the edge.
+	Node *ServerMotherboardType `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerMotherboardType connections
+type ServerMotherboardTypeOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerMotherboardTypes.
+	Field ServerMotherboardTypeOrderField `json:"field"`
+}
+
+// Return response from serverMotherboardTypeUpdate
+type ServerMotherboardTypeUpdatePayload struct {
+	// The updated server motherboard type.
+	ServerMotherboardType ServerMotherboardType `json:"serverMotherboardType"`
+}
+
+// ServerMotherboardTypeWhereInput is used for filtering ServerMotherboardType objects.
+// Input was generated by ent.
+type ServerMotherboardTypeWhereInput struct {
+	Not *ServerMotherboardTypeWhereInput   `json:"not,omitempty"`
+	And []*ServerMotherboardTypeWhereInput `json:"and,omitempty"`
+	Or  []*ServerMotherboardTypeWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// vendor field predicates
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNeq          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGt           *string  `json:"vendorGT,omitempty"`
+	VendorGte          *string  `json:"vendorGTE,omitempty"`
+	VendorLt           *string  `json:"vendorLT,omitempty"`
+	VendorLte          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+	// model field predicates
+	Model             *string  `json:"model,omitempty"`
+	ModelNeq          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGt           *string  `json:"modelGT,omitempty"`
+	ModelGte          *string  `json:"modelGTE,omitempty"`
+	ModelLt           *string  `json:"modelLT,omitempty"`
+	ModelLte          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+	// motherboard edge predicates
+	HasMotherboard     *bool                          `json:"hasMotherboard,omitempty"`
+	HasMotherboardWith []*ServerMotherboardWhereInput `json:"hasMotherboardWith,omitempty"`
+}
+
+// Return response from serverMotherboardUpdate
+type ServerMotherboardUpdatePayload struct {
+	// The updated server motherboard.
+	ServerMotherboard ServerMotherboard `json:"serverMotherboard"`
+}
+
+// ServerMotherboardWhereInput is used for filtering ServerMotherboard objects.
+// Input was generated by ent.
+type ServerMotherboardWhereInput struct {
+	Not *ServerMotherboardWhereInput   `json:"not,omitempty"`
+	And []*ServerMotherboardWhereInput `json:"and,omitempty"`
+	Or  []*ServerMotherboardWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// serial field predicates
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNeq          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGt           *string  `json:"serialGT,omitempty"`
+	SerialGte          *string  `json:"serialGTE,omitempty"`
+	SerialLt           *string  `json:"serialLT,omitempty"`
+	SerialLte          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+	// server_motherboard_type edge predicates
+	HasServerMotherboardType     *bool                              `json:"hasServerMotherboardType,omitempty"`
+	HasServerMotherboardTypeWith []*ServerMotherboardTypeWhereInput `json:"hasServerMotherboardTypeWith,omitempty"`
+}
+
 // Ordering options for Server connections
 type ServerOrder struct {
 	// The ordering direction.
@@ -1377,6 +1640,23 @@ type UpdateServerInput struct {
 	ClearComponents    *bool             `json:"clearComponents,omitempty"`
 }
 
+// Input information to update a server motherboard.
+type UpdateServerMotherboardInput struct {
+	// The serial of the server motherboard
+	Serial *string `json:"serial,omitempty"`
+}
+
+// Input information to update a server motherboard type.
+type UpdateServerMotherboardTypeInput struct {
+	// The name of the vendor for the server motherboard type.
+	Vendor *string `json:"vendor,omitempty"`
+	// The mode of the server chassis type.
+	Model                *string           `json:"model,omitempty"`
+	AddMotherboardIDs    []gidx.PrefixedID `json:"addMotherboardIDs,omitempty"`
+	RemoveMotherboardIDs []gidx.PrefixedID `json:"removeMotherboardIDs,omitempty"`
+	ClearMotherboard     *bool             `json:"clearMotherboard,omitempty"`
+}
+
 // Input information to update a server provider.
 type UpdateServerProviderInput struct {
 	// The name of the server provider.
@@ -1724,6 +2004,100 @@ func (e *ServerComponentTypeOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ServerComponentTypeOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerMotherboard connections can be ordered.
+type ServerMotherboardOrderField string
+
+const (
+	ServerMotherboardOrderFieldID                    ServerMotherboardOrderField = "ID"
+	ServerMotherboardOrderFieldCreatedAt             ServerMotherboardOrderField = "CREATED_AT"
+	ServerMotherboardOrderFieldUpdatedAt             ServerMotherboardOrderField = "UPDATED_AT"
+	ServerMotherboardOrderFieldServerMotherboardType ServerMotherboardOrderField = "SERVER_MOTHERBOARD_TYPE"
+	ServerMotherboardOrderFieldServer                ServerMotherboardOrderField = "SERVER"
+)
+
+var AllServerMotherboardOrderField = []ServerMotherboardOrderField{
+	ServerMotherboardOrderFieldID,
+	ServerMotherboardOrderFieldCreatedAt,
+	ServerMotherboardOrderFieldUpdatedAt,
+	ServerMotherboardOrderFieldServerMotherboardType,
+	ServerMotherboardOrderFieldServer,
+}
+
+func (e ServerMotherboardOrderField) IsValid() bool {
+	switch e {
+	case ServerMotherboardOrderFieldID, ServerMotherboardOrderFieldCreatedAt, ServerMotherboardOrderFieldUpdatedAt, ServerMotherboardOrderFieldServerMotherboardType, ServerMotherboardOrderFieldServer:
+		return true
+	}
+	return false
+}
+
+func (e ServerMotherboardOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerMotherboardOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerMotherboardOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerMotherboardOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerMotherboardOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerMotherboardType connections can be ordered.
+type ServerMotherboardTypeOrderField string
+
+const (
+	ServerMotherboardTypeOrderFieldID        ServerMotherboardTypeOrderField = "ID"
+	ServerMotherboardTypeOrderFieldCreatedAt ServerMotherboardTypeOrderField = "CREATED_AT"
+	ServerMotherboardTypeOrderFieldUpdatedAt ServerMotherboardTypeOrderField = "UPDATED_AT"
+	ServerMotherboardTypeOrderFieldName      ServerMotherboardTypeOrderField = "NAME"
+)
+
+var AllServerMotherboardTypeOrderField = []ServerMotherboardTypeOrderField{
+	ServerMotherboardTypeOrderFieldID,
+	ServerMotherboardTypeOrderFieldCreatedAt,
+	ServerMotherboardTypeOrderFieldUpdatedAt,
+	ServerMotherboardTypeOrderFieldName,
+}
+
+func (e ServerMotherboardTypeOrderField) IsValid() bool {
+	switch e {
+	case ServerMotherboardTypeOrderFieldID, ServerMotherboardTypeOrderFieldCreatedAt, ServerMotherboardTypeOrderFieldUpdatedAt, ServerMotherboardTypeOrderFieldName:
+		return true
+	}
+	return false
+}
+
+func (e ServerMotherboardTypeOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerMotherboardTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerMotherboardTypeOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerMotherboardTypeOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerMotherboardTypeOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

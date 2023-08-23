@@ -366,6 +366,73 @@ var (
 			},
 		},
 	}
+	// ServerMotherboardsColumns holds the columns for the "server_motherboards" table.
+	ServerMotherboardsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "server_id", Type: field.TypeString},
+		{Name: "server_motherboard_type_id", Type: field.TypeString},
+	}
+	// ServerMotherboardsTable holds the schema information for the "server_motherboards" table.
+	ServerMotherboardsTable = &schema.Table{
+		Name:       "server_motherboards",
+		Columns:    ServerMotherboardsColumns,
+		PrimaryKey: []*schema.Column{ServerMotherboardsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_motherboards_servers_server",
+				Columns:    []*schema.Column{ServerMotherboardsColumns[4]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_motherboards_server_motherboard_types_server_motherboard_type",
+				Columns:    []*schema.Column{ServerMotherboardsColumns[5]},
+				RefColumns: []*schema.Column{ServerMotherboardTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servermotherboard_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMotherboardsColumns[1]},
+			},
+			{
+				Name:    "servermotherboard_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMotherboardsColumns[2]},
+			},
+		},
+	}
+	// ServerMotherboardTypesColumns holds the columns for the "server_motherboard_types" table.
+	ServerMotherboardTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+	}
+	// ServerMotherboardTypesTable holds the schema information for the "server_motherboard_types" table.
+	ServerMotherboardTypesTable = &schema.Table{
+		Name:       "server_motherboard_types",
+		Columns:    ServerMotherboardTypesColumns,
+		PrimaryKey: []*schema.Column{ServerMotherboardTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servermotherboardtype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMotherboardTypesColumns[1]},
+			},
+			{
+				Name:    "servermotherboardtype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMotherboardTypesColumns[2]},
+			},
+		},
+	}
 	// ServerTypesColumns holds the columns for the "server_types" table.
 	ServerTypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -407,6 +474,8 @@ var (
 		ServerChassisTypesTable,
 		ServerComponentsTable,
 		ServerComponentTypesTable,
+		ServerMotherboardsTable,
+		ServerMotherboardTypesTable,
 		ServerTypesTable,
 	}
 )
@@ -420,4 +489,6 @@ func init() {
 	ServerChassesTable.ForeignKeys[1].RefTable = ServerChassisTypesTable
 	ServerComponentsTable.ForeignKeys[0].RefTable = ServerComponentTypesTable
 	ServerComponentsTable.ForeignKeys[1].RefTable = ServersTable
+	ServerMotherboardsTable.ForeignKeys[0].RefTable = ServersTable
+	ServerMotherboardsTable.ForeignKeys[1].RefTable = ServerMotherboardTypesTable
 }
