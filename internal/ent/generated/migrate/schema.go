@@ -366,6 +366,86 @@ var (
 			},
 		},
 	}
+	// ServerHardDrivesColumns holds the columns for the "server_hard_drives" table.
+	ServerHardDrivesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "server_id", Type: field.TypeString},
+		{Name: "server_hard_drive_type_id", Type: field.TypeString},
+	}
+	// ServerHardDrivesTable holds the schema information for the "server_hard_drives" table.
+	ServerHardDrivesTable = &schema.Table{
+		Name:       "server_hard_drives",
+		Columns:    ServerHardDrivesColumns,
+		PrimaryKey: []*schema.Column{ServerHardDrivesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_hard_drives_servers_server",
+				Columns:    []*schema.Column{ServerHardDrivesColumns[4]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_hard_drives_server_hard_drive_types_hard_drive_type",
+				Columns:    []*schema.Column{ServerHardDrivesColumns[5]},
+				RefColumns: []*schema.Column{ServerHardDriveTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "serverharddrive_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerHardDrivesColumns[1]},
+			},
+			{
+				Name:    "serverharddrive_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerHardDrivesColumns[2]},
+			},
+			{
+				Name:    "serverharddrive_server_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerHardDrivesColumns[4]},
+			},
+			{
+				Name:    "serverharddrive_server_hard_drive_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerHardDrivesColumns[5]},
+			},
+		},
+	}
+	// ServerHardDriveTypesColumns holds the columns for the "server_hard_drive_types" table.
+	ServerHardDriveTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+		{Name: "speed", Type: field.TypeString, Size: 2147483647},
+		{Name: "type", Type: field.TypeString, Size: 2147483647},
+		{Name: "capacity", Type: field.TypeString, Size: 2147483647},
+	}
+	// ServerHardDriveTypesTable holds the schema information for the "server_hard_drive_types" table.
+	ServerHardDriveTypesTable = &schema.Table{
+		Name:       "server_hard_drive_types",
+		Columns:    ServerHardDriveTypesColumns,
+		PrimaryKey: []*schema.Column{ServerHardDriveTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "serverharddrivetype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerHardDriveTypesColumns[1]},
+			},
+			{
+				Name:    "serverharddrivetype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerHardDriveTypesColumns[2]},
+			},
+		},
+	}
 	// ServerMemoriesColumns holds the columns for the "server_memories" table.
 	ServerMemoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -553,6 +633,8 @@ var (
 		ServerChassisTypesTable,
 		ServerComponentsTable,
 		ServerComponentTypesTable,
+		ServerHardDrivesTable,
+		ServerHardDriveTypesTable,
 		ServerMemoriesTable,
 		ServerMemoryTypesTable,
 		ServerMotherboardsTable,
@@ -570,6 +652,8 @@ func init() {
 	ServerChassesTable.ForeignKeys[1].RefTable = ServerChassisTypesTable
 	ServerComponentsTable.ForeignKeys[0].RefTable = ServerComponentTypesTable
 	ServerComponentsTable.ForeignKeys[1].RefTable = ServersTable
+	ServerHardDrivesTable.ForeignKeys[0].RefTable = ServersTable
+	ServerHardDrivesTable.ForeignKeys[1].RefTable = ServerHardDriveTypesTable
 	ServerMemoriesTable.ForeignKeys[0].RefTable = ServersTable
 	ServerMemoriesTable.ForeignKeys[1].RefTable = ServerMemoryTypesTable
 	ServerMotherboardsTable.ForeignKeys[0].RefTable = ServersTable

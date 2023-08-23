@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -3099,6 +3101,736 @@ func (sct *ServerComponentType) ToEdge(order *ServerComponentTypeOrder) *ServerC
 	return &ServerComponentTypeEdge{
 		Node:   sct,
 		Cursor: order.Field.toCursor(sct),
+	}
+}
+
+// ServerHardDriveEdge is the edge representation of ServerHardDrive.
+type ServerHardDriveEdge struct {
+	Node   *ServerHardDrive `json:"node"`
+	Cursor Cursor           `json:"cursor"`
+}
+
+// ServerHardDriveConnection is the connection containing edges to ServerHardDrive.
+type ServerHardDriveConnection struct {
+	Edges      []*ServerHardDriveEdge `json:"edges"`
+	PageInfo   PageInfo               `json:"pageInfo"`
+	TotalCount int                    `json:"totalCount"`
+}
+
+func (c *ServerHardDriveConnection) build(nodes []*ServerHardDrive, pager *serverharddrivePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerHardDrive
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerHardDrive {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerHardDrive {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerHardDriveEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerHardDriveEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerHardDrivePaginateOption enables pagination customization.
+type ServerHardDrivePaginateOption func(*serverharddrivePager) error
+
+// WithServerHardDriveOrder configures pagination ordering.
+func WithServerHardDriveOrder(order *ServerHardDriveOrder) ServerHardDrivePaginateOption {
+	if order == nil {
+		order = DefaultServerHardDriveOrder
+	}
+	o := *order
+	return func(pager *serverharddrivePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerHardDriveOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerHardDriveFilter configures pagination filter.
+func WithServerHardDriveFilter(filter func(*ServerHardDriveQuery) (*ServerHardDriveQuery, error)) ServerHardDrivePaginateOption {
+	return func(pager *serverharddrivePager) error {
+		if filter == nil {
+			return errors.New("ServerHardDriveQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type serverharddrivePager struct {
+	reverse bool
+	order   *ServerHardDriveOrder
+	filter  func(*ServerHardDriveQuery) (*ServerHardDriveQuery, error)
+}
+
+func newServerHardDrivePager(opts []ServerHardDrivePaginateOption, reverse bool) (*serverharddrivePager, error) {
+	pager := &serverharddrivePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerHardDriveOrder
+	}
+	return pager, nil
+}
+
+func (p *serverharddrivePager) applyFilter(query *ServerHardDriveQuery) (*ServerHardDriveQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *serverharddrivePager) toCursor(shd *ServerHardDrive) Cursor {
+	return p.order.Field.toCursor(shd)
+}
+
+func (p *serverharddrivePager) applyCursors(query *ServerHardDriveQuery, after, before *Cursor) (*ServerHardDriveQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerHardDriveOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *serverharddrivePager) applyOrder(query *ServerHardDriveQuery) *ServerHardDriveQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerHardDriveOrder.Field {
+		query = query.Order(DefaultServerHardDriveOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *serverharddrivePager) orderExpr(query *ServerHardDriveQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerHardDriveOrder.Field {
+			b.Comma().Ident(DefaultServerHardDriveOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerHardDrive.
+func (shd *ServerHardDriveQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerHardDrivePaginateOption,
+) (*ServerHardDriveConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerHardDrivePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if shd, err = pager.applyFilter(shd); err != nil {
+		return nil, err
+	}
+	conn := &ServerHardDriveConnection{Edges: []*ServerHardDriveEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = shd.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if shd, err = pager.applyCursors(shd, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		shd.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := shd.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	shd = pager.applyOrder(shd)
+	nodes, err := shd.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerHardDriveOrderFieldID orders ServerHardDrive by id.
+	ServerHardDriveOrderFieldID = &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.ID, nil
+		},
+		column: serverharddrive.FieldID,
+		toTerm: serverharddrive.ByID,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{
+				ID:    shd.ID,
+				Value: shd.ID,
+			}
+		},
+	}
+	// ServerHardDriveOrderFieldCreatedAt orders ServerHardDrive by created_at.
+	ServerHardDriveOrderFieldCreatedAt = &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.CreatedAt, nil
+		},
+		column: serverharddrive.FieldCreatedAt,
+		toTerm: serverharddrive.ByCreatedAt,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{
+				ID:    shd.ID,
+				Value: shd.CreatedAt,
+			}
+		},
+	}
+	// ServerHardDriveOrderFieldUpdatedAt orders ServerHardDrive by updated_at.
+	ServerHardDriveOrderFieldUpdatedAt = &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.UpdatedAt, nil
+		},
+		column: serverharddrive.FieldUpdatedAt,
+		toTerm: serverharddrive.ByUpdatedAt,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{
+				ID:    shd.ID,
+				Value: shd.UpdatedAt,
+			}
+		},
+	}
+	// ServerHardDriveOrderFieldSerial orders ServerHardDrive by serial.
+	ServerHardDriveOrderFieldSerial = &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.Serial, nil
+		},
+		column: serverharddrive.FieldSerial,
+		toTerm: serverharddrive.BySerial,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{
+				ID:    shd.ID,
+				Value: shd.Serial,
+			}
+		},
+	}
+	// ServerHardDriveOrderFieldServerID orders ServerHardDrive by server_id.
+	ServerHardDriveOrderFieldServerID = &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.ServerID, nil
+		},
+		column: serverharddrive.FieldServerID,
+		toTerm: serverharddrive.ByServerID,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{
+				ID:    shd.ID,
+				Value: shd.ServerID,
+			}
+		},
+	}
+	// ServerHardDriveOrderFieldServerHardDriveTypeID orders ServerHardDrive by server_hard_drive_type_id.
+	ServerHardDriveOrderFieldServerHardDriveTypeID = &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.ServerHardDriveTypeID, nil
+		},
+		column: serverharddrive.FieldServerHardDriveTypeID,
+		toTerm: serverharddrive.ByServerHardDriveTypeID,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{
+				ID:    shd.ID,
+				Value: shd.ServerHardDriveTypeID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerHardDriveOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerHardDriveOrderFieldID.column:
+		str = "ID"
+	case ServerHardDriveOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerHardDriveOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerHardDriveOrderFieldSerial.column:
+		str = "NAME"
+	case ServerHardDriveOrderFieldServerID.column:
+		str = "SERVER"
+	case ServerHardDriveOrderFieldServerHardDriveTypeID.column:
+		str = "SERVER_HARD_DRIVE_TYPE"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerHardDriveOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerHardDriveOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerHardDriveOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerHardDriveOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerHardDriveOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerHardDriveOrderFieldUpdatedAt
+	case "NAME":
+		*f = *ServerHardDriveOrderFieldSerial
+	case "SERVER":
+		*f = *ServerHardDriveOrderFieldServerID
+	case "SERVER_HARD_DRIVE_TYPE":
+		*f = *ServerHardDriveOrderFieldServerHardDriveTypeID
+	default:
+		return fmt.Errorf("%s is not a valid ServerHardDriveOrderField", str)
+	}
+	return nil
+}
+
+// ServerHardDriveOrderField defines the ordering field of ServerHardDrive.
+type ServerHardDriveOrderField struct {
+	// Value extracts the ordering value from the given ServerHardDrive.
+	Value    func(*ServerHardDrive) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) serverharddrive.OrderOption
+	toCursor func(*ServerHardDrive) Cursor
+}
+
+// ServerHardDriveOrder defines the ordering of ServerHardDrive.
+type ServerHardDriveOrder struct {
+	Direction OrderDirection             `json:"direction"`
+	Field     *ServerHardDriveOrderField `json:"field"`
+}
+
+// DefaultServerHardDriveOrder is the default ordering of ServerHardDrive.
+var DefaultServerHardDriveOrder = &ServerHardDriveOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerHardDriveOrderField{
+		Value: func(shd *ServerHardDrive) (ent.Value, error) {
+			return shd.ID, nil
+		},
+		column: serverharddrive.FieldID,
+		toTerm: serverharddrive.ByID,
+		toCursor: func(shd *ServerHardDrive) Cursor {
+			return Cursor{ID: shd.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerHardDrive into ServerHardDriveEdge.
+func (shd *ServerHardDrive) ToEdge(order *ServerHardDriveOrder) *ServerHardDriveEdge {
+	if order == nil {
+		order = DefaultServerHardDriveOrder
+	}
+	return &ServerHardDriveEdge{
+		Node:   shd,
+		Cursor: order.Field.toCursor(shd),
+	}
+}
+
+// ServerHardDriveTypeEdge is the edge representation of ServerHardDriveType.
+type ServerHardDriveTypeEdge struct {
+	Node   *ServerHardDriveType `json:"node"`
+	Cursor Cursor               `json:"cursor"`
+}
+
+// ServerHardDriveTypeConnection is the connection containing edges to ServerHardDriveType.
+type ServerHardDriveTypeConnection struct {
+	Edges      []*ServerHardDriveTypeEdge `json:"edges"`
+	PageInfo   PageInfo                   `json:"pageInfo"`
+	TotalCount int                        `json:"totalCount"`
+}
+
+func (c *ServerHardDriveTypeConnection) build(nodes []*ServerHardDriveType, pager *serverharddrivetypePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerHardDriveType
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerHardDriveType {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerHardDriveType {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerHardDriveTypeEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerHardDriveTypeEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerHardDriveTypePaginateOption enables pagination customization.
+type ServerHardDriveTypePaginateOption func(*serverharddrivetypePager) error
+
+// WithServerHardDriveTypeOrder configures pagination ordering.
+func WithServerHardDriveTypeOrder(order *ServerHardDriveTypeOrder) ServerHardDriveTypePaginateOption {
+	if order == nil {
+		order = DefaultServerHardDriveTypeOrder
+	}
+	o := *order
+	return func(pager *serverharddrivetypePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerHardDriveTypeOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerHardDriveTypeFilter configures pagination filter.
+func WithServerHardDriveTypeFilter(filter func(*ServerHardDriveTypeQuery) (*ServerHardDriveTypeQuery, error)) ServerHardDriveTypePaginateOption {
+	return func(pager *serverharddrivetypePager) error {
+		if filter == nil {
+			return errors.New("ServerHardDriveTypeQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type serverharddrivetypePager struct {
+	reverse bool
+	order   *ServerHardDriveTypeOrder
+	filter  func(*ServerHardDriveTypeQuery) (*ServerHardDriveTypeQuery, error)
+}
+
+func newServerHardDriveTypePager(opts []ServerHardDriveTypePaginateOption, reverse bool) (*serverharddrivetypePager, error) {
+	pager := &serverharddrivetypePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerHardDriveTypeOrder
+	}
+	return pager, nil
+}
+
+func (p *serverharddrivetypePager) applyFilter(query *ServerHardDriveTypeQuery) (*ServerHardDriveTypeQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *serverharddrivetypePager) toCursor(shdt *ServerHardDriveType) Cursor {
+	return p.order.Field.toCursor(shdt)
+}
+
+func (p *serverharddrivetypePager) applyCursors(query *ServerHardDriveTypeQuery, after, before *Cursor) (*ServerHardDriveTypeQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerHardDriveTypeOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *serverharddrivetypePager) applyOrder(query *ServerHardDriveTypeQuery) *ServerHardDriveTypeQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerHardDriveTypeOrder.Field {
+		query = query.Order(DefaultServerHardDriveTypeOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *serverharddrivetypePager) orderExpr(query *ServerHardDriveTypeQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerHardDriveTypeOrder.Field {
+			b.Comma().Ident(DefaultServerHardDriveTypeOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerHardDriveType.
+func (shdt *ServerHardDriveTypeQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerHardDriveTypePaginateOption,
+) (*ServerHardDriveTypeConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerHardDriveTypePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if shdt, err = pager.applyFilter(shdt); err != nil {
+		return nil, err
+	}
+	conn := &ServerHardDriveTypeConnection{Edges: []*ServerHardDriveTypeEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = shdt.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if shdt, err = pager.applyCursors(shdt, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		shdt.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := shdt.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	shdt = pager.applyOrder(shdt)
+	nodes, err := shdt.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerHardDriveTypeOrderFieldID orders ServerHardDriveType by id.
+	ServerHardDriveTypeOrderFieldID = &ServerHardDriveTypeOrderField{
+		Value: func(shdt *ServerHardDriveType) (ent.Value, error) {
+			return shdt.ID, nil
+		},
+		column: serverharddrivetype.FieldID,
+		toTerm: serverharddrivetype.ByID,
+		toCursor: func(shdt *ServerHardDriveType) Cursor {
+			return Cursor{
+				ID:    shdt.ID,
+				Value: shdt.ID,
+			}
+		},
+	}
+	// ServerHardDriveTypeOrderFieldCreatedAt orders ServerHardDriveType by created_at.
+	ServerHardDriveTypeOrderFieldCreatedAt = &ServerHardDriveTypeOrderField{
+		Value: func(shdt *ServerHardDriveType) (ent.Value, error) {
+			return shdt.CreatedAt, nil
+		},
+		column: serverharddrivetype.FieldCreatedAt,
+		toTerm: serverharddrivetype.ByCreatedAt,
+		toCursor: func(shdt *ServerHardDriveType) Cursor {
+			return Cursor{
+				ID:    shdt.ID,
+				Value: shdt.CreatedAt,
+			}
+		},
+	}
+	// ServerHardDriveTypeOrderFieldUpdatedAt orders ServerHardDriveType by updated_at.
+	ServerHardDriveTypeOrderFieldUpdatedAt = &ServerHardDriveTypeOrderField{
+		Value: func(shdt *ServerHardDriveType) (ent.Value, error) {
+			return shdt.UpdatedAt, nil
+		},
+		column: serverharddrivetype.FieldUpdatedAt,
+		toTerm: serverharddrivetype.ByUpdatedAt,
+		toCursor: func(shdt *ServerHardDriveType) Cursor {
+			return Cursor{
+				ID:    shdt.ID,
+				Value: shdt.UpdatedAt,
+			}
+		},
+	}
+	// ServerHardDriveTypeOrderFieldVendor orders ServerHardDriveType by vendor.
+	ServerHardDriveTypeOrderFieldVendor = &ServerHardDriveTypeOrderField{
+		Value: func(shdt *ServerHardDriveType) (ent.Value, error) {
+			return shdt.Vendor, nil
+		},
+		column: serverharddrivetype.FieldVendor,
+		toTerm: serverharddrivetype.ByVendor,
+		toCursor: func(shdt *ServerHardDriveType) Cursor {
+			return Cursor{
+				ID:    shdt.ID,
+				Value: shdt.Vendor,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerHardDriveTypeOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerHardDriveTypeOrderFieldID.column:
+		str = "ID"
+	case ServerHardDriveTypeOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerHardDriveTypeOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerHardDriveTypeOrderFieldVendor.column:
+		str = "NAME"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerHardDriveTypeOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerHardDriveTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerHardDriveTypeOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerHardDriveTypeOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerHardDriveTypeOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerHardDriveTypeOrderFieldUpdatedAt
+	case "NAME":
+		*f = *ServerHardDriveTypeOrderFieldVendor
+	default:
+		return fmt.Errorf("%s is not a valid ServerHardDriveTypeOrderField", str)
+	}
+	return nil
+}
+
+// ServerHardDriveTypeOrderField defines the ordering field of ServerHardDriveType.
+type ServerHardDriveTypeOrderField struct {
+	// Value extracts the ordering value from the given ServerHardDriveType.
+	Value    func(*ServerHardDriveType) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) serverharddrivetype.OrderOption
+	toCursor func(*ServerHardDriveType) Cursor
+}
+
+// ServerHardDriveTypeOrder defines the ordering of ServerHardDriveType.
+type ServerHardDriveTypeOrder struct {
+	Direction OrderDirection                 `json:"direction"`
+	Field     *ServerHardDriveTypeOrderField `json:"field"`
+}
+
+// DefaultServerHardDriveTypeOrder is the default ordering of ServerHardDriveType.
+var DefaultServerHardDriveTypeOrder = &ServerHardDriveTypeOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerHardDriveTypeOrderField{
+		Value: func(shdt *ServerHardDriveType) (ent.Value, error) {
+			return shdt.ID, nil
+		},
+		column: serverharddrivetype.FieldID,
+		toTerm: serverharddrivetype.ByID,
+		toCursor: func(shdt *ServerHardDriveType) Cursor {
+			return Cursor{ID: shdt.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerHardDriveType into ServerHardDriveTypeEdge.
+func (shdt *ServerHardDriveType) ToEdge(order *ServerHardDriveTypeOrder) *ServerHardDriveTypeEdge {
+	if order == nil {
+		order = DefaultServerHardDriveTypeOrder
+	}
+	return &ServerHardDriveTypeEdge{
+		Node:   shdt,
+		Cursor: order.Field.toCursor(shdt),
 	}
 }
 

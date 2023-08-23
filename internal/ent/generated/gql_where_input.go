@@ -30,6 +30,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -2751,6 +2753,780 @@ func (i *ServerComponentTypeWhereInput) P() (predicate.ServerComponentType, erro
 		return predicates[0], nil
 	default:
 		return servercomponenttype.And(predicates...), nil
+	}
+}
+
+// ServerHardDriveWhereInput represents a where input for filtering ServerHardDrive queries.
+type ServerHardDriveWhereInput struct {
+	Predicates []predicate.ServerHardDrive  `json:"-"`
+	Not        *ServerHardDriveWhereInput   `json:"not,omitempty"`
+	Or         []*ServerHardDriveWhereInput `json:"or,omitempty"`
+	And        []*ServerHardDriveWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "serial" field predicates.
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNEQ          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGT           *string  `json:"serialGT,omitempty"`
+	SerialGTE          *string  `json:"serialGTE,omitempty"`
+	SerialLT           *string  `json:"serialLT,omitempty"`
+	SerialLTE          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+
+	// "server" edge predicates.
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+
+	// "hard_drive_type" edge predicates.
+	HasHardDriveType     *bool                            `json:"hasHardDriveType,omitempty"`
+	HasHardDriveTypeWith []*ServerHardDriveTypeWhereInput `json:"hasHardDriveTypeWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerHardDriveWhereInput) AddPredicates(predicates ...predicate.ServerHardDrive) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerHardDriveWhereInput filter on the ServerHardDriveQuery builder.
+func (i *ServerHardDriveWhereInput) Filter(q *ServerHardDriveQuery) (*ServerHardDriveQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerHardDriveWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerHardDriveWhereInput is returned in case the ServerHardDriveWhereInput is empty.
+var ErrEmptyServerHardDriveWhereInput = errors.New("generated: empty predicate ServerHardDriveWhereInput")
+
+// P returns a predicate for filtering serverharddrives.
+// An error is returned if the input is empty or invalid.
+func (i *ServerHardDriveWhereInput) P() (predicate.ServerHardDrive, error) {
+	var predicates []predicate.ServerHardDrive
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, serverharddrive.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerHardDrive, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, serverharddrive.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerHardDrive, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, serverharddrive.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, serverharddrive.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, serverharddrive.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, serverharddrive.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, serverharddrive.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, serverharddrive.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, serverharddrive.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, serverharddrive.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, serverharddrive.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, serverharddrive.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, serverharddrive.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, serverharddrive.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, serverharddrive.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, serverharddrive.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, serverharddrive.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, serverharddrive.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, serverharddrive.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, serverharddrive.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, serverharddrive.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, serverharddrive.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, serverharddrive.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, serverharddrive.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, serverharddrive.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, serverharddrive.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, serverharddrive.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Serial != nil {
+		predicates = append(predicates, serverharddrive.SerialEQ(*i.Serial))
+	}
+	if i.SerialNEQ != nil {
+		predicates = append(predicates, serverharddrive.SerialNEQ(*i.SerialNEQ))
+	}
+	if len(i.SerialIn) > 0 {
+		predicates = append(predicates, serverharddrive.SerialIn(i.SerialIn...))
+	}
+	if len(i.SerialNotIn) > 0 {
+		predicates = append(predicates, serverharddrive.SerialNotIn(i.SerialNotIn...))
+	}
+	if i.SerialGT != nil {
+		predicates = append(predicates, serverharddrive.SerialGT(*i.SerialGT))
+	}
+	if i.SerialGTE != nil {
+		predicates = append(predicates, serverharddrive.SerialGTE(*i.SerialGTE))
+	}
+	if i.SerialLT != nil {
+		predicates = append(predicates, serverharddrive.SerialLT(*i.SerialLT))
+	}
+	if i.SerialLTE != nil {
+		predicates = append(predicates, serverharddrive.SerialLTE(*i.SerialLTE))
+	}
+	if i.SerialContains != nil {
+		predicates = append(predicates, serverharddrive.SerialContains(*i.SerialContains))
+	}
+	if i.SerialHasPrefix != nil {
+		predicates = append(predicates, serverharddrive.SerialHasPrefix(*i.SerialHasPrefix))
+	}
+	if i.SerialHasSuffix != nil {
+		predicates = append(predicates, serverharddrive.SerialHasSuffix(*i.SerialHasSuffix))
+	}
+	if i.SerialEqualFold != nil {
+		predicates = append(predicates, serverharddrive.SerialEqualFold(*i.SerialEqualFold))
+	}
+	if i.SerialContainsFold != nil {
+		predicates = append(predicates, serverharddrive.SerialContainsFold(*i.SerialContainsFold))
+	}
+
+	if i.HasServer != nil {
+		p := serverharddrive.HasServer()
+		if !*i.HasServer {
+			p = serverharddrive.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerWith) > 0 {
+		with := make([]predicate.Server, 0, len(i.HasServerWith))
+		for _, w := range i.HasServerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverharddrive.HasServerWith(with...))
+	}
+	if i.HasHardDriveType != nil {
+		p := serverharddrive.HasHardDriveType()
+		if !*i.HasHardDriveType {
+			p = serverharddrive.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHardDriveTypeWith) > 0 {
+		with := make([]predicate.ServerHardDriveType, 0, len(i.HasHardDriveTypeWith))
+		for _, w := range i.HasHardDriveTypeWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasHardDriveTypeWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverharddrive.HasHardDriveTypeWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerHardDriveWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return serverharddrive.And(predicates...), nil
+	}
+}
+
+// ServerHardDriveTypeWhereInput represents a where input for filtering ServerHardDriveType queries.
+type ServerHardDriveTypeWhereInput struct {
+	Predicates []predicate.ServerHardDriveType  `json:"-"`
+	Not        *ServerHardDriveTypeWhereInput   `json:"not,omitempty"`
+	Or         []*ServerHardDriveTypeWhereInput `json:"or,omitempty"`
+	And        []*ServerHardDriveTypeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "vendor" field predicates.
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNEQ          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGT           *string  `json:"vendorGT,omitempty"`
+	VendorGTE          *string  `json:"vendorGTE,omitempty"`
+	VendorLT           *string  `json:"vendorLT,omitempty"`
+	VendorLTE          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+
+	// "model" field predicates.
+	Model             *string  `json:"model,omitempty"`
+	ModelNEQ          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGT           *string  `json:"modelGT,omitempty"`
+	ModelGTE          *string  `json:"modelGTE,omitempty"`
+	ModelLT           *string  `json:"modelLT,omitempty"`
+	ModelLTE          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+
+	// "speed" field predicates.
+	Speed             *string  `json:"speed,omitempty"`
+	SpeedNEQ          *string  `json:"speedNEQ,omitempty"`
+	SpeedIn           []string `json:"speedIn,omitempty"`
+	SpeedNotIn        []string `json:"speedNotIn,omitempty"`
+	SpeedGT           *string  `json:"speedGT,omitempty"`
+	SpeedGTE          *string  `json:"speedGTE,omitempty"`
+	SpeedLT           *string  `json:"speedLT,omitempty"`
+	SpeedLTE          *string  `json:"speedLTE,omitempty"`
+	SpeedContains     *string  `json:"speedContains,omitempty"`
+	SpeedHasPrefix    *string  `json:"speedHasPrefix,omitempty"`
+	SpeedHasSuffix    *string  `json:"speedHasSuffix,omitempty"`
+	SpeedEqualFold    *string  `json:"speedEqualFold,omitempty"`
+	SpeedContainsFold *string  `json:"speedContainsFold,omitempty"`
+
+	// "type" field predicates.
+	Type             *string  `json:"type,omitempty"`
+	TypeNEQ          *string  `json:"typeNEQ,omitempty"`
+	TypeIn           []string `json:"typeIn,omitempty"`
+	TypeNotIn        []string `json:"typeNotIn,omitempty"`
+	TypeGT           *string  `json:"typeGT,omitempty"`
+	TypeGTE          *string  `json:"typeGTE,omitempty"`
+	TypeLT           *string  `json:"typeLT,omitempty"`
+	TypeLTE          *string  `json:"typeLTE,omitempty"`
+	TypeContains     *string  `json:"typeContains,omitempty"`
+	TypeHasPrefix    *string  `json:"typeHasPrefix,omitempty"`
+	TypeHasSuffix    *string  `json:"typeHasSuffix,omitempty"`
+	TypeEqualFold    *string  `json:"typeEqualFold,omitempty"`
+	TypeContainsFold *string  `json:"typeContainsFold,omitempty"`
+
+	// "capacity" field predicates.
+	Capacity             *string  `json:"capacity,omitempty"`
+	CapacityNEQ          *string  `json:"capacityNEQ,omitempty"`
+	CapacityIn           []string `json:"capacityIn,omitempty"`
+	CapacityNotIn        []string `json:"capacityNotIn,omitempty"`
+	CapacityGT           *string  `json:"capacityGT,omitempty"`
+	CapacityGTE          *string  `json:"capacityGTE,omitempty"`
+	CapacityLT           *string  `json:"capacityLT,omitempty"`
+	CapacityLTE          *string  `json:"capacityLTE,omitempty"`
+	CapacityContains     *string  `json:"capacityContains,omitempty"`
+	CapacityHasPrefix    *string  `json:"capacityHasPrefix,omitempty"`
+	CapacityHasSuffix    *string  `json:"capacityHasSuffix,omitempty"`
+	CapacityEqualFold    *string  `json:"capacityEqualFold,omitempty"`
+	CapacityContainsFold *string  `json:"capacityContainsFold,omitempty"`
+
+	// "hard_drive" edge predicates.
+	HasHardDrive     *bool                        `json:"hasHardDrive,omitempty"`
+	HasHardDriveWith []*ServerHardDriveWhereInput `json:"hasHardDriveWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerHardDriveTypeWhereInput) AddPredicates(predicates ...predicate.ServerHardDriveType) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerHardDriveTypeWhereInput filter on the ServerHardDriveTypeQuery builder.
+func (i *ServerHardDriveTypeWhereInput) Filter(q *ServerHardDriveTypeQuery) (*ServerHardDriveTypeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerHardDriveTypeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerHardDriveTypeWhereInput is returned in case the ServerHardDriveTypeWhereInput is empty.
+var ErrEmptyServerHardDriveTypeWhereInput = errors.New("generated: empty predicate ServerHardDriveTypeWhereInput")
+
+// P returns a predicate for filtering serverharddrivetypes.
+// An error is returned if the input is empty or invalid.
+func (i *ServerHardDriveTypeWhereInput) P() (predicate.ServerHardDriveType, error) {
+	var predicates []predicate.ServerHardDriveType
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, serverharddrivetype.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerHardDriveType, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, serverharddrivetype.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerHardDriveType, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, serverharddrivetype.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, serverharddrivetype.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, serverharddrivetype.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, serverharddrivetype.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, serverharddrivetype.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, serverharddrivetype.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, serverharddrivetype.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, serverharddrivetype.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, serverharddrivetype.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, serverharddrivetype.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, serverharddrivetype.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, serverharddrivetype.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Vendor != nil {
+		predicates = append(predicates, serverharddrivetype.VendorEQ(*i.Vendor))
+	}
+	if i.VendorNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.VendorNEQ(*i.VendorNEQ))
+	}
+	if len(i.VendorIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.VendorIn(i.VendorIn...))
+	}
+	if len(i.VendorNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.VendorNotIn(i.VendorNotIn...))
+	}
+	if i.VendorGT != nil {
+		predicates = append(predicates, serverharddrivetype.VendorGT(*i.VendorGT))
+	}
+	if i.VendorGTE != nil {
+		predicates = append(predicates, serverharddrivetype.VendorGTE(*i.VendorGTE))
+	}
+	if i.VendorLT != nil {
+		predicates = append(predicates, serverharddrivetype.VendorLT(*i.VendorLT))
+	}
+	if i.VendorLTE != nil {
+		predicates = append(predicates, serverharddrivetype.VendorLTE(*i.VendorLTE))
+	}
+	if i.VendorContains != nil {
+		predicates = append(predicates, serverharddrivetype.VendorContains(*i.VendorContains))
+	}
+	if i.VendorHasPrefix != nil {
+		predicates = append(predicates, serverharddrivetype.VendorHasPrefix(*i.VendorHasPrefix))
+	}
+	if i.VendorHasSuffix != nil {
+		predicates = append(predicates, serverharddrivetype.VendorHasSuffix(*i.VendorHasSuffix))
+	}
+	if i.VendorEqualFold != nil {
+		predicates = append(predicates, serverharddrivetype.VendorEqualFold(*i.VendorEqualFold))
+	}
+	if i.VendorContainsFold != nil {
+		predicates = append(predicates, serverharddrivetype.VendorContainsFold(*i.VendorContainsFold))
+	}
+	if i.Model != nil {
+		predicates = append(predicates, serverharddrivetype.ModelEQ(*i.Model))
+	}
+	if i.ModelNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.ModelNEQ(*i.ModelNEQ))
+	}
+	if len(i.ModelIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.ModelIn(i.ModelIn...))
+	}
+	if len(i.ModelNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.ModelNotIn(i.ModelNotIn...))
+	}
+	if i.ModelGT != nil {
+		predicates = append(predicates, serverharddrivetype.ModelGT(*i.ModelGT))
+	}
+	if i.ModelGTE != nil {
+		predicates = append(predicates, serverharddrivetype.ModelGTE(*i.ModelGTE))
+	}
+	if i.ModelLT != nil {
+		predicates = append(predicates, serverharddrivetype.ModelLT(*i.ModelLT))
+	}
+	if i.ModelLTE != nil {
+		predicates = append(predicates, serverharddrivetype.ModelLTE(*i.ModelLTE))
+	}
+	if i.ModelContains != nil {
+		predicates = append(predicates, serverharddrivetype.ModelContains(*i.ModelContains))
+	}
+	if i.ModelHasPrefix != nil {
+		predicates = append(predicates, serverharddrivetype.ModelHasPrefix(*i.ModelHasPrefix))
+	}
+	if i.ModelHasSuffix != nil {
+		predicates = append(predicates, serverharddrivetype.ModelHasSuffix(*i.ModelHasSuffix))
+	}
+	if i.ModelEqualFold != nil {
+		predicates = append(predicates, serverharddrivetype.ModelEqualFold(*i.ModelEqualFold))
+	}
+	if i.ModelContainsFold != nil {
+		predicates = append(predicates, serverharddrivetype.ModelContainsFold(*i.ModelContainsFold))
+	}
+	if i.Speed != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedEQ(*i.Speed))
+	}
+	if i.SpeedNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedNEQ(*i.SpeedNEQ))
+	}
+	if len(i.SpeedIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.SpeedIn(i.SpeedIn...))
+	}
+	if len(i.SpeedNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.SpeedNotIn(i.SpeedNotIn...))
+	}
+	if i.SpeedGT != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedGT(*i.SpeedGT))
+	}
+	if i.SpeedGTE != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedGTE(*i.SpeedGTE))
+	}
+	if i.SpeedLT != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedLT(*i.SpeedLT))
+	}
+	if i.SpeedLTE != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedLTE(*i.SpeedLTE))
+	}
+	if i.SpeedContains != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedContains(*i.SpeedContains))
+	}
+	if i.SpeedHasPrefix != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedHasPrefix(*i.SpeedHasPrefix))
+	}
+	if i.SpeedHasSuffix != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedHasSuffix(*i.SpeedHasSuffix))
+	}
+	if i.SpeedEqualFold != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedEqualFold(*i.SpeedEqualFold))
+	}
+	if i.SpeedContainsFold != nil {
+		predicates = append(predicates, serverharddrivetype.SpeedContainsFold(*i.SpeedContainsFold))
+	}
+	if i.Type != nil {
+		predicates = append(predicates, serverharddrivetype.TypeEQ(*i.Type))
+	}
+	if i.TypeNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.TypeNEQ(*i.TypeNEQ))
+	}
+	if len(i.TypeIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.TypeIn(i.TypeIn...))
+	}
+	if len(i.TypeNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.TypeNotIn(i.TypeNotIn...))
+	}
+	if i.TypeGT != nil {
+		predicates = append(predicates, serverharddrivetype.TypeGT(*i.TypeGT))
+	}
+	if i.TypeGTE != nil {
+		predicates = append(predicates, serverharddrivetype.TypeGTE(*i.TypeGTE))
+	}
+	if i.TypeLT != nil {
+		predicates = append(predicates, serverharddrivetype.TypeLT(*i.TypeLT))
+	}
+	if i.TypeLTE != nil {
+		predicates = append(predicates, serverharddrivetype.TypeLTE(*i.TypeLTE))
+	}
+	if i.TypeContains != nil {
+		predicates = append(predicates, serverharddrivetype.TypeContains(*i.TypeContains))
+	}
+	if i.TypeHasPrefix != nil {
+		predicates = append(predicates, serverharddrivetype.TypeHasPrefix(*i.TypeHasPrefix))
+	}
+	if i.TypeHasSuffix != nil {
+		predicates = append(predicates, serverharddrivetype.TypeHasSuffix(*i.TypeHasSuffix))
+	}
+	if i.TypeEqualFold != nil {
+		predicates = append(predicates, serverharddrivetype.TypeEqualFold(*i.TypeEqualFold))
+	}
+	if i.TypeContainsFold != nil {
+		predicates = append(predicates, serverharddrivetype.TypeContainsFold(*i.TypeContainsFold))
+	}
+	if i.Capacity != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityEQ(*i.Capacity))
+	}
+	if i.CapacityNEQ != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityNEQ(*i.CapacityNEQ))
+	}
+	if len(i.CapacityIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.CapacityIn(i.CapacityIn...))
+	}
+	if len(i.CapacityNotIn) > 0 {
+		predicates = append(predicates, serverharddrivetype.CapacityNotIn(i.CapacityNotIn...))
+	}
+	if i.CapacityGT != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityGT(*i.CapacityGT))
+	}
+	if i.CapacityGTE != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityGTE(*i.CapacityGTE))
+	}
+	if i.CapacityLT != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityLT(*i.CapacityLT))
+	}
+	if i.CapacityLTE != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityLTE(*i.CapacityLTE))
+	}
+	if i.CapacityContains != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityContains(*i.CapacityContains))
+	}
+	if i.CapacityHasPrefix != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityHasPrefix(*i.CapacityHasPrefix))
+	}
+	if i.CapacityHasSuffix != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityHasSuffix(*i.CapacityHasSuffix))
+	}
+	if i.CapacityEqualFold != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityEqualFold(*i.CapacityEqualFold))
+	}
+	if i.CapacityContainsFold != nil {
+		predicates = append(predicates, serverharddrivetype.CapacityContainsFold(*i.CapacityContainsFold))
+	}
+
+	if i.HasHardDrive != nil {
+		p := serverharddrivetype.HasHardDrive()
+		if !*i.HasHardDrive {
+			p = serverharddrivetype.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasHardDriveWith) > 0 {
+		with := make([]predicate.ServerHardDrive, 0, len(i.HasHardDriveWith))
+		for _, w := range i.HasHardDriveWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasHardDriveWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverharddrivetype.HasHardDriveWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerHardDriveTypeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return serverharddrivetype.And(predicates...), nil
 	}
 }
 

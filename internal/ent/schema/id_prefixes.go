@@ -34,6 +34,10 @@ const (
 	ServerMemoryTypePrefix = ApplicationPrefix + "mmt"
 	// ServerMemoryPrefix is the prefix for all ServerMemory nodes
 	ServerMemoryPrefix = ApplicationPrefix + "mem"
+	// ServerHardDriveTypePrefix is the prefix for all ServerHardDriveType nodes
+	ServerHardDriveTypePrefix = ApplicationPrefix + "hdt"
+	// ServerHardDrivePrefix is the prefix for all ServerHardDrive nodes
+	ServerHardDrivePrefix = ApplicationPrefix + "shd"
 )
 
 func prefixIDDirective(prefix string) entgql.Annotation {

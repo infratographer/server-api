@@ -119,6 +119,30 @@ func (f ServerComponentTypeFunc) Mutate(ctx context.Context, m generated.Mutatio
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerComponentTypeMutation", m)
 }
 
+// The ServerHardDriveFunc type is an adapter to allow the use of ordinary
+// function as ServerHardDrive mutator.
+type ServerHardDriveFunc func(context.Context, *generated.ServerHardDriveMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerHardDriveFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerHardDriveMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerHardDriveMutation", m)
+}
+
+// The ServerHardDriveTypeFunc type is an adapter to allow the use of ordinary
+// function as ServerHardDriveType mutator.
+type ServerHardDriveTypeFunc func(context.Context, *generated.ServerHardDriveTypeMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerHardDriveTypeFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerHardDriveTypeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerHardDriveTypeMutation", m)
+}
+
 // The ServerMemoryFunc type is an adapter to allow the use of ordinary
 // function as ServerMemory mutator.
 type ServerMemoryFunc func(context.Context, *generated.ServerMemoryMutation) (generated.Value, error)

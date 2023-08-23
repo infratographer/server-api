@@ -220,6 +220,46 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 				list[idx[i]] = entity
 				return nil
 			}
+		case "ServerHardDrive":
+			resolverName, err := entityResolverNameForServerHardDrive(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerHardDrive": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerHardDriveByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerHardDriveByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerHardDriveByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerHardDrive": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
+		case "ServerHardDriveType":
+			resolverName, err := entityResolverNameForServerHardDriveType(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerHardDriveType": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerHardDriveTypeByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerHardDriveTypeByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerHardDriveTypeByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerHardDriveType": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
 		case "ServerMemory":
 			resolverName, err := entityResolverNameForServerMemory(ctx, rep)
 			if err != nil {
@@ -526,6 +566,40 @@ func entityResolverNameForServerComponentType(ctx context.Context, rep map[strin
 		return "findServerComponentTypeByID", nil
 	}
 	return "", fmt.Errorf("%w for ServerComponentType", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerHardDrive(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerHardDriveByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerHardDrive", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerHardDriveType(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerHardDriveTypeByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerHardDriveType", ErrTypeNotFound)
 }
 
 func entityResolverNameForServerMemory(ctx context.Context, rep map[string]interface{}) (string, error) {

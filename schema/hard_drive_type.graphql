@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverHardDriveType by ID.
+  """
+  serverHardDriveType(
+    """
+    The server hard drive type ID.
+    """
+    id: ID!
+  ): ServerHardDriveType!
+}
+
+extend type Mutation {
+  """
+  Create a server hard drive type.
+  """
+  serverHardDriveType(
+    input: CreateServerHardDriveTypeInput!
+  ): ServerHardDriveTypeCreatePayload!
+  """
+  Update a server hard drive type.
+  """
+  serverHardDriveTypeUpdate(
+    id: ID!
+    input: UpdateServerHardDriveTypeInput!
+  ): ServerHardDriveTypeUpdatePayload!
+  """
+  Delete a server hard drive type.
+  """
+  serverHardDriveTypeDelete(id: ID!): ServerHardDriveTypeDeletePayload!
+}
+
+"""
+Return response from serverHardDriveTypeCreate
+"""
+type ServerHardDriveTypeCreatePayload {
+  """
+  The created server hard drive type.
+  """
+  serverHardDriveType: ServerHardDriveType!
+}
+
+"""
+Return response from serverHardDriveTypeDelete
+"""
+type ServerHardDriveTypeDeletePayload {
+  """
+  The ID of the deleted server hard drive type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverHardDriveTypeUpdate
+"""
+type ServerHardDriveTypeUpdatePayload {
+  """
+  The updated server hard drive type.
+  """
+  serverHardDriveType: ServerHardDriveType!
+}

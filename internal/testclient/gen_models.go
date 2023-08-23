@@ -95,6 +95,29 @@ type CreateServerComponentTypeInput struct {
 	Name string `json:"name"`
 }
 
+// Input information to create a server hard drive.
+type CreateServerHardDriveInput struct {
+	// The serial for the server hard drive.
+	Serial          string          `json:"serial"`
+	ServerID        gidx.PrefixedID `json:"serverID"`
+	HardDriveTypeID gidx.PrefixedID `json:"hardDriveTypeID"`
+}
+
+// Input information to create a server hard drive type.
+type CreateServerHardDriveTypeInput struct {
+	// The name of the vendor for the server hard drive type.
+	Vendor string `json:"vendor"`
+	// The mode of the server chassis type.
+	Model string `json:"model"`
+	// The speed of the server hard drive type.
+	Speed string `json:"speed"`
+	// The type of the server hard drive type.
+	Type string `json:"type"`
+	// The capacity of the server hard drive type.
+	Capacity     string            `json:"capacity"`
+	HardDriveIDs []gidx.PrefixedID `json:"hardDriveIDs,omitempty"`
+}
+
 // Create a new server.
 type CreateServerInput struct {
 	// The name of the server.
@@ -1046,6 +1069,300 @@ type ServerEdge struct {
 	Cursor string `json:"cursor"`
 }
 
+type ServerHardDrive struct {
+	// The ID of the server hard drive type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The serial for the server hard drive.
+	Serial        string              `json:"serial"`
+	Server        Server              `json:"server"`
+	HardDriveType ServerHardDriveType `json:"hardDriveType"`
+}
+
+func (ServerHardDrive) IsNode() {}
+
+// The id of the object.
+func (this ServerHardDrive) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerHardDrive) IsEntity() {}
+
+// A connection to a list of items.
+type ServerHardDriveConnection struct {
+	// A list of edges.
+	Edges []*ServerHardDriveEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverHardDriveCreate
+type ServerHardDriveCreatePayload struct {
+	// The created server hard drive.
+	ServerHardDrive ServerHardDrive `json:"serverHardDrive"`
+}
+
+// Return response from serverHardDriveDelete
+type ServerHardDriveDeletePayload struct {
+	// The ID of the deleted server hard drive.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerHardDriveEdge struct {
+	// The item at the end of the edge.
+	Node *ServerHardDrive `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerHardDrive connections
+type ServerHardDriveOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerHardDrives.
+	Field ServerHardDriveOrderField `json:"field"`
+}
+
+type ServerHardDriveType struct {
+	// The ID of the server hard drive type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The name of the vendor for the server hard drive type.
+	Vendor string `json:"vendor"`
+	// The mode of the server chassis type.
+	Model string `json:"model"`
+	// The speed of the server hard drive type.
+	Speed string `json:"speed"`
+	// The type of the server hard drive type.
+	Type string `json:"type"`
+	// The capacity of the server hard drive type.
+	Capacity  string                    `json:"capacity"`
+	HardDrive ServerHardDriveConnection `json:"hardDrive"`
+}
+
+func (ServerHardDriveType) IsNode() {}
+
+// The id of the object.
+func (this ServerHardDriveType) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerHardDriveType) IsEntity() {}
+
+// A connection to a list of items.
+type ServerHardDriveTypeConnection struct {
+	// A list of edges.
+	Edges []*ServerHardDriveTypeEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverHardDriveTypeCreate
+type ServerHardDriveTypeCreatePayload struct {
+	// The created server hard drive type.
+	ServerHardDriveType ServerHardDriveType `json:"serverHardDriveType"`
+}
+
+// Return response from serverHardDriveTypeDelete
+type ServerHardDriveTypeDeletePayload struct {
+	// The ID of the deleted server hard drive type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerHardDriveTypeEdge struct {
+	// The item at the end of the edge.
+	Node *ServerHardDriveType `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerHardDriveType connections
+type ServerHardDriveTypeOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerHardDriveTypes.
+	Field ServerHardDriveTypeOrderField `json:"field"`
+}
+
+// Return response from serverHardDriveTypeUpdate
+type ServerHardDriveTypeUpdatePayload struct {
+	// The updated server hard drive type.
+	ServerHardDriveType ServerHardDriveType `json:"serverHardDriveType"`
+}
+
+// ServerHardDriveTypeWhereInput is used for filtering ServerHardDriveType objects.
+// Input was generated by ent.
+type ServerHardDriveTypeWhereInput struct {
+	Not *ServerHardDriveTypeWhereInput   `json:"not,omitempty"`
+	And []*ServerHardDriveTypeWhereInput `json:"and,omitempty"`
+	Or  []*ServerHardDriveTypeWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// vendor field predicates
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNeq          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGt           *string  `json:"vendorGT,omitempty"`
+	VendorGte          *string  `json:"vendorGTE,omitempty"`
+	VendorLt           *string  `json:"vendorLT,omitempty"`
+	VendorLte          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+	// model field predicates
+	Model             *string  `json:"model,omitempty"`
+	ModelNeq          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGt           *string  `json:"modelGT,omitempty"`
+	ModelGte          *string  `json:"modelGTE,omitempty"`
+	ModelLt           *string  `json:"modelLT,omitempty"`
+	ModelLte          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+	// speed field predicates
+	Speed             *string  `json:"speed,omitempty"`
+	SpeedNeq          *string  `json:"speedNEQ,omitempty"`
+	SpeedIn           []string `json:"speedIn,omitempty"`
+	SpeedNotIn        []string `json:"speedNotIn,omitempty"`
+	SpeedGt           *string  `json:"speedGT,omitempty"`
+	SpeedGte          *string  `json:"speedGTE,omitempty"`
+	SpeedLt           *string  `json:"speedLT,omitempty"`
+	SpeedLte          *string  `json:"speedLTE,omitempty"`
+	SpeedContains     *string  `json:"speedContains,omitempty"`
+	SpeedHasPrefix    *string  `json:"speedHasPrefix,omitempty"`
+	SpeedHasSuffix    *string  `json:"speedHasSuffix,omitempty"`
+	SpeedEqualFold    *string  `json:"speedEqualFold,omitempty"`
+	SpeedContainsFold *string  `json:"speedContainsFold,omitempty"`
+	// type field predicates
+	Type             *string  `json:"type,omitempty"`
+	TypeNeq          *string  `json:"typeNEQ,omitempty"`
+	TypeIn           []string `json:"typeIn,omitempty"`
+	TypeNotIn        []string `json:"typeNotIn,omitempty"`
+	TypeGt           *string  `json:"typeGT,omitempty"`
+	TypeGte          *string  `json:"typeGTE,omitempty"`
+	TypeLt           *string  `json:"typeLT,omitempty"`
+	TypeLte          *string  `json:"typeLTE,omitempty"`
+	TypeContains     *string  `json:"typeContains,omitempty"`
+	TypeHasPrefix    *string  `json:"typeHasPrefix,omitempty"`
+	TypeHasSuffix    *string  `json:"typeHasSuffix,omitempty"`
+	TypeEqualFold    *string  `json:"typeEqualFold,omitempty"`
+	TypeContainsFold *string  `json:"typeContainsFold,omitempty"`
+	// capacity field predicates
+	Capacity             *string  `json:"capacity,omitempty"`
+	CapacityNeq          *string  `json:"capacityNEQ,omitempty"`
+	CapacityIn           []string `json:"capacityIn,omitempty"`
+	CapacityNotIn        []string `json:"capacityNotIn,omitempty"`
+	CapacityGt           *string  `json:"capacityGT,omitempty"`
+	CapacityGte          *string  `json:"capacityGTE,omitempty"`
+	CapacityLt           *string  `json:"capacityLT,omitempty"`
+	CapacityLte          *string  `json:"capacityLTE,omitempty"`
+	CapacityContains     *string  `json:"capacityContains,omitempty"`
+	CapacityHasPrefix    *string  `json:"capacityHasPrefix,omitempty"`
+	CapacityHasSuffix    *string  `json:"capacityHasSuffix,omitempty"`
+	CapacityEqualFold    *string  `json:"capacityEqualFold,omitempty"`
+	CapacityContainsFold *string  `json:"capacityContainsFold,omitempty"`
+	// hard_drive edge predicates
+	HasHardDrive     *bool                        `json:"hasHardDrive,omitempty"`
+	HasHardDriveWith []*ServerHardDriveWhereInput `json:"hasHardDriveWith,omitempty"`
+}
+
+// Return response from serverHardDriveUpdate
+type ServerHardDriveUpdatePayload struct {
+	// The updated server hard drive.
+	ServerHardDrive ServerHardDrive `json:"serverHardDrive"`
+}
+
+// ServerHardDriveWhereInput is used for filtering ServerHardDrive objects.
+// Input was generated by ent.
+type ServerHardDriveWhereInput struct {
+	Not *ServerHardDriveWhereInput   `json:"not,omitempty"`
+	And []*ServerHardDriveWhereInput `json:"and,omitempty"`
+	Or  []*ServerHardDriveWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// serial field predicates
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNeq          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGt           *string  `json:"serialGT,omitempty"`
+	SerialGte          *string  `json:"serialGTE,omitempty"`
+	SerialLt           *string  `json:"serialLT,omitempty"`
+	SerialLte          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+	// hard_drive_type edge predicates
+	HasHardDriveType     *bool                            `json:"hasHardDriveType,omitempty"`
+	HasHardDriveTypeWith []*ServerHardDriveTypeWhereInput `json:"hasHardDriveTypeWith,omitempty"`
+}
+
 type ServerMemory struct {
 	// The ID of the server memory.
 	ID        gidx.PrefixedID `json:"id"`
@@ -1927,6 +2244,29 @@ type UpdateServerComponentTypeInput struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// Input information to update a server hard drive.
+type UpdateServerHardDriveInput struct {
+	// The serial for the server hard drive.
+	Serial *string `json:"serial,omitempty"`
+}
+
+// Input information to update a server hard drive type.
+type UpdateServerHardDriveTypeInput struct {
+	// The name of the vendor for the server hard drive type.
+	Vendor *string `json:"vendor,omitempty"`
+	// The mode of the server chassis type.
+	Model *string `json:"model,omitempty"`
+	// The speed of the server hard drive type.
+	Speed *string `json:"speed,omitempty"`
+	// The type of the server hard drive type.
+	Type *string `json:"type,omitempty"`
+	// The capacity of the server hard drive type.
+	Capacity           *string           `json:"capacity,omitempty"`
+	AddHardDriveIDs    []gidx.PrefixedID `json:"addHardDriveIDs,omitempty"`
+	RemoveHardDriveIDs []gidx.PrefixedID `json:"removeHardDriveIDs,omitempty"`
+	ClearHardDrive     *bool             `json:"clearHardDrive,omitempty"`
+}
+
 // Update an existing server.
 type UpdateServerInput struct {
 	// The name of the server.
@@ -2324,6 +2664,102 @@ func (e *ServerComponentTypeOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ServerComponentTypeOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerHardDrive connections can be ordered.
+type ServerHardDriveOrderField string
+
+const (
+	ServerHardDriveOrderFieldID                  ServerHardDriveOrderField = "ID"
+	ServerHardDriveOrderFieldCreatedAt           ServerHardDriveOrderField = "CREATED_AT"
+	ServerHardDriveOrderFieldUpdatedAt           ServerHardDriveOrderField = "UPDATED_AT"
+	ServerHardDriveOrderFieldName                ServerHardDriveOrderField = "NAME"
+	ServerHardDriveOrderFieldServer              ServerHardDriveOrderField = "SERVER"
+	ServerHardDriveOrderFieldServerHardDriveType ServerHardDriveOrderField = "SERVER_HARD_DRIVE_TYPE"
+)
+
+var AllServerHardDriveOrderField = []ServerHardDriveOrderField{
+	ServerHardDriveOrderFieldID,
+	ServerHardDriveOrderFieldCreatedAt,
+	ServerHardDriveOrderFieldUpdatedAt,
+	ServerHardDriveOrderFieldName,
+	ServerHardDriveOrderFieldServer,
+	ServerHardDriveOrderFieldServerHardDriveType,
+}
+
+func (e ServerHardDriveOrderField) IsValid() bool {
+	switch e {
+	case ServerHardDriveOrderFieldID, ServerHardDriveOrderFieldCreatedAt, ServerHardDriveOrderFieldUpdatedAt, ServerHardDriveOrderFieldName, ServerHardDriveOrderFieldServer, ServerHardDriveOrderFieldServerHardDriveType:
+		return true
+	}
+	return false
+}
+
+func (e ServerHardDriveOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerHardDriveOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerHardDriveOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerHardDriveOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerHardDriveOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerHardDriveType connections can be ordered.
+type ServerHardDriveTypeOrderField string
+
+const (
+	ServerHardDriveTypeOrderFieldID        ServerHardDriveTypeOrderField = "ID"
+	ServerHardDriveTypeOrderFieldCreatedAt ServerHardDriveTypeOrderField = "CREATED_AT"
+	ServerHardDriveTypeOrderFieldUpdatedAt ServerHardDriveTypeOrderField = "UPDATED_AT"
+	ServerHardDriveTypeOrderFieldName      ServerHardDriveTypeOrderField = "NAME"
+)
+
+var AllServerHardDriveTypeOrderField = []ServerHardDriveTypeOrderField{
+	ServerHardDriveTypeOrderFieldID,
+	ServerHardDriveTypeOrderFieldCreatedAt,
+	ServerHardDriveTypeOrderFieldUpdatedAt,
+	ServerHardDriveTypeOrderFieldName,
+}
+
+func (e ServerHardDriveTypeOrderField) IsValid() bool {
+	switch e {
+	case ServerHardDriveTypeOrderFieldID, ServerHardDriveTypeOrderFieldCreatedAt, ServerHardDriveTypeOrderFieldUpdatedAt, ServerHardDriveTypeOrderFieldName:
+		return true
+	}
+	return false
+}
+
+func (e ServerHardDriveTypeOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerHardDriveTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerHardDriveTypeOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerHardDriveTypeOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerHardDriveTypeOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

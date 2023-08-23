@@ -59,6 +59,8 @@ type ComplexityRoot struct {
 		FindServerChassisTypeByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerComponentByID       func(childComplexity int, id gidx.PrefixedID) int
 		FindServerComponentTypeByID   func(childComplexity int, id gidx.PrefixedID) int
+		FindServerHardDriveByID       func(childComplexity int, id gidx.PrefixedID) int
+		FindServerHardDriveTypeByID   func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMemoryByID          func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMemoryTypeByID      func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMotherboardByID     func(childComplexity int, id gidx.PrefixedID) int
@@ -88,6 +90,12 @@ type ComplexityRoot struct {
 		ServerComponentUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerComponentInput) int
 		ServerCreate                func(childComplexity int, input generated.CreateServerInput) int
 		ServerDelete                func(childComplexity int, id gidx.PrefixedID) int
+		ServerHardDrive             func(childComplexity int, input generated.CreateServerHardDriveInput) int
+		ServerHardDriveDelete       func(childComplexity int, id gidx.PrefixedID) int
+		ServerHardDriveType         func(childComplexity int, input generated.CreateServerHardDriveTypeInput) int
+		ServerHardDriveTypeDelete   func(childComplexity int, id gidx.PrefixedID) int
+		ServerHardDriveTypeUpdate   func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerHardDriveTypeInput) int
+		ServerHardDriveUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerHardDriveInput) int
 		ServerMemory                func(childComplexity int, input generated.CreateServerMemoryInput) int
 		ServerMemoryDelete          func(childComplexity int, id gidx.PrefixedID) int
 		ServerMemoryType            func(childComplexity int, input generated.CreateServerMemoryTypeInput) int
@@ -124,6 +132,8 @@ type ComplexityRoot struct {
 		ServerChassisType     func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponent       func(childComplexity int, id gidx.PrefixedID) int
 		ServerComponentType   func(childComplexity int, id gidx.PrefixedID) int
+		ServerHardDrive       func(childComplexity int, id gidx.PrefixedID) int
+		ServerHardDriveType   func(childComplexity int, id gidx.PrefixedID) int
 		ServerMemory          func(childComplexity int, id gidx.PrefixedID) int
 		ServerMemoryType      func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboard     func(childComplexity int, id gidx.PrefixedID) int
@@ -361,6 +371,73 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	ServerHardDrive struct {
+		CreatedAt     func(childComplexity int) int
+		HardDriveType func(childComplexity int) int
+		ID            func(childComplexity int) int
+		Serial        func(childComplexity int) int
+		Server        func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+	}
+
+	ServerHardDriveConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerHardDriveCreatePayload struct {
+		ServerHardDrive func(childComplexity int) int
+	}
+
+	ServerHardDriveDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerHardDriveEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerHardDriveType struct {
+		Capacity  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		HardDrive func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerHardDriveOrder, where *generated.ServerHardDriveWhereInput) int
+		ID        func(childComplexity int) int
+		Model     func(childComplexity int) int
+		Speed     func(childComplexity int) int
+		Type      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		Vendor    func(childComplexity int) int
+	}
+
+	ServerHardDriveTypeConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerHardDriveTypeCreatePayload struct {
+		ServerHardDriveType func(childComplexity int) int
+	}
+
+	ServerHardDriveTypeDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerHardDriveTypeEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerHardDriveTypeUpdatePayload struct {
+		ServerHardDriveType func(childComplexity int) int
+	}
+
+	ServerHardDriveUpdatePayload struct {
+		ServerHardDrive func(childComplexity int) int
+	}
+
 	ServerMemory struct {
 		CreatedAt        func(childComplexity int) int
 		ID               func(childComplexity int) int
@@ -570,6 +647,8 @@ type EntityResolver interface {
 	FindServerChassisTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error)
 	FindServerComponentByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	FindServerComponentTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
+	FindServerHardDriveByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerHardDrive, error)
+	FindServerHardDriveTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerHardDriveType, error)
 	FindServerMemoryByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemory, error)
 	FindServerMemoryTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error)
 	FindServerMotherboardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
@@ -596,6 +675,12 @@ type MutationResolver interface {
 	ServerCPUType(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error)
 	ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) (*ServerCPUTypeUpdatePayload, error)
 	ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUTypeDeletePayload, error)
+	ServerHardDrive(ctx context.Context, input generated.CreateServerHardDriveInput) (*ServerHardDriveCreatePayload, error)
+	ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerHardDriveInput) (*ServerHardDriveUpdatePayload, error)
+	ServerHardDriveDelete(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveDeletePayload, error)
+	ServerHardDriveType(ctx context.Context, input generated.CreateServerHardDriveTypeInput) (*ServerHardDriveTypeCreatePayload, error)
+	ServerHardDriveTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerHardDriveTypeInput) (*ServerHardDriveTypeUpdatePayload, error)
+	ServerHardDriveTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveTypeDeletePayload, error)
 	ServerMemory(ctx context.Context, input generated.CreateServerMemoryInput) (*ServerMemoryCreatePayload, error)
 	ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMemoryInput) (*ServerMemoryUpdatePayload, error)
 	ServerMemoryDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMemoryDeletePayload, error)
@@ -625,6 +710,8 @@ type QueryResolver interface {
 	ServerComponentType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
 	ServerCPU(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPU, error)
 	ServerCPUType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error)
+	ServerHardDrive(ctx context.Context, id gidx.PrefixedID) (*generated.ServerHardDrive, error)
+	ServerHardDriveType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerHardDriveType, error)
 	ServerMemory(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemory, error)
 	ServerMemoryType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error)
 	ServerMotherboard(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
@@ -732,6 +819,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerComponentTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerHardDriveByID":
+		if e.complexity.Entity.FindServerHardDriveByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerHardDriveByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerHardDriveByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerHardDriveTypeByID":
+		if e.complexity.Entity.FindServerHardDriveTypeByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerHardDriveTypeByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerHardDriveTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerMemoryByID":
 		if e.complexity.Entity.FindServerMemoryByID == nil {
@@ -1044,6 +1155,78 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ServerDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverHardDrive":
+		if e.complexity.Mutation.ServerHardDrive == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverHardDrive_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerHardDrive(childComplexity, args["input"].(generated.CreateServerHardDriveInput)), true
+
+	case "Mutation.serverHardDriveDelete":
+		if e.complexity.Mutation.ServerHardDriveDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverHardDriveDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerHardDriveDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverHardDriveType":
+		if e.complexity.Mutation.ServerHardDriveType == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverHardDriveType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerHardDriveType(childComplexity, args["input"].(generated.CreateServerHardDriveTypeInput)), true
+
+	case "Mutation.serverHardDriveTypeDelete":
+		if e.complexity.Mutation.ServerHardDriveTypeDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverHardDriveTypeDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerHardDriveTypeDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverHardDriveTypeUpdate":
+		if e.complexity.Mutation.ServerHardDriveTypeUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverHardDriveTypeUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerHardDriveTypeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerHardDriveTypeInput)), true
+
+	case "Mutation.serverHardDriveUpdate":
+		if e.complexity.Mutation.ServerHardDriveUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverHardDriveUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerHardDriveUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerHardDriveInput)), true
 
 	case "Mutation.serverMemory":
 		if e.complexity.Mutation.ServerMemory == nil {
@@ -1384,6 +1567,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ServerComponentType(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverHardDrive":
+		if e.complexity.Query.ServerHardDrive == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverHardDrive_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerHardDrive(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverHardDriveType":
+		if e.complexity.Query.ServerHardDriveType == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverHardDriveType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerHardDriveType(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Query.serverMemory":
 		if e.complexity.Query.ServerMemory == nil {
@@ -2219,6 +2426,228 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ServerEdge.Node(childComplexity), true
 
+	case "ServerHardDrive.createdAt":
+		if e.complexity.ServerHardDrive.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDrive.CreatedAt(childComplexity), true
+
+	case "ServerHardDrive.hardDriveType":
+		if e.complexity.ServerHardDrive.HardDriveType == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDrive.HardDriveType(childComplexity), true
+
+	case "ServerHardDrive.id":
+		if e.complexity.ServerHardDrive.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDrive.ID(childComplexity), true
+
+	case "ServerHardDrive.serial":
+		if e.complexity.ServerHardDrive.Serial == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDrive.Serial(childComplexity), true
+
+	case "ServerHardDrive.server":
+		if e.complexity.ServerHardDrive.Server == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDrive.Server(childComplexity), true
+
+	case "ServerHardDrive.updatedAt":
+		if e.complexity.ServerHardDrive.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDrive.UpdatedAt(childComplexity), true
+
+	case "ServerHardDriveConnection.edges":
+		if e.complexity.ServerHardDriveConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveConnection.Edges(childComplexity), true
+
+	case "ServerHardDriveConnection.pageInfo":
+		if e.complexity.ServerHardDriveConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveConnection.PageInfo(childComplexity), true
+
+	case "ServerHardDriveConnection.totalCount":
+		if e.complexity.ServerHardDriveConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveConnection.TotalCount(childComplexity), true
+
+	case "ServerHardDriveCreatePayload.serverHardDrive":
+		if e.complexity.ServerHardDriveCreatePayload.ServerHardDrive == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveCreatePayload.ServerHardDrive(childComplexity), true
+
+	case "ServerHardDriveDeletePayload.deletedID":
+		if e.complexity.ServerHardDriveDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerHardDriveEdge.cursor":
+		if e.complexity.ServerHardDriveEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveEdge.Cursor(childComplexity), true
+
+	case "ServerHardDriveEdge.node":
+		if e.complexity.ServerHardDriveEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveEdge.Node(childComplexity), true
+
+	case "ServerHardDriveType.capacity":
+		if e.complexity.ServerHardDriveType.Capacity == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.Capacity(childComplexity), true
+
+	case "ServerHardDriveType.createdAt":
+		if e.complexity.ServerHardDriveType.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.CreatedAt(childComplexity), true
+
+	case "ServerHardDriveType.hardDrive":
+		if e.complexity.ServerHardDriveType.HardDrive == nil {
+			break
+		}
+
+		args, err := ec.field_ServerHardDriveType_hardDrive_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ServerHardDriveType.HardDrive(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerHardDriveOrder), args["where"].(*generated.ServerHardDriveWhereInput)), true
+
+	case "ServerHardDriveType.id":
+		if e.complexity.ServerHardDriveType.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.ID(childComplexity), true
+
+	case "ServerHardDriveType.model":
+		if e.complexity.ServerHardDriveType.Model == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.Model(childComplexity), true
+
+	case "ServerHardDriveType.speed":
+		if e.complexity.ServerHardDriveType.Speed == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.Speed(childComplexity), true
+
+	case "ServerHardDriveType.type":
+		if e.complexity.ServerHardDriveType.Type == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.Type(childComplexity), true
+
+	case "ServerHardDriveType.updatedAt":
+		if e.complexity.ServerHardDriveType.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.UpdatedAt(childComplexity), true
+
+	case "ServerHardDriveType.vendor":
+		if e.complexity.ServerHardDriveType.Vendor == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveType.Vendor(childComplexity), true
+
+	case "ServerHardDriveTypeConnection.edges":
+		if e.complexity.ServerHardDriveTypeConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeConnection.Edges(childComplexity), true
+
+	case "ServerHardDriveTypeConnection.pageInfo":
+		if e.complexity.ServerHardDriveTypeConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeConnection.PageInfo(childComplexity), true
+
+	case "ServerHardDriveTypeConnection.totalCount":
+		if e.complexity.ServerHardDriveTypeConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeConnection.TotalCount(childComplexity), true
+
+	case "ServerHardDriveTypeCreatePayload.serverHardDriveType":
+		if e.complexity.ServerHardDriveTypeCreatePayload.ServerHardDriveType == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeCreatePayload.ServerHardDriveType(childComplexity), true
+
+	case "ServerHardDriveTypeDeletePayload.deletedID":
+		if e.complexity.ServerHardDriveTypeDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerHardDriveTypeEdge.cursor":
+		if e.complexity.ServerHardDriveTypeEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeEdge.Cursor(childComplexity), true
+
+	case "ServerHardDriveTypeEdge.node":
+		if e.complexity.ServerHardDriveTypeEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeEdge.Node(childComplexity), true
+
+	case "ServerHardDriveTypeUpdatePayload.serverHardDriveType":
+		if e.complexity.ServerHardDriveTypeUpdatePayload.ServerHardDriveType == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveTypeUpdatePayload.ServerHardDriveType(childComplexity), true
+
+	case "ServerHardDriveUpdatePayload.serverHardDrive":
+		if e.complexity.ServerHardDriveUpdatePayload.ServerHardDrive == nil {
+			break
+		}
+
+		return e.complexity.ServerHardDriveUpdatePayload.ServerHardDrive(childComplexity), true
+
 	case "ServerMemory.createdAt":
 		if e.complexity.ServerMemory.CreatedAt == nil {
 			break
@@ -2855,6 +3284,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateServerChassisTypeInput,
 		ec.unmarshalInputCreateServerComponentInput,
 		ec.unmarshalInputCreateServerComponentTypeInput,
+		ec.unmarshalInputCreateServerHardDriveInput,
+		ec.unmarshalInputCreateServerHardDriveTypeInput,
 		ec.unmarshalInputCreateServerInput,
 		ec.unmarshalInputCreateServerMemoryInput,
 		ec.unmarshalInputCreateServerMemoryTypeInput,
@@ -2874,6 +3305,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerComponentTypeOrder,
 		ec.unmarshalInputServerComponentTypeWhereInput,
 		ec.unmarshalInputServerComponentWhereInput,
+		ec.unmarshalInputServerHardDriveOrder,
+		ec.unmarshalInputServerHardDriveTypeOrder,
+		ec.unmarshalInputServerHardDriveTypeWhereInput,
+		ec.unmarshalInputServerHardDriveWhereInput,
 		ec.unmarshalInputServerMemoryOrder,
 		ec.unmarshalInputServerMemoryTypeOrder,
 		ec.unmarshalInputServerMemoryTypeWhereInput,
@@ -2894,6 +3329,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateServerChassisTypeInput,
 		ec.unmarshalInputUpdateServerComponentInput,
 		ec.unmarshalInputUpdateServerComponentTypeInput,
+		ec.unmarshalInputUpdateServerHardDriveInput,
+		ec.unmarshalInputUpdateServerHardDriveTypeInput,
 		ec.unmarshalInputUpdateServerInput,
 		ec.unmarshalInputUpdateServerMemoryInput,
 		ec.unmarshalInputUpdateServerMemoryTypeInput,
@@ -3425,6 +3862,27 @@ input CreateServerComponentInput {
 input CreateServerComponentTypeInput {
   """The name of the server component type."""
   name: String!
+}
+"""Input information to create a server hard drive."""
+input CreateServerHardDriveInput {
+  """The serial for the server hard drive."""
+  serial: String!
+  serverID: ID!
+  hardDriveTypeID: ID!
+}
+"""Input information to create a server hard drive type."""
+input CreateServerHardDriveTypeInput {
+  """The name of the vendor for the server hard drive type."""
+  vendor: String!
+  """The mode of the server chassis type."""
+  model: String!
+  """The speed of the server hard drive type."""
+  speed: String!
+  """The type of the server hard drive type."""
+  type: String!
+  """The capacity of the server hard drive type."""
+  capacity: String!
+  hardDriveIDs: [ID!]
 }
 """Create a new server."""
 input CreateServerInput {
@@ -4305,6 +4763,278 @@ type ServerEdge {
   """A cursor for use in pagination."""
   cursor: Cursor!
 }
+type ServerHardDrive implements Node @key(fields: "id") @prefixedID(prefix: "srvrshd") {
+  """The ID of the server hard drive type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The serial for the server hard drive."""
+  serial: String!
+  server: Server!
+  hardDriveType: ServerHardDriveType!
+}
+"""A connection to a list of items."""
+type ServerHardDriveConnection {
+  """A list of edges."""
+  edges: [ServerHardDriveEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerHardDriveEdge {
+  """The item at the end of the edge."""
+  node: ServerHardDrive
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerHardDrive connections"""
+input ServerHardDriveOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerHardDrives."""
+  field: ServerHardDriveOrderField!
+}
+"""Properties by which ServerHardDrive connections can be ordered."""
+enum ServerHardDriveOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  NAME
+  SERVER
+  SERVER_HARD_DRIVE_TYPE
+}
+type ServerHardDriveType implements Node @key(fields: "id") @prefixedID(prefix: "srvrhdt") {
+  """The ID of the server hard drive type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The name of the vendor for the server hard drive type."""
+  vendor: String!
+  """The mode of the server chassis type."""
+  model: String!
+  """The speed of the server hard drive type."""
+  speed: String!
+  """The type of the server hard drive type."""
+  type: String!
+  """The capacity of the server hard drive type."""
+  capacity: String!
+  hardDrive(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerHardDrives returned from the connection."""
+    orderBy: ServerHardDriveOrder
+
+    """Filtering options for ServerHardDrives returned from the connection."""
+    where: ServerHardDriveWhereInput
+  ): ServerHardDriveConnection!
+}
+"""A connection to a list of items."""
+type ServerHardDriveTypeConnection {
+  """A list of edges."""
+  edges: [ServerHardDriveTypeEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerHardDriveTypeEdge {
+  """The item at the end of the edge."""
+  node: ServerHardDriveType
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerHardDriveType connections"""
+input ServerHardDriveTypeOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerHardDriveTypes."""
+  field: ServerHardDriveTypeOrderField!
+}
+"""Properties by which ServerHardDriveType connections can be ordered."""
+enum ServerHardDriveTypeOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  NAME
+}
+"""
+ServerHardDriveTypeWhereInput is used for filtering ServerHardDriveType objects.
+Input was generated by ent.
+"""
+input ServerHardDriveTypeWhereInput {
+  not: ServerHardDriveTypeWhereInput
+  and: [ServerHardDriveTypeWhereInput!]
+  or: [ServerHardDriveTypeWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """vendor field predicates"""
+  vendor: String
+  vendorNEQ: String
+  vendorIn: [String!]
+  vendorNotIn: [String!]
+  vendorGT: String
+  vendorGTE: String
+  vendorLT: String
+  vendorLTE: String
+  vendorContains: String
+  vendorHasPrefix: String
+  vendorHasSuffix: String
+  vendorEqualFold: String
+  vendorContainsFold: String
+  """model field predicates"""
+  model: String
+  modelNEQ: String
+  modelIn: [String!]
+  modelNotIn: [String!]
+  modelGT: String
+  modelGTE: String
+  modelLT: String
+  modelLTE: String
+  modelContains: String
+  modelHasPrefix: String
+  modelHasSuffix: String
+  modelEqualFold: String
+  modelContainsFold: String
+  """speed field predicates"""
+  speed: String
+  speedNEQ: String
+  speedIn: [String!]
+  speedNotIn: [String!]
+  speedGT: String
+  speedGTE: String
+  speedLT: String
+  speedLTE: String
+  speedContains: String
+  speedHasPrefix: String
+  speedHasSuffix: String
+  speedEqualFold: String
+  speedContainsFold: String
+  """type field predicates"""
+  type: String
+  typeNEQ: String
+  typeIn: [String!]
+  typeNotIn: [String!]
+  typeGT: String
+  typeGTE: String
+  typeLT: String
+  typeLTE: String
+  typeContains: String
+  typeHasPrefix: String
+  typeHasSuffix: String
+  typeEqualFold: String
+  typeContainsFold: String
+  """capacity field predicates"""
+  capacity: String
+  capacityNEQ: String
+  capacityIn: [String!]
+  capacityNotIn: [String!]
+  capacityGT: String
+  capacityGTE: String
+  capacityLT: String
+  capacityLTE: String
+  capacityContains: String
+  capacityHasPrefix: String
+  capacityHasSuffix: String
+  capacityEqualFold: String
+  capacityContainsFold: String
+  """hard_drive edge predicates"""
+  hasHardDrive: Boolean
+  hasHardDriveWith: [ServerHardDriveWhereInput!]
+}
+"""
+ServerHardDriveWhereInput is used for filtering ServerHardDrive objects.
+Input was generated by ent.
+"""
+input ServerHardDriveWhereInput {
+  not: ServerHardDriveWhereInput
+  and: [ServerHardDriveWhereInput!]
+  or: [ServerHardDriveWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """serial field predicates"""
+  serial: String
+  serialNEQ: String
+  serialIn: [String!]
+  serialNotIn: [String!]
+  serialGT: String
+  serialGTE: String
+  serialLT: String
+  serialLTE: String
+  serialContains: String
+  serialHasPrefix: String
+  serialHasSuffix: String
+  serialEqualFold: String
+  serialContainsFold: String
+  """server edge predicates"""
+  hasServer: Boolean
+  hasServerWith: [ServerWhereInput!]
+  """hard_drive_type edge predicates"""
+  hasHardDriveType: Boolean
+  hasHardDriveTypeWith: [ServerHardDriveTypeWhereInput!]
+}
 type ServerMemory implements Node @key(fields: "id") @prefixedID(prefix: "srvrmem") {
   """The ID of the server memory."""
   id: ID!
@@ -5153,6 +5883,27 @@ input UpdateServerComponentTypeInput {
   """The name of the server component type."""
   name: String
 }
+"""Input information to update a server hard drive."""
+input UpdateServerHardDriveInput {
+  """The serial for the server hard drive."""
+  serial: String
+}
+"""Input information to update a server hard drive type."""
+input UpdateServerHardDriveTypeInput {
+  """The name of the vendor for the server hard drive type."""
+  vendor: String
+  """The mode of the server chassis type."""
+  model: String
+  """The speed of the server hard drive type."""
+  speed: String
+  """The type of the server hard drive type."""
+  type: String
+  """The capacity of the server hard drive type."""
+  capacity: String
+  addHardDriveIDs: [ID!]
+  removeHardDriveIDs: [ID!]
+  clearHardDrive: Boolean
+}
 """Update an existing server."""
 input UpdateServerInput {
   """The name of the server."""
@@ -5209,6 +5960,128 @@ input UpdateServerTypeInput {
   name: String
 }
 `, BuiltIn: false},
+	{Name: "../../schema/hard_drive_type copy.graphql", Input: `extend type Query {
+  """
+  Lookup a serverHardDrive by ID.
+  """
+  serverHardDrive(
+    """
+    The server hard drive ID.
+    """
+    id: ID!
+  ): ServerHardDrive!
+}
+
+extend type Mutation {
+  """
+  Create a server hard drive.
+  """
+  serverHardDrive(
+    input: CreateServerHardDriveInput!
+  ): ServerHardDriveCreatePayload!
+  """
+  Update a server hard drive.
+  """
+  serverHardDriveUpdate(
+    id: ID!
+    input: UpdateServerHardDriveInput!
+  ): ServerHardDriveUpdatePayload!
+  """
+  Delete a server hard drive.
+  """
+  serverHardDriveDelete(id: ID!): ServerHardDriveDeletePayload!
+}
+
+"""
+Return response from serverHardDriveCreate
+"""
+type ServerHardDriveCreatePayload {
+  """
+  The created server hard drive.
+  """
+  serverHardDrive: ServerHardDrive!
+}
+
+"""
+Return response from serverHardDriveDelete
+"""
+type ServerHardDriveDeletePayload {
+  """
+  The ID of the deleted server hard drive.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverHardDriveUpdate
+"""
+type ServerHardDriveUpdatePayload {
+  """
+  The updated server hard drive.
+  """
+  serverHardDrive: ServerHardDrive!
+}`, BuiltIn: false},
+	{Name: "../../schema/hard_drive_type.graphql", Input: `extend type Query {
+  """
+  Lookup a serverHardDriveType by ID.
+  """
+  serverHardDriveType(
+    """
+    The server hard drive type ID.
+    """
+    id: ID!
+  ): ServerHardDriveType!
+}
+
+extend type Mutation {
+  """
+  Create a server hard drive type.
+  """
+  serverHardDriveType(
+    input: CreateServerHardDriveTypeInput!
+  ): ServerHardDriveTypeCreatePayload!
+  """
+  Update a server hard drive type.
+  """
+  serverHardDriveTypeUpdate(
+    id: ID!
+    input: UpdateServerHardDriveTypeInput!
+  ): ServerHardDriveTypeUpdatePayload!
+  """
+  Delete a server hard drive type.
+  """
+  serverHardDriveTypeDelete(id: ID!): ServerHardDriveTypeDeletePayload!
+}
+
+"""
+Return response from serverHardDriveTypeCreate
+"""
+type ServerHardDriveTypeCreatePayload {
+  """
+  The created server hard drive type.
+  """
+  serverHardDriveType: ServerHardDriveType!
+}
+
+"""
+Return response from serverHardDriveTypeDelete
+"""
+type ServerHardDriveTypeDeletePayload {
+  """
+  The ID of the deleted server hard drive type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverHardDriveTypeUpdate
+"""
+type ServerHardDriveTypeUpdatePayload {
+  """
+  The updated server hard drive type.
+  """
+  serverHardDriveType: ServerHardDriveType!
+}`, BuiltIn: false},
 	{Name: "../../schema/ipam.graphql", Input: `interface IPAddressable {
   id: ID!
 }`, BuiltIn: false},
@@ -5679,7 +6552,7 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerProvider | ServerType
+union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
@@ -5690,6 +6563,8 @@ type Entity {
 	findServerChassisTypeByID(id: ID!,): ServerChassisType!
 	findServerComponentByID(id: ID!,): ServerComponent!
 	findServerComponentTypeByID(id: ID!,): ServerComponentType!
+	findServerHardDriveByID(id: ID!,): ServerHardDrive!
+	findServerHardDriveTypeByID(id: ID!,): ServerHardDriveType!
 	findServerMemoryByID(id: ID!,): ServerMemory!
 	findServerMemoryTypeByID(id: ID!,): ServerMemoryType!
 	findServerMotherboardByID(id: ID!,): ServerMotherboard!
@@ -5821,6 +6696,36 @@ func (ec *executionContext) field_Entity_findServerComponentByID_args(ctx contex
 }
 
 func (ec *executionContext) field_Entity_findServerComponentTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerHardDriveByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerHardDriveTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -6276,6 +7181,114 @@ func (ec *executionContext) field_Mutation_serverDelete_args(ctx context.Context
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverHardDriveDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverHardDriveTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverHardDriveTypeUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerHardDriveTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerHardDriveTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerHardDriveTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverHardDriveType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerHardDriveTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerHardDriveTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerHardDriveTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverHardDriveUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerHardDriveInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerHardDriveInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerHardDriveInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverHardDrive_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerHardDriveInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerHardDriveInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerHardDriveInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -6747,6 +7760,36 @@ func (ec *executionContext) field_Query_serverComponent_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_serverHardDriveType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverHardDrive_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_serverMemoryType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -6964,6 +8007,66 @@ func (ec *executionContext) field_ServerChassisType_chassis_args(ctx context.Con
 	if tmp, ok := rawArgs["where"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
 		arg5, err = ec.unmarshalOServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_ServerHardDriveType_hardDrive_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *generated.ServerHardDriveOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOServerHardDriveOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *generated.ServerHardDriveWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOServerHardDriveWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -7801,6 +8904,150 @@ func (ec *executionContext) fieldContext_Entity_findServerComponentTypeByID(ctx 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerComponentTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerHardDriveByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerHardDriveByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerHardDriveByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDrive)
+	fc.Result = res
+	return ec.marshalNServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerHardDriveByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDrive_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDrive_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDrive_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerHardDrive_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerHardDrive_server(ctx, field)
+			case "hardDriveType":
+				return ec.fieldContext_ServerHardDrive_hardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDrive", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerHardDriveByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerHardDriveTypeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerHardDriveTypeByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerHardDriveTypeByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveType)
+	fc.Result = res
+	return ec.marshalNServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerHardDriveTypeByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDriveType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerHardDriveType_model(ctx, field)
+			case "speed":
+				return ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+			case "type":
+				return ec.fieldContext_ServerHardDriveType_type(ctx, field)
+			case "capacity":
+				return ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+			case "hardDrive":
+				return ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerHardDriveTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -9277,6 +10524,360 @@ func (ec *executionContext) fieldContext_Mutation_serverCPUTypeDelete(ctx contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_serverCPUTypeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverHardDrive(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDrive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerHardDrive(rctx, fc.Args["input"].(generated.CreateServerHardDriveInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerHardDriveCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerHardDriveCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverHardDrive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverHardDrive":
+				return ec.fieldContext_ServerHardDriveCreatePayload_serverHardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverHardDrive_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverHardDriveUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDriveUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerHardDriveUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerHardDriveInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerHardDriveUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerHardDriveUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverHardDriveUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverHardDrive":
+				return ec.fieldContext_ServerHardDriveUpdatePayload_serverHardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverHardDriveUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverHardDriveDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDriveDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerHardDriveDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerHardDriveDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerHardDriveDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverHardDriveDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerHardDriveDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverHardDriveDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDriveType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerHardDriveType(rctx, fc.Args["input"].(generated.CreateServerHardDriveTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerHardDriveTypeCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerHardDriveTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverHardDriveType":
+				return ec.fieldContext_ServerHardDriveTypeCreatePayload_serverHardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveTypeCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverHardDriveType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverHardDriveTypeUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDriveTypeUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerHardDriveTypeUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerHardDriveTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerHardDriveTypeUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerHardDriveTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverHardDriveTypeUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverHardDriveType":
+				return ec.fieldContext_ServerHardDriveTypeUpdatePayload_serverHardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveTypeUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverHardDriveTypeUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverHardDriveTypeDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDriveTypeDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerHardDriveTypeDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerHardDriveTypeDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerHardDriveTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverHardDriveTypeDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerHardDriveTypeDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveTypeDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverHardDriveTypeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -11110,6 +12711,150 @@ func (ec *executionContext) fieldContext_Query_serverCPUType(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_serverCPUType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverHardDrive(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverHardDrive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerHardDrive(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDrive)
+	fc.Result = res
+	return ec.marshalNServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverHardDrive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDrive_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDrive_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDrive_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerHardDrive_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerHardDrive_server(ctx, field)
+			case "hardDriveType":
+				return ec.fieldContext_ServerHardDrive_hardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDrive", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverHardDrive_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverHardDriveType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerHardDriveType(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveType)
+	fc.Result = res
+	return ec.marshalNServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDriveType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerHardDriveType_model(ctx, field)
+			case "speed":
+				return ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+			case "type":
+				return ec.fieldContext_ServerHardDriveType_type(ctx, field)
+			case "capacity":
+				return ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+			case "hardDrive":
+				return ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverHardDriveType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -16972,6 +18717,1549 @@ func (ec *executionContext) fieldContext_ServerEdge_cursor(ctx context.Context, 
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDrive_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDrive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDrive_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDrive_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDrive",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDrive_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDrive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDrive_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDrive_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDrive",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDrive_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDrive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDrive_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDrive_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDrive",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDrive_serial(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDrive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDrive_serial(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Serial, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDrive_serial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDrive",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDrive_server(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDrive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDrive_server(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Server(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.Server)
+	fc.Result = res
+	return ec.marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServer(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDrive_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDrive",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Server_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Server_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Server_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Server_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Server_description(ctx, field)
+			case "serverProvider":
+				return ec.fieldContext_Server_serverProvider(ctx, field)
+			case "serverType":
+				return ec.fieldContext_Server_serverType(ctx, field)
+			case "components":
+				return ec.fieldContext_Server_components(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDrive_hardDriveType(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDrive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDrive_hardDriveType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HardDriveType(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveType)
+	fc.Result = res
+	return ec.marshalNServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDrive_hardDriveType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDrive",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDriveType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerHardDriveType_model(ctx, field)
+			case "speed":
+				return ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+			case "type":
+				return ec.fieldContext_ServerHardDriveType_type(ctx, field)
+			case "capacity":
+				return ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+			case "hardDrive":
+				return ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerHardDriveEdge)
+	fc.Result = res
+	return ec.marshalOServerHardDriveEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerHardDriveEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerHardDriveEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveCreatePayload_serverHardDrive(ctx context.Context, field graphql.CollectedField, obj *ServerHardDriveCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveCreatePayload_serverHardDrive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerHardDrive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDrive)
+	fc.Result = res
+	return ec.marshalNServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveCreatePayload_serverHardDrive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDrive_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDrive_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDrive_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerHardDrive_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerHardDrive_server(ctx, field)
+			case "hardDriveType":
+				return ec.fieldContext_ServerHardDrive_hardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDrive", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerHardDriveDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDrive)
+	fc.Result = res
+	return ec.marshalOServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDrive_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDrive_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDrive_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerHardDrive_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerHardDrive_server(ctx, field)
+			case "hardDriveType":
+				return ec.fieldContext_ServerHardDrive_hardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDrive", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_vendor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vendor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_vendor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_model(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_model(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Model, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_model(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_speed(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Speed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_speed(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_type(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_type(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_capacity(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Capacity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_capacity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveType_hardDrive(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HardDrive(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerHardDriveOrder), fc.Args["where"].(*generated.ServerHardDriveWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveConnection)
+	fc.Result = res
+	return ec.marshalNServerHardDriveConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveType_hardDrive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveType",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_ServerHardDriveConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ServerHardDriveConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ServerHardDriveConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ServerHardDriveType_hardDrive_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerHardDriveTypeEdge)
+	fc.Result = res
+	return ec.marshalOServerHardDriveTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerHardDriveTypeEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerHardDriveTypeEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveTypeEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeCreatePayload_serverHardDriveType(ctx context.Context, field graphql.CollectedField, obj *ServerHardDriveTypeCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeCreatePayload_serverHardDriveType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerHardDriveType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveType)
+	fc.Result = res
+	return ec.marshalNServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeCreatePayload_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDriveType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerHardDriveType_model(ctx, field)
+			case "speed":
+				return ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+			case "type":
+				return ec.fieldContext_ServerHardDriveType_type(ctx, field)
+			case "capacity":
+				return ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+			case "hardDrive":
+				return ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerHardDriveTypeDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveType)
+	fc.Result = res
+	return ec.marshalOServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDriveType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerHardDriveType_model(ctx, field)
+			case "speed":
+				return ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+			case "type":
+				return ec.fieldContext_ServerHardDriveType_type(ctx, field)
+			case "capacity":
+				return ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+			case "hardDrive":
+				return ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerHardDriveTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveTypeUpdatePayload_serverHardDriveType(ctx context.Context, field graphql.CollectedField, obj *ServerHardDriveTypeUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveTypeUpdatePayload_serverHardDriveType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerHardDriveType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDriveType)
+	fc.Result = res
+	return ec.marshalNServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveTypeUpdatePayload_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveTypeUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDriveType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDriveType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDriveType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerHardDriveType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerHardDriveType_model(ctx, field)
+			case "speed":
+				return ec.fieldContext_ServerHardDriveType_speed(ctx, field)
+			case "type":
+				return ec.fieldContext_ServerHardDriveType_type(ctx, field)
+			case "capacity":
+				return ec.fieldContext_ServerHardDriveType_capacity(ctx, field)
+			case "hardDrive":
+				return ec.fieldContext_ServerHardDriveType_hardDrive(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDriveType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerHardDriveUpdatePayload_serverHardDrive(ctx context.Context, field graphql.CollectedField, obj *ServerHardDriveUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerHardDriveUpdatePayload_serverHardDrive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerHardDrive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerHardDrive)
+	fc.Result = res
+	return ec.marshalNServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerHardDriveUpdatePayload_serverHardDrive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerHardDriveUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerHardDrive_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerHardDrive_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerHardDrive_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerHardDrive_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerHardDrive_server(ctx, field)
+			case "hardDriveType":
+				return ec.fieldContext_ServerHardDrive_hardDriveType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerHardDrive", field.Name)
 		},
 	}
 	return fc, nil
@@ -23350,6 +26638,127 @@ func (ec *executionContext) unmarshalInputCreateServerComponentTypeInput(ctx con
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputCreateServerHardDriveInput(ctx context.Context, obj interface{}) (generated.CreateServerHardDriveInput, error) {
+	var it generated.CreateServerHardDriveInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial", "serverID", "hardDriveTypeID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serverID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerID = data
+		case "hardDriveTypeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hardDriveTypeID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HardDriveTypeID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerHardDriveTypeInput(ctx context.Context, obj interface{}) (generated.CreateServerHardDriveTypeInput, error) {
+	var it generated.CreateServerHardDriveTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "speed", "type", "capacity", "hardDriveIDs"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "speed":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speed"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Speed = data
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Type = data
+		case "capacity":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacity"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Capacity = data
+		case "hardDriveIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hardDriveIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HardDriveIDs = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateServerInput(ctx context.Context, obj interface{}) (generated.CreateServerInput, error) {
 	var it generated.CreateServerInput
 	asMap := map[string]interface{}{}
@@ -27294,6 +30703,1372 @@ func (ec *executionContext) unmarshalInputServerComponentWhereInput(ctx context.
 				return it, err
 			}
 			it.HasServerWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerHardDriveOrder(ctx context.Context, obj interface{}) (generated.ServerHardDriveOrder, error) {
+	var it generated.ServerHardDriveOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerHardDriveOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerHardDriveTypeOrder(ctx context.Context, obj interface{}) (generated.ServerHardDriveTypeOrder, error) {
+	var it generated.ServerHardDriveTypeOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerHardDriveTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerHardDriveTypeWhereInput(ctx context.Context, obj interface{}) (generated.ServerHardDriveTypeWhereInput, error) {
+	var it generated.ServerHardDriveTypeWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "speed", "speedNEQ", "speedIn", "speedNotIn", "speedGT", "speedGTE", "speedLT", "speedLTE", "speedContains", "speedHasPrefix", "speedHasSuffix", "speedEqualFold", "speedContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "typeGT", "typeGTE", "typeLT", "typeLTE", "typeContains", "typeHasPrefix", "typeHasSuffix", "typeEqualFold", "typeContainsFold", "capacity", "capacityNEQ", "capacityIn", "capacityNotIn", "capacityGT", "capacityGTE", "capacityLT", "capacityLTE", "capacityContains", "capacityHasPrefix", "capacityHasSuffix", "capacityEqualFold", "capacityContainsFold", "hasHardDrive", "hasHardDriveWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerHardDriveTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerHardDriveTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerHardDriveTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "vendorNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNEQ = data
+		case "vendorIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorIn = data
+		case "vendorNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNotIn = data
+		case "vendorGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGT = data
+		case "vendorGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGTE = data
+		case "vendorLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLT = data
+		case "vendorLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLTE = data
+		case "vendorContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContains = data
+		case "vendorHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasPrefix = data
+		case "vendorHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasSuffix = data
+		case "vendorEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorEqualFold = data
+		case "vendorContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContainsFold = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "modelNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNEQ = data
+		case "modelIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelIn = data
+		case "modelNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNotIn = data
+		case "modelGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGT = data
+		case "modelGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGTE = data
+		case "modelLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLT = data
+		case "modelLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLTE = data
+		case "modelContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContains = data
+		case "modelHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasPrefix = data
+		case "modelHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasSuffix = data
+		case "modelEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelEqualFold = data
+		case "modelContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContainsFold = data
+		case "speed":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speed"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Speed = data
+		case "speedNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedNEQ = data
+		case "speedIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedIn = data
+		case "speedNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedNotIn = data
+		case "speedGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedGT = data
+		case "speedGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedGTE = data
+		case "speedLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedLT = data
+		case "speedLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedLTE = data
+		case "speedContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedContains = data
+		case "speedHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedHasPrefix = data
+		case "speedHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedHasSuffix = data
+		case "speedEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedEqualFold = data
+		case "speedContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speedContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpeedContainsFold = data
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Type = data
+		case "typeNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeNEQ = data
+		case "typeIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeIn = data
+		case "typeNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeNotIn = data
+		case "typeGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeGT = data
+		case "typeGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeGTE = data
+		case "typeLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeLT = data
+		case "typeLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeLTE = data
+		case "typeContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeContains = data
+		case "typeHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeHasPrefix = data
+		case "typeHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeHasSuffix = data
+		case "typeEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeEqualFold = data
+		case "typeContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypeContainsFold = data
+		case "capacity":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacity"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Capacity = data
+		case "capacityNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityNEQ = data
+		case "capacityIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityIn = data
+		case "capacityNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityNotIn = data
+		case "capacityGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityGT = data
+		case "capacityGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityGTE = data
+		case "capacityLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityLT = data
+		case "capacityLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityLTE = data
+		case "capacityContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityContains = data
+		case "capacityHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityHasPrefix = data
+		case "capacityHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityHasSuffix = data
+		case "capacityEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityEqualFold = data
+		case "capacityContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacityContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CapacityContainsFold = data
+		case "hasHardDrive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasHardDrive"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasHardDrive = data
+		case "hasHardDriveWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasHardDriveWith"))
+			data, err := ec.unmarshalOServerHardDriveWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasHardDriveWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerHardDriveWhereInput(ctx context.Context, obj interface{}) (generated.ServerHardDriveWhereInput, error) {
+	var it generated.ServerHardDriveWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "serial", "serialNEQ", "serialIn", "serialNotIn", "serialGT", "serialGTE", "serialLT", "serialLTE", "serialContains", "serialHasPrefix", "serialHasSuffix", "serialEqualFold", "serialContainsFold", "hasServer", "hasServerWith", "hasHardDriveType", "hasHardDriveTypeWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerHardDriveWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerHardDriveWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerHardDriveWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serialNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNEQ = data
+		case "serialIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialIn = data
+		case "serialNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNotIn = data
+		case "serialGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGT = data
+		case "serialGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGTE = data
+		case "serialLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLT = data
+		case "serialLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLTE = data
+		case "serialContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContains = data
+		case "serialHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasPrefix = data
+		case "serialHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasSuffix = data
+		case "serialEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialEqualFold = data
+		case "serialContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContainsFold = data
+		case "hasServer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServer"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServer = data
+		case "hasServerWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerWith"))
+			data, err := ec.unmarshalOServerWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerWith = data
+		case "hasHardDriveType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasHardDriveType"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasHardDriveType = data
+		case "hasHardDriveTypeWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasHardDriveTypeWith"))
+			data, err := ec.unmarshalOServerHardDriveTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasHardDriveTypeWith = data
 		}
 	}
 
@@ -31364,6 +36139,127 @@ func (ec *executionContext) unmarshalInputUpdateServerComponentTypeInput(ctx con
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateServerHardDriveInput(ctx context.Context, obj interface{}) (generated.UpdateServerHardDriveInput, error) {
+	var it generated.UpdateServerHardDriveInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateServerHardDriveTypeInput(ctx context.Context, obj interface{}) (generated.UpdateServerHardDriveTypeInput, error) {
+	var it generated.UpdateServerHardDriveTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "speed", "type", "capacity", "addHardDriveIDs", "removeHardDriveIDs", "clearHardDrive"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "speed":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("speed"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Speed = data
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Type = data
+		case "capacity":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("capacity"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Capacity = data
+		case "addHardDriveIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addHardDriveIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddHardDriveIDs = data
+		case "removeHardDriveIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeHardDriveIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveHardDriveIDs = data
+		case "clearHardDrive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearHardDrive"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearHardDrive = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateServerInput(ctx context.Context, obj interface{}) (generated.UpdateServerInput, error) {
 	var it generated.UpdateServerInput
 	asMap := map[string]interface{}{}
@@ -31761,6 +36657,16 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._ServerComponentType(ctx, sel, obj)
+	case *generated.ServerHardDrive:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerHardDrive(ctx, sel, obj)
+	case *generated.ServerHardDriveType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerHardDriveType(ctx, sel, obj)
 	case *generated.ServerMemory:
 		if obj == nil {
 			return graphql.Null
@@ -31849,6 +36755,20 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._ServerComponentType(ctx, sel, obj)
+	case generated.ServerHardDrive:
+		return ec._ServerHardDrive(ctx, sel, &obj)
+	case *generated.ServerHardDrive:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerHardDrive(ctx, sel, obj)
+	case generated.ServerHardDriveType:
+		return ec._ServerHardDriveType(ctx, sel, &obj)
+	case *generated.ServerHardDriveType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerHardDriveType(ctx, sel, obj)
 	case generated.ServerMemory:
 		return ec._ServerMemory(ctx, sel, &obj)
 	case *generated.ServerMemory:
@@ -32061,6 +36981,50 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerComponentTypeByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerHardDriveByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerHardDriveByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerHardDriveTypeByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerHardDriveTypeByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -32369,6 +37333,48 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "serverCPUTypeDelete":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverCPUTypeDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverHardDrive":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverHardDrive(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverHardDriveUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverHardDriveUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverHardDriveDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverHardDriveDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverHardDriveType":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverHardDriveType(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverHardDriveTypeUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverHardDriveTypeUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverHardDriveTypeDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverHardDriveTypeDelete(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -32730,6 +37736,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_serverCPUType(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverHardDrive":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverHardDrive(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverHardDriveType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverHardDriveType(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -35181,6 +40231,650 @@ func (ec *executionContext) _ServerEdge(ctx context.Context, sel ast.SelectionSe
 	return out
 }
 
+var serverHardDriveImplementors = []string{"ServerHardDrive", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerHardDrive(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerHardDrive) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDrive")
+		case "id":
+			out.Values[i] = ec._ServerHardDrive_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerHardDrive_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerHardDrive_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "serial":
+			out.Values[i] = ec._ServerHardDrive_serial(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "server":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerHardDrive_server(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "hardDriveType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerHardDrive_hardDriveType(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveConnectionImplementors = []string{"ServerHardDriveConnection"}
+
+func (ec *executionContext) _ServerHardDriveConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerHardDriveConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveConnection")
+		case "edges":
+			out.Values[i] = ec._ServerHardDriveConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerHardDriveConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerHardDriveConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveCreatePayloadImplementors = []string{"ServerHardDriveCreatePayload"}
+
+func (ec *executionContext) _ServerHardDriveCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerHardDriveCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveCreatePayload")
+		case "serverHardDrive":
+			out.Values[i] = ec._ServerHardDriveCreatePayload_serverHardDrive(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveDeletePayloadImplementors = []string{"ServerHardDriveDeletePayload"}
+
+func (ec *executionContext) _ServerHardDriveDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerHardDriveDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerHardDriveDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveEdgeImplementors = []string{"ServerHardDriveEdge"}
+
+func (ec *executionContext) _ServerHardDriveEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerHardDriveEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveEdge")
+		case "node":
+			out.Values[i] = ec._ServerHardDriveEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerHardDriveEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveTypeImplementors = []string{"ServerHardDriveType", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerHardDriveType(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerHardDriveType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveType")
+		case "id":
+			out.Values[i] = ec._ServerHardDriveType_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerHardDriveType_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerHardDriveType_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "vendor":
+			out.Values[i] = ec._ServerHardDriveType_vendor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "model":
+			out.Values[i] = ec._ServerHardDriveType_model(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "speed":
+			out.Values[i] = ec._ServerHardDriveType_speed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "type":
+			out.Values[i] = ec._ServerHardDriveType_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "capacity":
+			out.Values[i] = ec._ServerHardDriveType_capacity(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "hardDrive":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerHardDriveType_hardDrive(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveTypeConnectionImplementors = []string{"ServerHardDriveTypeConnection"}
+
+func (ec *executionContext) _ServerHardDriveTypeConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerHardDriveTypeConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveTypeConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveTypeConnection")
+		case "edges":
+			out.Values[i] = ec._ServerHardDriveTypeConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerHardDriveTypeConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerHardDriveTypeConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveTypeCreatePayloadImplementors = []string{"ServerHardDriveTypeCreatePayload"}
+
+func (ec *executionContext) _ServerHardDriveTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerHardDriveTypeCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveTypeCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveTypeCreatePayload")
+		case "serverHardDriveType":
+			out.Values[i] = ec._ServerHardDriveTypeCreatePayload_serverHardDriveType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveTypeDeletePayloadImplementors = []string{"ServerHardDriveTypeDeletePayload"}
+
+func (ec *executionContext) _ServerHardDriveTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerHardDriveTypeDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveTypeDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveTypeDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerHardDriveTypeDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveTypeEdgeImplementors = []string{"ServerHardDriveTypeEdge"}
+
+func (ec *executionContext) _ServerHardDriveTypeEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerHardDriveTypeEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveTypeEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveTypeEdge")
+		case "node":
+			out.Values[i] = ec._ServerHardDriveTypeEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerHardDriveTypeEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveTypeUpdatePayloadImplementors = []string{"ServerHardDriveTypeUpdatePayload"}
+
+func (ec *executionContext) _ServerHardDriveTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerHardDriveTypeUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveTypeUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveTypeUpdatePayload")
+		case "serverHardDriveType":
+			out.Values[i] = ec._ServerHardDriveTypeUpdatePayload_serverHardDriveType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverHardDriveUpdatePayloadImplementors = []string{"ServerHardDriveUpdatePayload"}
+
+func (ec *executionContext) _ServerHardDriveUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerHardDriveUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverHardDriveUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerHardDriveUpdatePayload")
+		case "serverHardDrive":
+			out.Values[i] = ec._ServerHardDriveUpdatePayload_serverHardDrive(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var serverMemoryImplementors = []string{"ServerMemory", "Node", "_Entity"}
 
 func (ec *executionContext) _ServerMemory(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerMemory) graphql.Marshaler {
@@ -37483,6 +43177,16 @@ func (ec *executionContext) unmarshalNCreateServerComponentTypeInput2goᚗinfrat
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNCreateServerHardDriveInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerHardDriveInput(ctx context.Context, v interface{}) (generated.CreateServerHardDriveInput, error) {
+	res, err := ec.unmarshalInputCreateServerHardDriveInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateServerHardDriveTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerHardDriveTypeInput(ctx context.Context, v interface{}) (generated.CreateServerHardDriveTypeInput, error) {
+	res, err := ec.unmarshalInputCreateServerHardDriveTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateServerInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerInput(ctx context.Context, v interface{}) (generated.CreateServerInput, error) {
 	res, err := ec.unmarshalInputCreateServerInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -38126,6 +43830,170 @@ func (ec *executionContext) marshalNServerDeletePayload2ᚖgoᚗinfratographer�
 	return ec._ServerDeletePayload(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNServerHardDrive2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx context.Context, sel ast.SelectionSet, v generated.ServerHardDrive) graphql.Marshaler {
+	return ec._ServerHardDrive(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDrive) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDrive(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveCreatePayload) graphql.Marshaler {
+	return ec._ServerHardDriveCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerHardDriveCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveDeletePayload) graphql.Marshaler {
+	return ec._ServerHardDriveDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerHardDriveDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerHardDriveOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveOrderField(ctx context.Context, v interface{}) (*generated.ServerHardDriveOrderField, error) {
+	var res = new(generated.ServerHardDriveOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerHardDriveOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerHardDriveType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx context.Context, sel ast.SelectionSet, v generated.ServerHardDriveType) graphql.Marshaler {
+	return ec._ServerHardDriveType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveType) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveTypeCreatePayload) graphql.Marshaler {
+	return ec._ServerHardDriveTypeCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerHardDriveTypeCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveTypeCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveTypeDeletePayload) graphql.Marshaler {
+	return ec._ServerHardDriveTypeDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerHardDriveTypeDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveTypeDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerHardDriveTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeOrderField(ctx context.Context, v interface{}) (*generated.ServerHardDriveTypeOrderField, error) {
+	var res = new(generated.ServerHardDriveTypeOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveTypeOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveTypeUpdatePayload) graphql.Marshaler {
+	return ec._ServerHardDriveTypeUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerHardDriveTypeUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveTypeUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerHardDriveTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerHardDriveTypeWhereInput, error) {
+	res, err := ec.unmarshalInputServerHardDriveTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerHardDriveUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveUpdatePayload) graphql.Marshaler {
+	return ec._ServerHardDriveUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerHardDriveUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerHardDriveUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerHardDriveUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerHardDriveWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInput(ctx context.Context, v interface{}) (*generated.ServerHardDriveWhereInput, error) {
+	res, err := ec.unmarshalInputServerHardDriveWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNServerMemory2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMemory(ctx context.Context, sel ast.SelectionSet, v generated.ServerMemory) graphql.Marshaler {
 	return ec._ServerMemory(ctx, sel, &v)
 }
@@ -38700,6 +44568,16 @@ func (ec *executionContext) unmarshalNUpdateServerComponentInput2goᚗinfratogra
 
 func (ec *executionContext) unmarshalNUpdateServerComponentTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerComponentTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerComponentTypeInput, error) {
 	res, err := ec.unmarshalInputUpdateServerComponentTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerHardDriveInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerHardDriveInput(ctx context.Context, v interface{}) (generated.UpdateServerHardDriveInput, error) {
+	res, err := ec.unmarshalInputUpdateServerHardDriveInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerHardDriveTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerHardDriveTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerHardDriveTypeInput, error) {
+	res, err := ec.unmarshalInputUpdateServerHardDriveTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -39811,6 +45689,180 @@ func (ec *executionContext) marshalOServerEdge2ᚖgoᚗinfratographerᚗcomᚋse
 		return graphql.Null
 	}
 	return ec._ServerEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerHardDrive2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDrive(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDrive) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerHardDrive(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerHardDriveEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerHardDriveEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerHardDriveEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerHardDriveEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerHardDriveEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveOrder(ctx context.Context, v interface{}) (*generated.ServerHardDriveOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerHardDriveOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerHardDriveType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerHardDriveType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerHardDriveTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerHardDriveTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerHardDriveTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerHardDriveTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerHardDriveTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerHardDriveTypeEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerHardDriveTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerHardDriveTypeWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerHardDriveTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerHardDriveTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerHardDriveTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerHardDriveWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerHardDriveWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerHardDriveWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveWhereInput(ctx context.Context, v interface{}) (*generated.ServerHardDriveWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerHardDriveWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOServerMemory2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMemory(ctx context.Context, sel ast.SelectionSet, v *generated.ServerMemory) graphql.Marshaler {

@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -65,6 +67,10 @@ type Client struct {
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
 	ServerComponentType *ServerComponentTypeClient
+	// ServerHardDrive is the client for interacting with the ServerHardDrive builders.
+	ServerHardDrive *ServerHardDriveClient
+	// ServerHardDriveType is the client for interacting with the ServerHardDriveType builders.
+	ServerHardDriveType *ServerHardDriveTypeClient
 	// ServerMemory is the client for interacting with the ServerMemory builders.
 	ServerMemory *ServerMemoryClient
 	// ServerMemoryType is the client for interacting with the ServerMemoryType builders.
@@ -96,6 +102,8 @@ func (c *Client) init() {
 	c.ServerChassisType = NewServerChassisTypeClient(c.config)
 	c.ServerComponent = NewServerComponentClient(c.config)
 	c.ServerComponentType = NewServerComponentTypeClient(c.config)
+	c.ServerHardDrive = NewServerHardDriveClient(c.config)
+	c.ServerHardDriveType = NewServerHardDriveTypeClient(c.config)
 	c.ServerMemory = NewServerMemoryClient(c.config)
 	c.ServerMemoryType = NewServerMemoryTypeClient(c.config)
 	c.ServerMotherboard = NewServerMotherboardClient(c.config)
@@ -191,6 +199,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ServerChassisType:     NewServerChassisTypeClient(cfg),
 		ServerComponent:       NewServerComponentClient(cfg),
 		ServerComponentType:   NewServerComponentTypeClient(cfg),
+		ServerHardDrive:       NewServerHardDriveClient(cfg),
+		ServerHardDriveType:   NewServerHardDriveTypeClient(cfg),
 		ServerMemory:          NewServerMemoryClient(cfg),
 		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
@@ -223,6 +233,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ServerChassisType:     NewServerChassisTypeClient(cfg),
 		ServerComponent:       NewServerComponentClient(cfg),
 		ServerComponentType:   NewServerComponentTypeClient(cfg),
+		ServerHardDrive:       NewServerHardDriveClient(cfg),
+		ServerHardDriveType:   NewServerHardDriveTypeClient(cfg),
 		ServerMemory:          NewServerMemoryClient(cfg),
 		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
@@ -258,8 +270,9 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
-		c.ServerChassisType, c.ServerComponent, c.ServerComponentType, c.ServerMemory,
-		c.ServerMemoryType, c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
+		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
+		c.ServerHardDrive, c.ServerHardDriveType, c.ServerMemory, c.ServerMemoryType,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
 	} {
 		n.Use(hooks...)
 	}
@@ -270,8 +283,9 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
-		c.ServerChassisType, c.ServerComponent, c.ServerComponentType, c.ServerMemory,
-		c.ServerMemoryType, c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
+		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
+		c.ServerHardDrive, c.ServerHardDriveType, c.ServerMemory, c.ServerMemoryType,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -296,6 +310,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ServerComponent.mutate(ctx, m)
 	case *ServerComponentTypeMutation:
 		return c.ServerComponentType.mutate(ctx, m)
+	case *ServerHardDriveMutation:
+		return c.ServerHardDrive.mutate(ctx, m)
+	case *ServerHardDriveTypeMutation:
+		return c.ServerHardDriveType.mutate(ctx, m)
 	case *ServerMemoryMutation:
 		return c.ServerMemory.mutate(ctx, m)
 	case *ServerMemoryTypeMutation:
@@ -1447,6 +1465,290 @@ func (c *ServerComponentTypeClient) mutate(ctx context.Context, m *ServerCompone
 	}
 }
 
+// ServerHardDriveClient is a client for the ServerHardDrive schema.
+type ServerHardDriveClient struct {
+	config
+}
+
+// NewServerHardDriveClient returns a client for the ServerHardDrive from the given config.
+func NewServerHardDriveClient(c config) *ServerHardDriveClient {
+	return &ServerHardDriveClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `serverharddrive.Hooks(f(g(h())))`.
+func (c *ServerHardDriveClient) Use(hooks ...Hook) {
+	c.hooks.ServerHardDrive = append(c.hooks.ServerHardDrive, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `serverharddrive.Intercept(f(g(h())))`.
+func (c *ServerHardDriveClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerHardDrive = append(c.inters.ServerHardDrive, interceptors...)
+}
+
+// Create returns a builder for creating a ServerHardDrive entity.
+func (c *ServerHardDriveClient) Create() *ServerHardDriveCreate {
+	mutation := newServerHardDriveMutation(c.config, OpCreate)
+	return &ServerHardDriveCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerHardDrive entities.
+func (c *ServerHardDriveClient) CreateBulk(builders ...*ServerHardDriveCreate) *ServerHardDriveCreateBulk {
+	return &ServerHardDriveCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerHardDrive.
+func (c *ServerHardDriveClient) Update() *ServerHardDriveUpdate {
+	mutation := newServerHardDriveMutation(c.config, OpUpdate)
+	return &ServerHardDriveUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerHardDriveClient) UpdateOne(shd *ServerHardDrive) *ServerHardDriveUpdateOne {
+	mutation := newServerHardDriveMutation(c.config, OpUpdateOne, withServerHardDrive(shd))
+	return &ServerHardDriveUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerHardDriveClient) UpdateOneID(id gidx.PrefixedID) *ServerHardDriveUpdateOne {
+	mutation := newServerHardDriveMutation(c.config, OpUpdateOne, withServerHardDriveID(id))
+	return &ServerHardDriveUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerHardDrive.
+func (c *ServerHardDriveClient) Delete() *ServerHardDriveDelete {
+	mutation := newServerHardDriveMutation(c.config, OpDelete)
+	return &ServerHardDriveDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerHardDriveClient) DeleteOne(shd *ServerHardDrive) *ServerHardDriveDeleteOne {
+	return c.DeleteOneID(shd.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerHardDriveClient) DeleteOneID(id gidx.PrefixedID) *ServerHardDriveDeleteOne {
+	builder := c.Delete().Where(serverharddrive.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerHardDriveDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerHardDrive.
+func (c *ServerHardDriveClient) Query() *ServerHardDriveQuery {
+	return &ServerHardDriveQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerHardDrive},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerHardDrive entity by its id.
+func (c *ServerHardDriveClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerHardDrive, error) {
+	return c.Query().Where(serverharddrive.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerHardDriveClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerHardDrive {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryServer queries the server edge of a ServerHardDrive.
+func (c *ServerHardDriveClient) QueryServer(shd *ServerHardDrive) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := shd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverharddrive.Table, serverharddrive.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverharddrive.ServerTable, serverharddrive.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(shd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryHardDriveType queries the hard_drive_type edge of a ServerHardDrive.
+func (c *ServerHardDriveClient) QueryHardDriveType(shd *ServerHardDrive) *ServerHardDriveTypeQuery {
+	query := (&ServerHardDriveTypeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := shd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverharddrive.Table, serverharddrive.FieldID, id),
+			sqlgraph.To(serverharddrivetype.Table, serverharddrivetype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverharddrive.HardDriveTypeTable, serverharddrive.HardDriveTypeColumn),
+		)
+		fromV = sqlgraph.Neighbors(shd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerHardDriveClient) Hooks() []Hook {
+	return c.hooks.ServerHardDrive
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerHardDriveClient) Interceptors() []Interceptor {
+	return c.inters.ServerHardDrive
+}
+
+func (c *ServerHardDriveClient) mutate(ctx context.Context, m *ServerHardDriveMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerHardDriveCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerHardDriveUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerHardDriveUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerHardDriveDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerHardDrive mutation op: %q", m.Op())
+	}
+}
+
+// ServerHardDriveTypeClient is a client for the ServerHardDriveType schema.
+type ServerHardDriveTypeClient struct {
+	config
+}
+
+// NewServerHardDriveTypeClient returns a client for the ServerHardDriveType from the given config.
+func NewServerHardDriveTypeClient(c config) *ServerHardDriveTypeClient {
+	return &ServerHardDriveTypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `serverharddrivetype.Hooks(f(g(h())))`.
+func (c *ServerHardDriveTypeClient) Use(hooks ...Hook) {
+	c.hooks.ServerHardDriveType = append(c.hooks.ServerHardDriveType, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `serverharddrivetype.Intercept(f(g(h())))`.
+func (c *ServerHardDriveTypeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerHardDriveType = append(c.inters.ServerHardDriveType, interceptors...)
+}
+
+// Create returns a builder for creating a ServerHardDriveType entity.
+func (c *ServerHardDriveTypeClient) Create() *ServerHardDriveTypeCreate {
+	mutation := newServerHardDriveTypeMutation(c.config, OpCreate)
+	return &ServerHardDriveTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerHardDriveType entities.
+func (c *ServerHardDriveTypeClient) CreateBulk(builders ...*ServerHardDriveTypeCreate) *ServerHardDriveTypeCreateBulk {
+	return &ServerHardDriveTypeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerHardDriveType.
+func (c *ServerHardDriveTypeClient) Update() *ServerHardDriveTypeUpdate {
+	mutation := newServerHardDriveTypeMutation(c.config, OpUpdate)
+	return &ServerHardDriveTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerHardDriveTypeClient) UpdateOne(shdt *ServerHardDriveType) *ServerHardDriveTypeUpdateOne {
+	mutation := newServerHardDriveTypeMutation(c.config, OpUpdateOne, withServerHardDriveType(shdt))
+	return &ServerHardDriveTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerHardDriveTypeClient) UpdateOneID(id gidx.PrefixedID) *ServerHardDriveTypeUpdateOne {
+	mutation := newServerHardDriveTypeMutation(c.config, OpUpdateOne, withServerHardDriveTypeID(id))
+	return &ServerHardDriveTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerHardDriveType.
+func (c *ServerHardDriveTypeClient) Delete() *ServerHardDriveTypeDelete {
+	mutation := newServerHardDriveTypeMutation(c.config, OpDelete)
+	return &ServerHardDriveTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerHardDriveTypeClient) DeleteOne(shdt *ServerHardDriveType) *ServerHardDriveTypeDeleteOne {
+	return c.DeleteOneID(shdt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerHardDriveTypeClient) DeleteOneID(id gidx.PrefixedID) *ServerHardDriveTypeDeleteOne {
+	builder := c.Delete().Where(serverharddrivetype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerHardDriveTypeDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerHardDriveType.
+func (c *ServerHardDriveTypeClient) Query() *ServerHardDriveTypeQuery {
+	return &ServerHardDriveTypeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerHardDriveType},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerHardDriveType entity by its id.
+func (c *ServerHardDriveTypeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveType, error) {
+	return c.Query().Where(serverharddrivetype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerHardDriveTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerHardDriveType {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryHardDrive queries the hard_drive edge of a ServerHardDriveType.
+func (c *ServerHardDriveTypeClient) QueryHardDrive(shdt *ServerHardDriveType) *ServerHardDriveQuery {
+	query := (&ServerHardDriveClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := shdt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverharddrivetype.Table, serverharddrivetype.FieldID, id),
+			sqlgraph.To(serverharddrive.Table, serverharddrive.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, serverharddrivetype.HardDriveTable, serverharddrivetype.HardDriveColumn),
+		)
+		fromV = sqlgraph.Neighbors(shdt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerHardDriveTypeClient) Hooks() []Hook {
+	return c.hooks.ServerHardDriveType
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerHardDriveTypeClient) Interceptors() []Interceptor {
+	return c.inters.ServerHardDriveType
+}
+
+func (c *ServerHardDriveTypeClient) mutate(ctx context.Context, m *ServerHardDriveTypeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerHardDriveTypeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerHardDriveTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerHardDriveTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerHardDriveTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerHardDriveType mutation op: %q", m.Op())
+	}
+}
+
 // ServerMemoryClient is a client for the ServerMemory schema.
 type ServerMemoryClient struct {
 	config
@@ -2153,12 +2455,14 @@ func (c *ServerTypeClient) mutate(ctx context.Context, m *ServerTypeMutation) (V
 type (
 	hooks struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
-		ServerComponent, ServerComponentType, ServerMemory, ServerMemoryType,
-		ServerMotherboard, ServerMotherboardType, ServerType []ent.Hook
+		ServerComponent, ServerComponentType, ServerHardDrive, ServerHardDriveType,
+		ServerMemory, ServerMemoryType, ServerMotherboard, ServerMotherboardType,
+		ServerType []ent.Hook
 	}
 	inters struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
-		ServerComponent, ServerComponentType, ServerMemory, ServerMemoryType,
-		ServerMotherboard, ServerMotherboardType, ServerType []ent.Interceptor
+		ServerComponent, ServerComponentType, ServerHardDrive, ServerHardDriveType,
+		ServerMemory, ServerMemoryType, ServerMotherboard, ServerMotherboardType,
+		ServerType []ent.Interceptor
 	}
 )

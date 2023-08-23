@@ -31,6 +31,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -67,6 +69,12 @@ func (n *ServerComponent) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerComponentType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerHardDrive) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerHardDriveType) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerMemory) IsNode() {}
@@ -261,6 +269,38 @@ func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (N
 		query := c.ServerComponentType.Query().
 			Where(servercomponenttype.ID(uid))
 		query, err := query.CollectFields(ctx, "ServerComponentType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case serverharddrive.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerHardDrive.Query().
+			Where(serverharddrive.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerHardDrive")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case serverharddrivetype.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerHardDriveType.Query().
+			Where(serverharddrivetype.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerHardDriveType")
 		if err != nil {
 			return nil, err
 		}
@@ -538,6 +578,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		query := c.ServerComponentType.Query().
 			Where(servercomponenttype.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "ServerComponentType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case serverharddrive.Table:
+		query := c.ServerHardDrive.Query().
+			Where(serverharddrive.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerHardDrive")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case serverharddrivetype.Table:
+		query := c.ServerHardDriveType.Query().
+			Where(serverharddrivetype.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerHardDriveType")
 		if err != nil {
 			return nil, err
 		}

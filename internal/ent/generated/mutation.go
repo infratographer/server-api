@@ -34,6 +34,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -59,6 +61,8 @@ const (
 	TypeServerChassisType     = "ServerChassisType"
 	TypeServerComponent       = "ServerComponent"
 	TypeServerComponentType   = "ServerComponentType"
+	TypeServerHardDrive       = "ServerHardDrive"
+	TypeServerHardDriveType   = "ServerHardDriveType"
 	TypeServerMemory          = "ServerMemory"
 	TypeServerMemoryType      = "ServerMemoryType"
 	TypeServerMotherboard     = "ServerMotherboard"
@@ -5640,6 +5644,1414 @@ func (m *ServerComponentTypeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *ServerComponentTypeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ServerComponentType edge %s", name)
+}
+
+// ServerHardDriveMutation represents an operation that mutates the ServerHardDrive nodes in the graph.
+type ServerHardDriveMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *gidx.PrefixedID
+	created_at             *time.Time
+	updated_at             *time.Time
+	serial                 *string
+	clearedFields          map[string]struct{}
+	server                 *gidx.PrefixedID
+	clearedserver          bool
+	hard_drive_type        *gidx.PrefixedID
+	clearedhard_drive_type bool
+	done                   bool
+	oldValue               func(context.Context) (*ServerHardDrive, error)
+	predicates             []predicate.ServerHardDrive
+}
+
+var _ ent.Mutation = (*ServerHardDriveMutation)(nil)
+
+// serverharddriveOption allows management of the mutation configuration using functional options.
+type serverharddriveOption func(*ServerHardDriveMutation)
+
+// newServerHardDriveMutation creates new mutation for the ServerHardDrive entity.
+func newServerHardDriveMutation(c config, op Op, opts ...serverharddriveOption) *ServerHardDriveMutation {
+	m := &ServerHardDriveMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerHardDrive,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerHardDriveID sets the ID field of the mutation.
+func withServerHardDriveID(id gidx.PrefixedID) serverharddriveOption {
+	return func(m *ServerHardDriveMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerHardDrive
+		)
+		m.oldValue = func(ctx context.Context) (*ServerHardDrive, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerHardDrive.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerHardDrive sets the old ServerHardDrive of the mutation.
+func withServerHardDrive(node *ServerHardDrive) serverharddriveOption {
+	return func(m *ServerHardDriveMutation) {
+		m.oldValue = func(context.Context) (*ServerHardDrive, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerHardDriveMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerHardDriveMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerHardDrive entities.
+func (m *ServerHardDriveMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerHardDriveMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerHardDriveMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerHardDrive.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerHardDriveMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerHardDriveMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerHardDrive entity.
+// If the ServerHardDrive object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerHardDriveMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerHardDriveMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerHardDriveMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerHardDrive entity.
+// If the ServerHardDrive object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerHardDriveMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetSerial sets the "serial" field.
+func (m *ServerHardDriveMutation) SetSerial(s string) {
+	m.serial = &s
+}
+
+// Serial returns the value of the "serial" field in the mutation.
+func (m *ServerHardDriveMutation) Serial() (r string, exists bool) {
+	v := m.serial
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSerial returns the old "serial" field's value of the ServerHardDrive entity.
+// If the ServerHardDrive object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveMutation) OldSerial(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSerial is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSerial requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSerial: %w", err)
+	}
+	return oldValue.Serial, nil
+}
+
+// ResetSerial resets all changes to the "serial" field.
+func (m *ServerHardDriveMutation) ResetSerial() {
+	m.serial = nil
+}
+
+// SetServerID sets the "server_id" field.
+func (m *ServerHardDriveMutation) SetServerID(gi gidx.PrefixedID) {
+	m.server = &gi
+}
+
+// ServerID returns the value of the "server_id" field in the mutation.
+func (m *ServerHardDriveMutation) ServerID() (r gidx.PrefixedID, exists bool) {
+	v := m.server
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerID returns the old "server_id" field's value of the ServerHardDrive entity.
+// If the ServerHardDrive object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
+	}
+	return oldValue.ServerID, nil
+}
+
+// ResetServerID resets all changes to the "server_id" field.
+func (m *ServerHardDriveMutation) ResetServerID() {
+	m.server = nil
+}
+
+// SetServerHardDriveTypeID sets the "server_hard_drive_type_id" field.
+func (m *ServerHardDriveMutation) SetServerHardDriveTypeID(gi gidx.PrefixedID) {
+	m.hard_drive_type = &gi
+}
+
+// ServerHardDriveTypeID returns the value of the "server_hard_drive_type_id" field in the mutation.
+func (m *ServerHardDriveMutation) ServerHardDriveTypeID() (r gidx.PrefixedID, exists bool) {
+	v := m.hard_drive_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerHardDriveTypeID returns the old "server_hard_drive_type_id" field's value of the ServerHardDrive entity.
+// If the ServerHardDrive object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveMutation) OldServerHardDriveTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerHardDriveTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerHardDriveTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerHardDriveTypeID: %w", err)
+	}
+	return oldValue.ServerHardDriveTypeID, nil
+}
+
+// ResetServerHardDriveTypeID resets all changes to the "server_hard_drive_type_id" field.
+func (m *ServerHardDriveMutation) ResetServerHardDriveTypeID() {
+	m.hard_drive_type = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerHardDriveMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerHardDriveMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerHardDriveMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerHardDriveMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// SetHardDriveTypeID sets the "hard_drive_type" edge to the ServerHardDriveType entity by id.
+func (m *ServerHardDriveMutation) SetHardDriveTypeID(id gidx.PrefixedID) {
+	m.hard_drive_type = &id
+}
+
+// ClearHardDriveType clears the "hard_drive_type" edge to the ServerHardDriveType entity.
+func (m *ServerHardDriveMutation) ClearHardDriveType() {
+	m.clearedhard_drive_type = true
+}
+
+// HardDriveTypeCleared reports if the "hard_drive_type" edge to the ServerHardDriveType entity was cleared.
+func (m *ServerHardDriveMutation) HardDriveTypeCleared() bool {
+	return m.clearedhard_drive_type
+}
+
+// HardDriveTypeID returns the "hard_drive_type" edge ID in the mutation.
+func (m *ServerHardDriveMutation) HardDriveTypeID() (id gidx.PrefixedID, exists bool) {
+	if m.hard_drive_type != nil {
+		return *m.hard_drive_type, true
+	}
+	return
+}
+
+// HardDriveTypeIDs returns the "hard_drive_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// HardDriveTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerHardDriveMutation) HardDriveTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.hard_drive_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetHardDriveType resets all changes to the "hard_drive_type" edge.
+func (m *ServerHardDriveMutation) ResetHardDriveType() {
+	m.hard_drive_type = nil
+	m.clearedhard_drive_type = false
+}
+
+// Where appends a list predicates to the ServerHardDriveMutation builder.
+func (m *ServerHardDriveMutation) Where(ps ...predicate.ServerHardDrive) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerHardDriveMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerHardDriveMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerHardDrive, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerHardDriveMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerHardDriveMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerHardDrive).
+func (m *ServerHardDriveMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerHardDriveMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, serverharddrive.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, serverharddrive.FieldUpdatedAt)
+	}
+	if m.serial != nil {
+		fields = append(fields, serverharddrive.FieldSerial)
+	}
+	if m.server != nil {
+		fields = append(fields, serverharddrive.FieldServerID)
+	}
+	if m.hard_drive_type != nil {
+		fields = append(fields, serverharddrive.FieldServerHardDriveTypeID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerHardDriveMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case serverharddrive.FieldCreatedAt:
+		return m.CreatedAt()
+	case serverharddrive.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case serverharddrive.FieldSerial:
+		return m.Serial()
+	case serverharddrive.FieldServerID:
+		return m.ServerID()
+	case serverharddrive.FieldServerHardDriveTypeID:
+		return m.ServerHardDriveTypeID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerHardDriveMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case serverharddrive.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case serverharddrive.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case serverharddrive.FieldSerial:
+		return m.OldSerial(ctx)
+	case serverharddrive.FieldServerID:
+		return m.OldServerID(ctx)
+	case serverharddrive.FieldServerHardDriveTypeID:
+		return m.OldServerHardDriveTypeID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerHardDrive field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerHardDriveMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case serverharddrive.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case serverharddrive.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case serverharddrive.FieldSerial:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSerial(v)
+		return nil
+	case serverharddrive.FieldServerID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerID(v)
+		return nil
+	case serverharddrive.FieldServerHardDriveTypeID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerHardDriveTypeID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDrive field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerHardDriveMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerHardDriveMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerHardDriveMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerHardDrive numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerHardDriveMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerHardDriveMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerHardDriveMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerHardDrive nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerHardDriveMutation) ResetField(name string) error {
+	switch name {
+	case serverharddrive.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case serverharddrive.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case serverharddrive.FieldSerial:
+		m.ResetSerial()
+		return nil
+	case serverharddrive.FieldServerID:
+		m.ResetServerID()
+		return nil
+	case serverharddrive.FieldServerHardDriveTypeID:
+		m.ResetServerHardDriveTypeID()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDrive field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerHardDriveMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.server != nil {
+		edges = append(edges, serverharddrive.EdgeServer)
+	}
+	if m.hard_drive_type != nil {
+		edges = append(edges, serverharddrive.EdgeHardDriveType)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerHardDriveMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case serverharddrive.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case serverharddrive.EdgeHardDriveType:
+		if id := m.hard_drive_type; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerHardDriveMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerHardDriveMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerHardDriveMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedserver {
+		edges = append(edges, serverharddrive.EdgeServer)
+	}
+	if m.clearedhard_drive_type {
+		edges = append(edges, serverharddrive.EdgeHardDriveType)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerHardDriveMutation) EdgeCleared(name string) bool {
+	switch name {
+	case serverharddrive.EdgeServer:
+		return m.clearedserver
+	case serverharddrive.EdgeHardDriveType:
+		return m.clearedhard_drive_type
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerHardDriveMutation) ClearEdge(name string) error {
+	switch name {
+	case serverharddrive.EdgeServer:
+		m.ClearServer()
+		return nil
+	case serverharddrive.EdgeHardDriveType:
+		m.ClearHardDriveType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDrive unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerHardDriveMutation) ResetEdge(name string) error {
+	switch name {
+	case serverharddrive.EdgeServer:
+		m.ResetServer()
+		return nil
+	case serverharddrive.EdgeHardDriveType:
+		m.ResetHardDriveType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDrive edge %s", name)
+}
+
+// ServerHardDriveTypeMutation represents an operation that mutates the ServerHardDriveType nodes in the graph.
+type ServerHardDriveTypeMutation struct {
+	config
+	op                Op
+	typ               string
+	id                *gidx.PrefixedID
+	created_at        *time.Time
+	updated_at        *time.Time
+	vendor            *string
+	model             *string
+	speed             *string
+	_type             *string
+	capacity          *string
+	clearedFields     map[string]struct{}
+	hard_drive        map[gidx.PrefixedID]struct{}
+	removedhard_drive map[gidx.PrefixedID]struct{}
+	clearedhard_drive bool
+	done              bool
+	oldValue          func(context.Context) (*ServerHardDriveType, error)
+	predicates        []predicate.ServerHardDriveType
+}
+
+var _ ent.Mutation = (*ServerHardDriveTypeMutation)(nil)
+
+// serverharddrivetypeOption allows management of the mutation configuration using functional options.
+type serverharddrivetypeOption func(*ServerHardDriveTypeMutation)
+
+// newServerHardDriveTypeMutation creates new mutation for the ServerHardDriveType entity.
+func newServerHardDriveTypeMutation(c config, op Op, opts ...serverharddrivetypeOption) *ServerHardDriveTypeMutation {
+	m := &ServerHardDriveTypeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerHardDriveType,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerHardDriveTypeID sets the ID field of the mutation.
+func withServerHardDriveTypeID(id gidx.PrefixedID) serverharddrivetypeOption {
+	return func(m *ServerHardDriveTypeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerHardDriveType
+		)
+		m.oldValue = func(ctx context.Context) (*ServerHardDriveType, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerHardDriveType.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerHardDriveType sets the old ServerHardDriveType of the mutation.
+func withServerHardDriveType(node *ServerHardDriveType) serverharddrivetypeOption {
+	return func(m *ServerHardDriveTypeMutation) {
+		m.oldValue = func(context.Context) (*ServerHardDriveType, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerHardDriveTypeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerHardDriveTypeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerHardDriveType entities.
+func (m *ServerHardDriveTypeMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerHardDriveTypeMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerHardDriveTypeMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerHardDriveType.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerHardDriveTypeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerHardDriveTypeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerHardDriveTypeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerHardDriveTypeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerHardDriveTypeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerHardDriveTypeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetVendor sets the "vendor" field.
+func (m *ServerHardDriveTypeMutation) SetVendor(s string) {
+	m.vendor = &s
+}
+
+// Vendor returns the value of the "vendor" field in the mutation.
+func (m *ServerHardDriveTypeMutation) Vendor() (r string, exists bool) {
+	v := m.vendor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVendor returns the old "vendor" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldVendor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVendor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVendor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVendor: %w", err)
+	}
+	return oldValue.Vendor, nil
+}
+
+// ResetVendor resets all changes to the "vendor" field.
+func (m *ServerHardDriveTypeMutation) ResetVendor() {
+	m.vendor = nil
+}
+
+// SetModel sets the "model" field.
+func (m *ServerHardDriveTypeMutation) SetModel(s string) {
+	m.model = &s
+}
+
+// Model returns the value of the "model" field in the mutation.
+func (m *ServerHardDriveTypeMutation) Model() (r string, exists bool) {
+	v := m.model
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModel returns the old "model" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldModel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModel: %w", err)
+	}
+	return oldValue.Model, nil
+}
+
+// ResetModel resets all changes to the "model" field.
+func (m *ServerHardDriveTypeMutation) ResetModel() {
+	m.model = nil
+}
+
+// SetSpeed sets the "speed" field.
+func (m *ServerHardDriveTypeMutation) SetSpeed(s string) {
+	m.speed = &s
+}
+
+// Speed returns the value of the "speed" field in the mutation.
+func (m *ServerHardDriveTypeMutation) Speed() (r string, exists bool) {
+	v := m.speed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSpeed returns the old "speed" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldSpeed(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSpeed is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSpeed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSpeed: %w", err)
+	}
+	return oldValue.Speed, nil
+}
+
+// ResetSpeed resets all changes to the "speed" field.
+func (m *ServerHardDriveTypeMutation) ResetSpeed() {
+	m.speed = nil
+}
+
+// SetType sets the "type" field.
+func (m *ServerHardDriveTypeMutation) SetType(s string) {
+	m._type = &s
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *ServerHardDriveTypeMutation) GetType() (r string, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *ServerHardDriveTypeMutation) ResetType() {
+	m._type = nil
+}
+
+// SetCapacity sets the "capacity" field.
+func (m *ServerHardDriveTypeMutation) SetCapacity(s string) {
+	m.capacity = &s
+}
+
+// Capacity returns the value of the "capacity" field in the mutation.
+func (m *ServerHardDriveTypeMutation) Capacity() (r string, exists bool) {
+	v := m.capacity
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCapacity returns the old "capacity" field's value of the ServerHardDriveType entity.
+// If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerHardDriveTypeMutation) OldCapacity(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCapacity is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCapacity requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCapacity: %w", err)
+	}
+	return oldValue.Capacity, nil
+}
+
+// ResetCapacity resets all changes to the "capacity" field.
+func (m *ServerHardDriveTypeMutation) ResetCapacity() {
+	m.capacity = nil
+}
+
+// AddHardDriveIDs adds the "hard_drive" edge to the ServerHardDrive entity by ids.
+func (m *ServerHardDriveTypeMutation) AddHardDriveIDs(ids ...gidx.PrefixedID) {
+	if m.hard_drive == nil {
+		m.hard_drive = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.hard_drive[ids[i]] = struct{}{}
+	}
+}
+
+// ClearHardDrive clears the "hard_drive" edge to the ServerHardDrive entity.
+func (m *ServerHardDriveTypeMutation) ClearHardDrive() {
+	m.clearedhard_drive = true
+}
+
+// HardDriveCleared reports if the "hard_drive" edge to the ServerHardDrive entity was cleared.
+func (m *ServerHardDriveTypeMutation) HardDriveCleared() bool {
+	return m.clearedhard_drive
+}
+
+// RemoveHardDriveIDs removes the "hard_drive" edge to the ServerHardDrive entity by IDs.
+func (m *ServerHardDriveTypeMutation) RemoveHardDriveIDs(ids ...gidx.PrefixedID) {
+	if m.removedhard_drive == nil {
+		m.removedhard_drive = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.hard_drive, ids[i])
+		m.removedhard_drive[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedHardDrive returns the removed IDs of the "hard_drive" edge to the ServerHardDrive entity.
+func (m *ServerHardDriveTypeMutation) RemovedHardDriveIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removedhard_drive {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// HardDriveIDs returns the "hard_drive" edge IDs in the mutation.
+func (m *ServerHardDriveTypeMutation) HardDriveIDs() (ids []gidx.PrefixedID) {
+	for id := range m.hard_drive {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetHardDrive resets all changes to the "hard_drive" edge.
+func (m *ServerHardDriveTypeMutation) ResetHardDrive() {
+	m.hard_drive = nil
+	m.clearedhard_drive = false
+	m.removedhard_drive = nil
+}
+
+// Where appends a list predicates to the ServerHardDriveTypeMutation builder.
+func (m *ServerHardDriveTypeMutation) Where(ps ...predicate.ServerHardDriveType) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerHardDriveTypeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerHardDriveTypeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerHardDriveType, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerHardDriveTypeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerHardDriveTypeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerHardDriveType).
+func (m *ServerHardDriveTypeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerHardDriveTypeMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.created_at != nil {
+		fields = append(fields, serverharddrivetype.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, serverharddrivetype.FieldUpdatedAt)
+	}
+	if m.vendor != nil {
+		fields = append(fields, serverharddrivetype.FieldVendor)
+	}
+	if m.model != nil {
+		fields = append(fields, serverharddrivetype.FieldModel)
+	}
+	if m.speed != nil {
+		fields = append(fields, serverharddrivetype.FieldSpeed)
+	}
+	if m._type != nil {
+		fields = append(fields, serverharddrivetype.FieldType)
+	}
+	if m.capacity != nil {
+		fields = append(fields, serverharddrivetype.FieldCapacity)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerHardDriveTypeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case serverharddrivetype.FieldCreatedAt:
+		return m.CreatedAt()
+	case serverharddrivetype.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case serverharddrivetype.FieldVendor:
+		return m.Vendor()
+	case serverharddrivetype.FieldModel:
+		return m.Model()
+	case serverharddrivetype.FieldSpeed:
+		return m.Speed()
+	case serverharddrivetype.FieldType:
+		return m.GetType()
+	case serverharddrivetype.FieldCapacity:
+		return m.Capacity()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerHardDriveTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case serverharddrivetype.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case serverharddrivetype.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case serverharddrivetype.FieldVendor:
+		return m.OldVendor(ctx)
+	case serverharddrivetype.FieldModel:
+		return m.OldModel(ctx)
+	case serverharddrivetype.FieldSpeed:
+		return m.OldSpeed(ctx)
+	case serverharddrivetype.FieldType:
+		return m.OldType(ctx)
+	case serverharddrivetype.FieldCapacity:
+		return m.OldCapacity(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerHardDriveType field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerHardDriveTypeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case serverharddrivetype.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case serverharddrivetype.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case serverharddrivetype.FieldVendor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVendor(v)
+		return nil
+	case serverharddrivetype.FieldModel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModel(v)
+		return nil
+	case serverharddrivetype.FieldSpeed:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSpeed(v)
+		return nil
+	case serverharddrivetype.FieldType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case serverharddrivetype.FieldCapacity:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCapacity(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDriveType field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerHardDriveTypeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerHardDriveTypeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerHardDriveTypeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerHardDriveType numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerHardDriveTypeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerHardDriveTypeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerHardDriveTypeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerHardDriveType nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerHardDriveTypeMutation) ResetField(name string) error {
+	switch name {
+	case serverharddrivetype.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case serverharddrivetype.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case serverharddrivetype.FieldVendor:
+		m.ResetVendor()
+		return nil
+	case serverharddrivetype.FieldModel:
+		m.ResetModel()
+		return nil
+	case serverharddrivetype.FieldSpeed:
+		m.ResetSpeed()
+		return nil
+	case serverharddrivetype.FieldType:
+		m.ResetType()
+		return nil
+	case serverharddrivetype.FieldCapacity:
+		m.ResetCapacity()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDriveType field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerHardDriveTypeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.hard_drive != nil {
+		edges = append(edges, serverharddrivetype.EdgeHardDrive)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerHardDriveTypeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case serverharddrivetype.EdgeHardDrive:
+		ids := make([]ent.Value, 0, len(m.hard_drive))
+		for id := range m.hard_drive {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerHardDriveTypeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedhard_drive != nil {
+		edges = append(edges, serverharddrivetype.EdgeHardDrive)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerHardDriveTypeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case serverharddrivetype.EdgeHardDrive:
+		ids := make([]ent.Value, 0, len(m.removedhard_drive))
+		for id := range m.removedhard_drive {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerHardDriveTypeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedhard_drive {
+		edges = append(edges, serverharddrivetype.EdgeHardDrive)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerHardDriveTypeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case serverharddrivetype.EdgeHardDrive:
+		return m.clearedhard_drive
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerHardDriveTypeMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerHardDriveType unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerHardDriveTypeMutation) ResetEdge(name string) error {
+	switch name {
+	case serverharddrivetype.EdgeHardDrive:
+		m.ResetHardDrive()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerHardDriveType edge %s", name)
 }
 
 // ServerMemoryMutation represents an operation that mutates the ServerMemory nodes in the graph.

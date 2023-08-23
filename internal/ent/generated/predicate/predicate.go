@@ -44,6 +44,12 @@ type ServerComponent func(*sql.Selector)
 // ServerComponentType is the predicate function for servercomponenttype builders.
 type ServerComponentType func(*sql.Selector)
 
+// ServerHardDrive is the predicate function for serverharddrive builders.
+type ServerHardDrive func(*sql.Selector)
+
+// ServerHardDriveType is the predicate function for serverharddrivetype builders.
+type ServerHardDriveType func(*sql.Selector)
+
 // ServerMemory is the predicate function for servermemory builders.
 type ServerMemory func(*sql.Selector)
 

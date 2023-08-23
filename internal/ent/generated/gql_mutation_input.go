@@ -480,6 +480,130 @@ func (c *ServerComponentTypeUpdateOne) SetInput(i UpdateServerComponentTypeInput
 	return c
 }
 
+// CreateServerHardDriveInput represents a mutation input for creating serverharddrives.
+type CreateServerHardDriveInput struct {
+	Serial          string
+	ServerID        gidx.PrefixedID
+	HardDriveTypeID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerHardDriveInput on the ServerHardDriveMutation builder.
+func (i *CreateServerHardDriveInput) Mutate(m *ServerHardDriveMutation) {
+	m.SetSerial(i.Serial)
+	m.SetServerID(i.ServerID)
+	m.SetHardDriveTypeID(i.HardDriveTypeID)
+}
+
+// SetInput applies the change-set in the CreateServerHardDriveInput on the ServerHardDriveCreate builder.
+func (c *ServerHardDriveCreate) SetInput(i CreateServerHardDriveInput) *ServerHardDriveCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerHardDriveInput represents a mutation input for updating serverharddrives.
+type UpdateServerHardDriveInput struct {
+	Serial *string
+}
+
+// Mutate applies the UpdateServerHardDriveInput on the ServerHardDriveMutation builder.
+func (i *UpdateServerHardDriveInput) Mutate(m *ServerHardDriveMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerHardDriveInput on the ServerHardDriveUpdate builder.
+func (c *ServerHardDriveUpdate) SetInput(i UpdateServerHardDriveInput) *ServerHardDriveUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerHardDriveInput on the ServerHardDriveUpdateOne builder.
+func (c *ServerHardDriveUpdateOne) SetInput(i UpdateServerHardDriveInput) *ServerHardDriveUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateServerHardDriveTypeInput represents a mutation input for creating serverharddrivetypes.
+type CreateServerHardDriveTypeInput struct {
+	Vendor       string
+	Model        string
+	Speed        string
+	Type         string
+	Capacity     string
+	HardDriveIDs []gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerHardDriveTypeInput on the ServerHardDriveTypeMutation builder.
+func (i *CreateServerHardDriveTypeInput) Mutate(m *ServerHardDriveTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	m.SetSpeed(i.Speed)
+	m.SetType(i.Type)
+	m.SetCapacity(i.Capacity)
+	if v := i.HardDriveIDs; len(v) > 0 {
+		m.AddHardDriveIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateServerHardDriveTypeInput on the ServerHardDriveTypeCreate builder.
+func (c *ServerHardDriveTypeCreate) SetInput(i CreateServerHardDriveTypeInput) *ServerHardDriveTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerHardDriveTypeInput represents a mutation input for updating serverharddrivetypes.
+type UpdateServerHardDriveTypeInput struct {
+	Vendor             *string
+	Model              *string
+	Speed              *string
+	Type               *string
+	Capacity           *string
+	ClearHardDrive     bool
+	AddHardDriveIDs    []gidx.PrefixedID
+	RemoveHardDriveIDs []gidx.PrefixedID
+}
+
+// Mutate applies the UpdateServerHardDriveTypeInput on the ServerHardDriveTypeMutation builder.
+func (i *UpdateServerHardDriveTypeInput) Mutate(m *ServerHardDriveTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if v := i.Speed; v != nil {
+		m.SetSpeed(*v)
+	}
+	if v := i.Type; v != nil {
+		m.SetType(*v)
+	}
+	if v := i.Capacity; v != nil {
+		m.SetCapacity(*v)
+	}
+	if i.ClearHardDrive {
+		m.ClearHardDrive()
+	}
+	if v := i.AddHardDriveIDs; len(v) > 0 {
+		m.AddHardDriveIDs(v...)
+	}
+	if v := i.RemoveHardDriveIDs; len(v) > 0 {
+		m.RemoveHardDriveIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerHardDriveTypeInput on the ServerHardDriveTypeUpdate builder.
+func (c *ServerHardDriveTypeUpdate) SetInput(i UpdateServerHardDriveTypeInput) *ServerHardDriveTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerHardDriveTypeInput on the ServerHardDriveTypeUpdateOne builder.
+func (c *ServerHardDriveTypeUpdateOne) SetInput(i UpdateServerHardDriveTypeInput) *ServerHardDriveTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerMemoryInput represents a mutation input for creating servermemories.
 type CreateServerMemoryInput struct {
 	Serial             string

@@ -42,6 +42,10 @@ type Tx struct {
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
 	ServerComponentType *ServerComponentTypeClient
+	// ServerHardDrive is the client for interacting with the ServerHardDrive builders.
+	ServerHardDrive *ServerHardDriveClient
+	// ServerHardDriveType is the client for interacting with the ServerHardDriveType builders.
+	ServerHardDriveType *ServerHardDriveTypeClient
 	// ServerMemory is the client for interacting with the ServerMemory builders.
 	ServerMemory *ServerMemoryClient
 	// ServerMemoryType is the client for interacting with the ServerMemoryType builders.
@@ -191,6 +195,8 @@ func (tx *Tx) init() {
 	tx.ServerChassisType = NewServerChassisTypeClient(tx.config)
 	tx.ServerComponent = NewServerComponentClient(tx.config)
 	tx.ServerComponentType = NewServerComponentTypeClient(tx.config)
+	tx.ServerHardDrive = NewServerHardDriveClient(tx.config)
+	tx.ServerHardDriveType = NewServerHardDriveTypeClient(tx.config)
 	tx.ServerMemory = NewServerMemoryClient(tx.config)
 	tx.ServerMemoryType = NewServerMemoryTypeClient(tx.config)
 	tx.ServerMotherboard = NewServerMotherboardClient(tx.config)

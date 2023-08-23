@@ -27,6 +27,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -272,6 +274,68 @@ func init() {
 	servercomponenttypeDescID := servercomponenttypeFields[0].Descriptor()
 	// servercomponenttype.DefaultID holds the default value on creation for the id field.
 	servercomponenttype.DefaultID = servercomponenttypeDescID.Default.(func() gidx.PrefixedID)
+	serverharddriveMixin := schema.ServerHardDrive{}.Mixin()
+	serverharddriveMixinFields0 := serverharddriveMixin[0].Fields()
+	_ = serverharddriveMixinFields0
+	serverharddriveFields := schema.ServerHardDrive{}.Fields()
+	_ = serverharddriveFields
+	// serverharddriveDescCreatedAt is the schema descriptor for created_at field.
+	serverharddriveDescCreatedAt := serverharddriveMixinFields0[0].Descriptor()
+	// serverharddrive.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serverharddrive.DefaultCreatedAt = serverharddriveDescCreatedAt.Default.(func() time.Time)
+	// serverharddriveDescUpdatedAt is the schema descriptor for updated_at field.
+	serverharddriveDescUpdatedAt := serverharddriveMixinFields0[1].Descriptor()
+	// serverharddrive.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serverharddrive.DefaultUpdatedAt = serverharddriveDescUpdatedAt.Default.(func() time.Time)
+	// serverharddrive.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serverharddrive.UpdateDefaultUpdatedAt = serverharddriveDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// serverharddriveDescSerial is the schema descriptor for serial field.
+	serverharddriveDescSerial := serverharddriveFields[1].Descriptor()
+	// serverharddrive.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	serverharddrive.SerialValidator = serverharddriveDescSerial.Validators[0].(func(string) error)
+	// serverharddriveDescID is the schema descriptor for id field.
+	serverharddriveDescID := serverharddriveFields[0].Descriptor()
+	// serverharddrive.DefaultID holds the default value on creation for the id field.
+	serverharddrive.DefaultID = serverharddriveDescID.Default.(func() gidx.PrefixedID)
+	serverharddrivetypeMixin := schema.ServerHardDriveType{}.Mixin()
+	serverharddrivetypeMixinFields0 := serverharddrivetypeMixin[0].Fields()
+	_ = serverharddrivetypeMixinFields0
+	serverharddrivetypeFields := schema.ServerHardDriveType{}.Fields()
+	_ = serverharddrivetypeFields
+	// serverharddrivetypeDescCreatedAt is the schema descriptor for created_at field.
+	serverharddrivetypeDescCreatedAt := serverharddrivetypeMixinFields0[0].Descriptor()
+	// serverharddrivetype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serverharddrivetype.DefaultCreatedAt = serverharddrivetypeDescCreatedAt.Default.(func() time.Time)
+	// serverharddrivetypeDescUpdatedAt is the schema descriptor for updated_at field.
+	serverharddrivetypeDescUpdatedAt := serverharddrivetypeMixinFields0[1].Descriptor()
+	// serverharddrivetype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serverharddrivetype.DefaultUpdatedAt = serverharddrivetypeDescUpdatedAt.Default.(func() time.Time)
+	// serverharddrivetype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serverharddrivetype.UpdateDefaultUpdatedAt = serverharddrivetypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// serverharddrivetypeDescVendor is the schema descriptor for vendor field.
+	serverharddrivetypeDescVendor := serverharddrivetypeFields[1].Descriptor()
+	// serverharddrivetype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	serverharddrivetype.VendorValidator = serverharddrivetypeDescVendor.Validators[0].(func(string) error)
+	// serverharddrivetypeDescModel is the schema descriptor for model field.
+	serverharddrivetypeDescModel := serverharddrivetypeFields[2].Descriptor()
+	// serverharddrivetype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	serverharddrivetype.ModelValidator = serverharddrivetypeDescModel.Validators[0].(func(string) error)
+	// serverharddrivetypeDescSpeed is the schema descriptor for speed field.
+	serverharddrivetypeDescSpeed := serverharddrivetypeFields[3].Descriptor()
+	// serverharddrivetype.SpeedValidator is a validator for the "speed" field. It is called by the builders before save.
+	serverharddrivetype.SpeedValidator = serverharddrivetypeDescSpeed.Validators[0].(func(string) error)
+	// serverharddrivetypeDescType is the schema descriptor for type field.
+	serverharddrivetypeDescType := serverharddrivetypeFields[4].Descriptor()
+	// serverharddrivetype.TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	serverharddrivetype.TypeValidator = serverharddrivetypeDescType.Validators[0].(func(string) error)
+	// serverharddrivetypeDescCapacity is the schema descriptor for capacity field.
+	serverharddrivetypeDescCapacity := serverharddrivetypeFields[5].Descriptor()
+	// serverharddrivetype.CapacityValidator is a validator for the "capacity" field. It is called by the builders before save.
+	serverharddrivetype.CapacityValidator = serverharddrivetypeDescCapacity.Validators[0].(func(string) error)
+	// serverharddrivetypeDescID is the schema descriptor for id field.
+	serverharddrivetypeDescID := serverharddrivetypeFields[0].Descriptor()
+	// serverharddrivetype.DefaultID holds the default value on creation for the id field.
+	serverharddrivetype.DefaultID = serverharddrivetypeDescID.Default.(func() gidx.PrefixedID)
 	servermemoryMixin := schema.ServerMemory{}.Mixin()
 	servermemoryMixinFields0 := servermemoryMixin[0].Fields()
 	_ = servermemoryMixinFields0

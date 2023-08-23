@@ -170,6 +170,43 @@ func (sc *ServerComponent) Server(ctx context.Context) (*Server, error) {
 	return result, err
 }
 
+func (shd *ServerHardDrive) Server(ctx context.Context) (*Server, error) {
+	result, err := shd.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = shd.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (shd *ServerHardDrive) HardDriveType(ctx context.Context) (*ServerHardDriveType, error) {
+	result, err := shd.Edges.HardDriveTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = shd.QueryHardDriveType().Only(ctx)
+	}
+	return result, err
+}
+
+func (shdt *ServerHardDriveType) HardDrive(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerHardDriveOrder, where *ServerHardDriveWhereInput,
+) (*ServerHardDriveConnection, error) {
+	opts := []ServerHardDrivePaginateOption{
+		WithServerHardDriveOrder(orderBy),
+		WithServerHardDriveFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := shdt.Edges.totalCount[0][alias]
+	if nodes, err := shdt.NamedHardDrive(alias); err == nil || hasTotalCount {
+		pager, err := newServerHardDrivePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerHardDriveConnection{Edges: []*ServerHardDriveEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return shdt.QueryHardDrive().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (sm *ServerMemory) Server(ctx context.Context) (*Server, error) {
 	result, err := sm.Edges.ServerOrErr()
 	if IsNotLoaded(err) {

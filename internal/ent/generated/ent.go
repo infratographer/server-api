@@ -34,6 +34,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
@@ -107,6 +109,8 @@ func checkColumn(table, column string) error {
 			serverchassistype.Table:     serverchassistype.ValidColumn,
 			servercomponent.Table:       servercomponent.ValidColumn,
 			servercomponenttype.Table:   servercomponenttype.ValidColumn,
+			serverharddrive.Table:       serverharddrive.ValidColumn,
+			serverharddrivetype.Table:   serverharddrivetype.ValidColumn,
 			servermemory.Table:          servermemory.ValidColumn,
 			servermemorytype.Table:      servermemorytype.ValidColumn,
 			servermotherboard.Table:     servermotherboard.ValidColumn,

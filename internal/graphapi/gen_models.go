@@ -127,6 +127,42 @@ type ServerDeletePayload struct {
 	DeletedID gidx.PrefixedID `json:"deletedID"`
 }
 
+// Return response from serverHardDriveCreate
+type ServerHardDriveCreatePayload struct {
+	// The created server hard drive.
+	ServerHardDrive *generated.ServerHardDrive `json:"serverHardDrive"`
+}
+
+// Return response from serverHardDriveDelete
+type ServerHardDriveDeletePayload struct {
+	// The ID of the deleted server hard drive.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverHardDriveTypeCreate
+type ServerHardDriveTypeCreatePayload struct {
+	// The created server hard drive type.
+	ServerHardDriveType *generated.ServerHardDriveType `json:"serverHardDriveType"`
+}
+
+// Return response from serverHardDriveTypeDelete
+type ServerHardDriveTypeDeletePayload struct {
+	// The ID of the deleted server hard drive type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverHardDriveTypeUpdate
+type ServerHardDriveTypeUpdatePayload struct {
+	// The updated server hard drive type.
+	ServerHardDriveType *generated.ServerHardDriveType `json:"serverHardDriveType"`
+}
+
+// Return response from serverHardDriveUpdate
+type ServerHardDriveUpdatePayload struct {
+	// The updated server hard drive.
+	ServerHardDrive *generated.ServerHardDrive `json:"serverHardDrive"`
+}
+
 // Return response from serverMemoryCreate
 type ServerMemoryCreatePayload struct {
 	// The created server memory.
