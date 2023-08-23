@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverMemoryType by ID.
+  """
+  serverMemoryType(
+    """
+    The server memory type ID.
+    """
+    id: ID!
+  ): ServerMemoryType!
+}
+
+extend type Mutation {
+  """
+  Create a server memory type.
+  """
+  serverMemoryType(
+    input: CreateServerMemoryTypeInput!
+  ): ServerMemoryTypeCreatePayload!
+  """
+  Update a server memory type.
+  """
+  serverMemoryTypeUpdate(
+    id: ID!
+    input: UpdateServerMemoryTypeInput!
+  ): ServerMemoryTypeUpdatePayload!
+  """
+  Delete a server memory type.
+  """
+  serverMemoryTypeDelete(id: ID!): ServerMemoryTypeDeletePayload!
+}
+
+"""
+Return response from serverMemoryTypeCreate
+"""
+type ServerMemoryTypeCreatePayload {
+  """
+  The created server memory type.
+  """
+  serverMemoryType: ServerMemoryType!
+}
+
+"""
+Return response from serverMemoryTypeDelete
+"""
+type ServerMemoryTypeDeletePayload {
+  """
+  The ID of the deleted server memory type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverMemoryTypeUpdate
+"""
+type ServerMemoryTypeUpdatePayload {
+  """
+  The updated server memory type.
+  """
+  serverMemoryType: ServerMemoryType!
+}

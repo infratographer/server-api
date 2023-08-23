@@ -27,6 +27,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -270,6 +272,64 @@ func init() {
 	servercomponenttypeDescID := servercomponenttypeFields[0].Descriptor()
 	// servercomponenttype.DefaultID holds the default value on creation for the id field.
 	servercomponenttype.DefaultID = servercomponenttypeDescID.Default.(func() gidx.PrefixedID)
+	servermemoryMixin := schema.ServerMemory{}.Mixin()
+	servermemoryMixinFields0 := servermemoryMixin[0].Fields()
+	_ = servermemoryMixinFields0
+	servermemoryFields := schema.ServerMemory{}.Fields()
+	_ = servermemoryFields
+	// servermemoryDescCreatedAt is the schema descriptor for created_at field.
+	servermemoryDescCreatedAt := servermemoryMixinFields0[0].Descriptor()
+	// servermemory.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servermemory.DefaultCreatedAt = servermemoryDescCreatedAt.Default.(func() time.Time)
+	// servermemoryDescUpdatedAt is the schema descriptor for updated_at field.
+	servermemoryDescUpdatedAt := servermemoryMixinFields0[1].Descriptor()
+	// servermemory.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servermemory.DefaultUpdatedAt = servermemoryDescUpdatedAt.Default.(func() time.Time)
+	// servermemory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servermemory.UpdateDefaultUpdatedAt = servermemoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servermemoryDescSerial is the schema descriptor for serial field.
+	servermemoryDescSerial := servermemoryFields[1].Descriptor()
+	// servermemory.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	servermemory.SerialValidator = servermemoryDescSerial.Validators[0].(func(string) error)
+	// servermemoryDescID is the schema descriptor for id field.
+	servermemoryDescID := servermemoryFields[0].Descriptor()
+	// servermemory.DefaultID holds the default value on creation for the id field.
+	servermemory.DefaultID = servermemoryDescID.Default.(func() gidx.PrefixedID)
+	servermemorytypeMixin := schema.ServerMemoryType{}.Mixin()
+	servermemorytypeMixinFields0 := servermemorytypeMixin[0].Fields()
+	_ = servermemorytypeMixinFields0
+	servermemorytypeFields := schema.ServerMemoryType{}.Fields()
+	_ = servermemorytypeFields
+	// servermemorytypeDescCreatedAt is the schema descriptor for created_at field.
+	servermemorytypeDescCreatedAt := servermemorytypeMixinFields0[0].Descriptor()
+	// servermemorytype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servermemorytype.DefaultCreatedAt = servermemorytypeDescCreatedAt.Default.(func() time.Time)
+	// servermemorytypeDescUpdatedAt is the schema descriptor for updated_at field.
+	servermemorytypeDescUpdatedAt := servermemorytypeMixinFields0[1].Descriptor()
+	// servermemorytype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servermemorytype.DefaultUpdatedAt = servermemorytypeDescUpdatedAt.Default.(func() time.Time)
+	// servermemorytype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servermemorytype.UpdateDefaultUpdatedAt = servermemorytypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servermemorytypeDescVendor is the schema descriptor for vendor field.
+	servermemorytypeDescVendor := servermemorytypeFields[1].Descriptor()
+	// servermemorytype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	servermemorytype.VendorValidator = servermemorytypeDescVendor.Validators[0].(func(string) error)
+	// servermemorytypeDescModel is the schema descriptor for model field.
+	servermemorytypeDescModel := servermemorytypeFields[2].Descriptor()
+	// servermemorytype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	servermemorytype.ModelValidator = servermemorytypeDescModel.Validators[0].(func(string) error)
+	// servermemorytypeDescSpeed is the schema descriptor for speed field.
+	servermemorytypeDescSpeed := servermemorytypeFields[3].Descriptor()
+	// servermemorytype.SpeedValidator is a validator for the "speed" field. It is called by the builders before save.
+	servermemorytype.SpeedValidator = servermemorytypeDescSpeed.Validators[0].(func(string) error)
+	// servermemorytypeDescSize is the schema descriptor for size field.
+	servermemorytypeDescSize := servermemorytypeFields[4].Descriptor()
+	// servermemorytype.SizeValidator is a validator for the "size" field. It is called by the builders before save.
+	servermemorytype.SizeValidator = servermemorytypeDescSize.Validators[0].(func(string) error)
+	// servermemorytypeDescID is the schema descriptor for id field.
+	servermemorytypeDescID := servermemorytypeFields[0].Descriptor()
+	// servermemorytype.DefaultID holds the default value on creation for the id field.
+	servermemorytype.DefaultID = servermemorytypeDescID.Default.(func() gidx.PrefixedID)
 	servermotherboardMixin := schema.ServerMotherboard{}.Mixin()
 	servermotherboardMixinFields0 := servermotherboardMixin[0].Fields()
 	_ = servermotherboardMixinFields0

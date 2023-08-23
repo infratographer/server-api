@@ -34,6 +34,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -57,6 +59,8 @@ const (
 	TypeServerChassisType     = "ServerChassisType"
 	TypeServerComponent       = "ServerComponent"
 	TypeServerComponentType   = "ServerComponentType"
+	TypeServerMemory          = "ServerMemory"
+	TypeServerMemoryType      = "ServerMemoryType"
 	TypeServerMotherboard     = "ServerMotherboard"
 	TypeServerMotherboardType = "ServerMotherboardType"
 	TypeServerType            = "ServerType"
@@ -5636,6 +5640,1347 @@ func (m *ServerComponentTypeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *ServerComponentTypeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ServerComponentType edge %s", name)
+}
+
+// ServerMemoryMutation represents an operation that mutates the ServerMemory nodes in the graph.
+type ServerMemoryMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *gidx.PrefixedID
+	created_at                *time.Time
+	updated_at                *time.Time
+	serial                    *string
+	clearedFields             map[string]struct{}
+	server                    *gidx.PrefixedID
+	clearedserver             bool
+	server_memory_type        *gidx.PrefixedID
+	clearedserver_memory_type bool
+	done                      bool
+	oldValue                  func(context.Context) (*ServerMemory, error)
+	predicates                []predicate.ServerMemory
+}
+
+var _ ent.Mutation = (*ServerMemoryMutation)(nil)
+
+// servermemoryOption allows management of the mutation configuration using functional options.
+type servermemoryOption func(*ServerMemoryMutation)
+
+// newServerMemoryMutation creates new mutation for the ServerMemory entity.
+func newServerMemoryMutation(c config, op Op, opts ...servermemoryOption) *ServerMemoryMutation {
+	m := &ServerMemoryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerMemory,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerMemoryID sets the ID field of the mutation.
+func withServerMemoryID(id gidx.PrefixedID) servermemoryOption {
+	return func(m *ServerMemoryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerMemory
+		)
+		m.oldValue = func(ctx context.Context) (*ServerMemory, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerMemory.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerMemory sets the old ServerMemory of the mutation.
+func withServerMemory(node *ServerMemory) servermemoryOption {
+	return func(m *ServerMemoryMutation) {
+		m.oldValue = func(context.Context) (*ServerMemory, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerMemoryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerMemoryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerMemory entities.
+func (m *ServerMemoryMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerMemoryMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerMemoryMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerMemory.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerMemoryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerMemoryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerMemory entity.
+// If the ServerMemory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerMemoryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerMemoryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerMemoryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerMemory entity.
+// If the ServerMemory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerMemoryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetSerial sets the "serial" field.
+func (m *ServerMemoryMutation) SetSerial(s string) {
+	m.serial = &s
+}
+
+// Serial returns the value of the "serial" field in the mutation.
+func (m *ServerMemoryMutation) Serial() (r string, exists bool) {
+	v := m.serial
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSerial returns the old "serial" field's value of the ServerMemory entity.
+// If the ServerMemory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryMutation) OldSerial(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSerial is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSerial requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSerial: %w", err)
+	}
+	return oldValue.Serial, nil
+}
+
+// ResetSerial resets all changes to the "serial" field.
+func (m *ServerMemoryMutation) ResetSerial() {
+	m.serial = nil
+}
+
+// SetServerID sets the "server_id" field.
+func (m *ServerMemoryMutation) SetServerID(gi gidx.PrefixedID) {
+	m.server = &gi
+}
+
+// ServerID returns the value of the "server_id" field in the mutation.
+func (m *ServerMemoryMutation) ServerID() (r gidx.PrefixedID, exists bool) {
+	v := m.server
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerID returns the old "server_id" field's value of the ServerMemory entity.
+// If the ServerMemory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
+	}
+	return oldValue.ServerID, nil
+}
+
+// ResetServerID resets all changes to the "server_id" field.
+func (m *ServerMemoryMutation) ResetServerID() {
+	m.server = nil
+}
+
+// SetServerMemoryTypeID sets the "server_memory_type_id" field.
+func (m *ServerMemoryMutation) SetServerMemoryTypeID(gi gidx.PrefixedID) {
+	m.server_memory_type = &gi
+}
+
+// ServerMemoryTypeID returns the value of the "server_memory_type_id" field in the mutation.
+func (m *ServerMemoryMutation) ServerMemoryTypeID() (r gidx.PrefixedID, exists bool) {
+	v := m.server_memory_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerMemoryTypeID returns the old "server_memory_type_id" field's value of the ServerMemory entity.
+// If the ServerMemory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryMutation) OldServerMemoryTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerMemoryTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerMemoryTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerMemoryTypeID: %w", err)
+	}
+	return oldValue.ServerMemoryTypeID, nil
+}
+
+// ResetServerMemoryTypeID resets all changes to the "server_memory_type_id" field.
+func (m *ServerMemoryMutation) ResetServerMemoryTypeID() {
+	m.server_memory_type = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerMemoryMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerMemoryMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerMemoryMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerMemoryMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// ClearServerMemoryType clears the "server_memory_type" edge to the ServerMemoryType entity.
+func (m *ServerMemoryMutation) ClearServerMemoryType() {
+	m.clearedserver_memory_type = true
+}
+
+// ServerMemoryTypeCleared reports if the "server_memory_type" edge to the ServerMemoryType entity was cleared.
+func (m *ServerMemoryMutation) ServerMemoryTypeCleared() bool {
+	return m.clearedserver_memory_type
+}
+
+// ServerMemoryTypeIDs returns the "server_memory_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerMemoryTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerMemoryMutation) ServerMemoryTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.server_memory_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServerMemoryType resets all changes to the "server_memory_type" edge.
+func (m *ServerMemoryMutation) ResetServerMemoryType() {
+	m.server_memory_type = nil
+	m.clearedserver_memory_type = false
+}
+
+// Where appends a list predicates to the ServerMemoryMutation builder.
+func (m *ServerMemoryMutation) Where(ps ...predicate.ServerMemory) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerMemoryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerMemoryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerMemory, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerMemoryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerMemoryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerMemory).
+func (m *ServerMemoryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerMemoryMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, servermemory.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servermemory.FieldUpdatedAt)
+	}
+	if m.serial != nil {
+		fields = append(fields, servermemory.FieldSerial)
+	}
+	if m.server != nil {
+		fields = append(fields, servermemory.FieldServerID)
+	}
+	if m.server_memory_type != nil {
+		fields = append(fields, servermemory.FieldServerMemoryTypeID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerMemoryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servermemory.FieldCreatedAt:
+		return m.CreatedAt()
+	case servermemory.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servermemory.FieldSerial:
+		return m.Serial()
+	case servermemory.FieldServerID:
+		return m.ServerID()
+	case servermemory.FieldServerMemoryTypeID:
+		return m.ServerMemoryTypeID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerMemoryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servermemory.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servermemory.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servermemory.FieldSerial:
+		return m.OldSerial(ctx)
+	case servermemory.FieldServerID:
+		return m.OldServerID(ctx)
+	case servermemory.FieldServerMemoryTypeID:
+		return m.OldServerMemoryTypeID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerMemory field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMemoryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servermemory.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servermemory.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servermemory.FieldSerial:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSerial(v)
+		return nil
+	case servermemory.FieldServerID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerID(v)
+		return nil
+	case servermemory.FieldServerMemoryTypeID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerMemoryTypeID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemory field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerMemoryMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerMemoryMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMemoryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerMemory numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerMemoryMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerMemoryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerMemoryMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerMemory nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerMemoryMutation) ResetField(name string) error {
+	switch name {
+	case servermemory.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servermemory.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servermemory.FieldSerial:
+		m.ResetSerial()
+		return nil
+	case servermemory.FieldServerID:
+		m.ResetServerID()
+		return nil
+	case servermemory.FieldServerMemoryTypeID:
+		m.ResetServerMemoryTypeID()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemory field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerMemoryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.server != nil {
+		edges = append(edges, servermemory.EdgeServer)
+	}
+	if m.server_memory_type != nil {
+		edges = append(edges, servermemory.EdgeServerMemoryType)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerMemoryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servermemory.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case servermemory.EdgeServerMemoryType:
+		if id := m.server_memory_type; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerMemoryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerMemoryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerMemoryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedserver {
+		edges = append(edges, servermemory.EdgeServer)
+	}
+	if m.clearedserver_memory_type {
+		edges = append(edges, servermemory.EdgeServerMemoryType)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerMemoryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servermemory.EdgeServer:
+		return m.clearedserver
+	case servermemory.EdgeServerMemoryType:
+		return m.clearedserver_memory_type
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerMemoryMutation) ClearEdge(name string) error {
+	switch name {
+	case servermemory.EdgeServer:
+		m.ClearServer()
+		return nil
+	case servermemory.EdgeServerMemoryType:
+		m.ClearServerMemoryType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemory unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerMemoryMutation) ResetEdge(name string) error {
+	switch name {
+	case servermemory.EdgeServer:
+		m.ResetServer()
+		return nil
+	case servermemory.EdgeServerMemoryType:
+		m.ResetServerMemoryType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemory edge %s", name)
+}
+
+// ServerMemoryTypeMutation represents an operation that mutates the ServerMemoryType nodes in the graph.
+type ServerMemoryTypeMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *gidx.PrefixedID
+	created_at    *time.Time
+	updated_at    *time.Time
+	vendor        *string
+	model         *string
+	speed         *string
+	size          *string
+	clearedFields map[string]struct{}
+	memory        map[gidx.PrefixedID]struct{}
+	removedmemory map[gidx.PrefixedID]struct{}
+	clearedmemory bool
+	done          bool
+	oldValue      func(context.Context) (*ServerMemoryType, error)
+	predicates    []predicate.ServerMemoryType
+}
+
+var _ ent.Mutation = (*ServerMemoryTypeMutation)(nil)
+
+// servermemorytypeOption allows management of the mutation configuration using functional options.
+type servermemorytypeOption func(*ServerMemoryTypeMutation)
+
+// newServerMemoryTypeMutation creates new mutation for the ServerMemoryType entity.
+func newServerMemoryTypeMutation(c config, op Op, opts ...servermemorytypeOption) *ServerMemoryTypeMutation {
+	m := &ServerMemoryTypeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerMemoryType,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerMemoryTypeID sets the ID field of the mutation.
+func withServerMemoryTypeID(id gidx.PrefixedID) servermemorytypeOption {
+	return func(m *ServerMemoryTypeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerMemoryType
+		)
+		m.oldValue = func(ctx context.Context) (*ServerMemoryType, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerMemoryType.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerMemoryType sets the old ServerMemoryType of the mutation.
+func withServerMemoryType(node *ServerMemoryType) servermemorytypeOption {
+	return func(m *ServerMemoryTypeMutation) {
+		m.oldValue = func(context.Context) (*ServerMemoryType, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerMemoryTypeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerMemoryTypeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerMemoryType entities.
+func (m *ServerMemoryTypeMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerMemoryTypeMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerMemoryTypeMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerMemoryType.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerMemoryTypeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerMemoryTypeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerMemoryType entity.
+// If the ServerMemoryType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerMemoryTypeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerMemoryTypeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerMemoryTypeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerMemoryType entity.
+// If the ServerMemoryType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerMemoryTypeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetVendor sets the "vendor" field.
+func (m *ServerMemoryTypeMutation) SetVendor(s string) {
+	m.vendor = &s
+}
+
+// Vendor returns the value of the "vendor" field in the mutation.
+func (m *ServerMemoryTypeMutation) Vendor() (r string, exists bool) {
+	v := m.vendor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVendor returns the old "vendor" field's value of the ServerMemoryType entity.
+// If the ServerMemoryType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryTypeMutation) OldVendor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVendor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVendor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVendor: %w", err)
+	}
+	return oldValue.Vendor, nil
+}
+
+// ResetVendor resets all changes to the "vendor" field.
+func (m *ServerMemoryTypeMutation) ResetVendor() {
+	m.vendor = nil
+}
+
+// SetModel sets the "model" field.
+func (m *ServerMemoryTypeMutation) SetModel(s string) {
+	m.model = &s
+}
+
+// Model returns the value of the "model" field in the mutation.
+func (m *ServerMemoryTypeMutation) Model() (r string, exists bool) {
+	v := m.model
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModel returns the old "model" field's value of the ServerMemoryType entity.
+// If the ServerMemoryType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryTypeMutation) OldModel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModel: %w", err)
+	}
+	return oldValue.Model, nil
+}
+
+// ResetModel resets all changes to the "model" field.
+func (m *ServerMemoryTypeMutation) ResetModel() {
+	m.model = nil
+}
+
+// SetSpeed sets the "speed" field.
+func (m *ServerMemoryTypeMutation) SetSpeed(s string) {
+	m.speed = &s
+}
+
+// Speed returns the value of the "speed" field in the mutation.
+func (m *ServerMemoryTypeMutation) Speed() (r string, exists bool) {
+	v := m.speed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSpeed returns the old "speed" field's value of the ServerMemoryType entity.
+// If the ServerMemoryType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryTypeMutation) OldSpeed(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSpeed is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSpeed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSpeed: %w", err)
+	}
+	return oldValue.Speed, nil
+}
+
+// ResetSpeed resets all changes to the "speed" field.
+func (m *ServerMemoryTypeMutation) ResetSpeed() {
+	m.speed = nil
+}
+
+// SetSize sets the "size" field.
+func (m *ServerMemoryTypeMutation) SetSize(s string) {
+	m.size = &s
+}
+
+// Size returns the value of the "size" field in the mutation.
+func (m *ServerMemoryTypeMutation) Size() (r string, exists bool) {
+	v := m.size
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSize returns the old "size" field's value of the ServerMemoryType entity.
+// If the ServerMemoryType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerMemoryTypeMutation) OldSize(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSize is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSize requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSize: %w", err)
+	}
+	return oldValue.Size, nil
+}
+
+// ResetSize resets all changes to the "size" field.
+func (m *ServerMemoryTypeMutation) ResetSize() {
+	m.size = nil
+}
+
+// AddMemoryIDs adds the "memory" edge to the ServerMemory entity by ids.
+func (m *ServerMemoryTypeMutation) AddMemoryIDs(ids ...gidx.PrefixedID) {
+	if m.memory == nil {
+		m.memory = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.memory[ids[i]] = struct{}{}
+	}
+}
+
+// ClearMemory clears the "memory" edge to the ServerMemory entity.
+func (m *ServerMemoryTypeMutation) ClearMemory() {
+	m.clearedmemory = true
+}
+
+// MemoryCleared reports if the "memory" edge to the ServerMemory entity was cleared.
+func (m *ServerMemoryTypeMutation) MemoryCleared() bool {
+	return m.clearedmemory
+}
+
+// RemoveMemoryIDs removes the "memory" edge to the ServerMemory entity by IDs.
+func (m *ServerMemoryTypeMutation) RemoveMemoryIDs(ids ...gidx.PrefixedID) {
+	if m.removedmemory == nil {
+		m.removedmemory = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.memory, ids[i])
+		m.removedmemory[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedMemory returns the removed IDs of the "memory" edge to the ServerMemory entity.
+func (m *ServerMemoryTypeMutation) RemovedMemoryIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removedmemory {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// MemoryIDs returns the "memory" edge IDs in the mutation.
+func (m *ServerMemoryTypeMutation) MemoryIDs() (ids []gidx.PrefixedID) {
+	for id := range m.memory {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetMemory resets all changes to the "memory" edge.
+func (m *ServerMemoryTypeMutation) ResetMemory() {
+	m.memory = nil
+	m.clearedmemory = false
+	m.removedmemory = nil
+}
+
+// Where appends a list predicates to the ServerMemoryTypeMutation builder.
+func (m *ServerMemoryTypeMutation) Where(ps ...predicate.ServerMemoryType) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerMemoryTypeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerMemoryTypeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerMemoryType, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerMemoryTypeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerMemoryTypeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerMemoryType).
+func (m *ServerMemoryTypeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerMemoryTypeMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.created_at != nil {
+		fields = append(fields, servermemorytype.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servermemorytype.FieldUpdatedAt)
+	}
+	if m.vendor != nil {
+		fields = append(fields, servermemorytype.FieldVendor)
+	}
+	if m.model != nil {
+		fields = append(fields, servermemorytype.FieldModel)
+	}
+	if m.speed != nil {
+		fields = append(fields, servermemorytype.FieldSpeed)
+	}
+	if m.size != nil {
+		fields = append(fields, servermemorytype.FieldSize)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerMemoryTypeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servermemorytype.FieldCreatedAt:
+		return m.CreatedAt()
+	case servermemorytype.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servermemorytype.FieldVendor:
+		return m.Vendor()
+	case servermemorytype.FieldModel:
+		return m.Model()
+	case servermemorytype.FieldSpeed:
+		return m.Speed()
+	case servermemorytype.FieldSize:
+		return m.Size()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerMemoryTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servermemorytype.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servermemorytype.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servermemorytype.FieldVendor:
+		return m.OldVendor(ctx)
+	case servermemorytype.FieldModel:
+		return m.OldModel(ctx)
+	case servermemorytype.FieldSpeed:
+		return m.OldSpeed(ctx)
+	case servermemorytype.FieldSize:
+		return m.OldSize(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerMemoryType field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMemoryTypeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servermemorytype.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servermemorytype.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servermemorytype.FieldVendor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVendor(v)
+		return nil
+	case servermemorytype.FieldModel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModel(v)
+		return nil
+	case servermemorytype.FieldSpeed:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSpeed(v)
+		return nil
+	case servermemorytype.FieldSize:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSize(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemoryType field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerMemoryTypeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerMemoryTypeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerMemoryTypeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerMemoryType numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerMemoryTypeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerMemoryTypeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerMemoryTypeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerMemoryType nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerMemoryTypeMutation) ResetField(name string) error {
+	switch name {
+	case servermemorytype.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servermemorytype.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servermemorytype.FieldVendor:
+		m.ResetVendor()
+		return nil
+	case servermemorytype.FieldModel:
+		m.ResetModel()
+		return nil
+	case servermemorytype.FieldSpeed:
+		m.ResetSpeed()
+		return nil
+	case servermemorytype.FieldSize:
+		m.ResetSize()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemoryType field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerMemoryTypeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.memory != nil {
+		edges = append(edges, servermemorytype.EdgeMemory)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerMemoryTypeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servermemorytype.EdgeMemory:
+		ids := make([]ent.Value, 0, len(m.memory))
+		for id := range m.memory {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerMemoryTypeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedmemory != nil {
+		edges = append(edges, servermemorytype.EdgeMemory)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerMemoryTypeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case servermemorytype.EdgeMemory:
+		ids := make([]ent.Value, 0, len(m.removedmemory))
+		for id := range m.removedmemory {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerMemoryTypeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedmemory {
+		edges = append(edges, servermemorytype.EdgeMemory)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerMemoryTypeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servermemorytype.EdgeMemory:
+		return m.clearedmemory
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerMemoryTypeMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerMemoryType unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerMemoryTypeMutation) ResetEdge(name string) error {
+	switch name {
+	case servermemorytype.EdgeMemory:
+		m.ResetMemory()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerMemoryType edge %s", name)
 }
 
 // ServerMotherboardMutation represents an operation that mutates the ServerMotherboard nodes in the graph.

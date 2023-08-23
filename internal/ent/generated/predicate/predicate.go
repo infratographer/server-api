@@ -44,6 +44,12 @@ type ServerComponent func(*sql.Selector)
 // ServerComponentType is the predicate function for servercomponenttype builders.
 type ServerComponentType func(*sql.Selector)
 
+// ServerMemory is the predicate function for servermemory builders.
+type ServerMemory func(*sql.Selector)
+
+// ServerMemoryType is the predicate function for servermemorytype builders.
+type ServerMemoryType func(*sql.Selector)
+
 // ServerMotherboard is the predicate function for servermotherboard builders.
 type ServerMotherboard func(*sql.Selector)
 

@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -3097,6 +3099,718 @@ func (sct *ServerComponentType) ToEdge(order *ServerComponentTypeOrder) *ServerC
 	return &ServerComponentTypeEdge{
 		Node:   sct,
 		Cursor: order.Field.toCursor(sct),
+	}
+}
+
+// ServerMemoryEdge is the edge representation of ServerMemory.
+type ServerMemoryEdge struct {
+	Node   *ServerMemory `json:"node"`
+	Cursor Cursor        `json:"cursor"`
+}
+
+// ServerMemoryConnection is the connection containing edges to ServerMemory.
+type ServerMemoryConnection struct {
+	Edges      []*ServerMemoryEdge `json:"edges"`
+	PageInfo   PageInfo            `json:"pageInfo"`
+	TotalCount int                 `json:"totalCount"`
+}
+
+func (c *ServerMemoryConnection) build(nodes []*ServerMemory, pager *servermemoryPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerMemory
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerMemory {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerMemory {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerMemoryEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerMemoryEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerMemoryPaginateOption enables pagination customization.
+type ServerMemoryPaginateOption func(*servermemoryPager) error
+
+// WithServerMemoryOrder configures pagination ordering.
+func WithServerMemoryOrder(order *ServerMemoryOrder) ServerMemoryPaginateOption {
+	if order == nil {
+		order = DefaultServerMemoryOrder
+	}
+	o := *order
+	return func(pager *servermemoryPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerMemoryOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerMemoryFilter configures pagination filter.
+func WithServerMemoryFilter(filter func(*ServerMemoryQuery) (*ServerMemoryQuery, error)) ServerMemoryPaginateOption {
+	return func(pager *servermemoryPager) error {
+		if filter == nil {
+			return errors.New("ServerMemoryQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servermemoryPager struct {
+	reverse bool
+	order   *ServerMemoryOrder
+	filter  func(*ServerMemoryQuery) (*ServerMemoryQuery, error)
+}
+
+func newServerMemoryPager(opts []ServerMemoryPaginateOption, reverse bool) (*servermemoryPager, error) {
+	pager := &servermemoryPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerMemoryOrder
+	}
+	return pager, nil
+}
+
+func (p *servermemoryPager) applyFilter(query *ServerMemoryQuery) (*ServerMemoryQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servermemoryPager) toCursor(sm *ServerMemory) Cursor {
+	return p.order.Field.toCursor(sm)
+}
+
+func (p *servermemoryPager) applyCursors(query *ServerMemoryQuery, after, before *Cursor) (*ServerMemoryQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerMemoryOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servermemoryPager) applyOrder(query *ServerMemoryQuery) *ServerMemoryQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerMemoryOrder.Field {
+		query = query.Order(DefaultServerMemoryOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servermemoryPager) orderExpr(query *ServerMemoryQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerMemoryOrder.Field {
+			b.Comma().Ident(DefaultServerMemoryOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerMemory.
+func (sm *ServerMemoryQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerMemoryPaginateOption,
+) (*ServerMemoryConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerMemoryPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if sm, err = pager.applyFilter(sm); err != nil {
+		return nil, err
+	}
+	conn := &ServerMemoryConnection{Edges: []*ServerMemoryEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = sm.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if sm, err = pager.applyCursors(sm, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		sm.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sm.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	sm = pager.applyOrder(sm)
+	nodes, err := sm.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerMemoryOrderFieldID orders ServerMemory by id.
+	ServerMemoryOrderFieldID = &ServerMemoryOrderField{
+		Value: func(sm *ServerMemory) (ent.Value, error) {
+			return sm.ID, nil
+		},
+		column: servermemory.FieldID,
+		toTerm: servermemory.ByID,
+		toCursor: func(sm *ServerMemory) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.ID,
+			}
+		},
+	}
+	// ServerMemoryOrderFieldCreatedAt orders ServerMemory by created_at.
+	ServerMemoryOrderFieldCreatedAt = &ServerMemoryOrderField{
+		Value: func(sm *ServerMemory) (ent.Value, error) {
+			return sm.CreatedAt, nil
+		},
+		column: servermemory.FieldCreatedAt,
+		toTerm: servermemory.ByCreatedAt,
+		toCursor: func(sm *ServerMemory) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.CreatedAt,
+			}
+		},
+	}
+	// ServerMemoryOrderFieldUpdatedAt orders ServerMemory by updated_at.
+	ServerMemoryOrderFieldUpdatedAt = &ServerMemoryOrderField{
+		Value: func(sm *ServerMemory) (ent.Value, error) {
+			return sm.UpdatedAt, nil
+		},
+		column: servermemory.FieldUpdatedAt,
+		toTerm: servermemory.ByUpdatedAt,
+		toCursor: func(sm *ServerMemory) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.UpdatedAt,
+			}
+		},
+	}
+	// ServerMemoryOrderFieldServerID orders ServerMemory by server_id.
+	ServerMemoryOrderFieldServerID = &ServerMemoryOrderField{
+		Value: func(sm *ServerMemory) (ent.Value, error) {
+			return sm.ServerID, nil
+		},
+		column: servermemory.FieldServerID,
+		toTerm: servermemory.ByServerID,
+		toCursor: func(sm *ServerMemory) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.ServerID,
+			}
+		},
+	}
+	// ServerMemoryOrderFieldServerMemoryTypeID orders ServerMemory by server_memory_type_id.
+	ServerMemoryOrderFieldServerMemoryTypeID = &ServerMemoryOrderField{
+		Value: func(sm *ServerMemory) (ent.Value, error) {
+			return sm.ServerMemoryTypeID, nil
+		},
+		column: servermemory.FieldServerMemoryTypeID,
+		toTerm: servermemory.ByServerMemoryTypeID,
+		toCursor: func(sm *ServerMemory) Cursor {
+			return Cursor{
+				ID:    sm.ID,
+				Value: sm.ServerMemoryTypeID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerMemoryOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerMemoryOrderFieldID.column:
+		str = "ID"
+	case ServerMemoryOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerMemoryOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerMemoryOrderFieldServerID.column:
+		str = "SERVER"
+	case ServerMemoryOrderFieldServerMemoryTypeID.column:
+		str = "SERVER_MEMORY_TYPE"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerMemoryOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerMemoryOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerMemoryOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerMemoryOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerMemoryOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerMemoryOrderFieldUpdatedAt
+	case "SERVER":
+		*f = *ServerMemoryOrderFieldServerID
+	case "SERVER_MEMORY_TYPE":
+		*f = *ServerMemoryOrderFieldServerMemoryTypeID
+	default:
+		return fmt.Errorf("%s is not a valid ServerMemoryOrderField", str)
+	}
+	return nil
+}
+
+// ServerMemoryOrderField defines the ordering field of ServerMemory.
+type ServerMemoryOrderField struct {
+	// Value extracts the ordering value from the given ServerMemory.
+	Value    func(*ServerMemory) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servermemory.OrderOption
+	toCursor func(*ServerMemory) Cursor
+}
+
+// ServerMemoryOrder defines the ordering of ServerMemory.
+type ServerMemoryOrder struct {
+	Direction OrderDirection          `json:"direction"`
+	Field     *ServerMemoryOrderField `json:"field"`
+}
+
+// DefaultServerMemoryOrder is the default ordering of ServerMemory.
+var DefaultServerMemoryOrder = &ServerMemoryOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerMemoryOrderField{
+		Value: func(sm *ServerMemory) (ent.Value, error) {
+			return sm.ID, nil
+		},
+		column: servermemory.FieldID,
+		toTerm: servermemory.ByID,
+		toCursor: func(sm *ServerMemory) Cursor {
+			return Cursor{ID: sm.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerMemory into ServerMemoryEdge.
+func (sm *ServerMemory) ToEdge(order *ServerMemoryOrder) *ServerMemoryEdge {
+	if order == nil {
+		order = DefaultServerMemoryOrder
+	}
+	return &ServerMemoryEdge{
+		Node:   sm,
+		Cursor: order.Field.toCursor(sm),
+	}
+}
+
+// ServerMemoryTypeEdge is the edge representation of ServerMemoryType.
+type ServerMemoryTypeEdge struct {
+	Node   *ServerMemoryType `json:"node"`
+	Cursor Cursor            `json:"cursor"`
+}
+
+// ServerMemoryTypeConnection is the connection containing edges to ServerMemoryType.
+type ServerMemoryTypeConnection struct {
+	Edges      []*ServerMemoryTypeEdge `json:"edges"`
+	PageInfo   PageInfo                `json:"pageInfo"`
+	TotalCount int                     `json:"totalCount"`
+}
+
+func (c *ServerMemoryTypeConnection) build(nodes []*ServerMemoryType, pager *servermemorytypePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerMemoryType
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerMemoryType {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerMemoryType {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerMemoryTypeEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerMemoryTypeEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerMemoryTypePaginateOption enables pagination customization.
+type ServerMemoryTypePaginateOption func(*servermemorytypePager) error
+
+// WithServerMemoryTypeOrder configures pagination ordering.
+func WithServerMemoryTypeOrder(order *ServerMemoryTypeOrder) ServerMemoryTypePaginateOption {
+	if order == nil {
+		order = DefaultServerMemoryTypeOrder
+	}
+	o := *order
+	return func(pager *servermemorytypePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerMemoryTypeOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerMemoryTypeFilter configures pagination filter.
+func WithServerMemoryTypeFilter(filter func(*ServerMemoryTypeQuery) (*ServerMemoryTypeQuery, error)) ServerMemoryTypePaginateOption {
+	return func(pager *servermemorytypePager) error {
+		if filter == nil {
+			return errors.New("ServerMemoryTypeQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servermemorytypePager struct {
+	reverse bool
+	order   *ServerMemoryTypeOrder
+	filter  func(*ServerMemoryTypeQuery) (*ServerMemoryTypeQuery, error)
+}
+
+func newServerMemoryTypePager(opts []ServerMemoryTypePaginateOption, reverse bool) (*servermemorytypePager, error) {
+	pager := &servermemorytypePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerMemoryTypeOrder
+	}
+	return pager, nil
+}
+
+func (p *servermemorytypePager) applyFilter(query *ServerMemoryTypeQuery) (*ServerMemoryTypeQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servermemorytypePager) toCursor(smt *ServerMemoryType) Cursor {
+	return p.order.Field.toCursor(smt)
+}
+
+func (p *servermemorytypePager) applyCursors(query *ServerMemoryTypeQuery, after, before *Cursor) (*ServerMemoryTypeQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerMemoryTypeOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servermemorytypePager) applyOrder(query *ServerMemoryTypeQuery) *ServerMemoryTypeQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerMemoryTypeOrder.Field {
+		query = query.Order(DefaultServerMemoryTypeOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servermemorytypePager) orderExpr(query *ServerMemoryTypeQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerMemoryTypeOrder.Field {
+			b.Comma().Ident(DefaultServerMemoryTypeOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerMemoryType.
+func (smt *ServerMemoryTypeQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerMemoryTypePaginateOption,
+) (*ServerMemoryTypeConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerMemoryTypePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if smt, err = pager.applyFilter(smt); err != nil {
+		return nil, err
+	}
+	conn := &ServerMemoryTypeConnection{Edges: []*ServerMemoryTypeEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = smt.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if smt, err = pager.applyCursors(smt, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		smt.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := smt.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	smt = pager.applyOrder(smt)
+	nodes, err := smt.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerMemoryTypeOrderFieldID orders ServerMemoryType by id.
+	ServerMemoryTypeOrderFieldID = &ServerMemoryTypeOrderField{
+		Value: func(smt *ServerMemoryType) (ent.Value, error) {
+			return smt.ID, nil
+		},
+		column: servermemorytype.FieldID,
+		toTerm: servermemorytype.ByID,
+		toCursor: func(smt *ServerMemoryType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.ID,
+			}
+		},
+	}
+	// ServerMemoryTypeOrderFieldCreatedAt orders ServerMemoryType by created_at.
+	ServerMemoryTypeOrderFieldCreatedAt = &ServerMemoryTypeOrderField{
+		Value: func(smt *ServerMemoryType) (ent.Value, error) {
+			return smt.CreatedAt, nil
+		},
+		column: servermemorytype.FieldCreatedAt,
+		toTerm: servermemorytype.ByCreatedAt,
+		toCursor: func(smt *ServerMemoryType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.CreatedAt,
+			}
+		},
+	}
+	// ServerMemoryTypeOrderFieldUpdatedAt orders ServerMemoryType by updated_at.
+	ServerMemoryTypeOrderFieldUpdatedAt = &ServerMemoryTypeOrderField{
+		Value: func(smt *ServerMemoryType) (ent.Value, error) {
+			return smt.UpdatedAt, nil
+		},
+		column: servermemorytype.FieldUpdatedAt,
+		toTerm: servermemorytype.ByUpdatedAt,
+		toCursor: func(smt *ServerMemoryType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.UpdatedAt,
+			}
+		},
+	}
+	// ServerMemoryTypeOrderFieldVendor orders ServerMemoryType by vendor.
+	ServerMemoryTypeOrderFieldVendor = &ServerMemoryTypeOrderField{
+		Value: func(smt *ServerMemoryType) (ent.Value, error) {
+			return smt.Vendor, nil
+		},
+		column: servermemorytype.FieldVendor,
+		toTerm: servermemorytype.ByVendor,
+		toCursor: func(smt *ServerMemoryType) Cursor {
+			return Cursor{
+				ID:    smt.ID,
+				Value: smt.Vendor,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerMemoryTypeOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerMemoryTypeOrderFieldID.column:
+		str = "ID"
+	case ServerMemoryTypeOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerMemoryTypeOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerMemoryTypeOrderFieldVendor.column:
+		str = "NAME"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerMemoryTypeOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerMemoryTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerMemoryTypeOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerMemoryTypeOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerMemoryTypeOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerMemoryTypeOrderFieldUpdatedAt
+	case "NAME":
+		*f = *ServerMemoryTypeOrderFieldVendor
+	default:
+		return fmt.Errorf("%s is not a valid ServerMemoryTypeOrderField", str)
+	}
+	return nil
+}
+
+// ServerMemoryTypeOrderField defines the ordering field of ServerMemoryType.
+type ServerMemoryTypeOrderField struct {
+	// Value extracts the ordering value from the given ServerMemoryType.
+	Value    func(*ServerMemoryType) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servermemorytype.OrderOption
+	toCursor func(*ServerMemoryType) Cursor
+}
+
+// ServerMemoryTypeOrder defines the ordering of ServerMemoryType.
+type ServerMemoryTypeOrder struct {
+	Direction OrderDirection              `json:"direction"`
+	Field     *ServerMemoryTypeOrderField `json:"field"`
+}
+
+// DefaultServerMemoryTypeOrder is the default ordering of ServerMemoryType.
+var DefaultServerMemoryTypeOrder = &ServerMemoryTypeOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerMemoryTypeOrderField{
+		Value: func(smt *ServerMemoryType) (ent.Value, error) {
+			return smt.ID, nil
+		},
+		column: servermemorytype.FieldID,
+		toTerm: servermemorytype.ByID,
+		toCursor: func(smt *ServerMemoryType) Cursor {
+			return Cursor{ID: smt.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerMemoryType into ServerMemoryTypeEdge.
+func (smt *ServerMemoryType) ToEdge(order *ServerMemoryTypeOrder) *ServerMemoryTypeEdge {
+	if order == nil {
+		order = DefaultServerMemoryTypeOrder
+	}
+	return &ServerMemoryTypeEdge{
+		Node:   smt,
+		Cursor: order.Field.toCursor(smt),
 	}
 }
 

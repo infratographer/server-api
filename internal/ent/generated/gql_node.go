@@ -31,6 +31,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -65,6 +67,12 @@ func (n *ServerComponent) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerComponentType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerMemory) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerMemoryType) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerMotherboard) IsNode() {}
@@ -253,6 +261,38 @@ func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (N
 		query := c.ServerComponentType.Query().
 			Where(servercomponenttype.ID(uid))
 		query, err := query.CollectFields(ctx, "ServerComponentType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servermemory.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerMemory.Query().
+			Where(servermemory.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerMemory")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servermemorytype.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerMemoryType.Query().
+			Where(servermemorytype.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerMemoryType")
 		if err != nil {
 			return nil, err
 		}
@@ -498,6 +538,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		query := c.ServerComponentType.Query().
 			Where(servercomponenttype.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "ServerComponentType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servermemory.Table:
+		query := c.ServerMemory.Query().
+			Where(servermemory.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerMemory")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servermemorytype.Table:
+		query := c.ServerMemoryType.Query().
+			Where(servermemorytype.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerMemoryType")
 		if err != nil {
 			return nil, err
 		}

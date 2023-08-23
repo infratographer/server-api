@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -63,6 +65,10 @@ type Client struct {
 	ServerComponent *ServerComponentClient
 	// ServerComponentType is the client for interacting with the ServerComponentType builders.
 	ServerComponentType *ServerComponentTypeClient
+	// ServerMemory is the client for interacting with the ServerMemory builders.
+	ServerMemory *ServerMemoryClient
+	// ServerMemoryType is the client for interacting with the ServerMemoryType builders.
+	ServerMemoryType *ServerMemoryTypeClient
 	// ServerMotherboard is the client for interacting with the ServerMotherboard builders.
 	ServerMotherboard *ServerMotherboardClient
 	// ServerMotherboardType is the client for interacting with the ServerMotherboardType builders.
@@ -90,6 +96,8 @@ func (c *Client) init() {
 	c.ServerChassisType = NewServerChassisTypeClient(c.config)
 	c.ServerComponent = NewServerComponentClient(c.config)
 	c.ServerComponentType = NewServerComponentTypeClient(c.config)
+	c.ServerMemory = NewServerMemoryClient(c.config)
+	c.ServerMemoryType = NewServerMemoryTypeClient(c.config)
 	c.ServerMotherboard = NewServerMotherboardClient(c.config)
 	c.ServerMotherboardType = NewServerMotherboardTypeClient(c.config)
 	c.ServerType = NewServerTypeClient(c.config)
@@ -183,6 +191,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ServerChassisType:     NewServerChassisTypeClient(cfg),
 		ServerComponent:       NewServerComponentClient(cfg),
 		ServerComponentType:   NewServerComponentTypeClient(cfg),
+		ServerMemory:          NewServerMemoryClient(cfg),
+		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
 		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
 		ServerType:            NewServerTypeClient(cfg),
@@ -213,6 +223,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ServerChassisType:     NewServerChassisTypeClient(cfg),
 		ServerComponent:       NewServerComponentClient(cfg),
 		ServerComponentType:   NewServerComponentTypeClient(cfg),
+		ServerMemory:          NewServerMemoryClient(cfg),
+		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
 		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
 		ServerType:            NewServerTypeClient(cfg),
@@ -246,8 +258,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
-		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
-		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
+		c.ServerChassisType, c.ServerComponent, c.ServerComponentType, c.ServerMemory,
+		c.ServerMemoryType, c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
 	} {
 		n.Use(hooks...)
 	}
@@ -258,8 +270,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
-		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
-		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
+		c.ServerChassisType, c.ServerComponent, c.ServerComponentType, c.ServerMemory,
+		c.ServerMemoryType, c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -284,6 +296,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ServerComponent.mutate(ctx, m)
 	case *ServerComponentTypeMutation:
 		return c.ServerComponentType.mutate(ctx, m)
+	case *ServerMemoryMutation:
+		return c.ServerMemory.mutate(ctx, m)
+	case *ServerMemoryTypeMutation:
+		return c.ServerMemoryType.mutate(ctx, m)
 	case *ServerMotherboardMutation:
 		return c.ServerMotherboard.mutate(ctx, m)
 	case *ServerMotherboardTypeMutation:
@@ -1431,6 +1447,290 @@ func (c *ServerComponentTypeClient) mutate(ctx context.Context, m *ServerCompone
 	}
 }
 
+// ServerMemoryClient is a client for the ServerMemory schema.
+type ServerMemoryClient struct {
+	config
+}
+
+// NewServerMemoryClient returns a client for the ServerMemory from the given config.
+func NewServerMemoryClient(c config) *ServerMemoryClient {
+	return &ServerMemoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servermemory.Hooks(f(g(h())))`.
+func (c *ServerMemoryClient) Use(hooks ...Hook) {
+	c.hooks.ServerMemory = append(c.hooks.ServerMemory, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servermemory.Intercept(f(g(h())))`.
+func (c *ServerMemoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerMemory = append(c.inters.ServerMemory, interceptors...)
+}
+
+// Create returns a builder for creating a ServerMemory entity.
+func (c *ServerMemoryClient) Create() *ServerMemoryCreate {
+	mutation := newServerMemoryMutation(c.config, OpCreate)
+	return &ServerMemoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerMemory entities.
+func (c *ServerMemoryClient) CreateBulk(builders ...*ServerMemoryCreate) *ServerMemoryCreateBulk {
+	return &ServerMemoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerMemory.
+func (c *ServerMemoryClient) Update() *ServerMemoryUpdate {
+	mutation := newServerMemoryMutation(c.config, OpUpdate)
+	return &ServerMemoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerMemoryClient) UpdateOne(sm *ServerMemory) *ServerMemoryUpdateOne {
+	mutation := newServerMemoryMutation(c.config, OpUpdateOne, withServerMemory(sm))
+	return &ServerMemoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerMemoryClient) UpdateOneID(id gidx.PrefixedID) *ServerMemoryUpdateOne {
+	mutation := newServerMemoryMutation(c.config, OpUpdateOne, withServerMemoryID(id))
+	return &ServerMemoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerMemory.
+func (c *ServerMemoryClient) Delete() *ServerMemoryDelete {
+	mutation := newServerMemoryMutation(c.config, OpDelete)
+	return &ServerMemoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerMemoryClient) DeleteOne(sm *ServerMemory) *ServerMemoryDeleteOne {
+	return c.DeleteOneID(sm.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerMemoryClient) DeleteOneID(id gidx.PrefixedID) *ServerMemoryDeleteOne {
+	builder := c.Delete().Where(servermemory.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerMemoryDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerMemory.
+func (c *ServerMemoryClient) Query() *ServerMemoryQuery {
+	return &ServerMemoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerMemory},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerMemory entity by its id.
+func (c *ServerMemoryClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerMemory, error) {
+	return c.Query().Where(servermemory.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerMemoryClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerMemory {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryServer queries the server edge of a ServerMemory.
+func (c *ServerMemoryClient) QueryServer(sm *ServerMemory) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servermemory.Table, servermemory.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servermemory.ServerTable, servermemory.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryServerMemoryType queries the server_memory_type edge of a ServerMemory.
+func (c *ServerMemoryClient) QueryServerMemoryType(sm *ServerMemory) *ServerMemoryTypeQuery {
+	query := (&ServerMemoryTypeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servermemory.Table, servermemory.FieldID, id),
+			sqlgraph.To(servermemorytype.Table, servermemorytype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servermemory.ServerMemoryTypeTable, servermemory.ServerMemoryTypeColumn),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerMemoryClient) Hooks() []Hook {
+	return c.hooks.ServerMemory
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerMemoryClient) Interceptors() []Interceptor {
+	return c.inters.ServerMemory
+}
+
+func (c *ServerMemoryClient) mutate(ctx context.Context, m *ServerMemoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerMemoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerMemoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerMemoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerMemoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerMemory mutation op: %q", m.Op())
+	}
+}
+
+// ServerMemoryTypeClient is a client for the ServerMemoryType schema.
+type ServerMemoryTypeClient struct {
+	config
+}
+
+// NewServerMemoryTypeClient returns a client for the ServerMemoryType from the given config.
+func NewServerMemoryTypeClient(c config) *ServerMemoryTypeClient {
+	return &ServerMemoryTypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servermemorytype.Hooks(f(g(h())))`.
+func (c *ServerMemoryTypeClient) Use(hooks ...Hook) {
+	c.hooks.ServerMemoryType = append(c.hooks.ServerMemoryType, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servermemorytype.Intercept(f(g(h())))`.
+func (c *ServerMemoryTypeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerMemoryType = append(c.inters.ServerMemoryType, interceptors...)
+}
+
+// Create returns a builder for creating a ServerMemoryType entity.
+func (c *ServerMemoryTypeClient) Create() *ServerMemoryTypeCreate {
+	mutation := newServerMemoryTypeMutation(c.config, OpCreate)
+	return &ServerMemoryTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerMemoryType entities.
+func (c *ServerMemoryTypeClient) CreateBulk(builders ...*ServerMemoryTypeCreate) *ServerMemoryTypeCreateBulk {
+	return &ServerMemoryTypeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerMemoryType.
+func (c *ServerMemoryTypeClient) Update() *ServerMemoryTypeUpdate {
+	mutation := newServerMemoryTypeMutation(c.config, OpUpdate)
+	return &ServerMemoryTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerMemoryTypeClient) UpdateOne(smt *ServerMemoryType) *ServerMemoryTypeUpdateOne {
+	mutation := newServerMemoryTypeMutation(c.config, OpUpdateOne, withServerMemoryType(smt))
+	return &ServerMemoryTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerMemoryTypeClient) UpdateOneID(id gidx.PrefixedID) *ServerMemoryTypeUpdateOne {
+	mutation := newServerMemoryTypeMutation(c.config, OpUpdateOne, withServerMemoryTypeID(id))
+	return &ServerMemoryTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerMemoryType.
+func (c *ServerMemoryTypeClient) Delete() *ServerMemoryTypeDelete {
+	mutation := newServerMemoryTypeMutation(c.config, OpDelete)
+	return &ServerMemoryTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerMemoryTypeClient) DeleteOne(smt *ServerMemoryType) *ServerMemoryTypeDeleteOne {
+	return c.DeleteOneID(smt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerMemoryTypeClient) DeleteOneID(id gidx.PrefixedID) *ServerMemoryTypeDeleteOne {
+	builder := c.Delete().Where(servermemorytype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerMemoryTypeDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerMemoryType.
+func (c *ServerMemoryTypeClient) Query() *ServerMemoryTypeQuery {
+	return &ServerMemoryTypeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerMemoryType},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerMemoryType entity by its id.
+func (c *ServerMemoryTypeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerMemoryType, error) {
+	return c.Query().Where(servermemorytype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerMemoryTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerMemoryType {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryMemory queries the memory edge of a ServerMemoryType.
+func (c *ServerMemoryTypeClient) QueryMemory(smt *ServerMemoryType) *ServerMemoryQuery {
+	query := (&ServerMemoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := smt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servermemorytype.Table, servermemorytype.FieldID, id),
+			sqlgraph.To(servermemory.Table, servermemory.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, servermemorytype.MemoryTable, servermemorytype.MemoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(smt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerMemoryTypeClient) Hooks() []Hook {
+	return c.hooks.ServerMemoryType
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerMemoryTypeClient) Interceptors() []Interceptor {
+	return c.inters.ServerMemoryType
+}
+
+func (c *ServerMemoryTypeClient) mutate(ctx context.Context, m *ServerMemoryTypeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerMemoryTypeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerMemoryTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerMemoryTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerMemoryTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerMemoryType mutation op: %q", m.Op())
+	}
+}
+
 // ServerMotherboardClient is a client for the ServerMotherboard schema.
 type ServerMotherboardClient struct {
 	config
@@ -1853,12 +2153,12 @@ func (c *ServerTypeClient) mutate(ctx context.Context, m *ServerTypeMutation) (V
 type (
 	hooks struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
-		ServerComponent, ServerComponentType, ServerMotherboard, ServerMotherboardType,
-		ServerType []ent.Hook
+		ServerComponent, ServerComponentType, ServerMemory, ServerMemoryType,
+		ServerMotherboard, ServerMotherboardType, ServerType []ent.Hook
 	}
 	inters struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
-		ServerComponent, ServerComponentType, ServerMotherboard, ServerMotherboardType,
-		ServerType []ent.Interceptor
+		ServerComponent, ServerComponentType, ServerMemory, ServerMemoryType,
+		ServerMotherboard, ServerMotherboardType, ServerType []ent.Interceptor
 	}
 )

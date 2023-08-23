@@ -47,6 +47,16 @@ func (r *entityResolver) FindServerComponentTypeByID(ctx context.Context, id gid
 	panic(fmt.Errorf("not implemented: FindServerComponentTypeByID - findServerComponentTypeByID"))
 }
 
+// FindServerMemoryByID is the resolver for the findServerMemoryByID field.
+func (r *entityResolver) FindServerMemoryByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemory, error) {
+	panic(fmt.Errorf("not implemented: FindServerMemoryByID - findServerMemoryByID"))
+}
+
+// FindServerMemoryTypeByID is the resolver for the findServerMemoryTypeByID field.
+func (r *entityResolver) FindServerMemoryTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error) {
+	panic(fmt.Errorf("not implemented: FindServerMemoryTypeByID - findServerMemoryTypeByID"))
+}
+
 // FindServerMotherboardByID is the resolver for the findServerMotherboardByID field.
 func (r *entityResolver) FindServerMotherboardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error) {
 	panic(fmt.Errorf("not implemented: FindServerMotherboardByID - findServerMotherboardByID"))

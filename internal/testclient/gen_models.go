@@ -110,6 +110,27 @@ type CreateServerInput struct {
 	ComponentIDs []gidx.PrefixedID `json:"componentIDs,omitempty"`
 }
 
+// Input information to create a server memory.
+type CreateServerMemoryInput struct {
+	// The serial of the server memory.
+	Serial             string          `json:"serial"`
+	ServerID           gidx.PrefixedID `json:"serverID"`
+	ServerMemoryTypeID gidx.PrefixedID `json:"serverMemoryTypeID"`
+}
+
+// Input information to create a server memory type.
+type CreateServerMemoryTypeInput struct {
+	// The name of the vendor for the server chassis type.
+	Vendor string `json:"vendor"`
+	// The mode of the server chassis type.
+	Model string `json:"model"`
+	// The speed of the server memory type.
+	Speed string `json:"speed"`
+	// The size of the server memory type.
+	Size      string            `json:"size"`
+	MemoryIDs []gidx.PrefixedID `json:"memoryIDs,omitempty"`
+}
+
 // Input information to create a server motherboard.
 type CreateServerMotherboardInput struct {
 	// The serial of the server motherboard
@@ -1025,6 +1046,284 @@ type ServerEdge struct {
 	Cursor string `json:"cursor"`
 }
 
+type ServerMemory struct {
+	// The ID of the server memory.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The serial of the server memory.
+	Serial           string           `json:"serial"`
+	Server           Server           `json:"server"`
+	ServerMemoryType ServerMemoryType `json:"serverMemoryType"`
+}
+
+func (ServerMemory) IsNode() {}
+
+// The id of the object.
+func (this ServerMemory) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerMemory) IsEntity() {}
+
+// A connection to a list of items.
+type ServerMemoryConnection struct {
+	// A list of edges.
+	Edges []*ServerMemoryEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverMemoryCreate
+type ServerMemoryCreatePayload struct {
+	// The created server memory.
+	ServerMemory ServerMemory `json:"serverMemory"`
+}
+
+// Return response from serverMemoryDelete
+type ServerMemoryDeletePayload struct {
+	// The ID of the deleted server memory.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerMemoryEdge struct {
+	// The item at the end of the edge.
+	Node *ServerMemory `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerMemory connections
+type ServerMemoryOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerMemories.
+	Field ServerMemoryOrderField `json:"field"`
+}
+
+type ServerMemoryType struct {
+	// The ID of the server memory type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The name of the vendor for the server chassis type.
+	Vendor string `json:"vendor"`
+	// The mode of the server chassis type.
+	Model string `json:"model"`
+	// The speed of the server memory type.
+	Speed string `json:"speed"`
+	// The size of the server memory type.
+	Size   string                 `json:"size"`
+	Memory ServerMemoryConnection `json:"memory"`
+}
+
+func (ServerMemoryType) IsNode() {}
+
+// The id of the object.
+func (this ServerMemoryType) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerMemoryType) IsEntity() {}
+
+// A connection to a list of items.
+type ServerMemoryTypeConnection struct {
+	// A list of edges.
+	Edges []*ServerMemoryTypeEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverMemoryTypeCreate
+type ServerMemoryTypeCreatePayload struct {
+	// The created server memory type.
+	ServerMemoryType ServerMemoryType `json:"serverMemoryType"`
+}
+
+// Return response from serverMemoryTypeDelete
+type ServerMemoryTypeDeletePayload struct {
+	// The ID of the deleted server memory type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerMemoryTypeEdge struct {
+	// The item at the end of the edge.
+	Node *ServerMemoryType `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerMemoryType connections
+type ServerMemoryTypeOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerMemoryTypes.
+	Field ServerMemoryTypeOrderField `json:"field"`
+}
+
+// Return response from serverMemoryTypeUpdate
+type ServerMemoryTypeUpdatePayload struct {
+	// The updated server memory type.
+	ServerMemoryType ServerMemoryType `json:"serverMemoryType"`
+}
+
+// ServerMemoryTypeWhereInput is used for filtering ServerMemoryType objects.
+// Input was generated by ent.
+type ServerMemoryTypeWhereInput struct {
+	Not *ServerMemoryTypeWhereInput   `json:"not,omitempty"`
+	And []*ServerMemoryTypeWhereInput `json:"and,omitempty"`
+	Or  []*ServerMemoryTypeWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// vendor field predicates
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNeq          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGt           *string  `json:"vendorGT,omitempty"`
+	VendorGte          *string  `json:"vendorGTE,omitempty"`
+	VendorLt           *string  `json:"vendorLT,omitempty"`
+	VendorLte          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+	// model field predicates
+	Model             *string  `json:"model,omitempty"`
+	ModelNeq          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGt           *string  `json:"modelGT,omitempty"`
+	ModelGte          *string  `json:"modelGTE,omitempty"`
+	ModelLt           *string  `json:"modelLT,omitempty"`
+	ModelLte          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+	// speed field predicates
+	Speed             *string  `json:"speed,omitempty"`
+	SpeedNeq          *string  `json:"speedNEQ,omitempty"`
+	SpeedIn           []string `json:"speedIn,omitempty"`
+	SpeedNotIn        []string `json:"speedNotIn,omitempty"`
+	SpeedGt           *string  `json:"speedGT,omitempty"`
+	SpeedGte          *string  `json:"speedGTE,omitempty"`
+	SpeedLt           *string  `json:"speedLT,omitempty"`
+	SpeedLte          *string  `json:"speedLTE,omitempty"`
+	SpeedContains     *string  `json:"speedContains,omitempty"`
+	SpeedHasPrefix    *string  `json:"speedHasPrefix,omitempty"`
+	SpeedHasSuffix    *string  `json:"speedHasSuffix,omitempty"`
+	SpeedEqualFold    *string  `json:"speedEqualFold,omitempty"`
+	SpeedContainsFold *string  `json:"speedContainsFold,omitempty"`
+	// size field predicates
+	Size             *string  `json:"size,omitempty"`
+	SizeNeq          *string  `json:"sizeNEQ,omitempty"`
+	SizeIn           []string `json:"sizeIn,omitempty"`
+	SizeNotIn        []string `json:"sizeNotIn,omitempty"`
+	SizeGt           *string  `json:"sizeGT,omitempty"`
+	SizeGte          *string  `json:"sizeGTE,omitempty"`
+	SizeLt           *string  `json:"sizeLT,omitempty"`
+	SizeLte          *string  `json:"sizeLTE,omitempty"`
+	SizeContains     *string  `json:"sizeContains,omitempty"`
+	SizeHasPrefix    *string  `json:"sizeHasPrefix,omitempty"`
+	SizeHasSuffix    *string  `json:"sizeHasSuffix,omitempty"`
+	SizeEqualFold    *string  `json:"sizeEqualFold,omitempty"`
+	SizeContainsFold *string  `json:"sizeContainsFold,omitempty"`
+	// memory edge predicates
+	HasMemory     *bool                     `json:"hasMemory,omitempty"`
+	HasMemoryWith []*ServerMemoryWhereInput `json:"hasMemoryWith,omitempty"`
+}
+
+// Return response from serverMemoryUpdate
+type ServerMemoryUpdatePayload struct {
+	// The updated server memory.
+	ServerMemory ServerMemory `json:"serverMemory"`
+}
+
+// ServerMemoryWhereInput is used for filtering ServerMemory objects.
+// Input was generated by ent.
+type ServerMemoryWhereInput struct {
+	Not *ServerMemoryWhereInput   `json:"not,omitempty"`
+	And []*ServerMemoryWhereInput `json:"and,omitempty"`
+	Or  []*ServerMemoryWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// serial field predicates
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNeq          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGt           *string  `json:"serialGT,omitempty"`
+	SerialGte          *string  `json:"serialGTE,omitempty"`
+	SerialLt           *string  `json:"serialLT,omitempty"`
+	SerialLte          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+	// server_memory_type edge predicates
+	HasServerMemoryType     *bool                         `json:"hasServerMemoryType,omitempty"`
+	HasServerMemoryTypeWith []*ServerMemoryTypeWhereInput `json:"hasServerMemoryTypeWith,omitempty"`
+}
+
 type ServerMotherboard struct {
 	// The ID of the server motherboard.
 	ID        gidx.PrefixedID `json:"id"`
@@ -1640,6 +1939,27 @@ type UpdateServerInput struct {
 	ClearComponents    *bool             `json:"clearComponents,omitempty"`
 }
 
+// Input information to update a server memory.
+type UpdateServerMemoryInput struct {
+	// The serial of the server memory.
+	Serial *string `json:"serial,omitempty"`
+}
+
+// Input information to update a server memory type.
+type UpdateServerMemoryTypeInput struct {
+	// The name of the vendor for the server chassis type.
+	Vendor *string `json:"vendor,omitempty"`
+	// The mode of the server chassis type.
+	Model *string `json:"model,omitempty"`
+	// The speed of the server memory type.
+	Speed *string `json:"speed,omitempty"`
+	// The size of the server memory type.
+	Size            *string           `json:"size,omitempty"`
+	AddMemoryIDs    []gidx.PrefixedID `json:"addMemoryIDs,omitempty"`
+	RemoveMemoryIDs []gidx.PrefixedID `json:"removeMemoryIDs,omitempty"`
+	ClearMemory     *bool             `json:"clearMemory,omitempty"`
+}
+
 // Input information to update a server motherboard.
 type UpdateServerMotherboardInput struct {
 	// The serial of the server motherboard
@@ -2004,6 +2324,100 @@ func (e *ServerComponentTypeOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ServerComponentTypeOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerMemory connections can be ordered.
+type ServerMemoryOrderField string
+
+const (
+	ServerMemoryOrderFieldID               ServerMemoryOrderField = "ID"
+	ServerMemoryOrderFieldCreatedAt        ServerMemoryOrderField = "CREATED_AT"
+	ServerMemoryOrderFieldUpdatedAt        ServerMemoryOrderField = "UPDATED_AT"
+	ServerMemoryOrderFieldServer           ServerMemoryOrderField = "SERVER"
+	ServerMemoryOrderFieldServerMemoryType ServerMemoryOrderField = "SERVER_MEMORY_TYPE"
+)
+
+var AllServerMemoryOrderField = []ServerMemoryOrderField{
+	ServerMemoryOrderFieldID,
+	ServerMemoryOrderFieldCreatedAt,
+	ServerMemoryOrderFieldUpdatedAt,
+	ServerMemoryOrderFieldServer,
+	ServerMemoryOrderFieldServerMemoryType,
+}
+
+func (e ServerMemoryOrderField) IsValid() bool {
+	switch e {
+	case ServerMemoryOrderFieldID, ServerMemoryOrderFieldCreatedAt, ServerMemoryOrderFieldUpdatedAt, ServerMemoryOrderFieldServer, ServerMemoryOrderFieldServerMemoryType:
+		return true
+	}
+	return false
+}
+
+func (e ServerMemoryOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerMemoryOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerMemoryOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerMemoryOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerMemoryOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerMemoryType connections can be ordered.
+type ServerMemoryTypeOrderField string
+
+const (
+	ServerMemoryTypeOrderFieldID        ServerMemoryTypeOrderField = "ID"
+	ServerMemoryTypeOrderFieldCreatedAt ServerMemoryTypeOrderField = "CREATED_AT"
+	ServerMemoryTypeOrderFieldUpdatedAt ServerMemoryTypeOrderField = "UPDATED_AT"
+	ServerMemoryTypeOrderFieldName      ServerMemoryTypeOrderField = "NAME"
+)
+
+var AllServerMemoryTypeOrderField = []ServerMemoryTypeOrderField{
+	ServerMemoryTypeOrderFieldID,
+	ServerMemoryTypeOrderFieldCreatedAt,
+	ServerMemoryTypeOrderFieldUpdatedAt,
+	ServerMemoryTypeOrderFieldName,
+}
+
+func (e ServerMemoryTypeOrderField) IsValid() bool {
+	switch e {
+	case ServerMemoryTypeOrderFieldID, ServerMemoryTypeOrderFieldCreatedAt, ServerMemoryTypeOrderFieldUpdatedAt, ServerMemoryTypeOrderFieldName:
+		return true
+	}
+	return false
+}
+
+func (e ServerMemoryTypeOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerMemoryTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerMemoryTypeOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerMemoryTypeOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerMemoryTypeOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

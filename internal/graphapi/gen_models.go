@@ -127,6 +127,42 @@ type ServerDeletePayload struct {
 	DeletedID gidx.PrefixedID `json:"deletedID"`
 }
 
+// Return response from serverMemoryCreate
+type ServerMemoryCreatePayload struct {
+	// The created server memory.
+	ServerMemory *generated.ServerMemory `json:"serverMemory"`
+}
+
+// Return response from serverMemoryDelete
+type ServerMemoryDeletePayload struct {
+	// The ID of the deleted server memory.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverMemoryTypeCreate
+type ServerMemoryTypeCreatePayload struct {
+	// The created server memory type.
+	ServerMemoryType *generated.ServerMemoryType `json:"serverMemoryType"`
+}
+
+// Return response from serverMemoryTypeDelete
+type ServerMemoryTypeDeletePayload struct {
+	// The ID of the deleted server memory type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverMemoryTypeUpdate
+type ServerMemoryTypeUpdatePayload struct {
+	// The updated server memory type.
+	ServerMemoryType *generated.ServerMemoryType `json:"serverMemoryType"`
+}
+
+// Return response from serverMemoryUpdate
+type ServerMemoryUpdatePayload struct {
+	// The updated server memory.
+	ServerMemory *generated.ServerMemory `json:"serverMemory"`
+}
+
 // Return response from serverMotherboardCreate
 type ServerMotherboardCreatePayload struct {
 	// The created server motherboard.

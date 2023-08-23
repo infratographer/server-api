@@ -32,6 +32,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -1324,6 +1326,331 @@ func newServerComponentTypePaginateArgs(rv map[string]any) *servercomponenttypeP
 	}
 	if v, ok := rv[whereField].(*ServerComponentTypeWhereInput); ok {
 		args.opts = append(args.opts, WithServerComponentTypeFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sm *ServerMemoryQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerMemoryQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sm, nil
+	}
+	if err := sm.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sm, nil
+}
+
+func (sm *ServerMemoryQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servermemory.Columns))
+		selectedFields = []string{servermemory.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "server":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerClient{config: sm.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.withServer = query
+			if _, ok := fieldSeen[servermemory.FieldServerID]; !ok {
+				selectedFields = append(selectedFields, servermemory.FieldServerID)
+				fieldSeen[servermemory.FieldServerID] = struct{}{}
+			}
+		case "serverMemoryType":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerMemoryTypeClient{config: sm.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.withServerMemoryType = query
+			if _, ok := fieldSeen[servermemory.FieldServerMemoryTypeID]; !ok {
+				selectedFields = append(selectedFields, servermemory.FieldServerMemoryTypeID)
+				fieldSeen[servermemory.FieldServerMemoryTypeID] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[servermemory.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servermemory.FieldCreatedAt)
+				fieldSeen[servermemory.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servermemory.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servermemory.FieldUpdatedAt)
+				fieldSeen[servermemory.FieldUpdatedAt] = struct{}{}
+			}
+		case "serial":
+			if _, ok := fieldSeen[servermemory.FieldSerial]; !ok {
+				selectedFields = append(selectedFields, servermemory.FieldSerial)
+				fieldSeen[servermemory.FieldSerial] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servermemoryPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerMemoryPaginateOption
+}
+
+func newServerMemoryPaginateArgs(rv map[string]any) *servermemoryPaginateArgs {
+	args := &servermemoryPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerMemoryOrder{Field: &ServerMemoryOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerMemoryOrder(order))
+			}
+		case *ServerMemoryOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerMemoryOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerMemoryWhereInput); ok {
+		args.opts = append(args.opts, WithServerMemoryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (smt *ServerMemoryTypeQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerMemoryTypeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return smt, nil
+	}
+	if err := smt.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return smt, nil
+}
+
+func (smt *ServerMemoryTypeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servermemorytype.Columns))
+		selectedFields = []string{servermemorytype.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "memory":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerMemoryClient{config: smt.config}).Query()
+			)
+			args := newServerMemoryPaginateArgs(fieldArgs(ctx, new(ServerMemoryWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newServerMemoryPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					smt.loadTotal = append(smt.loadTotal, func(ctx context.Context, nodes []*ServerMemoryType) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID gidx.PrefixedID `sql:"server_memory_type_id"`
+							Count  int             `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(servermemorytype.MemoryColumn), ids...))
+						})
+						if err := query.GroupBy(servermemorytype.MemoryColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[gidx.PrefixedID]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				} else {
+					smt.loadTotal = append(smt.loadTotal, func(_ context.Context, nodes []*ServerMemoryType) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.Memory)
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "ServerMemory")...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				modify := limitRows(servermemorytype.MemoryColumn, limit, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
+			} else {
+				query = pager.applyOrder(query)
+			}
+			smt.WithNamedMemory(alias, func(wq *ServerMemoryQuery) {
+				*wq = *query
+			})
+		case "createdAt":
+			if _, ok := fieldSeen[servermemorytype.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servermemorytype.FieldCreatedAt)
+				fieldSeen[servermemorytype.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servermemorytype.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servermemorytype.FieldUpdatedAt)
+				fieldSeen[servermemorytype.FieldUpdatedAt] = struct{}{}
+			}
+		case "vendor":
+			if _, ok := fieldSeen[servermemorytype.FieldVendor]; !ok {
+				selectedFields = append(selectedFields, servermemorytype.FieldVendor)
+				fieldSeen[servermemorytype.FieldVendor] = struct{}{}
+			}
+		case "model":
+			if _, ok := fieldSeen[servermemorytype.FieldModel]; !ok {
+				selectedFields = append(selectedFields, servermemorytype.FieldModel)
+				fieldSeen[servermemorytype.FieldModel] = struct{}{}
+			}
+		case "speed":
+			if _, ok := fieldSeen[servermemorytype.FieldSpeed]; !ok {
+				selectedFields = append(selectedFields, servermemorytype.FieldSpeed)
+				fieldSeen[servermemorytype.FieldSpeed] = struct{}{}
+			}
+		case "size":
+			if _, ok := fieldSeen[servermemorytype.FieldSize]; !ok {
+				selectedFields = append(selectedFields, servermemorytype.FieldSize)
+				fieldSeen[servermemorytype.FieldSize] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		smt.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servermemorytypePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerMemoryTypePaginateOption
+}
+
+func newServerMemoryTypePaginateArgs(rv map[string]any) *servermemorytypePaginateArgs {
+	args := &servermemorytypePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerMemoryTypeOrder{Field: &ServerMemoryTypeOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerMemoryTypeOrder(order))
+			}
+		case *ServerMemoryTypeOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerMemoryTypeOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerMemoryTypeWhereInput); ok {
+		args.opts = append(args.opts, WithServerMemoryTypeFilter(v.Filter))
 	}
 	return args
 }

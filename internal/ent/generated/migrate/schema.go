@@ -366,6 +366,85 @@ var (
 			},
 		},
 	}
+	// ServerMemoriesColumns holds the columns for the "server_memories" table.
+	ServerMemoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "server_id", Type: field.TypeString},
+		{Name: "server_memory_type_id", Type: field.TypeString},
+	}
+	// ServerMemoriesTable holds the schema information for the "server_memories" table.
+	ServerMemoriesTable = &schema.Table{
+		Name:       "server_memories",
+		Columns:    ServerMemoriesColumns,
+		PrimaryKey: []*schema.Column{ServerMemoriesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_memories_servers_server",
+				Columns:    []*schema.Column{ServerMemoriesColumns[4]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_memories_server_memory_types_server_memory_type",
+				Columns:    []*schema.Column{ServerMemoriesColumns[5]},
+				RefColumns: []*schema.Column{ServerMemoryTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servermemory_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMemoriesColumns[1]},
+			},
+			{
+				Name:    "servermemory_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMemoriesColumns[2]},
+			},
+			{
+				Name:    "servermemory_server_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMemoriesColumns[4]},
+			},
+			{
+				Name:    "servermemory_server_memory_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMemoriesColumns[5]},
+			},
+		},
+	}
+	// ServerMemoryTypesColumns holds the columns for the "server_memory_types" table.
+	ServerMemoryTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+		{Name: "speed", Type: field.TypeString, Size: 2147483647},
+		{Name: "size", Type: field.TypeString, Size: 2147483647},
+	}
+	// ServerMemoryTypesTable holds the schema information for the "server_memory_types" table.
+	ServerMemoryTypesTable = &schema.Table{
+		Name:       "server_memory_types",
+		Columns:    ServerMemoryTypesColumns,
+		PrimaryKey: []*schema.Column{ServerMemoryTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servermemorytype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMemoryTypesColumns[1]},
+			},
+			{
+				Name:    "servermemorytype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerMemoryTypesColumns[2]},
+			},
+		},
+	}
 	// ServerMotherboardsColumns holds the columns for the "server_motherboards" table.
 	ServerMotherboardsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -474,6 +553,8 @@ var (
 		ServerChassisTypesTable,
 		ServerComponentsTable,
 		ServerComponentTypesTable,
+		ServerMemoriesTable,
+		ServerMemoryTypesTable,
 		ServerMotherboardsTable,
 		ServerMotherboardTypesTable,
 		ServerTypesTable,
@@ -489,6 +570,8 @@ func init() {
 	ServerChassesTable.ForeignKeys[1].RefTable = ServerChassisTypesTable
 	ServerComponentsTable.ForeignKeys[0].RefTable = ServerComponentTypesTable
 	ServerComponentsTable.ForeignKeys[1].RefTable = ServersTable
+	ServerMemoriesTable.ForeignKeys[0].RefTable = ServersTable
+	ServerMemoriesTable.ForeignKeys[1].RefTable = ServerMemoryTypesTable
 	ServerMotherboardsTable.ForeignKeys[0].RefTable = ServersTable
 	ServerMotherboardsTable.ForeignKeys[1].RefTable = ServerMotherboardTypesTable
 }

@@ -30,6 +30,10 @@ const (
 	ServerMotherboardTypePrefix = ApplicationPrefix + "mbt"
 	// ServerMotherboardPrefix is the prefix for all ServerMotherboard nodes
 	ServerMotherboardPrefix = ApplicationPrefix + "mbd"
+	// ServerMemoryTypePrefix is the prefix for all ServerMemoryType nodes
+	ServerMemoryTypePrefix = ApplicationPrefix + "mmt"
+	// ServerMemoryPrefix is the prefix for all ServerMemory nodes
+	ServerMemoryPrefix = ApplicationPrefix + "mem"
 )
 
 func prefixIDDirective(prefix string) entgql.Annotation {

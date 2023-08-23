@@ -170,6 +170,43 @@ func (sc *ServerComponent) Server(ctx context.Context) (*Server, error) {
 	return result, err
 }
 
+func (sm *ServerMemory) Server(ctx context.Context) (*Server, error) {
+	result, err := sm.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = sm.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (sm *ServerMemory) ServerMemoryType(ctx context.Context) (*ServerMemoryType, error) {
+	result, err := sm.Edges.ServerMemoryTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = sm.QueryServerMemoryType().Only(ctx)
+	}
+	return result, err
+}
+
+func (smt *ServerMemoryType) Memory(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerMemoryOrder, where *ServerMemoryWhereInput,
+) (*ServerMemoryConnection, error) {
+	opts := []ServerMemoryPaginateOption{
+		WithServerMemoryOrder(orderBy),
+		WithServerMemoryFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := smt.Edges.totalCount[0][alias]
+	if nodes, err := smt.NamedMemory(alias); err == nil || hasTotalCount {
+		pager, err := newServerMemoryPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerMemoryConnection{Edges: []*ServerMemoryEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return smt.QueryMemory().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (sm *ServerMotherboard) Server(ctx context.Context) (*Server, error) {
 	result, err := sm.Edges.ServerOrErr()
 	if IsNotLoaded(err) {

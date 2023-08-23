@@ -480,6 +480,124 @@ func (c *ServerComponentTypeUpdateOne) SetInput(i UpdateServerComponentTypeInput
 	return c
 }
 
+// CreateServerMemoryInput represents a mutation input for creating servermemories.
+type CreateServerMemoryInput struct {
+	Serial             string
+	ServerID           gidx.PrefixedID
+	ServerMemoryTypeID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerMemoryInput on the ServerMemoryMutation builder.
+func (i *CreateServerMemoryInput) Mutate(m *ServerMemoryMutation) {
+	m.SetSerial(i.Serial)
+	m.SetServerID(i.ServerID)
+	m.SetServerMemoryTypeID(i.ServerMemoryTypeID)
+}
+
+// SetInput applies the change-set in the CreateServerMemoryInput on the ServerMemoryCreate builder.
+func (c *ServerMemoryCreate) SetInput(i CreateServerMemoryInput) *ServerMemoryCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerMemoryInput represents a mutation input for updating servermemories.
+type UpdateServerMemoryInput struct {
+	Serial *string
+}
+
+// Mutate applies the UpdateServerMemoryInput on the ServerMemoryMutation builder.
+func (i *UpdateServerMemoryInput) Mutate(m *ServerMemoryMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerMemoryInput on the ServerMemoryUpdate builder.
+func (c *ServerMemoryUpdate) SetInput(i UpdateServerMemoryInput) *ServerMemoryUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerMemoryInput on the ServerMemoryUpdateOne builder.
+func (c *ServerMemoryUpdateOne) SetInput(i UpdateServerMemoryInput) *ServerMemoryUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateServerMemoryTypeInput represents a mutation input for creating servermemorytypes.
+type CreateServerMemoryTypeInput struct {
+	Vendor    string
+	Model     string
+	Speed     string
+	Size      string
+	MemoryIDs []gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerMemoryTypeInput on the ServerMemoryTypeMutation builder.
+func (i *CreateServerMemoryTypeInput) Mutate(m *ServerMemoryTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	m.SetSpeed(i.Speed)
+	m.SetSize(i.Size)
+	if v := i.MemoryIDs; len(v) > 0 {
+		m.AddMemoryIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateServerMemoryTypeInput on the ServerMemoryTypeCreate builder.
+func (c *ServerMemoryTypeCreate) SetInput(i CreateServerMemoryTypeInput) *ServerMemoryTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerMemoryTypeInput represents a mutation input for updating servermemorytypes.
+type UpdateServerMemoryTypeInput struct {
+	Vendor          *string
+	Model           *string
+	Speed           *string
+	Size            *string
+	ClearMemory     bool
+	AddMemoryIDs    []gidx.PrefixedID
+	RemoveMemoryIDs []gidx.PrefixedID
+}
+
+// Mutate applies the UpdateServerMemoryTypeInput on the ServerMemoryTypeMutation builder.
+func (i *UpdateServerMemoryTypeInput) Mutate(m *ServerMemoryTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if v := i.Speed; v != nil {
+		m.SetSpeed(*v)
+	}
+	if v := i.Size; v != nil {
+		m.SetSize(*v)
+	}
+	if i.ClearMemory {
+		m.ClearMemory()
+	}
+	if v := i.AddMemoryIDs; len(v) > 0 {
+		m.AddMemoryIDs(v...)
+	}
+	if v := i.RemoveMemoryIDs; len(v) > 0 {
+		m.RemoveMemoryIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerMemoryTypeInput on the ServerMemoryTypeUpdate builder.
+func (c *ServerMemoryTypeUpdate) SetInput(i UpdateServerMemoryTypeInput) *ServerMemoryTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerMemoryTypeInput on the ServerMemoryTypeUpdateOne builder.
+func (c *ServerMemoryTypeUpdateOne) SetInput(i UpdateServerMemoryTypeInput) *ServerMemoryTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerMotherboardInput represents a mutation input for creating servermotherboards.
 type CreateServerMotherboardInput struct {
 	Serial                  string

@@ -220,6 +220,46 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 				list[idx[i]] = entity
 				return nil
 			}
+		case "ServerMemory":
+			resolverName, err := entityResolverNameForServerMemory(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerMemory": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerMemoryByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerMemoryByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerMemoryByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerMemory": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
+		case "ServerMemoryType":
+			resolverName, err := entityResolverNameForServerMemoryType(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerMemoryType": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerMemoryTypeByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerMemoryTypeByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerMemoryTypeByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerMemoryType": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
 		case "ServerMotherboard":
 			resolverName, err := entityResolverNameForServerMotherboard(ctx, rep)
 			if err != nil {
@@ -486,6 +526,40 @@ func entityResolverNameForServerComponentType(ctx context.Context, rep map[strin
 		return "findServerComponentTypeByID", nil
 	}
 	return "", fmt.Errorf("%w for ServerComponentType", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerMemory(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerMemoryByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerMemory", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerMemoryType(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerMemoryTypeByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerMemoryType", ErrTypeNotFound)
 }
 
 func entityResolverNameForServerMotherboard(ctx context.Context, rep map[string]interface{}) (string, error) {
