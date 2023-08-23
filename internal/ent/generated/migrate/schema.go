@@ -117,6 +117,34 @@ var (
 			},
 		},
 	}
+	// ServerCPUTypesColumns holds the columns for the "server_cpu_types" table.
+	ServerCPUTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+		{Name: "clock_speed", Type: field.TypeString, Size: 2147483647},
+		{Name: "core_count", Type: field.TypeInt},
+	}
+	// ServerCPUTypesTable holds the schema information for the "server_cpu_types" table.
+	ServerCPUTypesTable = &schema.Table{
+		Name:       "server_cpu_types",
+		Columns:    ServerCPUTypesColumns,
+		PrimaryKey: []*schema.Column{ServerCPUTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servercputype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerCPUTypesColumns[1]},
+			},
+			{
+				Name:    "servercputype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerCPUTypesColumns[2]},
+			},
+		},
+	}
 	// ServerChassesColumns holds the columns for the "server_chasses" table.
 	ServerChassesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -322,6 +350,7 @@ var (
 	Tables = []*schema.Table{
 		ProvidersTable,
 		ServersTable,
+		ServerCPUTypesTable,
 		ServerChassesTable,
 		ServerChassisTypesTable,
 		ServerComponentsTable,

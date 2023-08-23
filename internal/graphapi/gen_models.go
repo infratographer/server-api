@@ -7,6 +7,24 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
+// Return response from serverCPUTypeCreate
+type ServerCPUTypeCreatePayload struct {
+	// The created server cpu type.
+	ServerCPUType *generated.ServerCPUType `json:"serverCPUType"`
+}
+
+// Return response from serverCPUTypeDelete
+type ServerCPUTypeDeletePayload struct {
+	// The ID of the deleted server cpu type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverCPUTypeUpdate
+type ServerCPUTypeUpdatePayload struct {
+	// The updated server cpu type.
+	ServerCPUType *generated.ServerCPUType `json:"serverCPUType"`
+}
+
 // Return response from serverChassisCreate
 type ServerChassisCreatePayload struct {
 	// The created server chassis.

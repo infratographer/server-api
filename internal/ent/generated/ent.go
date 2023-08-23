@@ -32,6 +32,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 )
 
@@ -95,6 +96,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			provider.Table:            provider.ValidColumn,
 			server.Table:              server.ValidColumn,
+			servercputype.Table:       servercputype.ValidColumn,
 			serverchassis.Table:       serverchassis.ValidColumn,
 			serverchassistype.Table:   serverchassistype.ValidColumn,
 			servercomponent.Table:     servercomponent.ValidColumn,

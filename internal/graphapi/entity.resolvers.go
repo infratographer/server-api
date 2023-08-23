@@ -17,6 +17,11 @@ func (r *entityResolver) FindServerByID(ctx context.Context, id gidx.PrefixedID)
 	panic(fmt.Errorf("not implemented: FindServerByID - findServerByID"))
 }
 
+// FindServerCPUTypeByID is the resolver for the findServerCPUTypeByID field.
+func (r *entityResolver) FindServerCPUTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error) {
+	panic(fmt.Errorf("not implemented: FindServerCPUTypeByID - findServerCPUTypeByID"))
+}
+
 // FindServerChassisByID is the resolver for the findServerChassisByID field.
 func (r *entityResolver) FindServerChassisByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassis, error) {
 	panic(fmt.Errorf("not implemented: FindServerChassisByID - findServerChassisByID"))

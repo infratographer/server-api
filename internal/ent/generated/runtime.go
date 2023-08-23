@@ -25,6 +25,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/server-api/internal/ent/schema"
 	"go.infratographer.com/x/gidx"
@@ -88,6 +89,41 @@ func init() {
 	serverDescID := serverFields[0].Descriptor()
 	// server.DefaultID holds the default value on creation for the id field.
 	server.DefaultID = serverDescID.Default.(func() gidx.PrefixedID)
+	servercputypeMixin := schema.ServerCPUType{}.Mixin()
+	servercputypeMixinFields0 := servercputypeMixin[0].Fields()
+	_ = servercputypeMixinFields0
+	servercputypeFields := schema.ServerCPUType{}.Fields()
+	_ = servercputypeFields
+	// servercputypeDescCreatedAt is the schema descriptor for created_at field.
+	servercputypeDescCreatedAt := servercputypeMixinFields0[0].Descriptor()
+	// servercputype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servercputype.DefaultCreatedAt = servercputypeDescCreatedAt.Default.(func() time.Time)
+	// servercputypeDescUpdatedAt is the schema descriptor for updated_at field.
+	servercputypeDescUpdatedAt := servercputypeMixinFields0[1].Descriptor()
+	// servercputype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servercputype.DefaultUpdatedAt = servercputypeDescUpdatedAt.Default.(func() time.Time)
+	// servercputype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servercputype.UpdateDefaultUpdatedAt = servercputypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servercputypeDescVendor is the schema descriptor for vendor field.
+	servercputypeDescVendor := servercputypeFields[1].Descriptor()
+	// servercputype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	servercputype.VendorValidator = servercputypeDescVendor.Validators[0].(func(string) error)
+	// servercputypeDescModel is the schema descriptor for model field.
+	servercputypeDescModel := servercputypeFields[2].Descriptor()
+	// servercputype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	servercputype.ModelValidator = servercputypeDescModel.Validators[0].(func(string) error)
+	// servercputypeDescClockSpeed is the schema descriptor for clock_speed field.
+	servercputypeDescClockSpeed := servercputypeFields[3].Descriptor()
+	// servercputype.ClockSpeedValidator is a validator for the "clock_speed" field. It is called by the builders before save.
+	servercputype.ClockSpeedValidator = servercputypeDescClockSpeed.Validators[0].(func(string) error)
+	// servercputypeDescCoreCount is the schema descriptor for core_count field.
+	servercputypeDescCoreCount := servercputypeFields[4].Descriptor()
+	// servercputype.CoreCountValidator is a validator for the "core_count" field. It is called by the builders before save.
+	servercputype.CoreCountValidator = servercputypeDescCoreCount.Validators[0].(func(int) error)
+	// servercputypeDescID is the schema descriptor for id field.
+	servercputypeDescID := servercputypeFields[0].Descriptor()
+	// servercputype.DefaultID holds the default value on creation for the id field.
+	servercputype.DefaultID = servercputypeDescID.Default.(func() gidx.PrefixedID)
 	serverchassisMixin := schema.ServerChassis{}.Mixin()
 	serverchassisMixinFields0 := serverchassisMixin[0].Fields()
 	_ = serverchassisMixinFields0

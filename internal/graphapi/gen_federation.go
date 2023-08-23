@@ -100,6 +100,26 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 				list[idx[i]] = entity
 				return nil
 			}
+		case "ServerCPUType":
+			resolverName, err := entityResolverNameForServerCPUType(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerCPUType": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerCPUTypeByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerCPUTypeByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerCPUTypeByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerCPUType": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
 		case "ServerChassis":
 			resolverName, err := entityResolverNameForServerChassis(ctx, rep)
 			if err != nil {
@@ -304,6 +324,23 @@ func entityResolverNameForServer(ctx context.Context, rep map[string]interface{}
 		return "findServerByID", nil
 	}
 	return "", fmt.Errorf("%w for Server", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerCPUType(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerCPUTypeByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerCPUType", ErrTypeNotFound)
 }
 
 func entityResolverNameForServerChassis(ctx context.Context, rep map[string]interface{}) (string, error) {

@@ -26,6 +26,9 @@ type Provider func(*sql.Selector)
 // Server is the predicate function for server builders.
 type Server func(*sql.Selector)
 
+// ServerCPUType is the predicate function for servercputype builders.
+type ServerCPUType func(*sql.Selector)
+
 // ServerChassis is the predicate function for serverchassis builders.
 type ServerChassis func(*sql.Selector)
 

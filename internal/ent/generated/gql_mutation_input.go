@@ -138,6 +138,64 @@ func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
 	return c
 }
 
+// CreateServerCPUTypeInput represents a mutation input for creating servercputypes.
+type CreateServerCPUTypeInput struct {
+	Vendor     string
+	Model      string
+	ClockSpeed string
+	CoreCount  int
+}
+
+// Mutate applies the CreateServerCPUTypeInput on the ServerCPUTypeMutation builder.
+func (i *CreateServerCPUTypeInput) Mutate(m *ServerCPUTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	m.SetClockSpeed(i.ClockSpeed)
+	m.SetCoreCount(i.CoreCount)
+}
+
+// SetInput applies the change-set in the CreateServerCPUTypeInput on the ServerCPUTypeCreate builder.
+func (c *ServerCPUTypeCreate) SetInput(i CreateServerCPUTypeInput) *ServerCPUTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerCPUTypeInput represents a mutation input for updating servercputypes.
+type UpdateServerCPUTypeInput struct {
+	Vendor     *string
+	Model      *string
+	ClockSpeed *string
+	CoreCount  *int
+}
+
+// Mutate applies the UpdateServerCPUTypeInput on the ServerCPUTypeMutation builder.
+func (i *UpdateServerCPUTypeInput) Mutate(m *ServerCPUTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if v := i.ClockSpeed; v != nil {
+		m.SetClockSpeed(*v)
+	}
+	if v := i.CoreCount; v != nil {
+		m.SetCoreCount(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerCPUTypeInput on the ServerCPUTypeUpdate builder.
+func (c *ServerCPUTypeUpdate) SetInput(i UpdateServerCPUTypeInput) *ServerCPUTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerCPUTypeInput on the ServerCPUTypeUpdateOne builder.
+func (c *ServerCPUTypeUpdateOne) SetInput(i UpdateServerCPUTypeInput) *ServerCPUTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerChassisInput represents a mutation input for creating serverchasses.
 type CreateServerChassisInput struct {
 	ParentChassisID     gidx.PrefixedID

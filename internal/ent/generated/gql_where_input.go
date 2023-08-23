@@ -28,6 +28,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -671,6 +672,394 @@ func (i *ServerWhereInput) P() (predicate.Server, error) {
 		return predicates[0], nil
 	default:
 		return server.And(predicates...), nil
+	}
+}
+
+// ServerCPUTypeWhereInput represents a where input for filtering ServerCPUType queries.
+type ServerCPUTypeWhereInput struct {
+	Predicates []predicate.ServerCPUType  `json:"-"`
+	Not        *ServerCPUTypeWhereInput   `json:"not,omitempty"`
+	Or         []*ServerCPUTypeWhereInput `json:"or,omitempty"`
+	And        []*ServerCPUTypeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "vendor" field predicates.
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNEQ          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGT           *string  `json:"vendorGT,omitempty"`
+	VendorGTE          *string  `json:"vendorGTE,omitempty"`
+	VendorLT           *string  `json:"vendorLT,omitempty"`
+	VendorLTE          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+
+	// "model" field predicates.
+	Model             *string  `json:"model,omitempty"`
+	ModelNEQ          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGT           *string  `json:"modelGT,omitempty"`
+	ModelGTE          *string  `json:"modelGTE,omitempty"`
+	ModelLT           *string  `json:"modelLT,omitempty"`
+	ModelLTE          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+
+	// "clock_speed" field predicates.
+	ClockSpeed             *string  `json:"clockSpeed,omitempty"`
+	ClockSpeedNEQ          *string  `json:"clockSpeedNEQ,omitempty"`
+	ClockSpeedIn           []string `json:"clockSpeedIn,omitempty"`
+	ClockSpeedNotIn        []string `json:"clockSpeedNotIn,omitempty"`
+	ClockSpeedGT           *string  `json:"clockSpeedGT,omitempty"`
+	ClockSpeedGTE          *string  `json:"clockSpeedGTE,omitempty"`
+	ClockSpeedLT           *string  `json:"clockSpeedLT,omitempty"`
+	ClockSpeedLTE          *string  `json:"clockSpeedLTE,omitempty"`
+	ClockSpeedContains     *string  `json:"clockSpeedContains,omitempty"`
+	ClockSpeedHasPrefix    *string  `json:"clockSpeedHasPrefix,omitempty"`
+	ClockSpeedHasSuffix    *string  `json:"clockSpeedHasSuffix,omitempty"`
+	ClockSpeedEqualFold    *string  `json:"clockSpeedEqualFold,omitempty"`
+	ClockSpeedContainsFold *string  `json:"clockSpeedContainsFold,omitempty"`
+
+	// "core_count" field predicates.
+	CoreCount      *int  `json:"coreCount,omitempty"`
+	CoreCountNEQ   *int  `json:"coreCountNEQ,omitempty"`
+	CoreCountIn    []int `json:"coreCountIn,omitempty"`
+	CoreCountNotIn []int `json:"coreCountNotIn,omitempty"`
+	CoreCountGT    *int  `json:"coreCountGT,omitempty"`
+	CoreCountGTE   *int  `json:"coreCountGTE,omitempty"`
+	CoreCountLT    *int  `json:"coreCountLT,omitempty"`
+	CoreCountLTE   *int  `json:"coreCountLTE,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerCPUTypeWhereInput) AddPredicates(predicates ...predicate.ServerCPUType) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerCPUTypeWhereInput filter on the ServerCPUTypeQuery builder.
+func (i *ServerCPUTypeWhereInput) Filter(q *ServerCPUTypeQuery) (*ServerCPUTypeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerCPUTypeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerCPUTypeWhereInput is returned in case the ServerCPUTypeWhereInput is empty.
+var ErrEmptyServerCPUTypeWhereInput = errors.New("generated: empty predicate ServerCPUTypeWhereInput")
+
+// P returns a predicate for filtering servercputypes.
+// An error is returned if the input is empty or invalid.
+func (i *ServerCPUTypeWhereInput) P() (predicate.ServerCPUType, error) {
+	var predicates []predicate.ServerCPUType
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, servercputype.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerCPUType, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, servercputype.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerCPUType, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, servercputype.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, servercputype.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, servercputype.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, servercputype.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, servercputype.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, servercputype.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, servercputype.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, servercputype.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, servercputype.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, servercputype.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, servercputype.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, servercputype.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, servercputype.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, servercputype.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, servercputype.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, servercputype.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, servercputype.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, servercputype.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, servercputype.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, servercputype.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, servercputype.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, servercputype.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, servercputype.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, servercputype.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, servercputype.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Vendor != nil {
+		predicates = append(predicates, servercputype.VendorEQ(*i.Vendor))
+	}
+	if i.VendorNEQ != nil {
+		predicates = append(predicates, servercputype.VendorNEQ(*i.VendorNEQ))
+	}
+	if len(i.VendorIn) > 0 {
+		predicates = append(predicates, servercputype.VendorIn(i.VendorIn...))
+	}
+	if len(i.VendorNotIn) > 0 {
+		predicates = append(predicates, servercputype.VendorNotIn(i.VendorNotIn...))
+	}
+	if i.VendorGT != nil {
+		predicates = append(predicates, servercputype.VendorGT(*i.VendorGT))
+	}
+	if i.VendorGTE != nil {
+		predicates = append(predicates, servercputype.VendorGTE(*i.VendorGTE))
+	}
+	if i.VendorLT != nil {
+		predicates = append(predicates, servercputype.VendorLT(*i.VendorLT))
+	}
+	if i.VendorLTE != nil {
+		predicates = append(predicates, servercputype.VendorLTE(*i.VendorLTE))
+	}
+	if i.VendorContains != nil {
+		predicates = append(predicates, servercputype.VendorContains(*i.VendorContains))
+	}
+	if i.VendorHasPrefix != nil {
+		predicates = append(predicates, servercputype.VendorHasPrefix(*i.VendorHasPrefix))
+	}
+	if i.VendorHasSuffix != nil {
+		predicates = append(predicates, servercputype.VendorHasSuffix(*i.VendorHasSuffix))
+	}
+	if i.VendorEqualFold != nil {
+		predicates = append(predicates, servercputype.VendorEqualFold(*i.VendorEqualFold))
+	}
+	if i.VendorContainsFold != nil {
+		predicates = append(predicates, servercputype.VendorContainsFold(*i.VendorContainsFold))
+	}
+	if i.Model != nil {
+		predicates = append(predicates, servercputype.ModelEQ(*i.Model))
+	}
+	if i.ModelNEQ != nil {
+		predicates = append(predicates, servercputype.ModelNEQ(*i.ModelNEQ))
+	}
+	if len(i.ModelIn) > 0 {
+		predicates = append(predicates, servercputype.ModelIn(i.ModelIn...))
+	}
+	if len(i.ModelNotIn) > 0 {
+		predicates = append(predicates, servercputype.ModelNotIn(i.ModelNotIn...))
+	}
+	if i.ModelGT != nil {
+		predicates = append(predicates, servercputype.ModelGT(*i.ModelGT))
+	}
+	if i.ModelGTE != nil {
+		predicates = append(predicates, servercputype.ModelGTE(*i.ModelGTE))
+	}
+	if i.ModelLT != nil {
+		predicates = append(predicates, servercputype.ModelLT(*i.ModelLT))
+	}
+	if i.ModelLTE != nil {
+		predicates = append(predicates, servercputype.ModelLTE(*i.ModelLTE))
+	}
+	if i.ModelContains != nil {
+		predicates = append(predicates, servercputype.ModelContains(*i.ModelContains))
+	}
+	if i.ModelHasPrefix != nil {
+		predicates = append(predicates, servercputype.ModelHasPrefix(*i.ModelHasPrefix))
+	}
+	if i.ModelHasSuffix != nil {
+		predicates = append(predicates, servercputype.ModelHasSuffix(*i.ModelHasSuffix))
+	}
+	if i.ModelEqualFold != nil {
+		predicates = append(predicates, servercputype.ModelEqualFold(*i.ModelEqualFold))
+	}
+	if i.ModelContainsFold != nil {
+		predicates = append(predicates, servercputype.ModelContainsFold(*i.ModelContainsFold))
+	}
+	if i.ClockSpeed != nil {
+		predicates = append(predicates, servercputype.ClockSpeedEQ(*i.ClockSpeed))
+	}
+	if i.ClockSpeedNEQ != nil {
+		predicates = append(predicates, servercputype.ClockSpeedNEQ(*i.ClockSpeedNEQ))
+	}
+	if len(i.ClockSpeedIn) > 0 {
+		predicates = append(predicates, servercputype.ClockSpeedIn(i.ClockSpeedIn...))
+	}
+	if len(i.ClockSpeedNotIn) > 0 {
+		predicates = append(predicates, servercputype.ClockSpeedNotIn(i.ClockSpeedNotIn...))
+	}
+	if i.ClockSpeedGT != nil {
+		predicates = append(predicates, servercputype.ClockSpeedGT(*i.ClockSpeedGT))
+	}
+	if i.ClockSpeedGTE != nil {
+		predicates = append(predicates, servercputype.ClockSpeedGTE(*i.ClockSpeedGTE))
+	}
+	if i.ClockSpeedLT != nil {
+		predicates = append(predicates, servercputype.ClockSpeedLT(*i.ClockSpeedLT))
+	}
+	if i.ClockSpeedLTE != nil {
+		predicates = append(predicates, servercputype.ClockSpeedLTE(*i.ClockSpeedLTE))
+	}
+	if i.ClockSpeedContains != nil {
+		predicates = append(predicates, servercputype.ClockSpeedContains(*i.ClockSpeedContains))
+	}
+	if i.ClockSpeedHasPrefix != nil {
+		predicates = append(predicates, servercputype.ClockSpeedHasPrefix(*i.ClockSpeedHasPrefix))
+	}
+	if i.ClockSpeedHasSuffix != nil {
+		predicates = append(predicates, servercputype.ClockSpeedHasSuffix(*i.ClockSpeedHasSuffix))
+	}
+	if i.ClockSpeedEqualFold != nil {
+		predicates = append(predicates, servercputype.ClockSpeedEqualFold(*i.ClockSpeedEqualFold))
+	}
+	if i.ClockSpeedContainsFold != nil {
+		predicates = append(predicates, servercputype.ClockSpeedContainsFold(*i.ClockSpeedContainsFold))
+	}
+	if i.CoreCount != nil {
+		predicates = append(predicates, servercputype.CoreCountEQ(*i.CoreCount))
+	}
+	if i.CoreCountNEQ != nil {
+		predicates = append(predicates, servercputype.CoreCountNEQ(*i.CoreCountNEQ))
+	}
+	if len(i.CoreCountIn) > 0 {
+		predicates = append(predicates, servercputype.CoreCountIn(i.CoreCountIn...))
+	}
+	if len(i.CoreCountNotIn) > 0 {
+		predicates = append(predicates, servercputype.CoreCountNotIn(i.CoreCountNotIn...))
+	}
+	if i.CoreCountGT != nil {
+		predicates = append(predicates, servercputype.CoreCountGT(*i.CoreCountGT))
+	}
+	if i.CoreCountGTE != nil {
+		predicates = append(predicates, servercputype.CoreCountGTE(*i.CoreCountGTE))
+	}
+	if i.CoreCountLT != nil {
+		predicates = append(predicates, servercputype.CoreCountLT(*i.CoreCountLT))
+	}
+	if i.CoreCountLTE != nil {
+		predicates = append(predicates, servercputype.CoreCountLTE(*i.CoreCountLTE))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerCPUTypeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return servercputype.And(predicates...), nil
 	}
 }
 
