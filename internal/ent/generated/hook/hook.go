@@ -47,6 +47,18 @@ func (f ServerFunc) Mutate(ctx context.Context, m generated.Mutation) (generated
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMutation", m)
 }
 
+// The ServerCPUFunc type is an adapter to allow the use of ordinary
+// function as ServerCPU mutator.
+type ServerCPUFunc func(context.Context, *generated.ServerCPUMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerCPUFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerCPUMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerCPUMutation", m)
+}
+
 // The ServerCPUTypeFunc type is an adapter to allow the use of ordinary
 // function as ServerCPUType mutator.
 type ServerCPUTypeFunc func(context.Context, *generated.ServerCPUTypeMutation) (generated.Value, error)

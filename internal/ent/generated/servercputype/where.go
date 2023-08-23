@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/x/gidx"
 )
@@ -412,6 +413,29 @@ func CoreCountLT(v int) predicate.ServerCPUType {
 // CoreCountLTE applies the LTE predicate on the "core_count" field.
 func CoreCountLTE(v int) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldLTE(FieldCoreCount, v))
+}
+
+// HasCPU applies the HasEdge predicate on the "cpu" edge.
+func HasCPU() predicate.ServerCPUType {
+	return predicate.ServerCPUType(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, CPUTable, CPUColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCPUWith applies the HasEdge predicate on the "cpu" edge with a given conditions (other predicates).
+func HasCPUWith(preds ...predicate.ServerCPU) predicate.ServerCPUType {
+	return predicate.ServerCPUType(func(s *sql.Selector) {
+		step := newCPUStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

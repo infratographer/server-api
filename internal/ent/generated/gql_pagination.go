@@ -35,6 +35,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
@@ -886,6 +887,371 @@ func (s *Server) ToEdge(order *ServerOrder) *ServerEdge {
 	return &ServerEdge{
 		Node:   s,
 		Cursor: order.Field.toCursor(s),
+	}
+}
+
+// ServerCPUEdge is the edge representation of ServerCPU.
+type ServerCPUEdge struct {
+	Node   *ServerCPU `json:"node"`
+	Cursor Cursor     `json:"cursor"`
+}
+
+// ServerCPUConnection is the connection containing edges to ServerCPU.
+type ServerCPUConnection struct {
+	Edges      []*ServerCPUEdge `json:"edges"`
+	PageInfo   PageInfo         `json:"pageInfo"`
+	TotalCount int              `json:"totalCount"`
+}
+
+func (c *ServerCPUConnection) build(nodes []*ServerCPU, pager *servercpuPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerCPU
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerCPU {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerCPU {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerCPUEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerCPUEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerCPUPaginateOption enables pagination customization.
+type ServerCPUPaginateOption func(*servercpuPager) error
+
+// WithServerCPUOrder configures pagination ordering.
+func WithServerCPUOrder(order *ServerCPUOrder) ServerCPUPaginateOption {
+	if order == nil {
+		order = DefaultServerCPUOrder
+	}
+	o := *order
+	return func(pager *servercpuPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerCPUOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerCPUFilter configures pagination filter.
+func WithServerCPUFilter(filter func(*ServerCPUQuery) (*ServerCPUQuery, error)) ServerCPUPaginateOption {
+	return func(pager *servercpuPager) error {
+		if filter == nil {
+			return errors.New("ServerCPUQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servercpuPager struct {
+	reverse bool
+	order   *ServerCPUOrder
+	filter  func(*ServerCPUQuery) (*ServerCPUQuery, error)
+}
+
+func newServerCPUPager(opts []ServerCPUPaginateOption, reverse bool) (*servercpuPager, error) {
+	pager := &servercpuPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerCPUOrder
+	}
+	return pager, nil
+}
+
+func (p *servercpuPager) applyFilter(query *ServerCPUQuery) (*ServerCPUQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servercpuPager) toCursor(sc *ServerCPU) Cursor {
+	return p.order.Field.toCursor(sc)
+}
+
+func (p *servercpuPager) applyCursors(query *ServerCPUQuery, after, before *Cursor) (*ServerCPUQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerCPUOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servercpuPager) applyOrder(query *ServerCPUQuery) *ServerCPUQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerCPUOrder.Field {
+		query = query.Order(DefaultServerCPUOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servercpuPager) orderExpr(query *ServerCPUQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerCPUOrder.Field {
+			b.Comma().Ident(DefaultServerCPUOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerCPU.
+func (sc *ServerCPUQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerCPUPaginateOption,
+) (*ServerCPUConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerCPUPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if sc, err = pager.applyFilter(sc); err != nil {
+		return nil, err
+	}
+	conn := &ServerCPUConnection{Edges: []*ServerCPUEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = sc.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if sc, err = pager.applyCursors(sc, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		sc.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sc.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	sc = pager.applyOrder(sc)
+	nodes, err := sc.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerCPUOrderFieldID orders ServerCPU by id.
+	ServerCPUOrderFieldID = &ServerCPUOrderField{
+		Value: func(sc *ServerCPU) (ent.Value, error) {
+			return sc.ID, nil
+		},
+		column: servercpu.FieldID,
+		toTerm: servercpu.ByID,
+		toCursor: func(sc *ServerCPU) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ID,
+			}
+		},
+	}
+	// ServerCPUOrderFieldCreatedAt orders ServerCPU by created_at.
+	ServerCPUOrderFieldCreatedAt = &ServerCPUOrderField{
+		Value: func(sc *ServerCPU) (ent.Value, error) {
+			return sc.CreatedAt, nil
+		},
+		column: servercpu.FieldCreatedAt,
+		toTerm: servercpu.ByCreatedAt,
+		toCursor: func(sc *ServerCPU) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.CreatedAt,
+			}
+		},
+	}
+	// ServerCPUOrderFieldUpdatedAt orders ServerCPU by updated_at.
+	ServerCPUOrderFieldUpdatedAt = &ServerCPUOrderField{
+		Value: func(sc *ServerCPU) (ent.Value, error) {
+			return sc.UpdatedAt, nil
+		},
+		column: servercpu.FieldUpdatedAt,
+		toTerm: servercpu.ByUpdatedAt,
+		toCursor: func(sc *ServerCPU) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.UpdatedAt,
+			}
+		},
+	}
+	// ServerCPUOrderFieldServerCPUTypeID orders ServerCPU by server_cpu_type_id.
+	ServerCPUOrderFieldServerCPUTypeID = &ServerCPUOrderField{
+		Value: func(sc *ServerCPU) (ent.Value, error) {
+			return sc.ServerCPUTypeID, nil
+		},
+		column: servercpu.FieldServerCPUTypeID,
+		toTerm: servercpu.ByServerCPUTypeID,
+		toCursor: func(sc *ServerCPU) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ServerCPUTypeID,
+			}
+		},
+	}
+	// ServerCPUOrderFieldServerID orders ServerCPU by server_id.
+	ServerCPUOrderFieldServerID = &ServerCPUOrderField{
+		Value: func(sc *ServerCPU) (ent.Value, error) {
+			return sc.ServerID, nil
+		},
+		column: servercpu.FieldServerID,
+		toTerm: servercpu.ByServerID,
+		toCursor: func(sc *ServerCPU) Cursor {
+			return Cursor{
+				ID:    sc.ID,
+				Value: sc.ServerID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerCPUOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerCPUOrderFieldID.column:
+		str = "ID"
+	case ServerCPUOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerCPUOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerCPUOrderFieldServerCPUTypeID.column:
+		str = "SERVER_CPU_TYPE"
+	case ServerCPUOrderFieldServerID.column:
+		str = "SERVER"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerCPUOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerCPUOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerCPUOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerCPUOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerCPUOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerCPUOrderFieldUpdatedAt
+	case "SERVER_CPU_TYPE":
+		*f = *ServerCPUOrderFieldServerCPUTypeID
+	case "SERVER":
+		*f = *ServerCPUOrderFieldServerID
+	default:
+		return fmt.Errorf("%s is not a valid ServerCPUOrderField", str)
+	}
+	return nil
+}
+
+// ServerCPUOrderField defines the ordering field of ServerCPU.
+type ServerCPUOrderField struct {
+	// Value extracts the ordering value from the given ServerCPU.
+	Value    func(*ServerCPU) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servercpu.OrderOption
+	toCursor func(*ServerCPU) Cursor
+}
+
+// ServerCPUOrder defines the ordering of ServerCPU.
+type ServerCPUOrder struct {
+	Direction OrderDirection       `json:"direction"`
+	Field     *ServerCPUOrderField `json:"field"`
+}
+
+// DefaultServerCPUOrder is the default ordering of ServerCPU.
+var DefaultServerCPUOrder = &ServerCPUOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerCPUOrderField{
+		Value: func(sc *ServerCPU) (ent.Value, error) {
+			return sc.ID, nil
+		},
+		column: servercpu.FieldID,
+		toTerm: servercpu.ByID,
+		toCursor: func(sc *ServerCPU) Cursor {
+			return Cursor{ID: sc.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerCPU into ServerCPUEdge.
+func (sc *ServerCPU) ToEdge(order *ServerCPUOrder) *ServerCPUEdge {
+	if order == nil {
+		order = DefaultServerCPUOrder
+	}
+	return &ServerCPUEdge{
+		Node:   sc,
+		Cursor: order.Field.toCursor(sc),
 	}
 }
 

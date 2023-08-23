@@ -24,6 +24,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/x/gidx"
 )
@@ -99,6 +100,21 @@ func (sctc *ServerCPUTypeCreate) SetNillableID(gi *gidx.PrefixedID) *ServerCPUTy
 		sctc.SetID(*gi)
 	}
 	return sctc
+}
+
+// AddCPUIDs adds the "cpu" edge to the ServerCPU entity by IDs.
+func (sctc *ServerCPUTypeCreate) AddCPUIDs(ids ...gidx.PrefixedID) *ServerCPUTypeCreate {
+	sctc.mutation.AddCPUIDs(ids...)
+	return sctc
+}
+
+// AddCPU adds the "cpu" edges to the ServerCPU entity.
+func (sctc *ServerCPUTypeCreate) AddCPU(s ...*ServerCPU) *ServerCPUTypeCreate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctc.AddCPUIDs(ids...)
 }
 
 // Mutation returns the ServerCPUTypeMutation object of the builder.
@@ -248,6 +264,22 @@ func (sctc *ServerCPUTypeCreate) createSpec() (*ServerCPUType, *sqlgraph.CreateS
 	if value, ok := sctc.mutation.CoreCount(); ok {
 		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt, value)
 		_node.CoreCount = value
+	}
+	if nodes := sctc.mutation.CPUIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

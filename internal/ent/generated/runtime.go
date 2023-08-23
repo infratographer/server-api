@@ -25,6 +25,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/server-api/internal/ent/schema"
@@ -89,6 +90,29 @@ func init() {
 	serverDescID := serverFields[0].Descriptor()
 	// server.DefaultID holds the default value on creation for the id field.
 	server.DefaultID = serverDescID.Default.(func() gidx.PrefixedID)
+	servercpuMixin := schema.ServerCPU{}.Mixin()
+	servercpuMixinFields0 := servercpuMixin[0].Fields()
+	_ = servercpuMixinFields0
+	servercpuFields := schema.ServerCPU{}.Fields()
+	_ = servercpuFields
+	// servercpuDescCreatedAt is the schema descriptor for created_at field.
+	servercpuDescCreatedAt := servercpuMixinFields0[0].Descriptor()
+	// servercpu.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servercpu.DefaultCreatedAt = servercpuDescCreatedAt.Default.(func() time.Time)
+	// servercpuDescUpdatedAt is the schema descriptor for updated_at field.
+	servercpuDescUpdatedAt := servercpuMixinFields0[1].Descriptor()
+	// servercpu.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servercpu.DefaultUpdatedAt = servercpuDescUpdatedAt.Default.(func() time.Time)
+	// servercpu.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servercpu.UpdateDefaultUpdatedAt = servercpuDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servercpuDescSerial is the schema descriptor for serial field.
+	servercpuDescSerial := servercpuFields[3].Descriptor()
+	// servercpu.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	servercpu.SerialValidator = servercpuDescSerial.Validators[0].(func(string) error)
+	// servercpuDescID is the schema descriptor for id field.
+	servercpuDescID := servercpuFields[0].Descriptor()
+	// servercpu.DefaultID holds the default value on creation for the id field.
+	servercpu.DefaultID = servercpuDescID.Default.(func() gidx.PrefixedID)
 	servercputypeMixin := schema.ServerCPUType{}.Mixin()
 	servercputypeMixinFields0 := servercputypeMixin[0].Fields()
 	_ = servercputypeMixinFields0

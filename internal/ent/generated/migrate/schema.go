@@ -117,6 +117,57 @@ var (
 			},
 		},
 	}
+	// ServerCpUsColumns holds the columns for the "server_cp_us" table.
+	ServerCpUsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "server_id", Type: field.TypeString},
+		{Name: "server_cpu_type_id", Type: field.TypeString},
+	}
+	// ServerCpUsTable holds the schema information for the "server_cp_us" table.
+	ServerCpUsTable = &schema.Table{
+		Name:       "server_cp_us",
+		Columns:    ServerCpUsColumns,
+		PrimaryKey: []*schema.Column{ServerCpUsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_cp_us_servers_server",
+				Columns:    []*schema.Column{ServerCpUsColumns[4]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_cp_us_server_cpu_types_server_cpu_type",
+				Columns:    []*schema.Column{ServerCpUsColumns[5]},
+				RefColumns: []*schema.Column{ServerCPUTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servercpu_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerCpUsColumns[1]},
+			},
+			{
+				Name:    "servercpu_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerCpUsColumns[2]},
+			},
+			{
+				Name:    "servercpu_server_cpu_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerCpUsColumns[5]},
+			},
+			{
+				Name:    "servercpu_server_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerCpUsColumns[4]},
+			},
+		},
+	}
 	// ServerCPUTypesColumns holds the columns for the "server_cpu_types" table.
 	ServerCPUTypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -350,6 +401,7 @@ var (
 	Tables = []*schema.Table{
 		ProvidersTable,
 		ServersTable,
+		ServerCpUsTable,
 		ServerCPUTypesTable,
 		ServerChassesTable,
 		ServerChassisTypesTable,
@@ -362,6 +414,8 @@ var (
 func init() {
 	ServersTable.ForeignKeys[0].RefTable = ProvidersTable
 	ServersTable.ForeignKeys[1].RefTable = ServerTypesTable
+	ServerCpUsTable.ForeignKeys[0].RefTable = ServersTable
+	ServerCpUsTable.ForeignKeys[1].RefTable = ServerCPUTypesTable
 	ServerChassesTable.ForeignKeys[0].RefTable = ServersTable
 	ServerChassesTable.ForeignKeys[1].RefTable = ServerChassisTypesTable
 	ServerComponentsTable.ForeignKeys[0].RefTable = ServerComponentTypesTable

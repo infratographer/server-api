@@ -138,12 +138,57 @@ func (c *ServerUpdateOne) SetInput(i UpdateServerInput) *ServerUpdateOne {
 	return c
 }
 
+// CreateServerCPUInput represents a mutation input for creating servercpus.
+type CreateServerCPUInput struct {
+	Serial          string
+	ServerID        gidx.PrefixedID
+	ServerCPUTypeID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerCPUInput on the ServerCPUMutation builder.
+func (i *CreateServerCPUInput) Mutate(m *ServerCPUMutation) {
+	m.SetSerial(i.Serial)
+	m.SetServerID(i.ServerID)
+	m.SetServerCPUTypeID(i.ServerCPUTypeID)
+}
+
+// SetInput applies the change-set in the CreateServerCPUInput on the ServerCPUCreate builder.
+func (c *ServerCPUCreate) SetInput(i CreateServerCPUInput) *ServerCPUCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerCPUInput represents a mutation input for updating servercpus.
+type UpdateServerCPUInput struct {
+	Serial *string
+}
+
+// Mutate applies the UpdateServerCPUInput on the ServerCPUMutation builder.
+func (i *UpdateServerCPUInput) Mutate(m *ServerCPUMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerCPUInput on the ServerCPUUpdate builder.
+func (c *ServerCPUUpdate) SetInput(i UpdateServerCPUInput) *ServerCPUUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerCPUInput on the ServerCPUUpdateOne builder.
+func (c *ServerCPUUpdateOne) SetInput(i UpdateServerCPUInput) *ServerCPUUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerCPUTypeInput represents a mutation input for creating servercputypes.
 type CreateServerCPUTypeInput struct {
 	Vendor     string
 	Model      string
 	ClockSpeed string
 	CoreCount  int
+	CPUIDs     []gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerCPUTypeInput on the ServerCPUTypeMutation builder.
@@ -152,6 +197,9 @@ func (i *CreateServerCPUTypeInput) Mutate(m *ServerCPUTypeMutation) {
 	m.SetModel(i.Model)
 	m.SetClockSpeed(i.ClockSpeed)
 	m.SetCoreCount(i.CoreCount)
+	if v := i.CPUIDs; len(v) > 0 {
+		m.AddCPUIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateServerCPUTypeInput on the ServerCPUTypeCreate builder.
@@ -162,10 +210,13 @@ func (c *ServerCPUTypeCreate) SetInput(i CreateServerCPUTypeInput) *ServerCPUTyp
 
 // UpdateServerCPUTypeInput represents a mutation input for updating servercputypes.
 type UpdateServerCPUTypeInput struct {
-	Vendor     *string
-	Model      *string
-	ClockSpeed *string
-	CoreCount  *int
+	Vendor       *string
+	Model        *string
+	ClockSpeed   *string
+	CoreCount    *int
+	ClearCPU     bool
+	AddCPUIDs    []gidx.PrefixedID
+	RemoveCPUIDs []gidx.PrefixedID
 }
 
 // Mutate applies the UpdateServerCPUTypeInput on the ServerCPUTypeMutation builder.
@@ -181,6 +232,15 @@ func (i *UpdateServerCPUTypeInput) Mutate(m *ServerCPUTypeMutation) {
 	}
 	if v := i.CoreCount; v != nil {
 		m.SetCoreCount(*v)
+	}
+	if i.ClearCPU {
+		m.ClearCPU()
+	}
+	if v := i.AddCPUIDs; len(v) > 0 {
+		m.AddCPUIDs(v...)
+	}
+	if v := i.RemoveCPUIDs; len(v) > 0 {
+		m.RemoveCPUIDs(v...)
 	}
 }
 

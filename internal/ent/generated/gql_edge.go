@@ -80,6 +80,43 @@ func (s *Server) Components(
 	return s.QueryComponents().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (sc *ServerCPU) Server(ctx context.Context) (*Server, error) {
+	result, err := sc.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = sc.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (sc *ServerCPU) ServerCPUType(ctx context.Context) (*ServerCPUType, error) {
+	result, err := sc.Edges.ServerCPUTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = sc.QueryServerCPUType().Only(ctx)
+	}
+	return result, err
+}
+
+func (sct *ServerCPUType) CPU(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerCPUOrder, where *ServerCPUWhereInput,
+) (*ServerCPUConnection, error) {
+	opts := []ServerCPUPaginateOption{
+		WithServerCPUOrder(orderBy),
+		WithServerCPUFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := sct.Edges.totalCount[0][alias]
+	if nodes, err := sct.NamedCPU(alias); err == nil || hasTotalCount {
+		pager, err := newServerCPUPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerCPUConnection{Edges: []*ServerCPUEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return sct.QueryCPU().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (sc *ServerChassis) Server(ctx context.Context) (*Server, error) {
 	result, err := sc.Edges.ServerOrErr()
 	if IsNotLoaded(err) {

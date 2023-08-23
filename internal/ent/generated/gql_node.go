@@ -29,6 +29,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
@@ -44,6 +45,9 @@ func (n *Provider) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Server) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerCPU) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerCPUType) IsNode() {}
@@ -145,6 +149,22 @@ func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (N
 		query := c.Server.Query().
 			Where(server.ID(uid))
 		query, err := query.CollectFields(ctx, "Server")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servercpu.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerCPU.Query().
+			Where(servercpu.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerCPU")
 		if err != nil {
 			return nil, err
 		}
@@ -342,6 +362,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		query := c.Server.Query().
 			Where(server.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "Server")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servercpu.Table:
+		query := c.ServerCPU.Query().
+			Where(servercpu.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerCPU")
 		if err != nil {
 			return nil, err
 		}

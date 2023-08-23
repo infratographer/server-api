@@ -53,6 +53,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Entity struct {
 		FindServerByID              func(childComplexity int, id gidx.PrefixedID) int
+		FindServerCPUByID           func(childComplexity int, id gidx.PrefixedID) int
 		FindServerCPUTypeByID       func(childComplexity int, id gidx.PrefixedID) int
 		FindServerChassisByID       func(childComplexity int, id gidx.PrefixedID) int
 		FindServerChassisTypeByID   func(childComplexity int, id gidx.PrefixedID) int
@@ -63,9 +64,12 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		ServerCPU                 func(childComplexity int, input generated.CreateServerCPUInput) int
+		ServerCPUDelete           func(childComplexity int, id gidx.PrefixedID) int
 		ServerCPUType             func(childComplexity int, input generated.CreateServerCPUTypeInput) int
 		ServerCPUTypeDelete       func(childComplexity int, id gidx.PrefixedID) int
 		ServerCPUTypeUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) int
+		ServerCPUUpdate           func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUInput) int
 		ServerChassis             func(childComplexity int, input generated.CreateServerChassisInput) int
 		ServerChassisDelete       func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassisType         func(childComplexity int, input generated.CreateServerChassisTypeInput) int
@@ -98,6 +102,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Server              func(childComplexity int, id gidx.PrefixedID) int
+		ServerCPU           func(childComplexity int, id gidx.PrefixedID) int
 		ServerCPUType       func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassis       func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassisType   func(childComplexity int, id gidx.PrefixedID) int
@@ -120,7 +125,36 @@ type ComplexityRoot struct {
 		UpdatedAt   func(childComplexity int) int
 	}
 
+	ServerCPU struct {
+		CreatedAt     func(childComplexity int) int
+		ID            func(childComplexity int) int
+		Serial        func(childComplexity int) int
+		Server        func(childComplexity int) int
+		ServerCPUType func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+	}
+
+	ServerCPUConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerCPUCreatePayload struct {
+		ServerCPU func(childComplexity int) int
+	}
+
+	ServerCPUDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerCPUEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	ServerCPUType struct {
+		CPU        func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerCPUOrder, where *generated.ServerCPUWhereInput) int
 		ClockSpeed func(childComplexity int) int
 		CoreCount  func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
@@ -151,6 +185,10 @@ type ComplexityRoot struct {
 
 	ServerCPUTypeUpdatePayload struct {
 		ServerCPUType func(childComplexity int) int
+	}
+
+	ServerCPUUpdatePayload struct {
+		ServerCPU func(childComplexity int) int
 	}
 
 	ServerChassis struct {
@@ -376,6 +414,7 @@ type ComplexityRoot struct {
 
 type EntityResolver interface {
 	FindServerByID(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error)
+	FindServerCPUByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPU, error)
 	FindServerCPUTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error)
 	FindServerChassisByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassis, error)
 	FindServerChassisTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error)
@@ -397,6 +436,9 @@ type MutationResolver interface {
 	ServerComponentTypeCreate(ctx context.Context, input generated.CreateServerComponentTypeInput) (*ServerComponentTypeCreatePayload, error)
 	ServerComponentTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerComponentTypeInput) (*ServerComponentTypeUpdatePayload, error)
 	ServerComponentTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerComponentTypeDeletePayload, error)
+	ServerCPU(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error)
+	ServerCPUUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUInput) (*ServerCPUUpdatePayload, error)
+	ServerCPUDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUDeletePayload, error)
 	ServerCPUType(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error)
 	ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) (*ServerCPUTypeUpdatePayload, error)
 	ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUTypeDeletePayload, error)
@@ -415,6 +457,7 @@ type QueryResolver interface {
 	ServerChassisType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassisType, error)
 	ServerComponent(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error)
 	ServerComponentType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error)
+	ServerCPU(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPU, error)
 	ServerCPUType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error)
 	ServerProvider(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
 	Server(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error)
@@ -447,6 +490,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerCPUByID":
+		if e.complexity.Entity.FindServerCPUByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerCPUByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerCPUByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerCPUTypeByID":
 		if e.complexity.Entity.FindServerCPUTypeByID == nil {
@@ -532,6 +587,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Entity.FindServerTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
+	case "Mutation.serverCPU":
+		if e.complexity.Mutation.ServerCPU == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverCPU_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerCPU(childComplexity, args["input"].(generated.CreateServerCPUInput)), true
+
+	case "Mutation.serverCPUDelete":
+		if e.complexity.Mutation.ServerCPUDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverCPUDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerCPUDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
 	case "Mutation.serverCPUType":
 		if e.complexity.Mutation.ServerCPUType == nil {
 			break
@@ -567,6 +646,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ServerCPUTypeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerCPUTypeInput)), true
+
+	case "Mutation.serverCPUUpdate":
+		if e.complexity.Mutation.ServerCPUUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverCPUUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerCPUUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerCPUInput)), true
 
 	case "Mutation.serverChassis":
 		if e.complexity.Mutation.ServerChassis == nil {
@@ -860,6 +951,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Server(childComplexity, args["id"].(gidx.PrefixedID)), true
 
+	case "Query.serverCPU":
+		if e.complexity.Query.ServerCPU == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverCPU_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerCPU(childComplexity, args["id"].(gidx.PrefixedID)), true
+
 	case "Query.serverCPUType":
 		if e.complexity.Query.ServerCPUType == nil {
 			break
@@ -1024,6 +1127,109 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Server.UpdatedAt(childComplexity), true
 
+	case "ServerCPU.createdAt":
+		if e.complexity.ServerCPU.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerCPU.CreatedAt(childComplexity), true
+
+	case "ServerCPU.id":
+		if e.complexity.ServerCPU.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerCPU.ID(childComplexity), true
+
+	case "ServerCPU.serial":
+		if e.complexity.ServerCPU.Serial == nil {
+			break
+		}
+
+		return e.complexity.ServerCPU.Serial(childComplexity), true
+
+	case "ServerCPU.server":
+		if e.complexity.ServerCPU.Server == nil {
+			break
+		}
+
+		return e.complexity.ServerCPU.Server(childComplexity), true
+
+	case "ServerCPU.serverCPUType":
+		if e.complexity.ServerCPU.ServerCPUType == nil {
+			break
+		}
+
+		return e.complexity.ServerCPU.ServerCPUType(childComplexity), true
+
+	case "ServerCPU.updatedAt":
+		if e.complexity.ServerCPU.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerCPU.UpdatedAt(childComplexity), true
+
+	case "ServerCPUConnection.edges":
+		if e.complexity.ServerCPUConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUConnection.Edges(childComplexity), true
+
+	case "ServerCPUConnection.pageInfo":
+		if e.complexity.ServerCPUConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUConnection.PageInfo(childComplexity), true
+
+	case "ServerCPUConnection.totalCount":
+		if e.complexity.ServerCPUConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUConnection.TotalCount(childComplexity), true
+
+	case "ServerCPUCreatePayload.serverCPU":
+		if e.complexity.ServerCPUCreatePayload.ServerCPU == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUCreatePayload.ServerCPU(childComplexity), true
+
+	case "ServerCPUDeletePayload.deletedID":
+		if e.complexity.ServerCPUDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerCPUEdge.cursor":
+		if e.complexity.ServerCPUEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUEdge.Cursor(childComplexity), true
+
+	case "ServerCPUEdge.node":
+		if e.complexity.ServerCPUEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUEdge.Node(childComplexity), true
+
+	case "ServerCPUType.cpu":
+		if e.complexity.ServerCPUType.CPU == nil {
+			break
+		}
+
+		args, err := ec.field_ServerCPUType_cpu_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ServerCPUType.CPU(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerCPUOrder), args["where"].(*generated.ServerCPUWhereInput)), true
+
 	case "ServerCPUType.clockSpeed":
 		if e.complexity.ServerCPUType.ClockSpeed == nil {
 			break
@@ -1128,6 +1334,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ServerCPUTypeUpdatePayload.ServerCPUType(childComplexity), true
+
+	case "ServerCPUUpdatePayload.serverCPU":
+		if e.complexity.ServerCPUUpdatePayload.ServerCPU == nil {
+			break
+		}
+
+		return e.complexity.ServerCPUUpdatePayload.ServerCPU(childComplexity), true
 
 	case "ServerChassis.createdAt":
 		if e.complexity.ServerChassis.CreatedAt == nil {
@@ -1810,6 +2023,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputCreateServerCPUInput,
 		ec.unmarshalInputCreateServerCPUTypeInput,
 		ec.unmarshalInputCreateServerChassisInput,
 		ec.unmarshalInputCreateServerChassisTypeInput,
@@ -1818,8 +2032,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateServerInput,
 		ec.unmarshalInputCreateServerProviderInput,
 		ec.unmarshalInputCreateServerTypeInput,
+		ec.unmarshalInputServerCPUOrder,
 		ec.unmarshalInputServerCPUTypeOrder,
 		ec.unmarshalInputServerCPUTypeWhereInput,
+		ec.unmarshalInputServerCPUWhereInput,
 		ec.unmarshalInputServerChassisOrder,
 		ec.unmarshalInputServerChassisTypeOrder,
 		ec.unmarshalInputServerChassisTypeWhereInput,
@@ -1834,6 +2050,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerTypeOrder,
 		ec.unmarshalInputServerTypeWhereInput,
 		ec.unmarshalInputServerWhereInput,
+		ec.unmarshalInputUpdateServerCPUInput,
 		ec.unmarshalInputUpdateServerCPUTypeInput,
 		ec.unmarshalInputUpdateServerChassisInput,
 		ec.unmarshalInputUpdateServerChassisTypeInput,
@@ -2183,6 +2400,67 @@ type ServerComponentTypeUpdatePayload {
   """
   serverComponentType: ServerComponentType!
 }`, BuiltIn: false},
+	{Name: "../../schema/cpu.graphql", Input: `extend type Query {
+  """
+  Lookup a serverCPU by ID.
+  """
+  serverCPU(
+    """
+    The server cpu ID.
+    """
+    id: ID!
+  ): ServerCPU!
+}
+
+extend type Mutation {
+  """
+  Create a server cpu.
+  """
+  serverCPU(
+    input: CreateServerCPUInput!
+  ): ServerCPUCreatePayload!
+  """
+  Update a server cpu.
+  """
+  serverCPUUpdate(
+    id: ID!
+    input: UpdateServerCPUInput!
+  ): ServerCPUUpdatePayload!
+  """
+  Delete a server cpu.
+  """
+  serverCPUDelete(id: ID!): ServerCPUDeletePayload!
+}
+
+"""
+Return response from serverCPUCreate
+"""
+type ServerCPUCreatePayload {
+  """
+  The created server cpu.
+  """
+  serverCPU: ServerCPU!
+}
+
+"""
+Return response from serverCPUDelete
+"""
+type ServerCPUDeletePayload {
+  """
+  The ID of the deleted server cpu.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverCPUUpdate
+"""
+type ServerCPUUpdatePayload {
+  """
+  The updated server cpu.
+  """
+  serverCPU: ServerCPU!
+}`, BuiltIn: false},
 	{Name: "../../schema/cpu_type.graphql", Input: `extend type Query {
   """
   Lookup a serverCPUType by ID.
@@ -2246,6 +2524,13 @@ type ServerCPUTypeUpdatePayload {
 }`, BuiltIn: false},
 	{Name: "../../schema/ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 directive @goModel(model: String, models: [String!]) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
+"""Input information to create a server cpu."""
+input CreateServerCPUInput {
+  """The serial number of the server cpu."""
+  serial: String!
+  serverID: ID!
+  serverCPUTypeID: ID!
+}
 """Input information to create a server cpu type."""
 input CreateServerCPUTypeInput {
   """The name of the vendor for the server cpu type."""
@@ -2256,6 +2541,7 @@ input CreateServerCPUTypeInput {
   clockSpeed: String!
   """The number of cores for the server cpu type."""
   coreCount: Int!
+  cpuIDs: [ID!]
 }
 """Input information to create a server chassis."""
 input CreateServerChassisInput {
@@ -2395,6 +2681,47 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
     where: ServerComponentWhereInput
   ): ServerComponentConnection!
 }
+type ServerCPU implements Node @key(fields: "id") @prefixedID(prefix: "srvrcpu") {
+  """The ID of the server cpu."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The serial number of the server cpu."""
+  serial: String!
+  server: Server!
+  serverCPUType: ServerCPUType!
+}
+"""A connection to a list of items."""
+type ServerCPUConnection {
+  """A list of edges."""
+  edges: [ServerCPUEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerCPUEdge {
+  """The item at the end of the edge."""
+  node: ServerCPU
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerCPU connections"""
+input ServerCPUOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerCPUs."""
+  field: ServerCPUOrderField!
+}
+"""Properties by which ServerCPU connections can be ordered."""
+enum ServerCPUOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  SERVER_CPU_TYPE
+  SERVER
+}
 type ServerCPUType implements Node @key(fields: "id") @prefixedID(prefix: "srvrcpt") {
   """The ID of the server cpu type."""
   id: ID!
@@ -2408,6 +2735,25 @@ type ServerCPUType implements Node @key(fields: "id") @prefixedID(prefix: "srvrc
   clockSpeed: String!
   """The number of cores for the server cpu type."""
   coreCount: Int!
+  cpu(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerCPUs returned from the connection."""
+    orderBy: ServerCPUOrder
+
+    """Filtering options for ServerCPUs returned from the connection."""
+    where: ServerCPUWhereInput
+  ): ServerCPUConnection!
 }
 """A connection to a list of items."""
 type ServerCPUTypeConnection {
@@ -2525,6 +2871,65 @@ input ServerCPUTypeWhereInput {
   coreCountGTE: Int
   coreCountLT: Int
   coreCountLTE: Int
+  """cpu edge predicates"""
+  hasCPU: Boolean
+  hasCPUWith: [ServerCPUWhereInput!]
+}
+"""
+ServerCPUWhereInput is used for filtering ServerCPU objects.
+Input was generated by ent.
+"""
+input ServerCPUWhereInput {
+  not: ServerCPUWhereInput
+  and: [ServerCPUWhereInput!]
+  or: [ServerCPUWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """serial field predicates"""
+  serial: String
+  serialNEQ: String
+  serialIn: [String!]
+  serialNotIn: [String!]
+  serialGT: String
+  serialGTE: String
+  serialLT: String
+  serialLTE: String
+  serialContains: String
+  serialHasPrefix: String
+  serialHasSuffix: String
+  serialEqualFold: String
+  serialContainsFold: String
+  """server edge predicates"""
+  hasServer: Boolean
+  hasServerWith: [ServerWhereInput!]
+  """server_cpu_type edge predicates"""
+  hasServerCPUType: Boolean
+  hasServerCPUTypeWith: [ServerCPUTypeWhereInput!]
 }
 type ServerChassis implements Node @key(fields: "id") @prefixedID(prefix: "srvrsch") {
   """The ID of the server chassis."""
@@ -3340,6 +3745,11 @@ input ServerWhereInput {
 }
 """The builtin Time type"""
 scalar Time
+"""Input information to update a server cpu."""
+input UpdateServerCPUInput {
+  """The serial number of the server cpu."""
+  serial: String
+}
 """Input information to update a server cpu type."""
 input UpdateServerCPUTypeInput {
   """The name of the vendor for the server cpu type."""
@@ -3350,6 +3760,9 @@ input UpdateServerCPUTypeInput {
   clockSpeed: String
   """The number of cores for the server cpu type."""
   coreCount: Int
+  addCPUIDs: [ID!]
+  removeCPUIDs: [ID!]
+  clearCPU: Boolean
 }
 """Input information to update a server chassis."""
 input UpdateServerChassisInput {
@@ -3634,11 +4047,12 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerProvider | ServerType
+union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
 		findServerByID(id: ID!,): Server!
+	findServerCPUByID(id: ID!,): ServerCPU!
 	findServerCPUTypeByID(id: ID!,): ServerCPUType!
 	findServerChassisByID(id: ID!,): ServerChassis!
 	findServerChassisTypeByID(id: ID!,): ServerChassisType!
@@ -3681,6 +4095,21 @@ func (ec *executionContext) dir_composeDirective_args(ctx context.Context, rawAr
 }
 
 func (ec *executionContext) field_Entity_findServerByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerCPUByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -3800,6 +4229,21 @@ func (ec *executionContext) field_Entity_findServerTypeByID_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverCPUDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverCPUTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3846,6 +4290,45 @@ func (ec *executionContext) field_Mutation_serverCPUType_args(ctx context.Contex
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNCreateServerCPUTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerCPUTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverCPUUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerCPUInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerCPUInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerCPUInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverCPU_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerCPUInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerCPUInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerCPUInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4277,6 +4760,21 @@ func (ec *executionContext) field_Query_serverCPUType_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_serverCPU_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_serverChassisType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4379,6 +4877,66 @@ func (ec *executionContext) field_Query_server_args(ctx context.Context, rawArgs
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_ServerCPUType_cpu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *generated.ServerCPUOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOServerCPUOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *generated.ServerCPUWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOServerCPUWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
 	return args, nil
 }
 
@@ -4733,6 +5291,75 @@ func (ec *executionContext) fieldContext_Entity_findServerByID(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Entity_findServerCPUByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerCPUByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerCPUByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPU)
+	fc.Result = res
+	return ec.marshalNServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerCPUByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerCPU_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerCPU_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerCPU_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerCPU_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerCPU_server(ctx, field)
+			case "serverCPUType":
+				return ec.fieldContext_ServerCPU_serverCPUType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPU", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerCPUByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Entity_findServerCPUTypeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Entity_findServerCPUTypeByID(ctx, field)
 	if err != nil {
@@ -4786,6 +5413,8 @@ func (ec *executionContext) fieldContext_Entity_findServerCPUTypeByID(ctx contex
 				return ec.fieldContext_ServerCPUType_clockSpeed(ctx, field)
 			case "coreCount":
 				return ec.fieldContext_ServerCPUType_coreCount(ctx, field)
+			case "cpu":
+				return ec.fieldContext_ServerCPUType_cpu(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerCPUType", field.Name)
 		},
@@ -5922,6 +6551,183 @@ func (ec *executionContext) fieldContext_Mutation_serverComponentTypeDelete(ctx 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_serverComponentTypeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverCPU(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverCPU(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerCPU(rctx, fc.Args["input"].(generated.CreateServerCPUInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerCPUCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerCPUCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverCPU(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverCPU":
+				return ec.fieldContext_ServerCPUCreatePayload_serverCPU(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPUCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverCPU_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverCPUUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverCPUUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerCPUUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerCPUInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerCPUUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerCPUUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverCPUUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverCPU":
+				return ec.fieldContext_ServerCPUUpdatePayload_serverCPU(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPUUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverCPUUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverCPUDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverCPUDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerCPUDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerCPUDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerCPUDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverCPUDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerCPUDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPUDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverCPUDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7088,6 +7894,75 @@ func (ec *executionContext) fieldContext_Query_serverComponentType(ctx context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_serverCPU(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverCPU(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerCPU(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPU)
+	fc.Result = res
+	return ec.marshalNServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverCPU(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerCPU_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerCPU_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerCPU_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerCPU_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerCPU_server(ctx, field)
+			case "serverCPUType":
+				return ec.fieldContext_ServerCPU_serverCPUType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPU", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverCPU_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_serverCPUType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_serverCPUType(ctx, field)
 	if err != nil {
@@ -7141,6 +8016,8 @@ func (ec *executionContext) fieldContext_Query_serverCPUType(ctx context.Context
 				return ec.fieldContext_ServerCPUType_clockSpeed(ctx, field)
 			case "coreCount":
 				return ec.fieldContext_ServerCPUType_coreCount(ctx, field)
+			case "cpu":
+				return ec.fieldContext_ServerCPUType_cpu(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerCPUType", field.Name)
 		},
@@ -7990,6 +8867,652 @@ func (ec *executionContext) fieldContext_Server_components(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerCPU_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPU) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPU_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPU_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPU",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPU_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPU) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPU_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPU_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPU",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPU_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPU) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPU_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPU_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPU",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPU_serial(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPU) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPU_serial(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Serial, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPU_serial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPU",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPU_server(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPU) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPU_server(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Server(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.Server)
+	fc.Result = res
+	return ec.marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServer(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPU_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPU",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Server_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Server_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Server_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Server_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Server_description(ctx, field)
+			case "serverProvider":
+				return ec.fieldContext_Server_serverProvider(ctx, field)
+			case "serverType":
+				return ec.fieldContext_Server_serverType(ctx, field)
+			case "components":
+				return ec.fieldContext_Server_components(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPU_serverCPUType(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPU) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPU_serverCPUType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerCPUType(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPUType)
+	fc.Result = res
+	return ec.marshalNServerCPUType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPU_serverCPUType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPU",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerCPUType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerCPUType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerCPUType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerCPUType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerCPUType_model(ctx, field)
+			case "clockSpeed":
+				return ec.fieldContext_ServerCPUType_clockSpeed(ctx, field)
+			case "coreCount":
+				return ec.fieldContext_ServerCPUType_coreCount(ctx, field)
+			case "cpu":
+				return ec.fieldContext_ServerCPUType_cpu(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPUType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerCPUEdge)
+	fc.Result = res
+	return ec.marshalOServerCPUEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerCPUEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerCPUEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPUEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUCreatePayload_serverCPU(ctx context.Context, field graphql.CollectedField, obj *ServerCPUCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUCreatePayload_serverCPU(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerCPU, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPU)
+	fc.Result = res
+	return ec.marshalNServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUCreatePayload_serverCPU(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerCPU_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerCPU_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerCPU_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerCPU_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerCPU_server(ctx, field)
+			case "serverCPUType":
+				return ec.fieldContext_ServerCPU_serverCPUType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPU", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerCPUDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPU)
+	fc.Result = res
+	return ec.marshalOServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerCPU_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerCPU_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerCPU_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerCPU_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerCPU_server(ctx, field)
+			case "serverCPUType":
+				return ec.fieldContext_ServerCPU_serverCPUType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPU", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerCPUType_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUType) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerCPUType_id(ctx, field)
 	if err != nil {
@@ -8298,6 +9821,69 @@ func (ec *executionContext) fieldContext_ServerCPUType_coreCount(ctx context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerCPUType_cpu(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUType_cpu(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CPU(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerCPUOrder), fc.Args["where"].(*generated.ServerCPUWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPUConnection)
+	fc.Result = res
+	return ec.marshalNServerCPUConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUType_cpu(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUType",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_ServerCPUConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ServerCPUConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ServerCPUConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPUConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ServerCPUType_cpu_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerCPUTypeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerCPUTypeConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerCPUTypeConnection_edges(ctx, field)
 	if err != nil {
@@ -8496,6 +10082,8 @@ func (ec *executionContext) fieldContext_ServerCPUTypeCreatePayload_serverCPUTyp
 				return ec.fieldContext_ServerCPUType_clockSpeed(ctx, field)
 			case "coreCount":
 				return ec.fieldContext_ServerCPUType_coreCount(ctx, field)
+			case "cpu":
+				return ec.fieldContext_ServerCPUType_cpu(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerCPUType", field.Name)
 		},
@@ -8597,6 +10185,8 @@ func (ec *executionContext) fieldContext_ServerCPUTypeEdge_node(ctx context.Cont
 				return ec.fieldContext_ServerCPUType_clockSpeed(ctx, field)
 			case "coreCount":
 				return ec.fieldContext_ServerCPUType_coreCount(ctx, field)
+			case "cpu":
+				return ec.fieldContext_ServerCPUType_cpu(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerCPUType", field.Name)
 		},
@@ -8701,8 +10291,68 @@ func (ec *executionContext) fieldContext_ServerCPUTypeUpdatePayload_serverCPUTyp
 				return ec.fieldContext_ServerCPUType_clockSpeed(ctx, field)
 			case "coreCount":
 				return ec.fieldContext_ServerCPUType_coreCount(ctx, field)
+			case "cpu":
+				return ec.fieldContext_ServerCPUType_cpu(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerCPUType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerCPUUpdatePayload_serverCPU(ctx context.Context, field graphql.CollectedField, obj *ServerCPUUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerCPUUpdatePayload_serverCPU(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerCPU, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerCPU)
+	fc.Result = res
+	return ec.marshalNServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerCPUUpdatePayload_serverCPU(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerCPUUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerCPU_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerCPU_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerCPU_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerCPU_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerCPU_server(ctx, field)
+			case "serverCPUType":
+				return ec.fieldContext_ServerCPU_serverCPUType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerCPU", field.Name)
 		},
 	}
 	return fc, nil
@@ -15117,6 +16767,53 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputCreateServerCPUInput(ctx context.Context, obj interface{}) (generated.CreateServerCPUInput, error) {
+	var it generated.CreateServerCPUInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial", "serverID", "serverCPUTypeID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serverID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerID = data
+		case "serverCPUTypeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverCPUTypeID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerCPUTypeID = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateServerCPUTypeInput(ctx context.Context, obj interface{}) (generated.CreateServerCPUTypeInput, error) {
 	var it generated.CreateServerCPUTypeInput
 	asMap := map[string]interface{}{}
@@ -15124,7 +16821,7 @@ func (ec *executionContext) unmarshalInputCreateServerCPUTypeInput(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"vendor", "model", "clockSpeed", "coreCount"}
+	fieldsInOrder := [...]string{"vendor", "model", "clockSpeed", "coreCount", "cpuIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -15167,6 +16864,15 @@ func (ec *executionContext) unmarshalInputCreateServerCPUTypeInput(ctx context.C
 				return it, err
 			}
 			it.CoreCount = data
+		case "cpuIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cpuIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CPUIDs = data
 		}
 	}
 
@@ -15565,6 +17271,48 @@ func (ec *executionContext) unmarshalInputCreateServerTypeInput(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputServerCPUOrder(ctx context.Context, obj interface{}) (generated.ServerCPUOrder, error) {
+	var it generated.ServerCPUOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerCPUOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputServerCPUTypeOrder(ctx context.Context, obj interface{}) (generated.ServerCPUTypeOrder, error) {
 	var it generated.ServerCPUTypeOrder
 	asMap := map[string]interface{}{}
@@ -15614,7 +17362,7 @@ func (ec *executionContext) unmarshalInputServerCPUTypeWhereInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "clockSpeed", "clockSpeedNEQ", "clockSpeedIn", "clockSpeedNotIn", "clockSpeedGT", "clockSpeedGTE", "clockSpeedLT", "clockSpeedLTE", "clockSpeedContains", "clockSpeedHasPrefix", "clockSpeedHasSuffix", "clockSpeedEqualFold", "clockSpeedContainsFold", "coreCount", "coreCountNEQ", "coreCountIn", "coreCountNotIn", "coreCountGT", "coreCountGTE", "coreCountLT", "coreCountLTE"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "clockSpeed", "clockSpeedNEQ", "clockSpeedIn", "clockSpeedNotIn", "clockSpeedGT", "clockSpeedGTE", "clockSpeedLT", "clockSpeedLTE", "clockSpeedContains", "clockSpeedHasPrefix", "clockSpeedHasSuffix", "clockSpeedEqualFold", "clockSpeedContainsFold", "coreCount", "coreCountNEQ", "coreCountIn", "coreCountNotIn", "coreCountGT", "coreCountGTE", "coreCountLT", "coreCountLTE", "hasCPU", "hasCPUWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -16287,6 +18035,440 @@ func (ec *executionContext) unmarshalInputServerCPUTypeWhereInput(ctx context.Co
 				return it, err
 			}
 			it.CoreCountLTE = data
+		case "hasCPU":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasCPU"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasCPU = data
+		case "hasCPUWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasCPUWith"))
+			data, err := ec.unmarshalOServerCPUWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasCPUWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerCPUWhereInput(ctx context.Context, obj interface{}) (generated.ServerCPUWhereInput, error) {
+	var it generated.ServerCPUWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "serial", "serialNEQ", "serialIn", "serialNotIn", "serialGT", "serialGTE", "serialLT", "serialLTE", "serialContains", "serialHasPrefix", "serialHasSuffix", "serialEqualFold", "serialContainsFold", "hasServer", "hasServerWith", "hasServerCPUType", "hasServerCPUTypeWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerCPUWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerCPUWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerCPUWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serialNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNEQ = data
+		case "serialIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialIn = data
+		case "serialNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNotIn = data
+		case "serialGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGT = data
+		case "serialGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGTE = data
+		case "serialLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLT = data
+		case "serialLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLTE = data
+		case "serialContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContains = data
+		case "serialHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasPrefix = data
+		case "serialHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasSuffix = data
+		case "serialEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialEqualFold = data
+		case "serialContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContainsFold = data
+		case "hasServer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServer"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServer = data
+		case "hasServerWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerWith"))
+			data, err := ec.unmarshalOServerWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerWith = data
+		case "hasServerCPUType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerCPUType"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerCPUType = data
+		case "hasServerCPUTypeWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerCPUTypeWith"))
+			data, err := ec.unmarshalOServerCPUTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerCPUTypeWith = data
 		}
 	}
 
@@ -20165,6 +22347,35 @@ func (ec *executionContext) unmarshalInputServerWhereInput(ctx context.Context, 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateServerCPUInput(ctx context.Context, obj interface{}) (generated.UpdateServerCPUInput, error) {
+	var it generated.UpdateServerCPUInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateServerCPUTypeInput(ctx context.Context, obj interface{}) (generated.UpdateServerCPUTypeInput, error) {
 	var it generated.UpdateServerCPUTypeInput
 	asMap := map[string]interface{}{}
@@ -20172,7 +22383,7 @@ func (ec *executionContext) unmarshalInputUpdateServerCPUTypeInput(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"vendor", "model", "clockSpeed", "coreCount"}
+	fieldsInOrder := [...]string{"vendor", "model", "clockSpeed", "coreCount", "addCPUIDs", "removeCPUIDs", "clearCPU"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20215,6 +22426,33 @@ func (ec *executionContext) unmarshalInputUpdateServerCPUTypeInput(ctx context.C
 				return it, err
 			}
 			it.CoreCount = data
+		case "addCPUIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addCPUIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddCPUIDs = data
+		case "removeCPUIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeCPUIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveCPUIDs = data
+		case "clearCPU":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearCPU"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearCPU = data
 		}
 	}
 
@@ -20579,6 +22817,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._Server(ctx, sel, obj)
+	case *generated.ServerCPU:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerCPU(ctx, sel, obj)
 	case *generated.ServerCPUType:
 		if obj == nil {
 			return graphql.Null
@@ -20630,6 +22873,13 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._Server(ctx, sel, obj)
+	case generated.ServerCPU:
+		return ec._ServerCPU(ctx, sel, &obj)
+	case *generated.ServerCPU:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerCPU(ctx, sel, obj)
 	case generated.ServerCPUType:
 		return ec._ServerCPUType(ctx, sel, &obj)
 	case *generated.ServerCPUType:
@@ -20717,6 +22967,28 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerCPUByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerCPUByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -21009,6 +23281,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "serverCPU":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverCPU(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverCPUUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverCPUUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverCPUDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverCPUDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "serverCPUType":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverCPUType(ctx, field)
@@ -21259,6 +23552,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_serverComponentType(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverCPU":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverCPU(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -21598,6 +23913,297 @@ func (ec *executionContext) _Server(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var serverCPUImplementors = []string{"ServerCPU", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerCPU(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerCPU) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverCPUImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerCPU")
+		case "id":
+			out.Values[i] = ec._ServerCPU_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerCPU_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerCPU_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "serial":
+			out.Values[i] = ec._ServerCPU_serial(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "server":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerCPU_server(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "serverCPUType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerCPU_serverCPUType(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverCPUConnectionImplementors = []string{"ServerCPUConnection"}
+
+func (ec *executionContext) _ServerCPUConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerCPUConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverCPUConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerCPUConnection")
+		case "edges":
+			out.Values[i] = ec._ServerCPUConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerCPUConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerCPUConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverCPUCreatePayloadImplementors = []string{"ServerCPUCreatePayload"}
+
+func (ec *executionContext) _ServerCPUCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerCPUCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverCPUCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerCPUCreatePayload")
+		case "serverCPU":
+			out.Values[i] = ec._ServerCPUCreatePayload_serverCPU(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverCPUDeletePayloadImplementors = []string{"ServerCPUDeletePayload"}
+
+func (ec *executionContext) _ServerCPUDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerCPUDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverCPUDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerCPUDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerCPUDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverCPUEdgeImplementors = []string{"ServerCPUEdge"}
+
+func (ec *executionContext) _ServerCPUEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerCPUEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverCPUEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerCPUEdge")
+		case "node":
+			out.Values[i] = ec._ServerCPUEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerCPUEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var serverCPUTypeImplementors = []string{"ServerCPUType", "Node", "_Entity"}
 
 func (ec *executionContext) _ServerCPUType(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerCPUType) graphql.Marshaler {
@@ -21612,38 +24218,74 @@ func (ec *executionContext) _ServerCPUType(ctx context.Context, sel ast.Selectio
 		case "id":
 			out.Values[i] = ec._ServerCPUType_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "createdAt":
 			out.Values[i] = ec._ServerCPUType_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "updatedAt":
 			out.Values[i] = ec._ServerCPUType_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "vendor":
 			out.Values[i] = ec._ServerCPUType_vendor(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "model":
 			out.Values[i] = ec._ServerCPUType_model(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "clockSpeed":
 			out.Values[i] = ec._ServerCPUType_clockSpeed(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "coreCount":
 			out.Values[i] = ec._ServerCPUType_coreCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "cpu":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerCPUType_cpu(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -21845,6 +24487,45 @@ func (ec *executionContext) _ServerCPUTypeUpdatePayload(ctx context.Context, sel
 			out.Values[i] = graphql.MarshalString("ServerCPUTypeUpdatePayload")
 		case "serverCPUType":
 			out.Values[i] = ec._ServerCPUTypeUpdatePayload_serverCPUType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverCPUUpdatePayloadImplementors = []string{"ServerCPUUpdatePayload"}
+
+func (ec *executionContext) _ServerCPUUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerCPUUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverCPUUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerCPUUpdatePayload")
+		case "serverCPU":
+			out.Values[i] = ec._ServerCPUUpdatePayload_serverCPU(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -24282,6 +26963,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNCreateServerCPUInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerCPUInput(ctx context.Context, v interface{}) (generated.CreateServerCPUInput, error) {
+	res, err := ec.unmarshalInputCreateServerCPUInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateServerCPUTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerCPUTypeInput(ctx context.Context, v interface{}) (generated.CreateServerCPUTypeInput, error) {
 	res, err := ec.unmarshalInputCreateServerCPUTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -24400,6 +27086,74 @@ func (ec *executionContext) marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserver
 	return ec._Server(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNServerCPU2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx context.Context, sel ast.SelectionSet, v generated.ServerCPU) graphql.Marshaler {
+	return ec._ServerCPU(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx context.Context, sel ast.SelectionSet, v *generated.ServerCPU) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerCPU(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerCPUConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerCPUConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerCPUConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerCPUCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerCPUCreatePayload) graphql.Marshaler {
+	return ec._ServerCPUCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerCPUCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerCPUCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerCPUCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerCPUDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerCPUDeletePayload) graphql.Marshaler {
+	return ec._ServerCPUDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerCPUDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerCPUDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerCPUDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerCPUOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUOrderField(ctx context.Context, v interface{}) (*generated.ServerCPUOrderField, error) {
+	var res = new(generated.ServerCPUOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerCPUOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerCPUOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) marshalNServerCPUType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUType(ctx context.Context, sel ast.SelectionSet, v generated.ServerCPUType) graphql.Marshaler {
 	return ec._ServerCPUType(ctx, sel, &v)
 }
@@ -24474,6 +27228,25 @@ func (ec *executionContext) marshalNServerCPUTypeUpdatePayload2ᚖgoᚗinfratogr
 
 func (ec *executionContext) unmarshalNServerCPUTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerCPUTypeWhereInput, error) {
 	res, err := ec.unmarshalInputServerCPUTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerCPUUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerCPUUpdatePayload) graphql.Marshaler {
+	return ec._ServerCPUUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerCPUUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerCPUUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerCPUUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerCPUWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInput(ctx context.Context, v interface{}) (*generated.ServerCPUWhereInput, error) {
+	res, err := ec.unmarshalInputServerCPUWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -25062,6 +27835,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalNUpdateServerCPUInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerCPUInput(ctx context.Context, v interface{}) (generated.UpdateServerCPUInput, error) {
+	res, err := ec.unmarshalInputUpdateServerCPUInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNUpdateServerCPUTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerCPUTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerCPUTypeInput, error) {
 	res, err := ec.unmarshalInputUpdateServerCPUTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -25607,6 +28385,69 @@ func (ec *executionContext) marshalOServer2ᚖgoᚗinfratographerᚗcomᚋserver
 	return ec._Server(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOServerCPU2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPU(ctx context.Context, sel ast.SelectionSet, v *generated.ServerCPU) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerCPU(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerCPUEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerCPUEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerCPUEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerCPUEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerCPUEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerCPUEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerCPUOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUOrder(ctx context.Context, v interface{}) (*generated.ServerCPUOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerCPUOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalOServerCPUType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerCPUType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -25687,6 +28528,34 @@ func (ec *executionContext) unmarshalOServerCPUTypeWhereInput2ᚖgoᚗinfratogra
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputServerCPUTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerCPUWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerCPUWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerCPUWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerCPUWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerCPUWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerCPUWhereInput(ctx context.Context, v interface{}) (*generated.ServerCPUWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerCPUWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

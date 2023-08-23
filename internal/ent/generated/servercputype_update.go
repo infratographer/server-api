@@ -25,7 +25,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
+	"go.infratographer.com/x/gidx"
 )
 
 // ServerCPUTypeUpdate is the builder for updating ServerCPUType entities.
@@ -72,9 +74,45 @@ func (sctu *ServerCPUTypeUpdate) AddCoreCount(i int) *ServerCPUTypeUpdate {
 	return sctu
 }
 
+// AddCPUIDs adds the "cpu" edge to the ServerCPU entity by IDs.
+func (sctu *ServerCPUTypeUpdate) AddCPUIDs(ids ...gidx.PrefixedID) *ServerCPUTypeUpdate {
+	sctu.mutation.AddCPUIDs(ids...)
+	return sctu
+}
+
+// AddCPU adds the "cpu" edges to the ServerCPU entity.
+func (sctu *ServerCPUTypeUpdate) AddCPU(s ...*ServerCPU) *ServerCPUTypeUpdate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctu.AddCPUIDs(ids...)
+}
+
 // Mutation returns the ServerCPUTypeMutation object of the builder.
 func (sctu *ServerCPUTypeUpdate) Mutation() *ServerCPUTypeMutation {
 	return sctu.mutation
+}
+
+// ClearCPU clears all "cpu" edges to the ServerCPU entity.
+func (sctu *ServerCPUTypeUpdate) ClearCPU() *ServerCPUTypeUpdate {
+	sctu.mutation.ClearCPU()
+	return sctu
+}
+
+// RemoveCPUIDs removes the "cpu" edge to ServerCPU entities by IDs.
+func (sctu *ServerCPUTypeUpdate) RemoveCPUIDs(ids ...gidx.PrefixedID) *ServerCPUTypeUpdate {
+	sctu.mutation.RemoveCPUIDs(ids...)
+	return sctu
+}
+
+// RemoveCPU removes "cpu" edges to ServerCPU entities.
+func (sctu *ServerCPUTypeUpdate) RemoveCPU(s ...*ServerCPU) *ServerCPUTypeUpdate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctu.RemoveCPUIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -168,6 +206,51 @@ func (sctu *ServerCPUTypeUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if value, ok := sctu.mutation.AddedCoreCount(); ok {
 		_spec.AddField(servercputype.FieldCoreCount, field.TypeInt, value)
 	}
+	if sctu.mutation.CPUCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctu.mutation.RemovedCPUIDs(); len(nodes) > 0 && !sctu.mutation.CPUCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctu.mutation.CPUIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sctu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{servercputype.Label}
@@ -219,9 +302,45 @@ func (sctuo *ServerCPUTypeUpdateOne) AddCoreCount(i int) *ServerCPUTypeUpdateOne
 	return sctuo
 }
 
+// AddCPUIDs adds the "cpu" edge to the ServerCPU entity by IDs.
+func (sctuo *ServerCPUTypeUpdateOne) AddCPUIDs(ids ...gidx.PrefixedID) *ServerCPUTypeUpdateOne {
+	sctuo.mutation.AddCPUIDs(ids...)
+	return sctuo
+}
+
+// AddCPU adds the "cpu" edges to the ServerCPU entity.
+func (sctuo *ServerCPUTypeUpdateOne) AddCPU(s ...*ServerCPU) *ServerCPUTypeUpdateOne {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctuo.AddCPUIDs(ids...)
+}
+
 // Mutation returns the ServerCPUTypeMutation object of the builder.
 func (sctuo *ServerCPUTypeUpdateOne) Mutation() *ServerCPUTypeMutation {
 	return sctuo.mutation
+}
+
+// ClearCPU clears all "cpu" edges to the ServerCPU entity.
+func (sctuo *ServerCPUTypeUpdateOne) ClearCPU() *ServerCPUTypeUpdateOne {
+	sctuo.mutation.ClearCPU()
+	return sctuo
+}
+
+// RemoveCPUIDs removes the "cpu" edge to ServerCPU entities by IDs.
+func (sctuo *ServerCPUTypeUpdateOne) RemoveCPUIDs(ids ...gidx.PrefixedID) *ServerCPUTypeUpdateOne {
+	sctuo.mutation.RemoveCPUIDs(ids...)
+	return sctuo
+}
+
+// RemoveCPU removes "cpu" edges to ServerCPU entities.
+func (sctuo *ServerCPUTypeUpdateOne) RemoveCPU(s ...*ServerCPU) *ServerCPUTypeUpdateOne {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctuo.RemoveCPUIDs(ids...)
 }
 
 // Where appends a list predicates to the ServerCPUTypeUpdate builder.
@@ -344,6 +463,51 @@ func (sctuo *ServerCPUTypeUpdateOne) sqlSave(ctx context.Context) (_node *Server
 	}
 	if value, ok := sctuo.mutation.AddedCoreCount(); ok {
 		_spec.AddField(servercputype.FieldCoreCount, field.TypeInt, value)
+	}
+	if sctuo.mutation.CPUCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctuo.mutation.RemovedCPUIDs(); len(nodes) > 0 && !sctuo.mutation.CPUCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctuo.mutation.CPUIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   servercputype.CPUTable,
+			Columns: []string{servercputype.CPUColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(servercpu.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &ServerCPUType{config: sctuo.config}
 	_spec.Assign = _node.assignValues

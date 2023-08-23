@@ -44,8 +44,33 @@ type ServerCPUType struct {
 	// The clock speed of the server cpu type.
 	ClockSpeed string `json:"clock_speed,omitempty"`
 	// The number of cores for the server cpu type.
-	CoreCount    int `json:"core_count,omitempty"`
+	CoreCount int `json:"core_count,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ServerCPUTypeQuery when eager-loading is set.
+	Edges        ServerCPUTypeEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// ServerCPUTypeEdges holds the relations/edges for other nodes in the graph.
+type ServerCPUTypeEdges struct {
+	// CPU holds the value of the cpu edge.
+	CPU []*ServerCPU `json:"cpu,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+
+	namedCPU map[string][]*ServerCPU
+}
+
+// CPUOrErr returns the CPU value or an error if the edge
+// was not loaded in eager-loading.
+func (e ServerCPUTypeEdges) CPUOrErr() ([]*ServerCPU, error) {
+	if e.loadedTypes[0] {
+		return e.CPU, nil
+	}
+	return nil, &NotLoadedError{edge: "cpu"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -131,6 +156,11 @@ func (sct *ServerCPUType) Value(name string) (ent.Value, error) {
 	return sct.selectValues.Get(name)
 }
 
+// QueryCPU queries the "cpu" edge of the ServerCPUType entity.
+func (sct *ServerCPUType) QueryCPU() *ServerCPUQuery {
+	return NewServerCPUTypeClient(sct.config).QueryCPU(sct)
+}
+
 // Update returns a builder for updating this ServerCPUType.
 // Note that you need to call ServerCPUType.Unwrap() before calling this method if this ServerCPUType
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -177,6 +207,30 @@ func (sct *ServerCPUType) String() string {
 
 // IsEntity implement fedruntime.Entity
 func (sct ServerCPUType) IsEntity() {}
+
+// NamedCPU returns the CPU named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sct *ServerCPUType) NamedCPU(name string) ([]*ServerCPU, error) {
+	if sct.Edges.namedCPU == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sct.Edges.namedCPU[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sct *ServerCPUType) appendNamedCPU(name string, edges ...*ServerCPU) {
+	if sct.Edges.namedCPU == nil {
+		sct.Edges.namedCPU = make(map[string][]*ServerCPU)
+	}
+	if len(edges) == 0 {
+		sct.Edges.namedCPU[name] = []*ServerCPU{}
+	} else {
+		sct.Edges.namedCPU[name] = append(sct.Edges.namedCPU[name], edges...)
+	}
+}
 
 // ServerCPUTypes is a parsable slice of ServerCPUType.
 type ServerCPUTypes []*ServerCPUType

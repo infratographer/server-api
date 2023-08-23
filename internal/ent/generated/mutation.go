@@ -32,6 +32,7 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/server-api/internal/ent/generated/servercomponenttype"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
@@ -48,6 +49,7 @@ const (
 	// Node types.
 	TypeProvider            = "Provider"
 	TypeServer              = "Server"
+	TypeServerCPU           = "ServerCPU"
 	TypeServerCPUType       = "ServerCPUType"
 	TypeServerChassis       = "ServerChassis"
 	TypeServerChassisType   = "ServerChassisType"
@@ -1558,6 +1560,652 @@ func (m *ServerMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Server edge %s", name)
 }
 
+// ServerCPUMutation represents an operation that mutates the ServerCPU nodes in the graph.
+type ServerCPUMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *gidx.PrefixedID
+	created_at             *time.Time
+	updated_at             *time.Time
+	serial                 *string
+	clearedFields          map[string]struct{}
+	server                 *gidx.PrefixedID
+	clearedserver          bool
+	server_cpu_type        *gidx.PrefixedID
+	clearedserver_cpu_type bool
+	done                   bool
+	oldValue               func(context.Context) (*ServerCPU, error)
+	predicates             []predicate.ServerCPU
+}
+
+var _ ent.Mutation = (*ServerCPUMutation)(nil)
+
+// servercpuOption allows management of the mutation configuration using functional options.
+type servercpuOption func(*ServerCPUMutation)
+
+// newServerCPUMutation creates new mutation for the ServerCPU entity.
+func newServerCPUMutation(c config, op Op, opts ...servercpuOption) *ServerCPUMutation {
+	m := &ServerCPUMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerCPU,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerCPUID sets the ID field of the mutation.
+func withServerCPUID(id gidx.PrefixedID) servercpuOption {
+	return func(m *ServerCPUMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerCPU
+		)
+		m.oldValue = func(ctx context.Context) (*ServerCPU, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerCPU.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerCPU sets the old ServerCPU of the mutation.
+func withServerCPU(node *ServerCPU) servercpuOption {
+	return func(m *ServerCPUMutation) {
+		m.oldValue = func(context.Context) (*ServerCPU, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerCPUMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerCPUMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerCPU entities.
+func (m *ServerCPUMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerCPUMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerCPUMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerCPU.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerCPUMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerCPUMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerCPU entity.
+// If the ServerCPU object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerCPUMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerCPUMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerCPUMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerCPUMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerCPU entity.
+// If the ServerCPU object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerCPUMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerCPUMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetServerCPUTypeID sets the "server_cpu_type_id" field.
+func (m *ServerCPUMutation) SetServerCPUTypeID(gi gidx.PrefixedID) {
+	m.server_cpu_type = &gi
+}
+
+// ServerCPUTypeID returns the value of the "server_cpu_type_id" field in the mutation.
+func (m *ServerCPUMutation) ServerCPUTypeID() (r gidx.PrefixedID, exists bool) {
+	v := m.server_cpu_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerCPUTypeID returns the old "server_cpu_type_id" field's value of the ServerCPU entity.
+// If the ServerCPU object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerCPUMutation) OldServerCPUTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerCPUTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerCPUTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerCPUTypeID: %w", err)
+	}
+	return oldValue.ServerCPUTypeID, nil
+}
+
+// ResetServerCPUTypeID resets all changes to the "server_cpu_type_id" field.
+func (m *ServerCPUMutation) ResetServerCPUTypeID() {
+	m.server_cpu_type = nil
+}
+
+// SetServerID sets the "server_id" field.
+func (m *ServerCPUMutation) SetServerID(gi gidx.PrefixedID) {
+	m.server = &gi
+}
+
+// ServerID returns the value of the "server_id" field in the mutation.
+func (m *ServerCPUMutation) ServerID() (r gidx.PrefixedID, exists bool) {
+	v := m.server
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerID returns the old "server_id" field's value of the ServerCPU entity.
+// If the ServerCPU object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerCPUMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
+	}
+	return oldValue.ServerID, nil
+}
+
+// ResetServerID resets all changes to the "server_id" field.
+func (m *ServerCPUMutation) ResetServerID() {
+	m.server = nil
+}
+
+// SetSerial sets the "serial" field.
+func (m *ServerCPUMutation) SetSerial(s string) {
+	m.serial = &s
+}
+
+// Serial returns the value of the "serial" field in the mutation.
+func (m *ServerCPUMutation) Serial() (r string, exists bool) {
+	v := m.serial
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSerial returns the old "serial" field's value of the ServerCPU entity.
+// If the ServerCPU object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerCPUMutation) OldSerial(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSerial is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSerial requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSerial: %w", err)
+	}
+	return oldValue.Serial, nil
+}
+
+// ResetSerial resets all changes to the "serial" field.
+func (m *ServerCPUMutation) ResetSerial() {
+	m.serial = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerCPUMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerCPUMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerCPUMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerCPUMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// ClearServerCPUType clears the "server_cpu_type" edge to the ServerCPUType entity.
+func (m *ServerCPUMutation) ClearServerCPUType() {
+	m.clearedserver_cpu_type = true
+}
+
+// ServerCPUTypeCleared reports if the "server_cpu_type" edge to the ServerCPUType entity was cleared.
+func (m *ServerCPUMutation) ServerCPUTypeCleared() bool {
+	return m.clearedserver_cpu_type
+}
+
+// ServerCPUTypeIDs returns the "server_cpu_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerCPUTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerCPUMutation) ServerCPUTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.server_cpu_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServerCPUType resets all changes to the "server_cpu_type" edge.
+func (m *ServerCPUMutation) ResetServerCPUType() {
+	m.server_cpu_type = nil
+	m.clearedserver_cpu_type = false
+}
+
+// Where appends a list predicates to the ServerCPUMutation builder.
+func (m *ServerCPUMutation) Where(ps ...predicate.ServerCPU) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerCPUMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerCPUMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerCPU, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerCPUMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerCPUMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerCPU).
+func (m *ServerCPUMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerCPUMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, servercpu.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servercpu.FieldUpdatedAt)
+	}
+	if m.server_cpu_type != nil {
+		fields = append(fields, servercpu.FieldServerCPUTypeID)
+	}
+	if m.server != nil {
+		fields = append(fields, servercpu.FieldServerID)
+	}
+	if m.serial != nil {
+		fields = append(fields, servercpu.FieldSerial)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerCPUMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servercpu.FieldCreatedAt:
+		return m.CreatedAt()
+	case servercpu.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servercpu.FieldServerCPUTypeID:
+		return m.ServerCPUTypeID()
+	case servercpu.FieldServerID:
+		return m.ServerID()
+	case servercpu.FieldSerial:
+		return m.Serial()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerCPUMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servercpu.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servercpu.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servercpu.FieldServerCPUTypeID:
+		return m.OldServerCPUTypeID(ctx)
+	case servercpu.FieldServerID:
+		return m.OldServerID(ctx)
+	case servercpu.FieldSerial:
+		return m.OldSerial(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerCPU field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerCPUMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servercpu.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servercpu.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servercpu.FieldServerCPUTypeID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerCPUTypeID(v)
+		return nil
+	case servercpu.FieldServerID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerID(v)
+		return nil
+	case servercpu.FieldSerial:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSerial(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerCPU field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerCPUMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerCPUMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerCPUMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerCPU numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerCPUMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerCPUMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerCPUMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerCPU nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerCPUMutation) ResetField(name string) error {
+	switch name {
+	case servercpu.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servercpu.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servercpu.FieldServerCPUTypeID:
+		m.ResetServerCPUTypeID()
+		return nil
+	case servercpu.FieldServerID:
+		m.ResetServerID()
+		return nil
+	case servercpu.FieldSerial:
+		m.ResetSerial()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerCPU field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerCPUMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.server != nil {
+		edges = append(edges, servercpu.EdgeServer)
+	}
+	if m.server_cpu_type != nil {
+		edges = append(edges, servercpu.EdgeServerCPUType)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerCPUMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servercpu.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case servercpu.EdgeServerCPUType:
+		if id := m.server_cpu_type; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerCPUMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerCPUMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerCPUMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedserver {
+		edges = append(edges, servercpu.EdgeServer)
+	}
+	if m.clearedserver_cpu_type {
+		edges = append(edges, servercpu.EdgeServerCPUType)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerCPUMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servercpu.EdgeServer:
+		return m.clearedserver
+	case servercpu.EdgeServerCPUType:
+		return m.clearedserver_cpu_type
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerCPUMutation) ClearEdge(name string) error {
+	switch name {
+	case servercpu.EdgeServer:
+		m.ClearServer()
+		return nil
+	case servercpu.EdgeServerCPUType:
+		m.ClearServerCPUType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerCPU unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerCPUMutation) ResetEdge(name string) error {
+	switch name {
+	case servercpu.EdgeServer:
+		m.ResetServer()
+		return nil
+	case servercpu.EdgeServerCPUType:
+		m.ResetServerCPUType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerCPU edge %s", name)
+}
+
 // ServerCPUTypeMutation represents an operation that mutates the ServerCPUType nodes in the graph.
 type ServerCPUTypeMutation struct {
 	config
@@ -1572,6 +2220,9 @@ type ServerCPUTypeMutation struct {
 	core_count    *int
 	addcore_count *int
 	clearedFields map[string]struct{}
+	cpu           map[gidx.PrefixedID]struct{}
+	removedcpu    map[gidx.PrefixedID]struct{}
+	clearedcpu    bool
 	done          bool
 	oldValue      func(context.Context) (*ServerCPUType, error)
 	predicates    []predicate.ServerCPUType
@@ -1917,6 +2568,60 @@ func (m *ServerCPUTypeMutation) ResetCoreCount() {
 	m.addcore_count = nil
 }
 
+// AddCPUIDs adds the "cpu" edge to the ServerCPU entity by ids.
+func (m *ServerCPUTypeMutation) AddCPUIDs(ids ...gidx.PrefixedID) {
+	if m.cpu == nil {
+		m.cpu = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.cpu[ids[i]] = struct{}{}
+	}
+}
+
+// ClearCPU clears the "cpu" edge to the ServerCPU entity.
+func (m *ServerCPUTypeMutation) ClearCPU() {
+	m.clearedcpu = true
+}
+
+// CPUCleared reports if the "cpu" edge to the ServerCPU entity was cleared.
+func (m *ServerCPUTypeMutation) CPUCleared() bool {
+	return m.clearedcpu
+}
+
+// RemoveCPUIDs removes the "cpu" edge to the ServerCPU entity by IDs.
+func (m *ServerCPUTypeMutation) RemoveCPUIDs(ids ...gidx.PrefixedID) {
+	if m.removedcpu == nil {
+		m.removedcpu = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.cpu, ids[i])
+		m.removedcpu[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCPU returns the removed IDs of the "cpu" edge to the ServerCPU entity.
+func (m *ServerCPUTypeMutation) RemovedCPUIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removedcpu {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CPUIDs returns the "cpu" edge IDs in the mutation.
+func (m *ServerCPUTypeMutation) CPUIDs() (ids []gidx.PrefixedID) {
+	for id := range m.cpu {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCPU resets all changes to the "cpu" edge.
+func (m *ServerCPUTypeMutation) ResetCPU() {
+	m.cpu = nil
+	m.clearedcpu = false
+	m.removedcpu = nil
+}
+
 // Where appends a list predicates to the ServerCPUTypeMutation builder.
 func (m *ServerCPUTypeMutation) Where(ps ...predicate.ServerCPUType) {
 	m.predicates = append(m.predicates, ps...)
@@ -2150,49 +2855,85 @@ func (m *ServerCPUTypeMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ServerCPUTypeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.cpu != nil {
+		edges = append(edges, servercputype.EdgeCPU)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ServerCPUTypeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servercputype.EdgeCPU:
+		ids := make([]ent.Value, 0, len(m.cpu))
+		for id := range m.cpu {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ServerCPUTypeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedcpu != nil {
+		edges = append(edges, servercputype.EdgeCPU)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ServerCPUTypeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case servercputype.EdgeCPU:
+		ids := make([]ent.Value, 0, len(m.removedcpu))
+		for id := range m.removedcpu {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ServerCPUTypeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedcpu {
+		edges = append(edges, servercputype.EdgeCPU)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ServerCPUTypeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servercputype.EdgeCPU:
+		return m.clearedcpu
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ServerCPUTypeMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown ServerCPUType unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ServerCPUTypeMutation) ResetEdge(name string) error {
+	switch name {
+	case servercputype.EdgeCPU:
+		m.ResetCPU()
+		return nil
+	}
 	return fmt.Errorf("unknown ServerCPUType edge %s", name)
 }
 

@@ -18,6 +18,7 @@ package generated
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -25,6 +26,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/server-api/internal/ent/generated/servercputype"
 	"go.infratographer.com/x/gidx"
 )
@@ -32,12 +34,14 @@ import (
 // ServerCPUTypeQuery is the builder for querying ServerCPUType entities.
 type ServerCPUTypeQuery struct {
 	config
-	ctx        *QueryContext
-	order      []servercputype.OrderOption
-	inters     []Interceptor
-	predicates []predicate.ServerCPUType
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*ServerCPUType) error
+	ctx          *QueryContext
+	order        []servercputype.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.ServerCPUType
+	withCPU      *ServerCPUQuery
+	modifiers    []func(*sql.Selector)
+	loadTotal    []func(context.Context, []*ServerCPUType) error
+	withNamedCPU map[string]*ServerCPUQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -72,6 +76,28 @@ func (sctq *ServerCPUTypeQuery) Unique(unique bool) *ServerCPUTypeQuery {
 func (sctq *ServerCPUTypeQuery) Order(o ...servercputype.OrderOption) *ServerCPUTypeQuery {
 	sctq.order = append(sctq.order, o...)
 	return sctq
+}
+
+// QueryCPU chains the current query on the "cpu" edge.
+func (sctq *ServerCPUTypeQuery) QueryCPU() *ServerCPUQuery {
+	query := (&ServerCPUClient{config: sctq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sctq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := sctq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servercputype.Table, servercputype.FieldID, selector),
+			sqlgraph.To(servercpu.Table, servercpu.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, servercputype.CPUTable, servercputype.CPUColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sctq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first ServerCPUType entity from the query.
@@ -266,10 +292,22 @@ func (sctq *ServerCPUTypeQuery) Clone() *ServerCPUTypeQuery {
 		order:      append([]servercputype.OrderOption{}, sctq.order...),
 		inters:     append([]Interceptor{}, sctq.inters...),
 		predicates: append([]predicate.ServerCPUType{}, sctq.predicates...),
+		withCPU:    sctq.withCPU.Clone(),
 		// clone intermediate query.
 		sql:  sctq.sql.Clone(),
 		path: sctq.path,
 	}
+}
+
+// WithCPU tells the query-builder to eager-load the nodes that are connected to
+// the "cpu" edge. The optional arguments are used to configure the query builder of the edge.
+func (sctq *ServerCPUTypeQuery) WithCPU(opts ...func(*ServerCPUQuery)) *ServerCPUTypeQuery {
+	query := (&ServerCPUClient{config: sctq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	sctq.withCPU = query
+	return sctq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -348,8 +386,11 @@ func (sctq *ServerCPUTypeQuery) prepareQuery(ctx context.Context) error {
 
 func (sctq *ServerCPUTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ServerCPUType, error) {
 	var (
-		nodes = []*ServerCPUType{}
-		_spec = sctq.querySpec()
+		nodes       = []*ServerCPUType{}
+		_spec       = sctq.querySpec()
+		loadedTypes = [1]bool{
+			sctq.withCPU != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ServerCPUType).scanValues(nil, columns)
@@ -357,6 +398,7 @@ func (sctq *ServerCPUTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &ServerCPUType{config: sctq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(sctq.modifiers) > 0 {
@@ -371,12 +413,57 @@ func (sctq *ServerCPUTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := sctq.withCPU; query != nil {
+		if err := sctq.loadCPU(ctx, query, nodes,
+			func(n *ServerCPUType) { n.Edges.CPU = []*ServerCPU{} },
+			func(n *ServerCPUType, e *ServerCPU) { n.Edges.CPU = append(n.Edges.CPU, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range sctq.withNamedCPU {
+		if err := sctq.loadCPU(ctx, query, nodes,
+			func(n *ServerCPUType) { n.appendNamedCPU(name) },
+			func(n *ServerCPUType, e *ServerCPU) { n.appendNamedCPU(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range sctq.loadTotal {
 		if err := sctq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (sctq *ServerCPUTypeQuery) loadCPU(ctx context.Context, query *ServerCPUQuery, nodes []*ServerCPUType, init func(*ServerCPUType), assign func(*ServerCPUType, *ServerCPU)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[gidx.PrefixedID]*ServerCPUType)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(servercpu.FieldServerCPUTypeID)
+	}
+	query.Where(predicate.ServerCPU(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(servercputype.CPUColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ServerCPUTypeID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "server_cpu_type_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (sctq *ServerCPUTypeQuery) sqlCount(ctx context.Context) (int, error) {
@@ -461,6 +548,20 @@ func (sctq *ServerCPUTypeQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedCPU tells the query-builder to eager-load the nodes that are connected to the "cpu"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (sctq *ServerCPUTypeQuery) WithNamedCPU(name string, opts ...func(*ServerCPUQuery)) *ServerCPUTypeQuery {
+	query := (&ServerCPUClient{config: sctq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if sctq.withNamedCPU == nil {
+		sctq.withNamedCPU = make(map[string]*ServerCPUQuery)
+	}
+	sctq.withNamedCPU[name] = query
+	return sctq
 }
 
 // ServerCPUTypeGroupBy is the group-by builder for ServerCPUType entities.

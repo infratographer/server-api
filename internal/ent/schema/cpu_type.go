@@ -4,6 +4,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 
 	"go.infratographer.com/x/entx"
@@ -54,7 +55,13 @@ func (ServerCPUType) Fields() []ent.Field {
 
 // Edges of the ServerCPUType
 func (ServerCPUType) Edges() []ent.Edge {
-	return []ent.Edge{}
+	return []ent.Edge{
+		edge.From("cpu", ServerCPU.Type).
+			Ref("server_cpu_type").
+			Annotations(
+				entgql.RelayConnection(),
+			),
+	}
 }
 
 // Indexes of the ServerCPUType

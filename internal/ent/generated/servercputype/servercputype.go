@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -40,8 +41,17 @@ const (
 	FieldClockSpeed = "clock_speed"
 	// FieldCoreCount holds the string denoting the core_count field in the database.
 	FieldCoreCount = "core_count"
+	// EdgeCPU holds the string denoting the cpu edge name in mutations.
+	EdgeCPU = "cpu"
 	// Table holds the table name of the servercputype in the database.
 	Table = "server_cpu_types"
+	// CPUTable is the table that holds the cpu relation/edge.
+	CPUTable = "server_cp_us"
+	// CPUInverseTable is the table name for the ServerCPU entity.
+	// It exists in this package in order to avoid circular dependency with the "servercpu" package.
+	CPUInverseTable = "server_cp_us"
+	// CPUColumn is the table column denoting the cpu relation/edge.
+	CPUColumn = "server_cpu_type_id"
 )
 
 // Columns holds all SQL columns for servercputype fields.
@@ -120,4 +130,25 @@ func ByClockSpeed(opts ...sql.OrderTermOption) OrderOption {
 // ByCoreCount orders the results by the core_count field.
 func ByCoreCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCoreCount, opts...).ToFunc()
+}
+
+// ByCPUCount orders the results by cpu count.
+func ByCPUCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCPUStep(), opts...)
+	}
+}
+
+// ByCPU orders the results by cpu terms.
+func ByCPU(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCPUStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newCPUStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CPUInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, CPUTable, CPUColumn),
+	)
 }
