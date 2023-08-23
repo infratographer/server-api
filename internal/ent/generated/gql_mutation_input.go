@@ -249,6 +249,7 @@ type CreateServerChassisTypeInput struct {
 	Height              string
 	IsFullDepth         bool
 	ParentChassisTypeID gidx.PrefixedID
+	ChassiIDs           []gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerChassisTypeInput on the ServerChassisTypeMutation builder.
@@ -258,6 +259,9 @@ func (i *CreateServerChassisTypeInput) Mutate(m *ServerChassisTypeMutation) {
 	m.SetHeight(i.Height)
 	m.SetIsFullDepth(i.IsFullDepth)
 	m.SetParentChassisTypeID(i.ParentChassisTypeID)
+	if v := i.ChassiIDs; len(v) > 0 {
+		m.AddChassiIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateServerChassisTypeInput on the ServerChassisTypeCreate builder.
@@ -268,10 +272,13 @@ func (c *ServerChassisTypeCreate) SetInput(i CreateServerChassisTypeInput) *Serv
 
 // UpdateServerChassisTypeInput represents a mutation input for updating serverchassistypes.
 type UpdateServerChassisTypeInput struct {
-	Vendor      *string
-	Model       *string
-	Height      *string
-	IsFullDepth *bool
+	Vendor          *string
+	Model           *string
+	Height          *string
+	IsFullDepth     *bool
+	ClearChassis    bool
+	AddChassiIDs    []gidx.PrefixedID
+	RemoveChassiIDs []gidx.PrefixedID
 }
 
 // Mutate applies the UpdateServerChassisTypeInput on the ServerChassisTypeMutation builder.
@@ -287,6 +294,15 @@ func (i *UpdateServerChassisTypeInput) Mutate(m *ServerChassisTypeMutation) {
 	}
 	if v := i.IsFullDepth; v != nil {
 		m.SetIsFullDepth(*v)
+	}
+	if i.ClearChassis {
+		m.ClearChassis()
+	}
+	if v := i.AddChassiIDs; len(v) > 0 {
+		m.AddChassiIDs(v...)
+	}
+	if v := i.RemoveChassiIDs; len(v) > 0 {
+		m.RemoveChassiIDs(v...)
 	}
 }
 

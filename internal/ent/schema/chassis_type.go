@@ -4,6 +4,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 
@@ -64,7 +65,13 @@ func (ServerChassisType) Fields() []ent.Field {
 
 // Edges of the ServerChassisType
 func (ServerChassisType) Edges() []ent.Edge {
-	return []ent.Edge{}
+	return []ent.Edge{
+		edge.From("chassis", ServerChassis.Type).
+			Ref("server_chassis_type").
+			Annotations(
+				entgql.RelayConnection(),
+			),
+	}
 }
 
 // Indexes of the ServerChassisType

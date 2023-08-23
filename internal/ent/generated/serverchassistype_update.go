@@ -25,7 +25,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
+	"go.infratographer.com/x/gidx"
 )
 
 // ServerChassisTypeUpdate is the builder for updating ServerChassisType entities.
@@ -65,9 +67,45 @@ func (sctu *ServerChassisTypeUpdate) SetIsFullDepth(b bool) *ServerChassisTypeUp
 	return sctu
 }
 
+// AddChassiIDs adds the "chassis" edge to the ServerChassis entity by IDs.
+func (sctu *ServerChassisTypeUpdate) AddChassiIDs(ids ...gidx.PrefixedID) *ServerChassisTypeUpdate {
+	sctu.mutation.AddChassiIDs(ids...)
+	return sctu
+}
+
+// AddChassis adds the "chassis" edges to the ServerChassis entity.
+func (sctu *ServerChassisTypeUpdate) AddChassis(s ...*ServerChassis) *ServerChassisTypeUpdate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctu.AddChassiIDs(ids...)
+}
+
 // Mutation returns the ServerChassisTypeMutation object of the builder.
 func (sctu *ServerChassisTypeUpdate) Mutation() *ServerChassisTypeMutation {
 	return sctu.mutation
+}
+
+// ClearChassis clears all "chassis" edges to the ServerChassis entity.
+func (sctu *ServerChassisTypeUpdate) ClearChassis() *ServerChassisTypeUpdate {
+	sctu.mutation.ClearChassis()
+	return sctu
+}
+
+// RemoveChassiIDs removes the "chassis" edge to ServerChassis entities by IDs.
+func (sctu *ServerChassisTypeUpdate) RemoveChassiIDs(ids ...gidx.PrefixedID) *ServerChassisTypeUpdate {
+	sctu.mutation.RemoveChassiIDs(ids...)
+	return sctu
+}
+
+// RemoveChassis removes "chassis" edges to ServerChassis entities.
+func (sctu *ServerChassisTypeUpdate) RemoveChassis(s ...*ServerChassis) *ServerChassisTypeUpdate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctu.RemoveChassiIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -153,6 +191,51 @@ func (sctu *ServerChassisTypeUpdate) sqlSave(ctx context.Context) (n int, err er
 	if value, ok := sctu.mutation.IsFullDepth(); ok {
 		_spec.SetField(serverchassistype.FieldIsFullDepth, field.TypeBool, value)
 	}
+	if sctu.mutation.ChassisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctu.mutation.RemovedChassisIDs(); len(nodes) > 0 && !sctu.mutation.ChassisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctu.mutation.ChassisIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sctu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{serverchassistype.Label}
@@ -197,9 +280,45 @@ func (sctuo *ServerChassisTypeUpdateOne) SetIsFullDepth(b bool) *ServerChassisTy
 	return sctuo
 }
 
+// AddChassiIDs adds the "chassis" edge to the ServerChassis entity by IDs.
+func (sctuo *ServerChassisTypeUpdateOne) AddChassiIDs(ids ...gidx.PrefixedID) *ServerChassisTypeUpdateOne {
+	sctuo.mutation.AddChassiIDs(ids...)
+	return sctuo
+}
+
+// AddChassis adds the "chassis" edges to the ServerChassis entity.
+func (sctuo *ServerChassisTypeUpdateOne) AddChassis(s ...*ServerChassis) *ServerChassisTypeUpdateOne {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctuo.AddChassiIDs(ids...)
+}
+
 // Mutation returns the ServerChassisTypeMutation object of the builder.
 func (sctuo *ServerChassisTypeUpdateOne) Mutation() *ServerChassisTypeMutation {
 	return sctuo.mutation
+}
+
+// ClearChassis clears all "chassis" edges to the ServerChassis entity.
+func (sctuo *ServerChassisTypeUpdateOne) ClearChassis() *ServerChassisTypeUpdateOne {
+	sctuo.mutation.ClearChassis()
+	return sctuo
+}
+
+// RemoveChassiIDs removes the "chassis" edge to ServerChassis entities by IDs.
+func (sctuo *ServerChassisTypeUpdateOne) RemoveChassiIDs(ids ...gidx.PrefixedID) *ServerChassisTypeUpdateOne {
+	sctuo.mutation.RemoveChassiIDs(ids...)
+	return sctuo
+}
+
+// RemoveChassis removes "chassis" edges to ServerChassis entities.
+func (sctuo *ServerChassisTypeUpdateOne) RemoveChassis(s ...*ServerChassis) *ServerChassisTypeUpdateOne {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctuo.RemoveChassiIDs(ids...)
 }
 
 // Where appends a list predicates to the ServerChassisTypeUpdate builder.
@@ -314,6 +433,51 @@ func (sctuo *ServerChassisTypeUpdateOne) sqlSave(ctx context.Context) (_node *Se
 	}
 	if value, ok := sctuo.mutation.IsFullDepth(); ok {
 		_spec.SetField(serverchassistype.FieldIsFullDepth, field.TypeBool, value)
+	}
+	if sctuo.mutation.ChassisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctuo.mutation.RemovedChassisIDs(); len(nodes) > 0 && !sctuo.mutation.ChassisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sctuo.mutation.ChassisIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &ServerChassisType{config: sctuo.config}
 	_spec.Assign = _node.assignValues

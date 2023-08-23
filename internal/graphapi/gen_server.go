@@ -182,6 +182,7 @@ type ComplexityRoot struct {
 	}
 
 	ServerChassisType struct {
+		Chassis     func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerChassisOrder, where *generated.ServerChassisWhereInput) int
 		CreatedAt   func(childComplexity int) int
 		Height      func(childComplexity int) int
 		ID          func(childComplexity int) int
@@ -1218,6 +1219,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ServerChassisEdge.Node(childComplexity), true
+
+	case "ServerChassisType.chassis":
+		if e.complexity.ServerChassisType.Chassis == nil {
+			break
+		}
+
+		args, err := ec.field_ServerChassisType_chassis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ServerChassisType.Chassis(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerChassisOrder), args["where"].(*generated.ServerChassisWhereInput)), true
 
 	case "ServerChassisType.createdAt":
 		if e.complexity.ServerChassisType.CreatedAt == nil {
@@ -2265,6 +2278,7 @@ input CreateServerChassisTypeInput {
   isFullDepth: Boolean!
   """The ID for the parent of this chassis type."""
   parentChassisTypeID: ID!
+  chassiIDs: [ID!]
 }
 """Input information to create a server component."""
 input CreateServerComponentInput {
@@ -2567,6 +2581,25 @@ type ServerChassisType implements Node @key(fields: "id") @prefixedID(prefix: "s
   height: String!
   """Whether the server chassis type is full depth."""
   isFullDepth: Boolean!
+  chassis(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerChasses returned from the connection."""
+    orderBy: ServerChassisOrder
+
+    """Filtering options for ServerChasses returned from the connection."""
+    where: ServerChassisWhereInput
+  ): ServerChassisConnection!
 }
 """A connection to a list of items."""
 type ServerChassisTypeConnection {
@@ -2679,6 +2712,9 @@ input ServerChassisTypeWhereInput {
   """is_full_depth field predicates"""
   isFullDepth: Boolean
   isFullDepthNEQ: Boolean
+  """chassis edge predicates"""
+  hasChassis: Boolean
+  hasChassisWith: [ServerChassisWhereInput!]
 }
 """
 ServerChassisWhereInput is used for filtering ServerChassis objects.
@@ -3330,6 +3366,9 @@ input UpdateServerChassisTypeInput {
   height: String
   """Whether the server chassis type is full depth."""
   isFullDepth: Boolean
+  addChassiIDs: [ID!]
+  removeChassiIDs: [ID!]
+  clearChassis: Boolean
 }
 """Input information to update a server component."""
 input UpdateServerComponentInput {
@@ -4343,6 +4382,66 @@ func (ec *executionContext) field_Query_server_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
+func (ec *executionContext) field_ServerChassisType_chassis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *generated.ServerChassisOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOServerChassisOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *generated.ServerChassisWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOServerChassisWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
 func (ec *executionContext) field_ServerProvider_servers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4827,6 +4926,8 @@ func (ec *executionContext) fieldContext_Entity_findServerChassisTypeByID(ctx co
 				return ec.fieldContext_ServerChassisType_height(ctx, field)
 			case "isFullDepth":
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
+			case "chassis":
+				return ec.fieldContext_ServerChassisType_chassis(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
 		},
@@ -6827,6 +6928,8 @@ func (ec *executionContext) fieldContext_Query_serverChassisType(ctx context.Con
 				return ec.fieldContext_ServerChassisType_height(ctx, field)
 			case "isFullDepth":
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
+			case "chassis":
+				return ec.fieldContext_ServerChassisType_chassis(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
 		},
@@ -8896,6 +8999,8 @@ func (ec *executionContext) fieldContext_ServerChassis_serverChassisType(ctx con
 				return ec.fieldContext_ServerChassisType_height(ctx, field)
 			case "isFullDepth":
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
+			case "chassis":
+				return ec.fieldContext_ServerChassisType_chassis(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
 		},
@@ -9557,6 +9662,69 @@ func (ec *executionContext) fieldContext_ServerChassisType_isFullDepth(ctx conte
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerChassisType_chassis(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerChassisType_chassis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Chassis(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerChassisOrder), fc.Args["where"].(*generated.ServerChassisWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerChassisConnection)
+	fc.Result = res
+	return ec.marshalNServerChassisConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerChassisType_chassis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerChassisType",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_ServerChassisConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ServerChassisConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ServerChassisConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerChassisConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ServerChassisType_chassis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerChassisTypeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerChassisTypeConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerChassisTypeConnection_edges(ctx, field)
 	if err != nil {
@@ -9755,6 +9923,8 @@ func (ec *executionContext) fieldContext_ServerChassisTypeCreatePayload_serverCh
 				return ec.fieldContext_ServerChassisType_height(ctx, field)
 			case "isFullDepth":
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
+			case "chassis":
+				return ec.fieldContext_ServerChassisType_chassis(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
 		},
@@ -9856,6 +10026,8 @@ func (ec *executionContext) fieldContext_ServerChassisTypeEdge_node(ctx context.
 				return ec.fieldContext_ServerChassisType_height(ctx, field)
 			case "isFullDepth":
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
+			case "chassis":
+				return ec.fieldContext_ServerChassisType_chassis(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
 		},
@@ -9960,6 +10132,8 @@ func (ec *executionContext) fieldContext_ServerChassisTypeUpdatePayload_serverCh
 				return ec.fieldContext_ServerChassisType_height(ctx, field)
 			case "isFullDepth":
 				return ec.fieldContext_ServerChassisType_isFullDepth(ctx, field)
+			case "chassis":
+				return ec.fieldContext_ServerChassisType_chassis(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ServerChassisType", field.Name)
 		},
@@ -15062,7 +15236,7 @@ func (ec *executionContext) unmarshalInputCreateServerChassisTypeInput(ctx conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"vendor", "model", "height", "isFullDepth", "parentChassisTypeID"}
+	fieldsInOrder := [...]string{"vendor", "model", "height", "isFullDepth", "parentChassisTypeID", "chassiIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -15114,6 +15288,15 @@ func (ec *executionContext) unmarshalInputCreateServerChassisTypeInput(ctx conte
 				return it, err
 			}
 			it.ParentChassisTypeID = data
+		case "chassiIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("chassiIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ChassiIDs = data
 		}
 	}
 
@@ -16201,7 +16384,7 @@ func (ec *executionContext) unmarshalInputServerChassisTypeWhereInput(ctx contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "height", "heightNEQ", "heightIn", "heightNotIn", "heightGT", "heightGTE", "heightLT", "heightLTE", "heightContains", "heightHasPrefix", "heightHasSuffix", "heightEqualFold", "heightContainsFold", "isFullDepth", "isFullDepthNEQ"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "height", "heightNEQ", "heightIn", "heightNotIn", "heightGT", "heightGTE", "heightLT", "heightLTE", "heightContains", "heightHasPrefix", "heightHasSuffix", "heightEqualFold", "heightContainsFold", "isFullDepth", "isFullDepthNEQ", "hasChassis", "hasChassisWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -16820,6 +17003,24 @@ func (ec *executionContext) unmarshalInputServerChassisTypeWhereInput(ctx contex
 				return it, err
 			}
 			it.IsFullDepthNEQ = data
+		case "hasChassis":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChassis"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasChassis = data
+		case "hasChassisWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChassisWith"))
+			data, err := ec.unmarshalOServerChassisWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasChassisWith = data
 		}
 	}
 
@@ -20056,7 +20257,7 @@ func (ec *executionContext) unmarshalInputUpdateServerChassisTypeInput(ctx conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"vendor", "model", "height", "isFullDepth"}
+	fieldsInOrder := [...]string{"vendor", "model", "height", "isFullDepth", "addChassiIDs", "removeChassiIDs", "clearChassis"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20099,6 +20300,33 @@ func (ec *executionContext) unmarshalInputUpdateServerChassisTypeInput(ctx conte
 				return it, err
 			}
 			it.IsFullDepth = data
+		case "addChassiIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addChassiIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddChassiIDs = data
+		case "removeChassiIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeChassiIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveChassiIDs = data
+		case "clearChassis":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearChassis"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearChassis = data
 		}
 	}
 
@@ -21948,38 +22176,74 @@ func (ec *executionContext) _ServerChassisType(ctx context.Context, sel ast.Sele
 		case "id":
 			out.Values[i] = ec._ServerChassisType_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "createdAt":
 			out.Values[i] = ec._ServerChassisType_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "updatedAt":
 			out.Values[i] = ec._ServerChassisType_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "vendor":
 			out.Values[i] = ec._ServerChassisType_vendor(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "model":
 			out.Values[i] = ec._ServerChassisType_model(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "height":
 			out.Values[i] = ec._ServerChassisType_height(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "isFullDepth":
 			out.Values[i] = ec._ServerChassisType_isFullDepth(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "chassis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerChassisType_chassis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -24227,6 +24491,16 @@ func (ec *executionContext) marshalNServerChassis2ᚖgoᚗinfratographerᚗcom�
 	return ec._ServerChassis(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNServerChassisConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassisConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerChassisConnection(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNServerChassisCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerChassisCreatePayload) graphql.Marshaler {
 	return ec._ServerChassisCreatePayload(ctx, sel, &v)
 }
@@ -25469,6 +25743,14 @@ func (ec *executionContext) marshalOServerChassisEdge2ᚖgoᚗinfratographerᚗc
 		return graphql.Null
 	}
 	return ec._ServerChassisEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerChassisOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisOrder(ctx context.Context, v interface{}) (*generated.ServerChassisOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerChassisOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOServerChassisType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerChassisType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerChassisType) graphql.Marshaler {

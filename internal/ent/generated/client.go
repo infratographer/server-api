@@ -930,6 +930,22 @@ func (c *ServerChassisTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) 
 	return obj
 }
 
+// QueryChassis queries the chassis edge of a ServerChassisType.
+func (c *ServerChassisTypeClient) QueryChassis(sct *ServerChassisType) *ServerChassisQuery {
+	query := (&ServerChassisClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sct.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverchassistype.Table, serverchassistype.FieldID, id),
+			sqlgraph.To(serverchassis.Table, serverchassis.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, serverchassistype.ChassisTable, serverchassistype.ChassisColumn),
+		)
+		fromV = sqlgraph.Neighbors(sct.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ServerChassisTypeClient) Hooks() []Hook {
 	return c.hooks.ServerChassisType

@@ -32,6 +32,7 @@ input CreateServerChassisTypeInput {
   isFullDepth: Boolean!
   """The ID for the parent of this chassis type."""
   parentChassisTypeID: ID!
+  chassiIDs: [ID!]
 }
 """Input information to create a server component."""
 input CreateServerComponentInput {
@@ -334,6 +335,25 @@ type ServerChassisType implements Node @key(fields: "id") @prefixedID(prefix: "s
   height: String!
   """Whether the server chassis type is full depth."""
   isFullDepth: Boolean!
+  chassis(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerChasses returned from the connection."""
+    orderBy: ServerChassisOrder
+
+    """Filtering options for ServerChasses returned from the connection."""
+    where: ServerChassisWhereInput
+  ): ServerChassisConnection!
 }
 """A connection to a list of items."""
 type ServerChassisTypeConnection {
@@ -446,6 +466,9 @@ input ServerChassisTypeWhereInput {
   """is_full_depth field predicates"""
   isFullDepth: Boolean
   isFullDepthNEQ: Boolean
+  """chassis edge predicates"""
+  hasChassis: Boolean
+  hasChassisWith: [ServerChassisWhereInput!]
 }
 """
 ServerChassisWhereInput is used for filtering ServerChassis objects.
@@ -1097,6 +1120,9 @@ input UpdateServerChassisTypeInput {
   height: String
   """Whether the server chassis type is full depth."""
   isFullDepth: Boolean
+  addChassiIDs: [ID!]
+  removeChassiIDs: [ID!]
+  clearChassis: Boolean
 }
 """Input information to update a server component."""
 input UpdateServerComponentInput {

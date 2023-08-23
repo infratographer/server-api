@@ -96,6 +96,27 @@ func (sc *ServerChassis) ServerChassisType(ctx context.Context) (*ServerChassisT
 	return result, err
 }
 
+func (sct *ServerChassisType) Chassis(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerChassisOrder, where *ServerChassisWhereInput,
+) (*ServerChassisConnection, error) {
+	opts := []ServerChassisPaginateOption{
+		WithServerChassisOrder(orderBy),
+		WithServerChassisFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := sct.Edges.totalCount[0][alias]
+	if nodes, err := sct.NamedChassis(alias); err == nil || hasTotalCount {
+		pager, err := newServerChassisPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerChassisConnection{Edges: []*ServerChassisEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return sct.QueryChassis().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (sc *ServerComponent) ComponentType(ctx context.Context) (*ServerComponentType, error) {
 	result, err := sc.Edges.ComponentTypeOrErr()
 	if IsNotLoaded(err) {

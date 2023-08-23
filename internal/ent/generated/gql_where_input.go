@@ -1438,6 +1438,10 @@ type ServerChassisTypeWhereInput struct {
 	// "is_full_depth" field predicates.
 	IsFullDepth    *bool `json:"isFullDepth,omitempty"`
 	IsFullDepthNEQ *bool `json:"isFullDepthNEQ,omitempty"`
+
+	// "chassis" edge predicates.
+	HasChassis     *bool                      `json:"hasChassis,omitempty"`
+	HasChassisWith []*ServerChassisWhereInput `json:"hasChassisWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1707,6 +1711,24 @@ func (i *ServerChassisTypeWhereInput) P() (predicate.ServerChassisType, error) {
 		predicates = append(predicates, serverchassistype.IsFullDepthNEQ(*i.IsFullDepthNEQ))
 	}
 
+	if i.HasChassis != nil {
+		p := serverchassistype.HasChassis()
+		if !*i.HasChassis {
+			p = serverchassistype.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasChassisWith) > 0 {
+		with := make([]predicate.ServerChassis, 0, len(i.HasChassisWith))
+		for _, w := range i.HasChassisWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasChassisWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverchassistype.HasChassisWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyServerChassisTypeWhereInput

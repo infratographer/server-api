@@ -24,6 +24,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/x/gidx"
 )
@@ -105,6 +106,21 @@ func (sctc *ServerChassisTypeCreate) SetNillableID(gi *gidx.PrefixedID) *ServerC
 		sctc.SetID(*gi)
 	}
 	return sctc
+}
+
+// AddChassiIDs adds the "chassis" edge to the ServerChassis entity by IDs.
+func (sctc *ServerChassisTypeCreate) AddChassiIDs(ids ...gidx.PrefixedID) *ServerChassisTypeCreate {
+	sctc.mutation.AddChassiIDs(ids...)
+	return sctc
+}
+
+// AddChassis adds the "chassis" edges to the ServerChassis entity.
+func (sctc *ServerChassisTypeCreate) AddChassis(s ...*ServerChassis) *ServerChassisTypeCreate {
+	ids := make([]gidx.PrefixedID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sctc.AddChassiIDs(ids...)
 }
 
 // Mutation returns the ServerChassisTypeMutation object of the builder.
@@ -256,6 +272,22 @@ func (sctc *ServerChassisTypeCreate) createSpec() (*ServerChassisType, *sqlgraph
 	if value, ok := sctc.mutation.ParentChassisTypeID(); ok {
 		_spec.SetField(serverchassistype.FieldParentChassisTypeID, field.TypeString, value)
 		_node.ParentChassisTypeID = value
+	}
+	if nodes := sctc.mutation.ChassisIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   serverchassistype.ChassisTable,
+			Columns: []string{serverchassistype.ChassisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(serverchassis.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

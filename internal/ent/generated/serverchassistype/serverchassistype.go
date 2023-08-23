@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -42,8 +43,17 @@ const (
 	FieldIsFullDepth = "is_full_depth"
 	// FieldParentChassisTypeID holds the string denoting the parent_chassis_type_id field in the database.
 	FieldParentChassisTypeID = "parent_chassis_type_id"
+	// EdgeChassis holds the string denoting the chassis edge name in mutations.
+	EdgeChassis = "chassis"
 	// Table holds the table name of the serverchassistype in the database.
 	Table = "server_chassis_types"
+	// ChassisTable is the table that holds the chassis relation/edge.
+	ChassisTable = "server_chasses"
+	// ChassisInverseTable is the table name for the ServerChassis entity.
+	// It exists in this package in order to avoid circular dependency with the "serverchassis" package.
+	ChassisInverseTable = "server_chasses"
+	// ChassisColumn is the table column denoting the chassis relation/edge.
+	ChassisColumn = "server_chassis_type_id"
 )
 
 // Columns holds all SQL columns for serverchassistype fields.
@@ -126,4 +136,25 @@ func ByIsFullDepth(opts ...sql.OrderTermOption) OrderOption {
 // ByParentChassisTypeID orders the results by the parent_chassis_type_id field.
 func ByParentChassisTypeID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentChassisTypeID, opts...).ToFunc()
+}
+
+// ByChassisCount orders the results by chassis count.
+func ByChassisCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newChassisStep(), opts...)
+	}
+}
+
+// ByChassis orders the results by chassis terms.
+func ByChassis(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChassisStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newChassisStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ChassisInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ChassisTable, ChassisColumn),
+	)
 }

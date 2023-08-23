@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
 	"go.infratographer.com/x/gidx"
 )
@@ -457,6 +458,29 @@ func ParentChassisTypeIDEqualFold(v gidx.PrefixedID) predicate.ServerChassisType
 func ParentChassisTypeIDContainsFold(v gidx.PrefixedID) predicate.ServerChassisType {
 	vc := string(v)
 	return predicate.ServerChassisType(sql.FieldContainsFold(FieldParentChassisTypeID, vc))
+}
+
+// HasChassis applies the HasEdge predicate on the "chassis" edge.
+func HasChassis() predicate.ServerChassisType {
+	return predicate.ServerChassisType(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, ChassisTable, ChassisColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasChassisWith applies the HasEdge predicate on the "chassis" edge with a given conditions (other predicates).
+func HasChassisWith(preds ...predicate.ServerChassis) predicate.ServerChassisType {
+	return predicate.ServerChassisType(func(s *sql.Selector) {
+		step := newChassisStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

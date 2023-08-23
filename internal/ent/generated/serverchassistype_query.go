@@ -18,6 +18,7 @@ package generated
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -25,6 +26,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/serverchassis"
 	"go.infratographer.com/server-api/internal/ent/generated/serverchassistype"
 	"go.infratographer.com/x/gidx"
 )
@@ -32,12 +34,14 @@ import (
 // ServerChassisTypeQuery is the builder for querying ServerChassisType entities.
 type ServerChassisTypeQuery struct {
 	config
-	ctx        *QueryContext
-	order      []serverchassistype.OrderOption
-	inters     []Interceptor
-	predicates []predicate.ServerChassisType
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*ServerChassisType) error
+	ctx              *QueryContext
+	order            []serverchassistype.OrderOption
+	inters           []Interceptor
+	predicates       []predicate.ServerChassisType
+	withChassis      *ServerChassisQuery
+	modifiers        []func(*sql.Selector)
+	loadTotal        []func(context.Context, []*ServerChassisType) error
+	withNamedChassis map[string]*ServerChassisQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -72,6 +76,28 @@ func (sctq *ServerChassisTypeQuery) Unique(unique bool) *ServerChassisTypeQuery 
 func (sctq *ServerChassisTypeQuery) Order(o ...serverchassistype.OrderOption) *ServerChassisTypeQuery {
 	sctq.order = append(sctq.order, o...)
 	return sctq
+}
+
+// QueryChassis chains the current query on the "chassis" edge.
+func (sctq *ServerChassisTypeQuery) QueryChassis() *ServerChassisQuery {
+	query := (&ServerChassisClient{config: sctq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sctq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := sctq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverchassistype.Table, serverchassistype.FieldID, selector),
+			sqlgraph.To(serverchassis.Table, serverchassis.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, serverchassistype.ChassisTable, serverchassistype.ChassisColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sctq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first ServerChassisType entity from the query.
@@ -261,15 +287,27 @@ func (sctq *ServerChassisTypeQuery) Clone() *ServerChassisTypeQuery {
 		return nil
 	}
 	return &ServerChassisTypeQuery{
-		config:     sctq.config,
-		ctx:        sctq.ctx.Clone(),
-		order:      append([]serverchassistype.OrderOption{}, sctq.order...),
-		inters:     append([]Interceptor{}, sctq.inters...),
-		predicates: append([]predicate.ServerChassisType{}, sctq.predicates...),
+		config:      sctq.config,
+		ctx:         sctq.ctx.Clone(),
+		order:       append([]serverchassistype.OrderOption{}, sctq.order...),
+		inters:      append([]Interceptor{}, sctq.inters...),
+		predicates:  append([]predicate.ServerChassisType{}, sctq.predicates...),
+		withChassis: sctq.withChassis.Clone(),
 		// clone intermediate query.
 		sql:  sctq.sql.Clone(),
 		path: sctq.path,
 	}
+}
+
+// WithChassis tells the query-builder to eager-load the nodes that are connected to
+// the "chassis" edge. The optional arguments are used to configure the query builder of the edge.
+func (sctq *ServerChassisTypeQuery) WithChassis(opts ...func(*ServerChassisQuery)) *ServerChassisTypeQuery {
+	query := (&ServerChassisClient{config: sctq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	sctq.withChassis = query
+	return sctq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -348,8 +386,11 @@ func (sctq *ServerChassisTypeQuery) prepareQuery(ctx context.Context) error {
 
 func (sctq *ServerChassisTypeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ServerChassisType, error) {
 	var (
-		nodes = []*ServerChassisType{}
-		_spec = sctq.querySpec()
+		nodes       = []*ServerChassisType{}
+		_spec       = sctq.querySpec()
+		loadedTypes = [1]bool{
+			sctq.withChassis != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ServerChassisType).scanValues(nil, columns)
@@ -357,6 +398,7 @@ func (sctq *ServerChassisTypeQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &ServerChassisType{config: sctq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(sctq.modifiers) > 0 {
@@ -371,12 +413,57 @@ func (sctq *ServerChassisTypeQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := sctq.withChassis; query != nil {
+		if err := sctq.loadChassis(ctx, query, nodes,
+			func(n *ServerChassisType) { n.Edges.Chassis = []*ServerChassis{} },
+			func(n *ServerChassisType, e *ServerChassis) { n.Edges.Chassis = append(n.Edges.Chassis, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range sctq.withNamedChassis {
+		if err := sctq.loadChassis(ctx, query, nodes,
+			func(n *ServerChassisType) { n.appendNamedChassis(name) },
+			func(n *ServerChassisType, e *ServerChassis) { n.appendNamedChassis(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range sctq.loadTotal {
 		if err := sctq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (sctq *ServerChassisTypeQuery) loadChassis(ctx context.Context, query *ServerChassisQuery, nodes []*ServerChassisType, init func(*ServerChassisType), assign func(*ServerChassisType, *ServerChassis)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[gidx.PrefixedID]*ServerChassisType)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(serverchassis.FieldServerChassisTypeID)
+	}
+	query.Where(predicate.ServerChassis(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(serverchassistype.ChassisColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ServerChassisTypeID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "server_chassis_type_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (sctq *ServerChassisTypeQuery) sqlCount(ctx context.Context) (int, error) {
@@ -461,6 +548,20 @@ func (sctq *ServerChassisTypeQuery) sqlQuery(ctx context.Context) *sql.Selector 
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedChassis tells the query-builder to eager-load the nodes that are connected to the "chassis"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (sctq *ServerChassisTypeQuery) WithNamedChassis(name string, opts ...func(*ServerChassisQuery)) *ServerChassisTypeQuery {
+	query := (&ServerChassisClient{config: sctq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if sctq.withNamedChassis == nil {
+		sctq.withNamedChassis = make(map[string]*ServerChassisQuery)
+	}
+	sctq.withNamedChassis[name] = query
+	return sctq
 }
 
 // ServerChassisTypeGroupBy is the group-by builder for ServerChassisType entities.

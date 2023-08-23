@@ -47,7 +47,32 @@ type ServerChassisType struct {
 	IsFullDepth bool `json:"is_full_depth,omitempty"`
 	// The ID for the parent of this chassis type.
 	ParentChassisTypeID gidx.PrefixedID `json:"parent_chassis_type_id,omitempty"`
-	selectValues        sql.SelectValues
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ServerChassisTypeQuery when eager-loading is set.
+	Edges        ServerChassisTypeEdges `json:"edges"`
+	selectValues sql.SelectValues
+}
+
+// ServerChassisTypeEdges holds the relations/edges for other nodes in the graph.
+type ServerChassisTypeEdges struct {
+	// Chassis holds the value of the chassis edge.
+	Chassis []*ServerChassis `json:"chassis,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+
+	namedChassis map[string][]*ServerChassis
+}
+
+// ChassisOrErr returns the Chassis value or an error if the edge
+// was not loaded in eager-loading.
+func (e ServerChassisTypeEdges) ChassisOrErr() ([]*ServerChassis, error) {
+	if e.loadedTypes[0] {
+		return e.Chassis, nil
+	}
+	return nil, &NotLoadedError{edge: "chassis"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -139,6 +164,11 @@ func (sct *ServerChassisType) Value(name string) (ent.Value, error) {
 	return sct.selectValues.Get(name)
 }
 
+// QueryChassis queries the "chassis" edge of the ServerChassisType entity.
+func (sct *ServerChassisType) QueryChassis() *ServerChassisQuery {
+	return NewServerChassisTypeClient(sct.config).QueryChassis(sct)
+}
+
 // Update returns a builder for updating this ServerChassisType.
 // Note that you need to call ServerChassisType.Unwrap() before calling this method if this ServerChassisType
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -188,6 +218,30 @@ func (sct *ServerChassisType) String() string {
 
 // IsEntity implement fedruntime.Entity
 func (sct ServerChassisType) IsEntity() {}
+
+// NamedChassis returns the Chassis named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sct *ServerChassisType) NamedChassis(name string) ([]*ServerChassis, error) {
+	if sct.Edges.namedChassis == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sct.Edges.namedChassis[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sct *ServerChassisType) appendNamedChassis(name string, edges ...*ServerChassis) {
+	if sct.Edges.namedChassis == nil {
+		sct.Edges.namedChassis = make(map[string][]*ServerChassis)
+	}
+	if len(edges) == 0 {
+		sct.Edges.namedChassis[name] = []*ServerChassis{}
+	} else {
+		sct.Edges.namedChassis[name] = append(sct.Edges.namedChassis[name], edges...)
+	}
+}
 
 // ServerChassisTypes is a parsable slice of ServerChassisType.
 type ServerChassisTypes []*ServerChassisType

@@ -62,7 +62,8 @@ type CreateServerChassisTypeInput struct {
 	// Whether the server chassis type is full depth.
 	IsFullDepth bool `json:"isFullDepth"`
 	// The ID for the parent of this chassis type.
-	ParentChassisTypeID gidx.PrefixedID `json:"parentChassisTypeID"`
+	ParentChassisTypeID gidx.PrefixedID   `json:"parentChassisTypeID"`
+	ChassiIDs           []gidx.PrefixedID `json:"chassiIDs,omitempty"`
 }
 
 // Input information to create a server component.
@@ -373,7 +374,8 @@ type ServerChassisType struct {
 	// The height of the server chassis type.
 	Height string `json:"height"`
 	// Whether the server chassis type is full depth.
-	IsFullDepth bool `json:"isFullDepth"`
+	IsFullDepth bool                    `json:"isFullDepth"`
+	Chassis     ServerChassisConnection `json:"chassis"`
 }
 
 func (ServerChassisType) IsNode() {}
@@ -505,6 +507,9 @@ type ServerChassisTypeWhereInput struct {
 	// is_full_depth field predicates
 	IsFullDepth    *bool `json:"isFullDepth,omitempty"`
 	IsFullDepthNeq *bool `json:"isFullDepthNEQ,omitempty"`
+	// chassis edge predicates
+	HasChassis     *bool                      `json:"hasChassis,omitempty"`
+	HasChassisWith []*ServerChassisWhereInput `json:"hasChassisWith,omitempty"`
 }
 
 // Return response from serverChassisUpdate
@@ -1197,7 +1202,10 @@ type UpdateServerChassisTypeInput struct {
 	// The height of the server chassis type.
 	Height *string `json:"height,omitempty"`
 	// Whether the server chassis type is full depth.
-	IsFullDepth *bool `json:"isFullDepth,omitempty"`
+	IsFullDepth     *bool             `json:"isFullDepth,omitempty"`
+	AddChassiIDs    []gidx.PrefixedID `json:"addChassiIDs,omitempty"`
+	RemoveChassiIDs []gidx.PrefixedID `json:"removeChassiIDs,omitempty"`
+	ClearChassis    *bool             `json:"clearChassis,omitempty"`
 }
 
 // Input information to update a server component.
