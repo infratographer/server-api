@@ -43,6 +43,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -5255,6 +5257,718 @@ func (smt *ServerMotherboardType) ToEdge(order *ServerMotherboardTypeOrder) *Ser
 	return &ServerMotherboardTypeEdge{
 		Node:   smt,
 		Cursor: order.Field.toCursor(smt),
+	}
+}
+
+// ServerPowerSupplyEdge is the edge representation of ServerPowerSupply.
+type ServerPowerSupplyEdge struct {
+	Node   *ServerPowerSupply `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// ServerPowerSupplyConnection is the connection containing edges to ServerPowerSupply.
+type ServerPowerSupplyConnection struct {
+	Edges      []*ServerPowerSupplyEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+func (c *ServerPowerSupplyConnection) build(nodes []*ServerPowerSupply, pager *serverpowersupplyPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerPowerSupply
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerPowerSupply {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerPowerSupply {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerPowerSupplyEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerPowerSupplyEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerPowerSupplyPaginateOption enables pagination customization.
+type ServerPowerSupplyPaginateOption func(*serverpowersupplyPager) error
+
+// WithServerPowerSupplyOrder configures pagination ordering.
+func WithServerPowerSupplyOrder(order *ServerPowerSupplyOrder) ServerPowerSupplyPaginateOption {
+	if order == nil {
+		order = DefaultServerPowerSupplyOrder
+	}
+	o := *order
+	return func(pager *serverpowersupplyPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerPowerSupplyOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerPowerSupplyFilter configures pagination filter.
+func WithServerPowerSupplyFilter(filter func(*ServerPowerSupplyQuery) (*ServerPowerSupplyQuery, error)) ServerPowerSupplyPaginateOption {
+	return func(pager *serverpowersupplyPager) error {
+		if filter == nil {
+			return errors.New("ServerPowerSupplyQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type serverpowersupplyPager struct {
+	reverse bool
+	order   *ServerPowerSupplyOrder
+	filter  func(*ServerPowerSupplyQuery) (*ServerPowerSupplyQuery, error)
+}
+
+func newServerPowerSupplyPager(opts []ServerPowerSupplyPaginateOption, reverse bool) (*serverpowersupplyPager, error) {
+	pager := &serverpowersupplyPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerPowerSupplyOrder
+	}
+	return pager, nil
+}
+
+func (p *serverpowersupplyPager) applyFilter(query *ServerPowerSupplyQuery) (*ServerPowerSupplyQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *serverpowersupplyPager) toCursor(sps *ServerPowerSupply) Cursor {
+	return p.order.Field.toCursor(sps)
+}
+
+func (p *serverpowersupplyPager) applyCursors(query *ServerPowerSupplyQuery, after, before *Cursor) (*ServerPowerSupplyQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerPowerSupplyOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *serverpowersupplyPager) applyOrder(query *ServerPowerSupplyQuery) *ServerPowerSupplyQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerPowerSupplyOrder.Field {
+		query = query.Order(DefaultServerPowerSupplyOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *serverpowersupplyPager) orderExpr(query *ServerPowerSupplyQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerPowerSupplyOrder.Field {
+			b.Comma().Ident(DefaultServerPowerSupplyOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerPowerSupply.
+func (sps *ServerPowerSupplyQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerPowerSupplyPaginateOption,
+) (*ServerPowerSupplyConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerPowerSupplyPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if sps, err = pager.applyFilter(sps); err != nil {
+		return nil, err
+	}
+	conn := &ServerPowerSupplyConnection{Edges: []*ServerPowerSupplyEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = sps.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if sps, err = pager.applyCursors(sps, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		sps.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sps.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	sps = pager.applyOrder(sps)
+	nodes, err := sps.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerPowerSupplyOrderFieldID orders ServerPowerSupply by id.
+	ServerPowerSupplyOrderFieldID = &ServerPowerSupplyOrderField{
+		Value: func(sps *ServerPowerSupply) (ent.Value, error) {
+			return sps.ID, nil
+		},
+		column: serverpowersupply.FieldID,
+		toTerm: serverpowersupply.ByID,
+		toCursor: func(sps *ServerPowerSupply) Cursor {
+			return Cursor{
+				ID:    sps.ID,
+				Value: sps.ID,
+			}
+		},
+	}
+	// ServerPowerSupplyOrderFieldCreatedAt orders ServerPowerSupply by created_at.
+	ServerPowerSupplyOrderFieldCreatedAt = &ServerPowerSupplyOrderField{
+		Value: func(sps *ServerPowerSupply) (ent.Value, error) {
+			return sps.CreatedAt, nil
+		},
+		column: serverpowersupply.FieldCreatedAt,
+		toTerm: serverpowersupply.ByCreatedAt,
+		toCursor: func(sps *ServerPowerSupply) Cursor {
+			return Cursor{
+				ID:    sps.ID,
+				Value: sps.CreatedAt,
+			}
+		},
+	}
+	// ServerPowerSupplyOrderFieldUpdatedAt orders ServerPowerSupply by updated_at.
+	ServerPowerSupplyOrderFieldUpdatedAt = &ServerPowerSupplyOrderField{
+		Value: func(sps *ServerPowerSupply) (ent.Value, error) {
+			return sps.UpdatedAt, nil
+		},
+		column: serverpowersupply.FieldUpdatedAt,
+		toTerm: serverpowersupply.ByUpdatedAt,
+		toCursor: func(sps *ServerPowerSupply) Cursor {
+			return Cursor{
+				ID:    sps.ID,
+				Value: sps.UpdatedAt,
+			}
+		},
+	}
+	// ServerPowerSupplyOrderFieldServerPowerSupplyTypeID orders ServerPowerSupply by server_power_supply_type_id.
+	ServerPowerSupplyOrderFieldServerPowerSupplyTypeID = &ServerPowerSupplyOrderField{
+		Value: func(sps *ServerPowerSupply) (ent.Value, error) {
+			return sps.ServerPowerSupplyTypeID, nil
+		},
+		column: serverpowersupply.FieldServerPowerSupplyTypeID,
+		toTerm: serverpowersupply.ByServerPowerSupplyTypeID,
+		toCursor: func(sps *ServerPowerSupply) Cursor {
+			return Cursor{
+				ID:    sps.ID,
+				Value: sps.ServerPowerSupplyTypeID,
+			}
+		},
+	}
+	// ServerPowerSupplyOrderFieldServerID orders ServerPowerSupply by server_id.
+	ServerPowerSupplyOrderFieldServerID = &ServerPowerSupplyOrderField{
+		Value: func(sps *ServerPowerSupply) (ent.Value, error) {
+			return sps.ServerID, nil
+		},
+		column: serverpowersupply.FieldServerID,
+		toTerm: serverpowersupply.ByServerID,
+		toCursor: func(sps *ServerPowerSupply) Cursor {
+			return Cursor{
+				ID:    sps.ID,
+				Value: sps.ServerID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerPowerSupplyOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerPowerSupplyOrderFieldID.column:
+		str = "ID"
+	case ServerPowerSupplyOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerPowerSupplyOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerPowerSupplyOrderFieldServerPowerSupplyTypeID.column:
+		str = "PARENT_CHASSIS"
+	case ServerPowerSupplyOrderFieldServerID.column:
+		str = "SERVER"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerPowerSupplyOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerPowerSupplyOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerPowerSupplyOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerPowerSupplyOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerPowerSupplyOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerPowerSupplyOrderFieldUpdatedAt
+	case "PARENT_CHASSIS":
+		*f = *ServerPowerSupplyOrderFieldServerPowerSupplyTypeID
+	case "SERVER":
+		*f = *ServerPowerSupplyOrderFieldServerID
+	default:
+		return fmt.Errorf("%s is not a valid ServerPowerSupplyOrderField", str)
+	}
+	return nil
+}
+
+// ServerPowerSupplyOrderField defines the ordering field of ServerPowerSupply.
+type ServerPowerSupplyOrderField struct {
+	// Value extracts the ordering value from the given ServerPowerSupply.
+	Value    func(*ServerPowerSupply) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) serverpowersupply.OrderOption
+	toCursor func(*ServerPowerSupply) Cursor
+}
+
+// ServerPowerSupplyOrder defines the ordering of ServerPowerSupply.
+type ServerPowerSupplyOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *ServerPowerSupplyOrderField `json:"field"`
+}
+
+// DefaultServerPowerSupplyOrder is the default ordering of ServerPowerSupply.
+var DefaultServerPowerSupplyOrder = &ServerPowerSupplyOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerPowerSupplyOrderField{
+		Value: func(sps *ServerPowerSupply) (ent.Value, error) {
+			return sps.ID, nil
+		},
+		column: serverpowersupply.FieldID,
+		toTerm: serverpowersupply.ByID,
+		toCursor: func(sps *ServerPowerSupply) Cursor {
+			return Cursor{ID: sps.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerPowerSupply into ServerPowerSupplyEdge.
+func (sps *ServerPowerSupply) ToEdge(order *ServerPowerSupplyOrder) *ServerPowerSupplyEdge {
+	if order == nil {
+		order = DefaultServerPowerSupplyOrder
+	}
+	return &ServerPowerSupplyEdge{
+		Node:   sps,
+		Cursor: order.Field.toCursor(sps),
+	}
+}
+
+// ServerPowerSupplyTypeEdge is the edge representation of ServerPowerSupplyType.
+type ServerPowerSupplyTypeEdge struct {
+	Node   *ServerPowerSupplyType `json:"node"`
+	Cursor Cursor                 `json:"cursor"`
+}
+
+// ServerPowerSupplyTypeConnection is the connection containing edges to ServerPowerSupplyType.
+type ServerPowerSupplyTypeConnection struct {
+	Edges      []*ServerPowerSupplyTypeEdge `json:"edges"`
+	PageInfo   PageInfo                     `json:"pageInfo"`
+	TotalCount int                          `json:"totalCount"`
+}
+
+func (c *ServerPowerSupplyTypeConnection) build(nodes []*ServerPowerSupplyType, pager *serverpowersupplytypePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerPowerSupplyType
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerPowerSupplyType {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerPowerSupplyType {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerPowerSupplyTypeEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerPowerSupplyTypeEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerPowerSupplyTypePaginateOption enables pagination customization.
+type ServerPowerSupplyTypePaginateOption func(*serverpowersupplytypePager) error
+
+// WithServerPowerSupplyTypeOrder configures pagination ordering.
+func WithServerPowerSupplyTypeOrder(order *ServerPowerSupplyTypeOrder) ServerPowerSupplyTypePaginateOption {
+	if order == nil {
+		order = DefaultServerPowerSupplyTypeOrder
+	}
+	o := *order
+	return func(pager *serverpowersupplytypePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerPowerSupplyTypeOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerPowerSupplyTypeFilter configures pagination filter.
+func WithServerPowerSupplyTypeFilter(filter func(*ServerPowerSupplyTypeQuery) (*ServerPowerSupplyTypeQuery, error)) ServerPowerSupplyTypePaginateOption {
+	return func(pager *serverpowersupplytypePager) error {
+		if filter == nil {
+			return errors.New("ServerPowerSupplyTypeQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type serverpowersupplytypePager struct {
+	reverse bool
+	order   *ServerPowerSupplyTypeOrder
+	filter  func(*ServerPowerSupplyTypeQuery) (*ServerPowerSupplyTypeQuery, error)
+}
+
+func newServerPowerSupplyTypePager(opts []ServerPowerSupplyTypePaginateOption, reverse bool) (*serverpowersupplytypePager, error) {
+	pager := &serverpowersupplytypePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerPowerSupplyTypeOrder
+	}
+	return pager, nil
+}
+
+func (p *serverpowersupplytypePager) applyFilter(query *ServerPowerSupplyTypeQuery) (*ServerPowerSupplyTypeQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *serverpowersupplytypePager) toCursor(spst *ServerPowerSupplyType) Cursor {
+	return p.order.Field.toCursor(spst)
+}
+
+func (p *serverpowersupplytypePager) applyCursors(query *ServerPowerSupplyTypeQuery, after, before *Cursor) (*ServerPowerSupplyTypeQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerPowerSupplyTypeOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *serverpowersupplytypePager) applyOrder(query *ServerPowerSupplyTypeQuery) *ServerPowerSupplyTypeQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerPowerSupplyTypeOrder.Field {
+		query = query.Order(DefaultServerPowerSupplyTypeOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *serverpowersupplytypePager) orderExpr(query *ServerPowerSupplyTypeQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerPowerSupplyTypeOrder.Field {
+			b.Comma().Ident(DefaultServerPowerSupplyTypeOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerPowerSupplyType.
+func (spst *ServerPowerSupplyTypeQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerPowerSupplyTypePaginateOption,
+) (*ServerPowerSupplyTypeConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerPowerSupplyTypePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if spst, err = pager.applyFilter(spst); err != nil {
+		return nil, err
+	}
+	conn := &ServerPowerSupplyTypeConnection{Edges: []*ServerPowerSupplyTypeEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = spst.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if spst, err = pager.applyCursors(spst, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		spst.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := spst.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	spst = pager.applyOrder(spst)
+	nodes, err := spst.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerPowerSupplyTypeOrderFieldID orders ServerPowerSupplyType by id.
+	ServerPowerSupplyTypeOrderFieldID = &ServerPowerSupplyTypeOrderField{
+		Value: func(spst *ServerPowerSupplyType) (ent.Value, error) {
+			return spst.ID, nil
+		},
+		column: serverpowersupplytype.FieldID,
+		toTerm: serverpowersupplytype.ByID,
+		toCursor: func(spst *ServerPowerSupplyType) Cursor {
+			return Cursor{
+				ID:    spst.ID,
+				Value: spst.ID,
+			}
+		},
+	}
+	// ServerPowerSupplyTypeOrderFieldCreatedAt orders ServerPowerSupplyType by created_at.
+	ServerPowerSupplyTypeOrderFieldCreatedAt = &ServerPowerSupplyTypeOrderField{
+		Value: func(spst *ServerPowerSupplyType) (ent.Value, error) {
+			return spst.CreatedAt, nil
+		},
+		column: serverpowersupplytype.FieldCreatedAt,
+		toTerm: serverpowersupplytype.ByCreatedAt,
+		toCursor: func(spst *ServerPowerSupplyType) Cursor {
+			return Cursor{
+				ID:    spst.ID,
+				Value: spst.CreatedAt,
+			}
+		},
+	}
+	// ServerPowerSupplyTypeOrderFieldUpdatedAt orders ServerPowerSupplyType by updated_at.
+	ServerPowerSupplyTypeOrderFieldUpdatedAt = &ServerPowerSupplyTypeOrderField{
+		Value: func(spst *ServerPowerSupplyType) (ent.Value, error) {
+			return spst.UpdatedAt, nil
+		},
+		column: serverpowersupplytype.FieldUpdatedAt,
+		toTerm: serverpowersupplytype.ByUpdatedAt,
+		toCursor: func(spst *ServerPowerSupplyType) Cursor {
+			return Cursor{
+				ID:    spst.ID,
+				Value: spst.UpdatedAt,
+			}
+		},
+	}
+	// ServerPowerSupplyTypeOrderFieldVendor orders ServerPowerSupplyType by vendor.
+	ServerPowerSupplyTypeOrderFieldVendor = &ServerPowerSupplyTypeOrderField{
+		Value: func(spst *ServerPowerSupplyType) (ent.Value, error) {
+			return spst.Vendor, nil
+		},
+		column: serverpowersupplytype.FieldVendor,
+		toTerm: serverpowersupplytype.ByVendor,
+		toCursor: func(spst *ServerPowerSupplyType) Cursor {
+			return Cursor{
+				ID:    spst.ID,
+				Value: spst.Vendor,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerPowerSupplyTypeOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerPowerSupplyTypeOrderFieldID.column:
+		str = "ID"
+	case ServerPowerSupplyTypeOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerPowerSupplyTypeOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerPowerSupplyTypeOrderFieldVendor.column:
+		str = "NAME"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerPowerSupplyTypeOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerPowerSupplyTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerPowerSupplyTypeOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerPowerSupplyTypeOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerPowerSupplyTypeOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerPowerSupplyTypeOrderFieldUpdatedAt
+	case "NAME":
+		*f = *ServerPowerSupplyTypeOrderFieldVendor
+	default:
+		return fmt.Errorf("%s is not a valid ServerPowerSupplyTypeOrderField", str)
+	}
+	return nil
+}
+
+// ServerPowerSupplyTypeOrderField defines the ordering field of ServerPowerSupplyType.
+type ServerPowerSupplyTypeOrderField struct {
+	// Value extracts the ordering value from the given ServerPowerSupplyType.
+	Value    func(*ServerPowerSupplyType) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) serverpowersupplytype.OrderOption
+	toCursor func(*ServerPowerSupplyType) Cursor
+}
+
+// ServerPowerSupplyTypeOrder defines the ordering of ServerPowerSupplyType.
+type ServerPowerSupplyTypeOrder struct {
+	Direction OrderDirection                   `json:"direction"`
+	Field     *ServerPowerSupplyTypeOrderField `json:"field"`
+}
+
+// DefaultServerPowerSupplyTypeOrder is the default ordering of ServerPowerSupplyType.
+var DefaultServerPowerSupplyTypeOrder = &ServerPowerSupplyTypeOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerPowerSupplyTypeOrderField{
+		Value: func(spst *ServerPowerSupplyType) (ent.Value, error) {
+			return spst.ID, nil
+		},
+		column: serverpowersupplytype.FieldID,
+		toTerm: serverpowersupplytype.ByID,
+		toCursor: func(spst *ServerPowerSupplyType) Cursor {
+			return Cursor{ID: spst.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerPowerSupplyType into ServerPowerSupplyTypeEdge.
+func (spst *ServerPowerSupplyType) ToEdge(order *ServerPowerSupplyTypeOrder) *ServerPowerSupplyTypeEdge {
+	if order == nil {
+		order = DefaultServerPowerSupplyTypeOrder
+	}
+	return &ServerPowerSupplyTypeEdge{
+		Node:   spst,
+		Cursor: order.Field.toCursor(spst),
 	}
 }
 

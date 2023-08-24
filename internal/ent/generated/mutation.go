@@ -40,6 +40,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -67,6 +69,8 @@ const (
 	TypeServerMemoryType      = "ServerMemoryType"
 	TypeServerMotherboard     = "ServerMotherboard"
 	TypeServerMotherboardType = "ServerMotherboardType"
+	TypeServerPowerSupply     = "ServerPowerSupply"
+	TypeServerPowerSupplyType = "ServerPowerSupplyType"
 	TypeServerType            = "ServerType"
 )
 
@@ -9626,6 +9630,1200 @@ func (m *ServerMotherboardTypeMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown ServerMotherboardType edge %s", name)
+}
+
+// ServerPowerSupplyMutation represents an operation that mutates the ServerPowerSupply nodes in the graph.
+type ServerPowerSupplyMutation struct {
+	config
+	op                              Op
+	typ                             string
+	id                              *gidx.PrefixedID
+	created_at                      *time.Time
+	updated_at                      *time.Time
+	serial                          *string
+	clearedFields                   map[string]struct{}
+	server                          *gidx.PrefixedID
+	clearedserver                   bool
+	server_power_supply_type        *gidx.PrefixedID
+	clearedserver_power_supply_type bool
+	done                            bool
+	oldValue                        func(context.Context) (*ServerPowerSupply, error)
+	predicates                      []predicate.ServerPowerSupply
+}
+
+var _ ent.Mutation = (*ServerPowerSupplyMutation)(nil)
+
+// serverpowersupplyOption allows management of the mutation configuration using functional options.
+type serverpowersupplyOption func(*ServerPowerSupplyMutation)
+
+// newServerPowerSupplyMutation creates new mutation for the ServerPowerSupply entity.
+func newServerPowerSupplyMutation(c config, op Op, opts ...serverpowersupplyOption) *ServerPowerSupplyMutation {
+	m := &ServerPowerSupplyMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerPowerSupply,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerPowerSupplyID sets the ID field of the mutation.
+func withServerPowerSupplyID(id gidx.PrefixedID) serverpowersupplyOption {
+	return func(m *ServerPowerSupplyMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerPowerSupply
+		)
+		m.oldValue = func(ctx context.Context) (*ServerPowerSupply, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerPowerSupply.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerPowerSupply sets the old ServerPowerSupply of the mutation.
+func withServerPowerSupply(node *ServerPowerSupply) serverpowersupplyOption {
+	return func(m *ServerPowerSupplyMutation) {
+		m.oldValue = func(context.Context) (*ServerPowerSupply, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerPowerSupplyMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerPowerSupplyMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerPowerSupply entities.
+func (m *ServerPowerSupplyMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerPowerSupplyMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerPowerSupplyMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerPowerSupply.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerPowerSupplyMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerPowerSupplyMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerPowerSupply entity.
+// If the ServerPowerSupply object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerPowerSupplyMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerPowerSupplyMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerPowerSupplyMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerPowerSupply entity.
+// If the ServerPowerSupply object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerPowerSupplyMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetSerial sets the "serial" field.
+func (m *ServerPowerSupplyMutation) SetSerial(s string) {
+	m.serial = &s
+}
+
+// Serial returns the value of the "serial" field in the mutation.
+func (m *ServerPowerSupplyMutation) Serial() (r string, exists bool) {
+	v := m.serial
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSerial returns the old "serial" field's value of the ServerPowerSupply entity.
+// If the ServerPowerSupply object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyMutation) OldSerial(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSerial is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSerial requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSerial: %w", err)
+	}
+	return oldValue.Serial, nil
+}
+
+// ResetSerial resets all changes to the "serial" field.
+func (m *ServerPowerSupplyMutation) ResetSerial() {
+	m.serial = nil
+}
+
+// SetServerPowerSupplyTypeID sets the "server_power_supply_type_id" field.
+func (m *ServerPowerSupplyMutation) SetServerPowerSupplyTypeID(gi gidx.PrefixedID) {
+	m.server_power_supply_type = &gi
+}
+
+// ServerPowerSupplyTypeID returns the value of the "server_power_supply_type_id" field in the mutation.
+func (m *ServerPowerSupplyMutation) ServerPowerSupplyTypeID() (r gidx.PrefixedID, exists bool) {
+	v := m.server_power_supply_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerPowerSupplyTypeID returns the old "server_power_supply_type_id" field's value of the ServerPowerSupply entity.
+// If the ServerPowerSupply object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyMutation) OldServerPowerSupplyTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerPowerSupplyTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerPowerSupplyTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerPowerSupplyTypeID: %w", err)
+	}
+	return oldValue.ServerPowerSupplyTypeID, nil
+}
+
+// ResetServerPowerSupplyTypeID resets all changes to the "server_power_supply_type_id" field.
+func (m *ServerPowerSupplyMutation) ResetServerPowerSupplyTypeID() {
+	m.server_power_supply_type = nil
+}
+
+// SetServerID sets the "server_id" field.
+func (m *ServerPowerSupplyMutation) SetServerID(gi gidx.PrefixedID) {
+	m.server = &gi
+}
+
+// ServerID returns the value of the "server_id" field in the mutation.
+func (m *ServerPowerSupplyMutation) ServerID() (r gidx.PrefixedID, exists bool) {
+	v := m.server
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerID returns the old "server_id" field's value of the ServerPowerSupply entity.
+// If the ServerPowerSupply object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
+	}
+	return oldValue.ServerID, nil
+}
+
+// ResetServerID resets all changes to the "server_id" field.
+func (m *ServerPowerSupplyMutation) ResetServerID() {
+	m.server = nil
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerPowerSupplyMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerPowerSupplyMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerPowerSupplyMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerPowerSupplyMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// ClearServerPowerSupplyType clears the "server_power_supply_type" edge to the ServerPowerSupplyType entity.
+func (m *ServerPowerSupplyMutation) ClearServerPowerSupplyType() {
+	m.clearedserver_power_supply_type = true
+}
+
+// ServerPowerSupplyTypeCleared reports if the "server_power_supply_type" edge to the ServerPowerSupplyType entity was cleared.
+func (m *ServerPowerSupplyMutation) ServerPowerSupplyTypeCleared() bool {
+	return m.clearedserver_power_supply_type
+}
+
+// ServerPowerSupplyTypeIDs returns the "server_power_supply_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerPowerSupplyTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerPowerSupplyMutation) ServerPowerSupplyTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.server_power_supply_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServerPowerSupplyType resets all changes to the "server_power_supply_type" edge.
+func (m *ServerPowerSupplyMutation) ResetServerPowerSupplyType() {
+	m.server_power_supply_type = nil
+	m.clearedserver_power_supply_type = false
+}
+
+// Where appends a list predicates to the ServerPowerSupplyMutation builder.
+func (m *ServerPowerSupplyMutation) Where(ps ...predicate.ServerPowerSupply) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerPowerSupplyMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerPowerSupplyMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerPowerSupply, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerPowerSupplyMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerPowerSupplyMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerPowerSupply).
+func (m *ServerPowerSupplyMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerPowerSupplyMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, serverpowersupply.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, serverpowersupply.FieldUpdatedAt)
+	}
+	if m.serial != nil {
+		fields = append(fields, serverpowersupply.FieldSerial)
+	}
+	if m.server_power_supply_type != nil {
+		fields = append(fields, serverpowersupply.FieldServerPowerSupplyTypeID)
+	}
+	if m.server != nil {
+		fields = append(fields, serverpowersupply.FieldServerID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerPowerSupplyMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case serverpowersupply.FieldCreatedAt:
+		return m.CreatedAt()
+	case serverpowersupply.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case serverpowersupply.FieldSerial:
+		return m.Serial()
+	case serverpowersupply.FieldServerPowerSupplyTypeID:
+		return m.ServerPowerSupplyTypeID()
+	case serverpowersupply.FieldServerID:
+		return m.ServerID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerPowerSupplyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case serverpowersupply.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case serverpowersupply.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case serverpowersupply.FieldSerial:
+		return m.OldSerial(ctx)
+	case serverpowersupply.FieldServerPowerSupplyTypeID:
+		return m.OldServerPowerSupplyTypeID(ctx)
+	case serverpowersupply.FieldServerID:
+		return m.OldServerID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerPowerSupply field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerPowerSupplyMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case serverpowersupply.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case serverpowersupply.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case serverpowersupply.FieldSerial:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSerial(v)
+		return nil
+	case serverpowersupply.FieldServerPowerSupplyTypeID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerPowerSupplyTypeID(v)
+		return nil
+	case serverpowersupply.FieldServerID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerPowerSupply field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerPowerSupplyMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerPowerSupplyMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerPowerSupplyMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerPowerSupply numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerPowerSupplyMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerPowerSupplyMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerPowerSupplyMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerPowerSupply nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerPowerSupplyMutation) ResetField(name string) error {
+	switch name {
+	case serverpowersupply.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case serverpowersupply.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case serverpowersupply.FieldSerial:
+		m.ResetSerial()
+		return nil
+	case serverpowersupply.FieldServerPowerSupplyTypeID:
+		m.ResetServerPowerSupplyTypeID()
+		return nil
+	case serverpowersupply.FieldServerID:
+		m.ResetServerID()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerPowerSupply field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerPowerSupplyMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.server != nil {
+		edges = append(edges, serverpowersupply.EdgeServer)
+	}
+	if m.server_power_supply_type != nil {
+		edges = append(edges, serverpowersupply.EdgeServerPowerSupplyType)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerPowerSupplyMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case serverpowersupply.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case serverpowersupply.EdgeServerPowerSupplyType:
+		if id := m.server_power_supply_type; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerPowerSupplyMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerPowerSupplyMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerPowerSupplyMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedserver {
+		edges = append(edges, serverpowersupply.EdgeServer)
+	}
+	if m.clearedserver_power_supply_type {
+		edges = append(edges, serverpowersupply.EdgeServerPowerSupplyType)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerPowerSupplyMutation) EdgeCleared(name string) bool {
+	switch name {
+	case serverpowersupply.EdgeServer:
+		return m.clearedserver
+	case serverpowersupply.EdgeServerPowerSupplyType:
+		return m.clearedserver_power_supply_type
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerPowerSupplyMutation) ClearEdge(name string) error {
+	switch name {
+	case serverpowersupply.EdgeServer:
+		m.ClearServer()
+		return nil
+	case serverpowersupply.EdgeServerPowerSupplyType:
+		m.ClearServerPowerSupplyType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerPowerSupply unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerPowerSupplyMutation) ResetEdge(name string) error {
+	switch name {
+	case serverpowersupply.EdgeServer:
+		m.ResetServer()
+		return nil
+	case serverpowersupply.EdgeServerPowerSupplyType:
+		m.ResetServerPowerSupplyType()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerPowerSupply edge %s", name)
+}
+
+// ServerPowerSupplyTypeMutation represents an operation that mutates the ServerPowerSupplyType nodes in the graph.
+type ServerPowerSupplyTypeMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *gidx.PrefixedID
+	created_at    *time.Time
+	updated_at    *time.Time
+	vendor        *string
+	model         *string
+	watts         *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*ServerPowerSupplyType, error)
+	predicates    []predicate.ServerPowerSupplyType
+}
+
+var _ ent.Mutation = (*ServerPowerSupplyTypeMutation)(nil)
+
+// serverpowersupplytypeOption allows management of the mutation configuration using functional options.
+type serverpowersupplytypeOption func(*ServerPowerSupplyTypeMutation)
+
+// newServerPowerSupplyTypeMutation creates new mutation for the ServerPowerSupplyType entity.
+func newServerPowerSupplyTypeMutation(c config, op Op, opts ...serverpowersupplytypeOption) *ServerPowerSupplyTypeMutation {
+	m := &ServerPowerSupplyTypeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerPowerSupplyType,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerPowerSupplyTypeID sets the ID field of the mutation.
+func withServerPowerSupplyTypeID(id gidx.PrefixedID) serverpowersupplytypeOption {
+	return func(m *ServerPowerSupplyTypeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerPowerSupplyType
+		)
+		m.oldValue = func(ctx context.Context) (*ServerPowerSupplyType, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerPowerSupplyType.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerPowerSupplyType sets the old ServerPowerSupplyType of the mutation.
+func withServerPowerSupplyType(node *ServerPowerSupplyType) serverpowersupplytypeOption {
+	return func(m *ServerPowerSupplyTypeMutation) {
+		m.oldValue = func(context.Context) (*ServerPowerSupplyType, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerPowerSupplyTypeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerPowerSupplyTypeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerPowerSupplyType entities.
+func (m *ServerPowerSupplyTypeMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerPowerSupplyTypeMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerPowerSupplyTypeMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerPowerSupplyType.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerPowerSupplyTypeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerPowerSupplyTypeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerPowerSupplyType entity.
+// If the ServerPowerSupplyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerPowerSupplyTypeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerPowerSupplyTypeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerPowerSupplyTypeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerPowerSupplyType entity.
+// If the ServerPowerSupplyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerPowerSupplyTypeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetVendor sets the "vendor" field.
+func (m *ServerPowerSupplyTypeMutation) SetVendor(s string) {
+	m.vendor = &s
+}
+
+// Vendor returns the value of the "vendor" field in the mutation.
+func (m *ServerPowerSupplyTypeMutation) Vendor() (r string, exists bool) {
+	v := m.vendor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVendor returns the old "vendor" field's value of the ServerPowerSupplyType entity.
+// If the ServerPowerSupplyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyTypeMutation) OldVendor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVendor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVendor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVendor: %w", err)
+	}
+	return oldValue.Vendor, nil
+}
+
+// ResetVendor resets all changes to the "vendor" field.
+func (m *ServerPowerSupplyTypeMutation) ResetVendor() {
+	m.vendor = nil
+}
+
+// SetModel sets the "model" field.
+func (m *ServerPowerSupplyTypeMutation) SetModel(s string) {
+	m.model = &s
+}
+
+// Model returns the value of the "model" field in the mutation.
+func (m *ServerPowerSupplyTypeMutation) Model() (r string, exists bool) {
+	v := m.model
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModel returns the old "model" field's value of the ServerPowerSupplyType entity.
+// If the ServerPowerSupplyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyTypeMutation) OldModel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModel: %w", err)
+	}
+	return oldValue.Model, nil
+}
+
+// ResetModel resets all changes to the "model" field.
+func (m *ServerPowerSupplyTypeMutation) ResetModel() {
+	m.model = nil
+}
+
+// SetWatts sets the "watts" field.
+func (m *ServerPowerSupplyTypeMutation) SetWatts(s string) {
+	m.watts = &s
+}
+
+// Watts returns the value of the "watts" field in the mutation.
+func (m *ServerPowerSupplyTypeMutation) Watts() (r string, exists bool) {
+	v := m.watts
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWatts returns the old "watts" field's value of the ServerPowerSupplyType entity.
+// If the ServerPowerSupplyType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerPowerSupplyTypeMutation) OldWatts(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWatts is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWatts requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWatts: %w", err)
+	}
+	return oldValue.Watts, nil
+}
+
+// ResetWatts resets all changes to the "watts" field.
+func (m *ServerPowerSupplyTypeMutation) ResetWatts() {
+	m.watts = nil
+}
+
+// Where appends a list predicates to the ServerPowerSupplyTypeMutation builder.
+func (m *ServerPowerSupplyTypeMutation) Where(ps ...predicate.ServerPowerSupplyType) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerPowerSupplyTypeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerPowerSupplyTypeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerPowerSupplyType, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerPowerSupplyTypeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerPowerSupplyTypeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerPowerSupplyType).
+func (m *ServerPowerSupplyTypeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerPowerSupplyTypeMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, serverpowersupplytype.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, serverpowersupplytype.FieldUpdatedAt)
+	}
+	if m.vendor != nil {
+		fields = append(fields, serverpowersupplytype.FieldVendor)
+	}
+	if m.model != nil {
+		fields = append(fields, serverpowersupplytype.FieldModel)
+	}
+	if m.watts != nil {
+		fields = append(fields, serverpowersupplytype.FieldWatts)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerPowerSupplyTypeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case serverpowersupplytype.FieldCreatedAt:
+		return m.CreatedAt()
+	case serverpowersupplytype.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case serverpowersupplytype.FieldVendor:
+		return m.Vendor()
+	case serverpowersupplytype.FieldModel:
+		return m.Model()
+	case serverpowersupplytype.FieldWatts:
+		return m.Watts()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerPowerSupplyTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case serverpowersupplytype.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case serverpowersupplytype.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case serverpowersupplytype.FieldVendor:
+		return m.OldVendor(ctx)
+	case serverpowersupplytype.FieldModel:
+		return m.OldModel(ctx)
+	case serverpowersupplytype.FieldWatts:
+		return m.OldWatts(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerPowerSupplyType field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerPowerSupplyTypeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case serverpowersupplytype.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case serverpowersupplytype.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case serverpowersupplytype.FieldVendor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVendor(v)
+		return nil
+	case serverpowersupplytype.FieldModel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModel(v)
+		return nil
+	case serverpowersupplytype.FieldWatts:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWatts(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerPowerSupplyType field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerPowerSupplyTypeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerPowerSupplyTypeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerPowerSupplyTypeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerPowerSupplyType numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerPowerSupplyTypeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerPowerSupplyTypeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerPowerSupplyTypeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerPowerSupplyType nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerPowerSupplyTypeMutation) ResetField(name string) error {
+	switch name {
+	case serverpowersupplytype.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case serverpowersupplytype.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case serverpowersupplytype.FieldVendor:
+		m.ResetVendor()
+		return nil
+	case serverpowersupplytype.FieldModel:
+		m.ResetModel()
+		return nil
+	case serverpowersupplytype.FieldWatts:
+		m.ResetWatts()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerPowerSupplyType field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerPowerSupplyTypeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerPowerSupplyTypeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerPowerSupplyTypeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerPowerSupplyTypeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerPowerSupplyTypeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerPowerSupplyTypeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerPowerSupplyTypeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown ServerPowerSupplyType unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerPowerSupplyTypeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown ServerPowerSupplyType edge %s", name)
 }
 
 // ServerTypeMutation represents an operation that mutates the ServerType nodes in the graph.

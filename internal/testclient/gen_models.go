@@ -171,6 +171,24 @@ type CreateServerMotherboardTypeInput struct {
 	MotherboardIDs []gidx.PrefixedID `json:"motherboardIDs,omitempty"`
 }
 
+// Input information to create a server power supply.
+type CreateServerPowerSupplyInput struct {
+	// The serial of the server power supply.
+	Serial                  string          `json:"serial"`
+	ServerID                gidx.PrefixedID `json:"serverID"`
+	ServerPowerSupplyTypeID gidx.PrefixedID `json:"serverPowerSupplyTypeID"`
+}
+
+// Input information to create a server power supply type.
+type CreateServerPowerSupplyTypeInput struct {
+	// The name of the vendor for the server power supply type.
+	Vendor string `json:"vendor"`
+	// The mode of the server power supply type.
+	Model string `json:"model"`
+	// The watts of the server power supply type.
+	Watts string `json:"watts"`
+}
+
 // Input information to create a server provider.
 type CreateServerProviderInput struct {
 	// The name of the server provider.
@@ -1895,6 +1913,264 @@ type ServerOrder struct {
 	Field ServerOrderField `json:"field"`
 }
 
+type ServerPowerSupply struct {
+	// The ID of the server power supply type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The serial of the server power supply.
+	Serial                string                `json:"serial"`
+	Server                Server                `json:"server"`
+	ServerPowerSupplyType ServerPowerSupplyType `json:"serverPowerSupplyType"`
+}
+
+func (ServerPowerSupply) IsNode() {}
+
+// The id of the object.
+func (this ServerPowerSupply) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerPowerSupply) IsEntity() {}
+
+// A connection to a list of items.
+type ServerPowerSupplyConnection struct {
+	// A list of edges.
+	Edges []*ServerPowerSupplyEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverPowerSupplyCreate
+type ServerPowerSupplyCreatePayload struct {
+	// The created server power supply.
+	ServerPowerSupply ServerPowerSupply `json:"serverPowerSupply"`
+}
+
+// Return response from serverPowerSupplyDelete
+type ServerPowerSupplyDeletePayload struct {
+	// The ID of the deleted server power supply.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerPowerSupplyEdge struct {
+	// The item at the end of the edge.
+	Node *ServerPowerSupply `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerPowerSupply connections
+type ServerPowerSupplyOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerPowerSupplies.
+	Field ServerPowerSupplyOrderField `json:"field"`
+}
+
+type ServerPowerSupplyType struct {
+	// The ID of the server power supply type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The name of the vendor for the server power supply type.
+	Vendor string `json:"vendor"`
+	// The mode of the server power supply type.
+	Model string `json:"model"`
+	// The watts of the server power supply type.
+	Watts string `json:"watts"`
+}
+
+func (ServerPowerSupplyType) IsNode() {}
+
+// The id of the object.
+func (this ServerPowerSupplyType) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerPowerSupplyType) IsEntity() {}
+
+// A connection to a list of items.
+type ServerPowerSupplyTypeConnection struct {
+	// A list of edges.
+	Edges []*ServerPowerSupplyTypeEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverPowerSupplyTypeCreate
+type ServerPowerSupplyTypeCreatePayload struct {
+	// The created server power supply type.
+	ServerPowerSupplyType ServerPowerSupplyType `json:"serverPowerSupplyType"`
+}
+
+// Return response from serverPowerSupplyTypeDelete
+type ServerPowerSupplyTypeDeletePayload struct {
+	// The ID of the deleted server power supply type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerPowerSupplyTypeEdge struct {
+	// The item at the end of the edge.
+	Node *ServerPowerSupplyType `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerPowerSupplyType connections
+type ServerPowerSupplyTypeOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerPowerSupplyTypes.
+	Field ServerPowerSupplyTypeOrderField `json:"field"`
+}
+
+// Return response from serverPowerSupplyTypeUpdate
+type ServerPowerSupplyTypeUpdatePayload struct {
+	// The updated server power supply type.
+	ServerPowerSupplyType ServerPowerSupplyType `json:"serverPowerSupplyType"`
+}
+
+// ServerPowerSupplyTypeWhereInput is used for filtering ServerPowerSupplyType objects.
+// Input was generated by ent.
+type ServerPowerSupplyTypeWhereInput struct {
+	Not *ServerPowerSupplyTypeWhereInput   `json:"not,omitempty"`
+	And []*ServerPowerSupplyTypeWhereInput `json:"and,omitempty"`
+	Or  []*ServerPowerSupplyTypeWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// vendor field predicates
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNeq          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGt           *string  `json:"vendorGT,omitempty"`
+	VendorGte          *string  `json:"vendorGTE,omitempty"`
+	VendorLt           *string  `json:"vendorLT,omitempty"`
+	VendorLte          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+	// model field predicates
+	Model             *string  `json:"model,omitempty"`
+	ModelNeq          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGt           *string  `json:"modelGT,omitempty"`
+	ModelGte          *string  `json:"modelGTE,omitempty"`
+	ModelLt           *string  `json:"modelLT,omitempty"`
+	ModelLte          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+	// watts field predicates
+	Watts             *string  `json:"watts,omitempty"`
+	WattsNeq          *string  `json:"wattsNEQ,omitempty"`
+	WattsIn           []string `json:"wattsIn,omitempty"`
+	WattsNotIn        []string `json:"wattsNotIn,omitempty"`
+	WattsGt           *string  `json:"wattsGT,omitempty"`
+	WattsGte          *string  `json:"wattsGTE,omitempty"`
+	WattsLt           *string  `json:"wattsLT,omitempty"`
+	WattsLte          *string  `json:"wattsLTE,omitempty"`
+	WattsContains     *string  `json:"wattsContains,omitempty"`
+	WattsHasPrefix    *string  `json:"wattsHasPrefix,omitempty"`
+	WattsHasSuffix    *string  `json:"wattsHasSuffix,omitempty"`
+	WattsEqualFold    *string  `json:"wattsEqualFold,omitempty"`
+	WattsContainsFold *string  `json:"wattsContainsFold,omitempty"`
+}
+
+// Return response from serverPowerSupplyUpdate
+type ServerPowerSupplyUpdatePayload struct {
+	// The updated server power supply.
+	ServerPowerSupply ServerPowerSupply `json:"serverPowerSupply"`
+}
+
+// ServerPowerSupplyWhereInput is used for filtering ServerPowerSupply objects.
+// Input was generated by ent.
+type ServerPowerSupplyWhereInput struct {
+	Not *ServerPowerSupplyWhereInput   `json:"not,omitempty"`
+	And []*ServerPowerSupplyWhereInput `json:"and,omitempty"`
+	Or  []*ServerPowerSupplyWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// serial field predicates
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNeq          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGt           *string  `json:"serialGT,omitempty"`
+	SerialGte          *string  `json:"serialGTE,omitempty"`
+	SerialLt           *string  `json:"serialLT,omitempty"`
+	SerialLte          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+	// server_power_supply_type edge predicates
+	HasServerPowerSupplyType     *bool                              `json:"hasServerPowerSupplyType,omitempty"`
+	HasServerPowerSupplyTypeWith []*ServerPowerSupplyTypeWhereInput `json:"hasServerPowerSupplyTypeWith,omitempty"`
+}
+
 // A connection to a list of items.
 type ServerProviderConnection struct {
 	// A list of edges.
@@ -2315,6 +2591,22 @@ type UpdateServerMotherboardTypeInput struct {
 	AddMotherboardIDs    []gidx.PrefixedID `json:"addMotherboardIDs,omitempty"`
 	RemoveMotherboardIDs []gidx.PrefixedID `json:"removeMotherboardIDs,omitempty"`
 	ClearMotherboard     *bool             `json:"clearMotherboard,omitempty"`
+}
+
+// Input information to update a server power supply.
+type UpdateServerPowerSupplyInput struct {
+	// The serial of the server power supply.
+	Serial *string `json:"serial,omitempty"`
+}
+
+// Input information to update a server power supply type.
+type UpdateServerPowerSupplyTypeInput struct {
+	// The name of the vendor for the server power supply type.
+	Vendor *string `json:"vendor,omitempty"`
+	// The mode of the server power supply type.
+	Model *string `json:"model,omitempty"`
+	// The watts of the server power supply type.
+	Watts *string `json:"watts,omitempty"`
 }
 
 // Input information to update a server provider.
@@ -3000,6 +3292,100 @@ func (e *ServerOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ServerOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerPowerSupply connections can be ordered.
+type ServerPowerSupplyOrderField string
+
+const (
+	ServerPowerSupplyOrderFieldID            ServerPowerSupplyOrderField = "ID"
+	ServerPowerSupplyOrderFieldCreatedAt     ServerPowerSupplyOrderField = "CREATED_AT"
+	ServerPowerSupplyOrderFieldUpdatedAt     ServerPowerSupplyOrderField = "UPDATED_AT"
+	ServerPowerSupplyOrderFieldParentChassis ServerPowerSupplyOrderField = "PARENT_CHASSIS"
+	ServerPowerSupplyOrderFieldServer        ServerPowerSupplyOrderField = "SERVER"
+)
+
+var AllServerPowerSupplyOrderField = []ServerPowerSupplyOrderField{
+	ServerPowerSupplyOrderFieldID,
+	ServerPowerSupplyOrderFieldCreatedAt,
+	ServerPowerSupplyOrderFieldUpdatedAt,
+	ServerPowerSupplyOrderFieldParentChassis,
+	ServerPowerSupplyOrderFieldServer,
+}
+
+func (e ServerPowerSupplyOrderField) IsValid() bool {
+	switch e {
+	case ServerPowerSupplyOrderFieldID, ServerPowerSupplyOrderFieldCreatedAt, ServerPowerSupplyOrderFieldUpdatedAt, ServerPowerSupplyOrderFieldParentChassis, ServerPowerSupplyOrderFieldServer:
+		return true
+	}
+	return false
+}
+
+func (e ServerPowerSupplyOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerPowerSupplyOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerPowerSupplyOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerPowerSupplyOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerPowerSupplyOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerPowerSupplyType connections can be ordered.
+type ServerPowerSupplyTypeOrderField string
+
+const (
+	ServerPowerSupplyTypeOrderFieldID        ServerPowerSupplyTypeOrderField = "ID"
+	ServerPowerSupplyTypeOrderFieldCreatedAt ServerPowerSupplyTypeOrderField = "CREATED_AT"
+	ServerPowerSupplyTypeOrderFieldUpdatedAt ServerPowerSupplyTypeOrderField = "UPDATED_AT"
+	ServerPowerSupplyTypeOrderFieldName      ServerPowerSupplyTypeOrderField = "NAME"
+)
+
+var AllServerPowerSupplyTypeOrderField = []ServerPowerSupplyTypeOrderField{
+	ServerPowerSupplyTypeOrderFieldID,
+	ServerPowerSupplyTypeOrderFieldCreatedAt,
+	ServerPowerSupplyTypeOrderFieldUpdatedAt,
+	ServerPowerSupplyTypeOrderFieldName,
+}
+
+func (e ServerPowerSupplyTypeOrderField) IsValid() bool {
+	switch e {
+	case ServerPowerSupplyTypeOrderFieldID, ServerPowerSupplyTypeOrderFieldCreatedAt, ServerPowerSupplyTypeOrderFieldUpdatedAt, ServerPowerSupplyTypeOrderFieldName:
+		return true
+	}
+	return false
+}
+
+func (e ServerPowerSupplyTypeOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerPowerSupplyTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerPowerSupplyTypeOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerPowerSupplyTypeOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerPowerSupplyTypeOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

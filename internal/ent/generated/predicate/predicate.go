@@ -62,5 +62,11 @@ type ServerMotherboard func(*sql.Selector)
 // ServerMotherboardType is the predicate function for servermotherboardtype builders.
 type ServerMotherboardType func(*sql.Selector)
 
+// ServerPowerSupply is the predicate function for serverpowersupply builders.
+type ServerPowerSupply func(*sql.Selector)
+
+// ServerPowerSupplyType is the predicate function for serverpowersupplytype builders.
+type ServerPowerSupplyType func(*sql.Selector)
+
 // ServerType is the predicate function for servertype builders.
 type ServerType func(*sql.Selector)

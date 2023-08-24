@@ -37,6 +37,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -87,6 +89,12 @@ func (n *ServerMotherboard) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerMotherboardType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerPowerSupply) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerPowerSupplyType) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerType) IsNode() {}
@@ -365,6 +373,38 @@ func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (N
 		query := c.ServerMotherboardType.Query().
 			Where(servermotherboardtype.ID(uid))
 		query, err := query.CollectFields(ctx, "ServerMotherboardType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case serverpowersupply.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerPowerSupply.Query().
+			Where(serverpowersupply.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerPowerSupply")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case serverpowersupplytype.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerPowerSupplyType.Query().
+			Where(serverpowersupplytype.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerPowerSupplyType")
 		if err != nil {
 			return nil, err
 		}
@@ -674,6 +714,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		query := c.ServerMotherboardType.Query().
 			Where(servermotherboardtype.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "ServerMotherboardType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case serverpowersupply.Table:
+		query := c.ServerPowerSupply.Query().
+			Where(serverpowersupply.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerPowerSupply")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case serverpowersupplytype.Table:
+		query := c.ServerPowerSupplyType.Query().
+			Where(serverpowersupplytype.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerPowerSupplyType")
 		if err != nil {
 			return nil, err
 		}

@@ -281,6 +281,22 @@ func (smt *ServerMotherboardType) Motherboard(
 	return smt.QueryMotherboard().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (sps *ServerPowerSupply) Server(ctx context.Context) (*Server, error) {
+	result, err := sps.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = sps.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (sps *ServerPowerSupply) ServerPowerSupplyType(ctx context.Context) (*ServerPowerSupplyType, error) {
+	result, err := sps.Edges.ServerPowerSupplyTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = sps.QueryServerPowerSupplyType().Only(ctx)
+	}
+	return result, err
+}
+
 func (st *ServerType) Servers(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerOrder, where *ServerWhereInput,
 ) (*ServerConnection, error) {

@@ -191,6 +191,30 @@ func (f ServerMotherboardTypeFunc) Mutate(ctx context.Context, m generated.Mutat
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMotherboardTypeMutation", m)
 }
 
+// The ServerPowerSupplyFunc type is an adapter to allow the use of ordinary
+// function as ServerPowerSupply mutator.
+type ServerPowerSupplyFunc func(context.Context, *generated.ServerPowerSupplyMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerPowerSupplyFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerPowerSupplyMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerPowerSupplyMutation", m)
+}
+
+// The ServerPowerSupplyTypeFunc type is an adapter to allow the use of ordinary
+// function as ServerPowerSupplyType mutator.
+type ServerPowerSupplyTypeFunc func(context.Context, *generated.ServerPowerSupplyTypeMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerPowerSupplyTypeFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerPowerSupplyTypeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerPowerSupplyTypeMutation", m)
+}
+
 // The ServerTypeFunc type is an adapter to allow the use of ordinary
 // function as ServerType mutator.
 type ServerTypeFunc func(context.Context, *generated.ServerTypeMutation) (generated.Value, error)

@@ -235,6 +235,42 @@ type ServerMotherboardUpdatePayload struct {
 	ServerMotherboard *generated.ServerMotherboard `json:"serverMotherboard"`
 }
 
+// Return response from serverPowerSupplyCreate
+type ServerPowerSupplyCreatePayload struct {
+	// The created server power supply.
+	ServerPowerSupply *generated.ServerPowerSupply `json:"serverPowerSupply"`
+}
+
+// Return response from serverPowerSupplyDelete
+type ServerPowerSupplyDeletePayload struct {
+	// The ID of the deleted server power supply.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverPowerSupplyTypeCreate
+type ServerPowerSupplyTypeCreatePayload struct {
+	// The created server power supply type.
+	ServerPowerSupplyType *generated.ServerPowerSupplyType `json:"serverPowerSupplyType"`
+}
+
+// Return response from serverPowerSupplyTypeDelete
+type ServerPowerSupplyTypeDeletePayload struct {
+	// The ID of the deleted server power supply type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverPowerSupplyTypeUpdate
+type ServerPowerSupplyTypeUpdatePayload struct {
+	// The updated server power supply type.
+	ServerPowerSupplyType *generated.ServerPowerSupplyType `json:"serverPowerSupplyType"`
+}
+
+// Return response from serverPowerSupplyUpdate
+type ServerPowerSupplyUpdatePayload struct {
+	// The updated server power supply.
+	ServerPowerSupply *generated.ServerPowerSupply `json:"serverPowerSupply"`
+}
+
 // Return response from serverProviderCreate
 type ServerProviderCreatePayload struct {
 	// The created server provider.

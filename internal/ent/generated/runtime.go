@@ -33,6 +33,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/server-api/internal/ent/schema"
 	"go.infratographer.com/x/gidx"
@@ -444,6 +446,60 @@ func init() {
 	servermotherboardtypeDescID := servermotherboardtypeFields[0].Descriptor()
 	// servermotherboardtype.DefaultID holds the default value on creation for the id field.
 	servermotherboardtype.DefaultID = servermotherboardtypeDescID.Default.(func() gidx.PrefixedID)
+	serverpowersupplyMixin := schema.ServerPowerSupply{}.Mixin()
+	serverpowersupplyMixinFields0 := serverpowersupplyMixin[0].Fields()
+	_ = serverpowersupplyMixinFields0
+	serverpowersupplyFields := schema.ServerPowerSupply{}.Fields()
+	_ = serverpowersupplyFields
+	// serverpowersupplyDescCreatedAt is the schema descriptor for created_at field.
+	serverpowersupplyDescCreatedAt := serverpowersupplyMixinFields0[0].Descriptor()
+	// serverpowersupply.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serverpowersupply.DefaultCreatedAt = serverpowersupplyDescCreatedAt.Default.(func() time.Time)
+	// serverpowersupplyDescUpdatedAt is the schema descriptor for updated_at field.
+	serverpowersupplyDescUpdatedAt := serverpowersupplyMixinFields0[1].Descriptor()
+	// serverpowersupply.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serverpowersupply.DefaultUpdatedAt = serverpowersupplyDescUpdatedAt.Default.(func() time.Time)
+	// serverpowersupply.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serverpowersupply.UpdateDefaultUpdatedAt = serverpowersupplyDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// serverpowersupplyDescSerial is the schema descriptor for serial field.
+	serverpowersupplyDescSerial := serverpowersupplyFields[1].Descriptor()
+	// serverpowersupply.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	serverpowersupply.SerialValidator = serverpowersupplyDescSerial.Validators[0].(func(string) error)
+	// serverpowersupplyDescID is the schema descriptor for id field.
+	serverpowersupplyDescID := serverpowersupplyFields[0].Descriptor()
+	// serverpowersupply.DefaultID holds the default value on creation for the id field.
+	serverpowersupply.DefaultID = serverpowersupplyDescID.Default.(func() gidx.PrefixedID)
+	serverpowersupplytypeMixin := schema.ServerPowerSupplyType{}.Mixin()
+	serverpowersupplytypeMixinFields0 := serverpowersupplytypeMixin[0].Fields()
+	_ = serverpowersupplytypeMixinFields0
+	serverpowersupplytypeFields := schema.ServerPowerSupplyType{}.Fields()
+	_ = serverpowersupplytypeFields
+	// serverpowersupplytypeDescCreatedAt is the schema descriptor for created_at field.
+	serverpowersupplytypeDescCreatedAt := serverpowersupplytypeMixinFields0[0].Descriptor()
+	// serverpowersupplytype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	serverpowersupplytype.DefaultCreatedAt = serverpowersupplytypeDescCreatedAt.Default.(func() time.Time)
+	// serverpowersupplytypeDescUpdatedAt is the schema descriptor for updated_at field.
+	serverpowersupplytypeDescUpdatedAt := serverpowersupplytypeMixinFields0[1].Descriptor()
+	// serverpowersupplytype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	serverpowersupplytype.DefaultUpdatedAt = serverpowersupplytypeDescUpdatedAt.Default.(func() time.Time)
+	// serverpowersupplytype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	serverpowersupplytype.UpdateDefaultUpdatedAt = serverpowersupplytypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// serverpowersupplytypeDescVendor is the schema descriptor for vendor field.
+	serverpowersupplytypeDescVendor := serverpowersupplytypeFields[1].Descriptor()
+	// serverpowersupplytype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	serverpowersupplytype.VendorValidator = serverpowersupplytypeDescVendor.Validators[0].(func(string) error)
+	// serverpowersupplytypeDescModel is the schema descriptor for model field.
+	serverpowersupplytypeDescModel := serverpowersupplytypeFields[2].Descriptor()
+	// serverpowersupplytype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	serverpowersupplytype.ModelValidator = serverpowersupplytypeDescModel.Validators[0].(func(string) error)
+	// serverpowersupplytypeDescWatts is the schema descriptor for watts field.
+	serverpowersupplytypeDescWatts := serverpowersupplytypeFields[3].Descriptor()
+	// serverpowersupplytype.WattsValidator is a validator for the "watts" field. It is called by the builders before save.
+	serverpowersupplytype.WattsValidator = serverpowersupplytypeDescWatts.Validators[0].(func(string) error)
+	// serverpowersupplytypeDescID is the schema descriptor for id field.
+	serverpowersupplytypeDescID := serverpowersupplytypeFields[0].Descriptor()
+	// serverpowersupplytype.DefaultID holds the default value on creation for the id field.
+	serverpowersupplytype.DefaultID = serverpowersupplytypeDescID.Default.(func() gidx.PrefixedID)
 	servertypeMixin := schema.ServerType{}.Mixin()
 	servertypeMixinFields0 := servertypeMixin[0].Fields()
 	_ = servertypeMixinFields0

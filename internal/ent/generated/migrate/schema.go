@@ -592,6 +592,84 @@ var (
 			},
 		},
 	}
+	// ServerPowerSuppliesColumns holds the columns for the "server_power_supplies" table.
+	ServerPowerSuppliesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "server_id", Type: field.TypeString},
+		{Name: "server_power_supply_type_id", Type: field.TypeString},
+	}
+	// ServerPowerSuppliesTable holds the schema information for the "server_power_supplies" table.
+	ServerPowerSuppliesTable = &schema.Table{
+		Name:       "server_power_supplies",
+		Columns:    ServerPowerSuppliesColumns,
+		PrimaryKey: []*schema.Column{ServerPowerSuppliesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_power_supplies_servers_server",
+				Columns:    []*schema.Column{ServerPowerSuppliesColumns[4]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_power_supplies_server_power_supply_types_server_power_supply_type",
+				Columns:    []*schema.Column{ServerPowerSuppliesColumns[5]},
+				RefColumns: []*schema.Column{ServerPowerSupplyTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "serverpowersupply_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerPowerSuppliesColumns[1]},
+			},
+			{
+				Name:    "serverpowersupply_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerPowerSuppliesColumns[2]},
+			},
+			{
+				Name:    "serverpowersupply_server_power_supply_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerPowerSuppliesColumns[5]},
+			},
+			{
+				Name:    "serverpowersupply_server_id",
+				Unique:  false,
+				Columns: []*schema.Column{ServerPowerSuppliesColumns[4]},
+			},
+		},
+	}
+	// ServerPowerSupplyTypesColumns holds the columns for the "server_power_supply_types" table.
+	ServerPowerSupplyTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+		{Name: "watts", Type: field.TypeString, Size: 2147483647},
+	}
+	// ServerPowerSupplyTypesTable holds the schema information for the "server_power_supply_types" table.
+	ServerPowerSupplyTypesTable = &schema.Table{
+		Name:       "server_power_supply_types",
+		Columns:    ServerPowerSupplyTypesColumns,
+		PrimaryKey: []*schema.Column{ServerPowerSupplyTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "serverpowersupplytype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerPowerSupplyTypesColumns[1]},
+			},
+			{
+				Name:    "serverpowersupplytype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerPowerSupplyTypesColumns[2]},
+			},
+		},
+	}
 	// ServerTypesColumns holds the columns for the "server_types" table.
 	ServerTypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -639,6 +717,8 @@ var (
 		ServerMemoryTypesTable,
 		ServerMotherboardsTable,
 		ServerMotherboardTypesTable,
+		ServerPowerSuppliesTable,
+		ServerPowerSupplyTypesTable,
 		ServerTypesTable,
 	}
 )
@@ -658,4 +738,6 @@ func init() {
 	ServerMemoriesTable.ForeignKeys[1].RefTable = ServerMemoryTypesTable
 	ServerMotherboardsTable.ForeignKeys[0].RefTable = ServersTable
 	ServerMotherboardsTable.ForeignKeys[1].RefTable = ServerMotherboardTypesTable
+	ServerPowerSuppliesTable.ForeignKeys[0].RefTable = ServersTable
+	ServerPowerSuppliesTable.ForeignKeys[1].RefTable = ServerPowerSupplyTypesTable
 }

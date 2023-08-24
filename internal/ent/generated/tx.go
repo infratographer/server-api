@@ -54,6 +54,10 @@ type Tx struct {
 	ServerMotherboard *ServerMotherboardClient
 	// ServerMotherboardType is the client for interacting with the ServerMotherboardType builders.
 	ServerMotherboardType *ServerMotherboardTypeClient
+	// ServerPowerSupply is the client for interacting with the ServerPowerSupply builders.
+	ServerPowerSupply *ServerPowerSupplyClient
+	// ServerPowerSupplyType is the client for interacting with the ServerPowerSupplyType builders.
+	ServerPowerSupplyType *ServerPowerSupplyTypeClient
 	// ServerType is the client for interacting with the ServerType builders.
 	ServerType *ServerTypeClient
 
@@ -201,6 +205,8 @@ func (tx *Tx) init() {
 	tx.ServerMemoryType = NewServerMemoryTypeClient(tx.config)
 	tx.ServerMotherboard = NewServerMotherboardClient(tx.config)
 	tx.ServerMotherboardType = NewServerMotherboardTypeClient(tx.config)
+	tx.ServerPowerSupply = NewServerPowerSupplyClient(tx.config)
+	tx.ServerPowerSupplyType = NewServerPowerSupplyTypeClient(tx.config)
 	tx.ServerType = NewServerTypeClient(tx.config)
 }
 

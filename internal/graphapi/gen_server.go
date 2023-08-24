@@ -65,6 +65,8 @@ type ComplexityRoot struct {
 		FindServerMemoryTypeByID      func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMotherboardByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMotherboardTypeByID func(childComplexity int, id gidx.PrefixedID) int
+		FindServerPowerSupplyByID     func(childComplexity int, id gidx.PrefixedID) int
+		FindServerPowerSupplyTypeByID func(childComplexity int, id gidx.PrefixedID) int
 		FindServerProviderByID        func(childComplexity int, id gidx.PrefixedID) int
 		FindServerTypeByID            func(childComplexity int, id gidx.PrefixedID) int
 	}
@@ -108,6 +110,12 @@ type ComplexityRoot struct {
 		ServerMotherboardTypeDelete func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboardTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) int
 		ServerMotherboardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) int
+		ServerPowerSupply           func(childComplexity int, input generated.CreateServerPowerSupplyInput) int
+		ServerPowerSupplyDelete     func(childComplexity int, id gidx.PrefixedID) int
+		ServerPowerSupplyType       func(childComplexity int, input generated.CreateServerPowerSupplyTypeInput) int
+		ServerPowerSupplyTypeDelete func(childComplexity int, id gidx.PrefixedID) int
+		ServerPowerSupplyTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyTypeInput) int
+		ServerPowerSupplyUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyInput) int
 		ServerProviderCreate        func(childComplexity int, input generated.CreateServerProviderInput) int
 		ServerProviderDelete        func(childComplexity int, id gidx.PrefixedID) int
 		ServerProviderUpdate        func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerProviderInput) int
@@ -138,6 +146,8 @@ type ComplexityRoot struct {
 		ServerMemoryType      func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboard     func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboardType func(childComplexity int, id gidx.PrefixedID) int
+		ServerPowerSupply     func(childComplexity int, id gidx.PrefixedID) int
+		ServerPowerSupplyType func(childComplexity int, id gidx.PrefixedID) int
 		ServerProvider        func(childComplexity int, id gidx.PrefixedID) int
 		ServerType            func(childComplexity int, id gidx.PrefixedID) int
 		__resolve__service    func(childComplexity int) int
@@ -568,6 +578,70 @@ type ComplexityRoot struct {
 		ServerMotherboard func(childComplexity int) int
 	}
 
+	ServerPowerSupply struct {
+		CreatedAt             func(childComplexity int) int
+		ID                    func(childComplexity int) int
+		Serial                func(childComplexity int) int
+		Server                func(childComplexity int) int
+		ServerPowerSupplyType func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
+	}
+
+	ServerPowerSupplyConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerPowerSupplyCreatePayload struct {
+		ServerPowerSupply func(childComplexity int) int
+	}
+
+	ServerPowerSupplyDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerPowerSupplyEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerPowerSupplyType struct {
+		CreatedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Model     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		Vendor    func(childComplexity int) int
+		Watts     func(childComplexity int) int
+	}
+
+	ServerPowerSupplyTypeConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerPowerSupplyTypeCreatePayload struct {
+		ServerPowerSupplyType func(childComplexity int) int
+	}
+
+	ServerPowerSupplyTypeDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerPowerSupplyTypeEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerPowerSupplyTypeUpdatePayload struct {
+		ServerPowerSupplyType func(childComplexity int) int
+	}
+
+	ServerPowerSupplyUpdatePayload struct {
+		ServerPowerSupply func(childComplexity int) int
+	}
+
 	ServerProvider struct {
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -653,6 +727,8 @@ type EntityResolver interface {
 	FindServerMemoryTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error)
 	FindServerMotherboardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
 	FindServerMotherboardTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboardType, error)
+	FindServerPowerSupplyByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupply, error)
+	FindServerPowerSupplyTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupplyType, error)
 	FindServerProviderByID(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
 	FindServerTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error)
 }
@@ -693,6 +769,12 @@ type MutationResolver interface {
 	ServerMotherboardType(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error)
 	ServerMotherboardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) (*ServerMotherboardTypeUpdatePayload, error)
 	ServerMotherboardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardTypeDeletePayload, error)
+	ServerPowerSupply(ctx context.Context, input generated.CreateServerPowerSupplyInput) (*ServerPowerSupplyCreatePayload, error)
+	ServerPowerSupplyUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyInput) (*ServerPowerSupplyUpdatePayload, error)
+	ServerPowerSupplyDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyTypeDeletePayload, error)
+	ServerPowerSupplyType(ctx context.Context, input generated.CreateServerPowerSupplyTypeInput) (*ServerPowerSupplyTypeCreatePayload, error)
+	ServerPowerSupplyTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyTypeInput) (*ServerPowerSupplyTypeUpdatePayload, error)
+	ServerPowerSupplyTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyTypeDeletePayload, error)
 	ServerProviderCreate(ctx context.Context, input generated.CreateServerProviderInput) (*ServerProviderCreatePayload, error)
 	ServerProviderUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerProviderInput) (*ServerProviderUpdatePayload, error)
 	ServerProviderDelete(ctx context.Context, id gidx.PrefixedID) (*ServerProviderDeletePayload, error)
@@ -716,6 +798,8 @@ type QueryResolver interface {
 	ServerMemoryType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error)
 	ServerMotherboard(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
 	ServerMotherboardType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboardType, error)
+	ServerPowerSupply(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupply, error)
+	ServerPowerSupplyType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupplyType, error)
 	ServerProvider(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
 	Server(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error)
 	ServerType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error)
@@ -891,6 +975,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerMotherboardTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerPowerSupplyByID":
+		if e.complexity.Entity.FindServerPowerSupplyByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerPowerSupplyByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerPowerSupplyByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerPowerSupplyTypeByID":
+		if e.complexity.Entity.FindServerPowerSupplyTypeByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerPowerSupplyTypeByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerPowerSupplyTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerProviderByID":
 		if e.complexity.Entity.FindServerProviderByID == nil {
@@ -1372,6 +1480,78 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerMotherboardUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerMotherboardInput)), true
 
+	case "Mutation.serverPowerSupply":
+		if e.complexity.Mutation.ServerPowerSupply == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverPowerSupply_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerPowerSupply(childComplexity, args["input"].(generated.CreateServerPowerSupplyInput)), true
+
+	case "Mutation.serverPowerSupplyDelete":
+		if e.complexity.Mutation.ServerPowerSupplyDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverPowerSupplyDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerPowerSupplyDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverPowerSupplyType":
+		if e.complexity.Mutation.ServerPowerSupplyType == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverPowerSupplyType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerPowerSupplyType(childComplexity, args["input"].(generated.CreateServerPowerSupplyTypeInput)), true
+
+	case "Mutation.serverPowerSupplyTypeDelete":
+		if e.complexity.Mutation.ServerPowerSupplyTypeDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverPowerSupplyTypeDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerPowerSupplyTypeDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverPowerSupplyTypeUpdate":
+		if e.complexity.Mutation.ServerPowerSupplyTypeUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverPowerSupplyTypeUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerPowerSupplyTypeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerPowerSupplyTypeInput)), true
+
+	case "Mutation.serverPowerSupplyUpdate":
+		if e.complexity.Mutation.ServerPowerSupplyUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverPowerSupplyUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerPowerSupplyUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerPowerSupplyInput)), true
+
 	case "Mutation.serverProviderCreate":
 		if e.complexity.Mutation.ServerProviderCreate == nil {
 			break
@@ -1639,6 +1819,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ServerMotherboardType(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverPowerSupply":
+		if e.complexity.Query.ServerPowerSupply == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverPowerSupply_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerPowerSupply(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverPowerSupplyType":
+		if e.complexity.Query.ServerPowerSupplyType == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverPowerSupplyType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerPowerSupplyType(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Query.serverProvider":
 		if e.complexity.Query.ServerProvider == nil {
@@ -3064,6 +3268,202 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ServerMotherboardUpdatePayload.ServerMotherboard(childComplexity), true
 
+	case "ServerPowerSupply.createdAt":
+		if e.complexity.ServerPowerSupply.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupply.CreatedAt(childComplexity), true
+
+	case "ServerPowerSupply.id":
+		if e.complexity.ServerPowerSupply.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupply.ID(childComplexity), true
+
+	case "ServerPowerSupply.serial":
+		if e.complexity.ServerPowerSupply.Serial == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupply.Serial(childComplexity), true
+
+	case "ServerPowerSupply.server":
+		if e.complexity.ServerPowerSupply.Server == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupply.Server(childComplexity), true
+
+	case "ServerPowerSupply.serverPowerSupplyType":
+		if e.complexity.ServerPowerSupply.ServerPowerSupplyType == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupply.ServerPowerSupplyType(childComplexity), true
+
+	case "ServerPowerSupply.updatedAt":
+		if e.complexity.ServerPowerSupply.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupply.UpdatedAt(childComplexity), true
+
+	case "ServerPowerSupplyConnection.edges":
+		if e.complexity.ServerPowerSupplyConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyConnection.Edges(childComplexity), true
+
+	case "ServerPowerSupplyConnection.pageInfo":
+		if e.complexity.ServerPowerSupplyConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyConnection.PageInfo(childComplexity), true
+
+	case "ServerPowerSupplyConnection.totalCount":
+		if e.complexity.ServerPowerSupplyConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyConnection.TotalCount(childComplexity), true
+
+	case "ServerPowerSupplyCreatePayload.serverPowerSupply":
+		if e.complexity.ServerPowerSupplyCreatePayload.ServerPowerSupply == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyCreatePayload.ServerPowerSupply(childComplexity), true
+
+	case "ServerPowerSupplyDeletePayload.deletedID":
+		if e.complexity.ServerPowerSupplyDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerPowerSupplyEdge.cursor":
+		if e.complexity.ServerPowerSupplyEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyEdge.Cursor(childComplexity), true
+
+	case "ServerPowerSupplyEdge.node":
+		if e.complexity.ServerPowerSupplyEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyEdge.Node(childComplexity), true
+
+	case "ServerPowerSupplyType.createdAt":
+		if e.complexity.ServerPowerSupplyType.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyType.CreatedAt(childComplexity), true
+
+	case "ServerPowerSupplyType.id":
+		if e.complexity.ServerPowerSupplyType.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyType.ID(childComplexity), true
+
+	case "ServerPowerSupplyType.model":
+		if e.complexity.ServerPowerSupplyType.Model == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyType.Model(childComplexity), true
+
+	case "ServerPowerSupplyType.updatedAt":
+		if e.complexity.ServerPowerSupplyType.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyType.UpdatedAt(childComplexity), true
+
+	case "ServerPowerSupplyType.vendor":
+		if e.complexity.ServerPowerSupplyType.Vendor == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyType.Vendor(childComplexity), true
+
+	case "ServerPowerSupplyType.watts":
+		if e.complexity.ServerPowerSupplyType.Watts == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyType.Watts(childComplexity), true
+
+	case "ServerPowerSupplyTypeConnection.edges":
+		if e.complexity.ServerPowerSupplyTypeConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeConnection.Edges(childComplexity), true
+
+	case "ServerPowerSupplyTypeConnection.pageInfo":
+		if e.complexity.ServerPowerSupplyTypeConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeConnection.PageInfo(childComplexity), true
+
+	case "ServerPowerSupplyTypeConnection.totalCount":
+		if e.complexity.ServerPowerSupplyTypeConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeConnection.TotalCount(childComplexity), true
+
+	case "ServerPowerSupplyTypeCreatePayload.serverPowerSupplyType":
+		if e.complexity.ServerPowerSupplyTypeCreatePayload.ServerPowerSupplyType == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeCreatePayload.ServerPowerSupplyType(childComplexity), true
+
+	case "ServerPowerSupplyTypeDeletePayload.deletedID":
+		if e.complexity.ServerPowerSupplyTypeDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerPowerSupplyTypeEdge.cursor":
+		if e.complexity.ServerPowerSupplyTypeEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeEdge.Cursor(childComplexity), true
+
+	case "ServerPowerSupplyTypeEdge.node":
+		if e.complexity.ServerPowerSupplyTypeEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeEdge.Node(childComplexity), true
+
+	case "ServerPowerSupplyTypeUpdatePayload.serverPowerSupplyType":
+		if e.complexity.ServerPowerSupplyTypeUpdatePayload.ServerPowerSupplyType == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyTypeUpdatePayload.ServerPowerSupplyType(childComplexity), true
+
+	case "ServerPowerSupplyUpdatePayload.serverPowerSupply":
+		if e.complexity.ServerPowerSupplyUpdatePayload.ServerPowerSupply == nil {
+			break
+		}
+
+		return e.complexity.ServerPowerSupplyUpdatePayload.ServerPowerSupply(childComplexity), true
+
 	case "ServerProvider.createdAt":
 		if e.complexity.ServerProvider.CreatedAt == nil {
 			break
@@ -3291,6 +3691,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateServerMemoryTypeInput,
 		ec.unmarshalInputCreateServerMotherboardInput,
 		ec.unmarshalInputCreateServerMotherboardTypeInput,
+		ec.unmarshalInputCreateServerPowerSupplyInput,
+		ec.unmarshalInputCreateServerPowerSupplyTypeInput,
 		ec.unmarshalInputCreateServerProviderInput,
 		ec.unmarshalInputCreateServerTypeInput,
 		ec.unmarshalInputServerCPUOrder,
@@ -3318,6 +3720,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerMotherboardTypeWhereInput,
 		ec.unmarshalInputServerMotherboardWhereInput,
 		ec.unmarshalInputServerOrder,
+		ec.unmarshalInputServerPowerSupplyOrder,
+		ec.unmarshalInputServerPowerSupplyTypeOrder,
+		ec.unmarshalInputServerPowerSupplyTypeWhereInput,
+		ec.unmarshalInputServerPowerSupplyWhereInput,
 		ec.unmarshalInputServerProviderOrder,
 		ec.unmarshalInputServerProviderWhereInput,
 		ec.unmarshalInputServerTypeOrder,
@@ -3336,6 +3742,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateServerMemoryTypeInput,
 		ec.unmarshalInputUpdateServerMotherboardInput,
 		ec.unmarshalInputUpdateServerMotherboardTypeInput,
+		ec.unmarshalInputUpdateServerPowerSupplyInput,
+		ec.unmarshalInputUpdateServerPowerSupplyTypeInput,
 		ec.unmarshalInputUpdateServerProviderInput,
 		ec.unmarshalInputUpdateServerTypeInput,
 	)
@@ -3931,6 +4339,22 @@ input CreateServerMotherboardTypeInput {
   """The mode of the server chassis type."""
   model: String!
   motherboardIDs: [ID!]
+}
+"""Input information to create a server power supply."""
+input CreateServerPowerSupplyInput {
+  """The serial of the server power supply."""
+  serial: String!
+  serverID: ID!
+  serverPowerSupplyTypeID: ID!
+}
+"""Input information to create a server power supply type."""
+input CreateServerPowerSupplyTypeInput {
+  """The name of the vendor for the server power supply type."""
+  vendor: String!
+  """The mode of the server power supply type."""
+  model: String!
+  """The watts of the server power supply type."""
+  watts: String!
 }
 """Input information to create a server provider."""
 input CreateServerProviderInput {
@@ -5530,6 +5954,223 @@ enum ServerOrderField {
   OWNER
   SERVER_TYPE
 }
+type ServerPowerSupply implements Node @key(fields: "id") @prefixedID(prefix: "srvrpsu") {
+  """The ID of the server power supply type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The serial of the server power supply."""
+  serial: String!
+  server: Server!
+  serverPowerSupplyType: ServerPowerSupplyType!
+}
+"""A connection to a list of items."""
+type ServerPowerSupplyConnection {
+  """A list of edges."""
+  edges: [ServerPowerSupplyEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerPowerSupplyEdge {
+  """The item at the end of the edge."""
+  node: ServerPowerSupply
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerPowerSupply connections"""
+input ServerPowerSupplyOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerPowerSupplies."""
+  field: ServerPowerSupplyOrderField!
+}
+"""Properties by which ServerPowerSupply connections can be ordered."""
+enum ServerPowerSupplyOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  PARENT_CHASSIS
+  SERVER
+}
+type ServerPowerSupplyType implements Node @key(fields: "id") @prefixedID(prefix: "srvrpst") {
+  """The ID of the server power supply type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The name of the vendor for the server power supply type."""
+  vendor: String!
+  """The mode of the server power supply type."""
+  model: String!
+  """The watts of the server power supply type."""
+  watts: String!
+}
+"""A connection to a list of items."""
+type ServerPowerSupplyTypeConnection {
+  """A list of edges."""
+  edges: [ServerPowerSupplyTypeEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerPowerSupplyTypeEdge {
+  """The item at the end of the edge."""
+  node: ServerPowerSupplyType
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerPowerSupplyType connections"""
+input ServerPowerSupplyTypeOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerPowerSupplyTypes."""
+  field: ServerPowerSupplyTypeOrderField!
+}
+"""Properties by which ServerPowerSupplyType connections can be ordered."""
+enum ServerPowerSupplyTypeOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  NAME
+}
+"""
+ServerPowerSupplyTypeWhereInput is used for filtering ServerPowerSupplyType objects.
+Input was generated by ent.
+"""
+input ServerPowerSupplyTypeWhereInput {
+  not: ServerPowerSupplyTypeWhereInput
+  and: [ServerPowerSupplyTypeWhereInput!]
+  or: [ServerPowerSupplyTypeWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """vendor field predicates"""
+  vendor: String
+  vendorNEQ: String
+  vendorIn: [String!]
+  vendorNotIn: [String!]
+  vendorGT: String
+  vendorGTE: String
+  vendorLT: String
+  vendorLTE: String
+  vendorContains: String
+  vendorHasPrefix: String
+  vendorHasSuffix: String
+  vendorEqualFold: String
+  vendorContainsFold: String
+  """model field predicates"""
+  model: String
+  modelNEQ: String
+  modelIn: [String!]
+  modelNotIn: [String!]
+  modelGT: String
+  modelGTE: String
+  modelLT: String
+  modelLTE: String
+  modelContains: String
+  modelHasPrefix: String
+  modelHasSuffix: String
+  modelEqualFold: String
+  modelContainsFold: String
+  """watts field predicates"""
+  watts: String
+  wattsNEQ: String
+  wattsIn: [String!]
+  wattsNotIn: [String!]
+  wattsGT: String
+  wattsGTE: String
+  wattsLT: String
+  wattsLTE: String
+  wattsContains: String
+  wattsHasPrefix: String
+  wattsHasSuffix: String
+  wattsEqualFold: String
+  wattsContainsFold: String
+}
+"""
+ServerPowerSupplyWhereInput is used for filtering ServerPowerSupply objects.
+Input was generated by ent.
+"""
+input ServerPowerSupplyWhereInput {
+  not: ServerPowerSupplyWhereInput
+  and: [ServerPowerSupplyWhereInput!]
+  or: [ServerPowerSupplyWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """serial field predicates"""
+  serial: String
+  serialNEQ: String
+  serialIn: [String!]
+  serialNotIn: [String!]
+  serialGT: String
+  serialGTE: String
+  serialLT: String
+  serialLTE: String
+  serialContains: String
+  serialHasPrefix: String
+  serialHasSuffix: String
+  serialEqualFold: String
+  serialContainsFold: String
+  """server edge predicates"""
+  hasServer: Boolean
+  hasServerWith: [ServerWhereInput!]
+  """server_power_supply_type edge predicates"""
+  hasServerPowerSupplyType: Boolean
+  hasServerPowerSupplyTypeWith: [ServerPowerSupplyTypeWhereInput!]
+}
 type ServerProvider implements Node @key(fields: "id") @prefixedID(prefix: "srvrprv") @goModel(model: "go.infratographer.com/server-api/internal/ent/generated.Provider") {
   """The ID of the server provider."""
   id: ID!
@@ -5949,6 +6590,20 @@ input UpdateServerMotherboardTypeInput {
   removeMotherboardIDs: [ID!]
   clearMotherboard: Boolean
 }
+"""Input information to update a server power supply."""
+input UpdateServerPowerSupplyInput {
+  """The serial of the server power supply."""
+  serial: String
+}
+"""Input information to update a server power supply type."""
+input UpdateServerPowerSupplyTypeInput {
+  """The name of the vendor for the server power supply type."""
+  vendor: String
+  """The mode of the server power supply type."""
+  model: String
+  """The watts of the server power supply type."""
+  watts: String
+}
 """Input information to update a server provider."""
 input UpdateServerProviderInput {
   """The name of the server provider."""
@@ -6329,6 +6984,128 @@ type ServerMotherboardTypeUpdatePayload {
   """
   serverMotherboardType: ServerMotherboardType!
 }`, BuiltIn: false},
+	{Name: "../../schema/power_supply.graphql", Input: `extend type Query {
+  """
+  Lookup a serverPowerSupply by ID.
+  """
+  serverPowerSupply(
+    """
+    The server power supply ID.
+    """
+    id: ID!
+  ): ServerPowerSupply!
+}
+
+extend type Mutation {
+  """
+  Create a server power supply.
+  """
+  serverPowerSupply(
+    input: CreateServerPowerSupplyInput!
+  ): ServerPowerSupplyCreatePayload!
+  """
+  Update a server power supply.
+  """
+  serverPowerSupplyUpdate(
+    id: ID!
+    input: UpdateServerPowerSupplyInput!
+  ): ServerPowerSupplyUpdatePayload!
+  """
+  Delete a server power supply.
+  """
+  serverPowerSupplyDelete(id: ID!): ServerPowerSupplyTypeDeletePayload!
+}
+
+"""
+Return response from serverPowerSupplyCreate
+"""
+type ServerPowerSupplyCreatePayload {
+  """
+  The created server power supply.
+  """
+  serverPowerSupply: ServerPowerSupply!
+}
+
+"""
+Return response from serverPowerSupplyDelete
+"""
+type ServerPowerSupplyDeletePayload {
+  """
+  The ID of the deleted server power supply.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverPowerSupplyUpdate
+"""
+type ServerPowerSupplyUpdatePayload {
+  """
+  The updated server power supply.
+  """
+  serverPowerSupply: ServerPowerSupply!
+}`, BuiltIn: false},
+	{Name: "../../schema/power_supply_type.graphql", Input: `extend type Query {
+  """
+  Lookup a serverPowerSupplyType by ID.
+  """
+  serverPowerSupplyType(
+    """
+    The server power supply type ID.
+    """
+    id: ID!
+  ): ServerPowerSupplyType!
+}
+
+extend type Mutation {
+  """
+  Create a server power supply type.
+  """
+  serverPowerSupplyType(
+    input: CreateServerPowerSupplyTypeInput!
+  ): ServerPowerSupplyTypeCreatePayload!
+  """
+  Update a server power supply type.
+  """
+  serverPowerSupplyTypeUpdate(
+    id: ID!
+    input: UpdateServerPowerSupplyTypeInput!
+  ): ServerPowerSupplyTypeUpdatePayload!
+  """
+  Delete a server power supply type.
+  """
+  serverPowerSupplyTypeDelete(id: ID!): ServerPowerSupplyTypeDeletePayload!
+}
+
+"""
+Return response from serverPowerSupplyTypeCreate
+"""
+type ServerPowerSupplyTypeCreatePayload {
+  """
+  The created server power supply type.
+  """
+  serverPowerSupplyType: ServerPowerSupplyType!
+}
+
+"""
+Return response from serverPowerSupplyTypeDelete
+"""
+type ServerPowerSupplyTypeDeletePayload {
+  """
+  The ID of the deleted server power supply type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverPowerSupplyTypeUpdate
+"""
+type ServerPowerSupplyTypeUpdatePayload {
+  """
+  The updated server power supply type.
+  """
+  serverPowerSupplyType: ServerPowerSupplyType!
+}`, BuiltIn: false},
 	{Name: "../../schema/provider.graphql", Input: `extend type Query {
   """
   Lookup a server provider by ID.
@@ -6552,7 +7329,7 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerProvider | ServerType
+union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerPowerSupply | ServerPowerSupplyType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
@@ -6569,6 +7346,8 @@ type Entity {
 	findServerMemoryTypeByID(id: ID!,): ServerMemoryType!
 	findServerMotherboardByID(id: ID!,): ServerMotherboard!
 	findServerMotherboardTypeByID(id: ID!,): ServerMotherboardType!
+	findServerPowerSupplyByID(id: ID!,): ServerPowerSupply!
+	findServerPowerSupplyTypeByID(id: ID!,): ServerPowerSupplyType!
 	findServerProviderByID(id: ID!,): ServerProvider!
 	findServerTypeByID(id: ID!,): ServerType!
 
@@ -6786,6 +7565,36 @@ func (ec *executionContext) field_Entity_findServerMotherboardByID_args(ctx cont
 }
 
 func (ec *executionContext) field_Entity_findServerMotherboardTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerPowerSupplyByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerPowerSupplyTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -7508,6 +8317,114 @@ func (ec *executionContext) field_Mutation_serverMotherboard_args(ctx context.Co
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverPowerSupplyDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverPowerSupplyTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverPowerSupplyTypeUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerPowerSupplyTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerPowerSupplyTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerPowerSupplyTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverPowerSupplyType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerPowerSupplyTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerPowerSupplyTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerPowerSupplyTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverPowerSupplyUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerPowerSupplyInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerPowerSupplyInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerPowerSupplyInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverPowerSupply_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerPowerSupplyInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerPowerSupplyInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerPowerSupplyInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverProviderCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -7836,6 +8753,36 @@ func (ec *executionContext) field_Query_serverMotherboardType_args(ctx context.C
 }
 
 func (ec *executionContext) field_Query_serverMotherboard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverPowerSupplyType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverPowerSupply_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -9328,6 +10275,144 @@ func (ec *executionContext) fieldContext_Entity_findServerMotherboardTypeByID(ct
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerMotherboardTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerPowerSupplyByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerPowerSupplyByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerPowerSupplyByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupply)
+	fc.Result = res
+	return ec.marshalNServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerPowerSupplyByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupply_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupply_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupply_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerPowerSupply_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerPowerSupply_server(ctx, field)
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupply", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerPowerSupplyByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerPowerSupplyTypeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerPowerSupplyTypeByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerPowerSupplyTypeByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupplyType)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerPowerSupplyTypeByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+			case "watts":
+				return ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerPowerSupplyTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -11592,6 +12677,360 @@ func (ec *executionContext) fieldContext_Mutation_serverMotherboardTypeDelete(ct
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverPowerSupply(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerPowerSupply(rctx, fc.Args["input"].(generated.CreateServerPowerSupplyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerPowerSupplyCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverPowerSupply":
+				return ec.fieldContext_ServerPowerSupplyCreatePayload_serverPowerSupply(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverPowerSupply_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverPowerSupplyUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverPowerSupplyUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerPowerSupplyUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerPowerSupplyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerPowerSupplyUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverPowerSupply":
+				return ec.fieldContext_ServerPowerSupplyUpdatePayload_serverPowerSupply(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverPowerSupplyUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverPowerSupplyDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverPowerSupplyDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerPowerSupplyDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerPowerSupplyTypeDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerPowerSupplyTypeDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyTypeDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverPowerSupplyDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverPowerSupplyType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerPowerSupplyType(rctx, fc.Args["input"].(generated.CreateServerPowerSupplyTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerPowerSupplyTypeCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupplyTypeCreatePayload_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyTypeCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverPowerSupplyType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverPowerSupplyTypeUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverPowerSupplyTypeUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerPowerSupplyTypeUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerPowerSupplyTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerPowerSupplyTypeUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyTypeUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupplyTypeUpdatePayload_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyTypeUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverPowerSupplyTypeUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverPowerSupplyTypeDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverPowerSupplyTypeDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerPowerSupplyTypeDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerPowerSupplyTypeDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyTypeDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerPowerSupplyTypeDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyTypeDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverPowerSupplyTypeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_serverProviderCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_serverProviderCreate(ctx, field)
 	if err != nil {
@@ -13135,6 +14574,144 @@ func (ec *executionContext) fieldContext_Query_serverMotherboardType(ctx context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_serverMotherboardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverPowerSupply(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerPowerSupply(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupply)
+	fc.Result = res
+	return ec.marshalNServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupply_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupply_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupply_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerPowerSupply_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerPowerSupply_server(ctx, field)
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupply", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverPowerSupply_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverPowerSupplyType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerPowerSupplyType(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupplyType)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+			case "watts":
+				return ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverPowerSupplyType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -23143,6 +24720,1374 @@ func (ec *executionContext) fieldContext_ServerMotherboardUpdatePayload_serverMo
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerPowerSupply_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupply_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupply_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupply",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupply_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupply_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupply_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupply",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupply_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupply_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupply_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupply",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupply_serial(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupply_serial(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Serial, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupply_serial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupply",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupply_server(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupply_server(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Server(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.Server)
+	fc.Result = res
+	return ec.marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServer(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupply_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupply",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Server_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Server_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Server_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Server_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Server_description(ctx, field)
+			case "serverProvider":
+				return ec.fieldContext_Server_serverProvider(ctx, field)
+			case "serverType":
+				return ec.fieldContext_Server_serverType(ctx, field)
+			case "components":
+				return ec.fieldContext_Server_components(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupply_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerPowerSupplyType(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupplyType)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupply",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+			case "watts":
+				return ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerPowerSupplyEdge)
+	fc.Result = res
+	return ec.marshalOServerPowerSupplyEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerPowerSupplyEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerPowerSupplyEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyCreatePayload_serverPowerSupply(ctx context.Context, field graphql.CollectedField, obj *ServerPowerSupplyCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyCreatePayload_serverPowerSupply(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerPowerSupply, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupply)
+	fc.Result = res
+	return ec.marshalNServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyCreatePayload_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupply_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupply_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupply_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerPowerSupply_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerPowerSupply_server(ctx, field)
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupply", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerPowerSupplyDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupply)
+	fc.Result = res
+	return ec.marshalOServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupply_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupply_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupply_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerPowerSupply_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerPowerSupply_server(ctx, field)
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupply", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyType_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyType_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyType_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyType_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyType_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyType_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyType_vendor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vendor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyType_vendor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyType_model(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Model, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyType_model(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyType_watts(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Watts, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyType_watts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerPowerSupplyTypeEdge)
+	fc.Result = res
+	return ec.marshalOServerPowerSupplyTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerPowerSupplyTypeEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerPowerSupplyTypeEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyTypeEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeCreatePayload_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField, obj *ServerPowerSupplyTypeCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeCreatePayload_serverPowerSupplyType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerPowerSupplyType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupplyType)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeCreatePayload_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+			case "watts":
+				return ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerPowerSupplyTypeDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupplyType)
+	fc.Result = res
+	return ec.marshalOServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+			case "watts":
+				return ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupplyTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyTypeUpdatePayload_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField, obj *ServerPowerSupplyTypeUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyTypeUpdatePayload_serverPowerSupplyType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerPowerSupplyType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupplyType)
+	fc.Result = res
+	return ec.marshalNServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyTypeUpdatePayload_serverPowerSupplyType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyTypeUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupplyType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupplyType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupplyType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerPowerSupplyType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerPowerSupplyType_model(ctx, field)
+			case "watts":
+				return ec.fieldContext_ServerPowerSupplyType_watts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerPowerSupplyUpdatePayload_serverPowerSupply(ctx context.Context, field graphql.CollectedField, obj *ServerPowerSupplyUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerPowerSupplyUpdatePayload_serverPowerSupply(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerPowerSupply, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerPowerSupply)
+	fc.Result = res
+	return ec.marshalNServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerPowerSupplyUpdatePayload_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerPowerSupplyUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerPowerSupply_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerPowerSupply_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerPowerSupply_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerPowerSupply_serial(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerPowerSupply_server(ctx, field)
+			case "serverPowerSupplyType":
+				return ec.fieldContext_ServerPowerSupply_serverPowerSupplyType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupply", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerProvider_id(ctx context.Context, field graphql.CollectedField, obj *generated.Provider) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerProvider_id(ctx, field)
 	if err != nil {
@@ -27042,6 +29987,100 @@ func (ec *executionContext) unmarshalInputCreateServerMotherboardTypeInput(ctx c
 				return it, err
 			}
 			it.MotherboardIDs = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerPowerSupplyInput(ctx context.Context, obj interface{}) (generated.CreateServerPowerSupplyInput, error) {
+	var it generated.CreateServerPowerSupplyInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial", "serverID", "serverPowerSupplyTypeID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serverID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerID = data
+		case "serverPowerSupplyTypeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverPowerSupplyTypeID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerPowerSupplyTypeID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerPowerSupplyTypeInput(ctx context.Context, obj interface{}) (generated.CreateServerPowerSupplyTypeInput, error) {
+	var it generated.CreateServerPowerSupplyTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "watts"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "watts":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("watts"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Watts = data
 		}
 	}
 
@@ -34381,6 +37420,1120 @@ func (ec *executionContext) unmarshalInputServerOrder(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputServerPowerSupplyOrder(ctx context.Context, obj interface{}) (generated.ServerPowerSupplyOrder, error) {
+	var it generated.ServerPowerSupplyOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerPowerSupplyOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerPowerSupplyTypeOrder(ctx context.Context, obj interface{}) (generated.ServerPowerSupplyTypeOrder, error) {
+	var it generated.ServerPowerSupplyTypeOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerPowerSupplyTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerPowerSupplyTypeWhereInput(ctx context.Context, obj interface{}) (generated.ServerPowerSupplyTypeWhereInput, error) {
+	var it generated.ServerPowerSupplyTypeWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "watts", "wattsNEQ", "wattsIn", "wattsNotIn", "wattsGT", "wattsGTE", "wattsLT", "wattsLTE", "wattsContains", "wattsHasPrefix", "wattsHasSuffix", "wattsEqualFold", "wattsContainsFold"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerPowerSupplyTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerPowerSupplyTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerPowerSupplyTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "vendorNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNEQ = data
+		case "vendorIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorIn = data
+		case "vendorNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNotIn = data
+		case "vendorGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGT = data
+		case "vendorGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGTE = data
+		case "vendorLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLT = data
+		case "vendorLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLTE = data
+		case "vendorContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContains = data
+		case "vendorHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasPrefix = data
+		case "vendorHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasSuffix = data
+		case "vendorEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorEqualFold = data
+		case "vendorContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContainsFold = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "modelNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNEQ = data
+		case "modelIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelIn = data
+		case "modelNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNotIn = data
+		case "modelGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGT = data
+		case "modelGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGTE = data
+		case "modelLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLT = data
+		case "modelLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLTE = data
+		case "modelContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContains = data
+		case "modelHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasPrefix = data
+		case "modelHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasSuffix = data
+		case "modelEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelEqualFold = data
+		case "modelContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContainsFold = data
+		case "watts":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("watts"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Watts = data
+		case "wattsNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsNEQ = data
+		case "wattsIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsIn = data
+		case "wattsNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsNotIn = data
+		case "wattsGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsGT = data
+		case "wattsGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsGTE = data
+		case "wattsLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsLT = data
+		case "wattsLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsLTE = data
+		case "wattsContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsContains = data
+		case "wattsHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsHasPrefix = data
+		case "wattsHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsHasSuffix = data
+		case "wattsEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsEqualFold = data
+		case "wattsContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wattsContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WattsContainsFold = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerPowerSupplyWhereInput(ctx context.Context, obj interface{}) (generated.ServerPowerSupplyWhereInput, error) {
+	var it generated.ServerPowerSupplyWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "serial", "serialNEQ", "serialIn", "serialNotIn", "serialGT", "serialGTE", "serialLT", "serialLTE", "serialContains", "serialHasPrefix", "serialHasSuffix", "serialEqualFold", "serialContainsFold", "hasServer", "hasServerWith", "hasServerPowerSupplyType", "hasServerPowerSupplyTypeWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerPowerSupplyWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerPowerSupplyWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerPowerSupplyWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serialNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNEQ = data
+		case "serialIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialIn = data
+		case "serialNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNotIn = data
+		case "serialGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGT = data
+		case "serialGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGTE = data
+		case "serialLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLT = data
+		case "serialLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLTE = data
+		case "serialContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContains = data
+		case "serialHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasPrefix = data
+		case "serialHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasSuffix = data
+		case "serialEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialEqualFold = data
+		case "serialContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContainsFold = data
+		case "hasServer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServer"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServer = data
+		case "hasServerWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerWith"))
+			data, err := ec.unmarshalOServerWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerWith = data
+		case "hasServerPowerSupplyType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerPowerSupplyType"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerPowerSupplyType = data
+		case "hasServerPowerSupplyTypeWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerPowerSupplyTypeWith"))
+			data, err := ec.unmarshalOServerPowerSupplyTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerPowerSupplyTypeWith = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputServerProviderOrder(ctx context.Context, obj interface{}) (generated.ServerProviderOrder, error) {
 	var it generated.ServerProviderOrder
 	asMap := map[string]interface{}{}
@@ -36540,6 +40693,82 @@ func (ec *executionContext) unmarshalInputUpdateServerMotherboardTypeInput(ctx c
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateServerPowerSupplyInput(ctx context.Context, obj interface{}) (generated.UpdateServerPowerSupplyInput, error) {
+	var it generated.UpdateServerPowerSupplyInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateServerPowerSupplyTypeInput(ctx context.Context, obj interface{}) (generated.UpdateServerPowerSupplyTypeInput, error) {
+	var it generated.UpdateServerPowerSupplyTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "watts"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "watts":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("watts"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Watts = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateServerProviderInput(ctx context.Context, obj interface{}) (generated.UpdateServerProviderInput, error) {
 	var it generated.UpdateServerProviderInput
 	asMap := map[string]interface{}{}
@@ -36687,6 +40916,16 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._ServerMotherboardType(ctx, sel, obj)
+	case *generated.ServerPowerSupply:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerPowerSupply(ctx, sel, obj)
+	case *generated.ServerPowerSupplyType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerPowerSupplyType(ctx, sel, obj)
 	case *generated.Provider:
 		if obj == nil {
 			return graphql.Null
@@ -36797,6 +41036,20 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._ServerMotherboardType(ctx, sel, obj)
+	case generated.ServerPowerSupply:
+		return ec._ServerPowerSupply(ctx, sel, &obj)
+	case *generated.ServerPowerSupply:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerPowerSupply(ctx, sel, obj)
+	case generated.ServerPowerSupplyType:
+		return ec._ServerPowerSupplyType(ctx, sel, &obj)
+	case *generated.ServerPowerSupplyType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerPowerSupplyType(ctx, sel, obj)
 	case generated.Provider:
 		return ec._ServerProvider(ctx, sel, &obj)
 	case *generated.Provider:
@@ -37113,6 +41366,50 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerMotherboardTypeByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerPowerSupplyByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerPowerSupplyByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerPowerSupplyTypeByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerPowerSupplyTypeByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -37459,6 +41756,48 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "serverMotherboardTypeDelete":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverMotherboardTypeDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverPowerSupply":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverPowerSupply(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverPowerSupplyUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverPowerSupplyUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverPowerSupplyDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverPowerSupplyDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverPowerSupplyType":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverPowerSupplyType(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverPowerSupplyTypeUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverPowerSupplyTypeUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverPowerSupplyTypeDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverPowerSupplyTypeDelete(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -37868,6 +42207,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_serverMotherboardType(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverPowerSupply":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverPowerSupply(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverPowerSupplyType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverPowerSupplyType(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -42143,6 +46526,604 @@ func (ec *executionContext) _ServerMotherboardUpdatePayload(ctx context.Context,
 	return out
 }
 
+var serverPowerSupplyImplementors = []string{"ServerPowerSupply", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerPowerSupply(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupply) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupply")
+		case "id":
+			out.Values[i] = ec._ServerPowerSupply_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerPowerSupply_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerPowerSupply_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "serial":
+			out.Values[i] = ec._ServerPowerSupply_serial(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "server":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerPowerSupply_server(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "serverPowerSupplyType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerPowerSupply_serverPowerSupplyType(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyConnectionImplementors = []string{"ServerPowerSupplyConnection"}
+
+func (ec *executionContext) _ServerPowerSupplyConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupplyConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyConnection")
+		case "edges":
+			out.Values[i] = ec._ServerPowerSupplyConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerPowerSupplyConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerPowerSupplyConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyCreatePayloadImplementors = []string{"ServerPowerSupplyCreatePayload"}
+
+func (ec *executionContext) _ServerPowerSupplyCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerPowerSupplyCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyCreatePayload")
+		case "serverPowerSupply":
+			out.Values[i] = ec._ServerPowerSupplyCreatePayload_serverPowerSupply(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyDeletePayloadImplementors = []string{"ServerPowerSupplyDeletePayload"}
+
+func (ec *executionContext) _ServerPowerSupplyDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerPowerSupplyDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerPowerSupplyDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyEdgeImplementors = []string{"ServerPowerSupplyEdge"}
+
+func (ec *executionContext) _ServerPowerSupplyEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupplyEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyEdge")
+		case "node":
+			out.Values[i] = ec._ServerPowerSupplyEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerPowerSupplyEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyTypeImplementors = []string{"ServerPowerSupplyType", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerPowerSupplyType(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupplyType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyType")
+		case "id":
+			out.Values[i] = ec._ServerPowerSupplyType_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerPowerSupplyType_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerPowerSupplyType_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "vendor":
+			out.Values[i] = ec._ServerPowerSupplyType_vendor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "model":
+			out.Values[i] = ec._ServerPowerSupplyType_model(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "watts":
+			out.Values[i] = ec._ServerPowerSupplyType_watts(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyTypeConnectionImplementors = []string{"ServerPowerSupplyTypeConnection"}
+
+func (ec *executionContext) _ServerPowerSupplyTypeConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupplyTypeConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyTypeConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyTypeConnection")
+		case "edges":
+			out.Values[i] = ec._ServerPowerSupplyTypeConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerPowerSupplyTypeConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerPowerSupplyTypeConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyTypeCreatePayloadImplementors = []string{"ServerPowerSupplyTypeCreatePayload"}
+
+func (ec *executionContext) _ServerPowerSupplyTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerPowerSupplyTypeCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyTypeCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyTypeCreatePayload")
+		case "serverPowerSupplyType":
+			out.Values[i] = ec._ServerPowerSupplyTypeCreatePayload_serverPowerSupplyType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyTypeDeletePayloadImplementors = []string{"ServerPowerSupplyTypeDeletePayload"}
+
+func (ec *executionContext) _ServerPowerSupplyTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerPowerSupplyTypeDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyTypeDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyTypeDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerPowerSupplyTypeDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyTypeEdgeImplementors = []string{"ServerPowerSupplyTypeEdge"}
+
+func (ec *executionContext) _ServerPowerSupplyTypeEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupplyTypeEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyTypeEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyTypeEdge")
+		case "node":
+			out.Values[i] = ec._ServerPowerSupplyTypeEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerPowerSupplyTypeEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyTypeUpdatePayloadImplementors = []string{"ServerPowerSupplyTypeUpdatePayload"}
+
+func (ec *executionContext) _ServerPowerSupplyTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerPowerSupplyTypeUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyTypeUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyTypeUpdatePayload")
+		case "serverPowerSupplyType":
+			out.Values[i] = ec._ServerPowerSupplyTypeUpdatePayload_serverPowerSupplyType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverPowerSupplyUpdatePayloadImplementors = []string{"ServerPowerSupplyUpdatePayload"}
+
+func (ec *executionContext) _ServerPowerSupplyUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerPowerSupplyUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverPowerSupplyUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerPowerSupplyUpdatePayload")
+		case "serverPowerSupply":
+			out.Values[i] = ec._ServerPowerSupplyUpdatePayload_serverPowerSupply(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var serverProviderImplementors = []string{"ServerProvider", "Node", "_Entity"}
 
 func (ec *executionContext) _ServerProvider(ctx context.Context, sel ast.SelectionSet, obj *generated.Provider) graphql.Marshaler {
@@ -43209,6 +48190,16 @@ func (ec *executionContext) unmarshalNCreateServerMotherboardInput2goᚗinfratog
 
 func (ec *executionContext) unmarshalNCreateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardTypeInput(ctx context.Context, v interface{}) (generated.CreateServerMotherboardTypeInput, error) {
 	res, err := ec.unmarshalInputCreateServerMotherboardTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateServerPowerSupplyInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerPowerSupplyInput(ctx context.Context, v interface{}) (generated.CreateServerPowerSupplyInput, error) {
+	res, err := ec.unmarshalInputCreateServerPowerSupplyInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateServerPowerSupplyTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerPowerSupplyTypeInput(ctx context.Context, v interface{}) (generated.CreateServerPowerSupplyTypeInput, error) {
+	res, err := ec.unmarshalInputCreateServerPowerSupplyTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -44338,6 +49329,146 @@ func (ec *executionContext) marshalNServerOrderField2ᚖgoᚗinfratographerᚗco
 	return v
 }
 
+func (ec *executionContext) marshalNServerPowerSupply2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx context.Context, sel ast.SelectionSet, v generated.ServerPowerSupply) graphql.Marshaler {
+	return ec._ServerPowerSupply(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupply) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupply(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerPowerSupplyCreatePayload) graphql.Marshaler {
+	return ec._ServerPowerSupplyCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerPowerSupplyCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerPowerSupplyOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyOrderField(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyOrderField, error) {
+	var res = new(generated.ServerPowerSupplyOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupplyOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx context.Context, sel ast.SelectionSet, v generated.ServerPowerSupplyType) graphql.Marshaler {
+	return ec._ServerPowerSupplyType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupplyType) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerPowerSupplyTypeCreatePayload) graphql.Marshaler {
+	return ec._ServerPowerSupplyTypeCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerPowerSupplyTypeCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyTypeCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerPowerSupplyTypeDeletePayload) graphql.Marshaler {
+	return ec._ServerPowerSupplyTypeDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerPowerSupplyTypeDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyTypeDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerPowerSupplyTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeOrderField(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyTypeOrderField, error) {
+	var res = new(generated.ServerPowerSupplyTypeOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupplyTypeOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerPowerSupplyTypeUpdatePayload) graphql.Marshaler {
+	return ec._ServerPowerSupplyTypeUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerPowerSupplyTypeUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyTypeUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerPowerSupplyTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyTypeWhereInput, error) {
+	res, err := ec.unmarshalInputServerPowerSupplyTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerPowerSupplyUpdatePayload) graphql.Marshaler {
+	return ec._ServerPowerSupplyUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerPowerSupplyUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerPowerSupplyWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInput(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyWhereInput, error) {
+	res, err := ec.unmarshalInputServerPowerSupplyWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNServerProvider2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐProvider(ctx context.Context, sel ast.SelectionSet, v generated.Provider) graphql.Marshaler {
 	return ec._ServerProvider(ctx, sel, &v)
 }
@@ -44603,6 +49734,16 @@ func (ec *executionContext) unmarshalNUpdateServerMotherboardInput2goᚗinfratog
 
 func (ec *executionContext) unmarshalNUpdateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerMotherboardTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerMotherboardTypeInput, error) {
 	res, err := ec.unmarshalInputUpdateServerMotherboardTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerPowerSupplyInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerPowerSupplyInput(ctx context.Context, v interface{}) (generated.UpdateServerPowerSupplyInput, error) {
+	res, err := ec.unmarshalInputUpdateServerPowerSupplyInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerPowerSupplyTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerPowerSupplyTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerPowerSupplyTypeInput, error) {
+	res, err := ec.unmarshalInputUpdateServerPowerSupplyTypeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -46218,6 +51359,172 @@ func (ec *executionContext) unmarshalOServerOrder2ᚖgoᚗinfratographerᚗcom�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputServerOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerPowerSupply2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupply(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupply) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerPowerSupply(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerPowerSupplyEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerPowerSupplyEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerPowerSupplyEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerPowerSupplyEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupplyEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerPowerSupplyType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupplyType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerPowerSupplyTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerPowerSupplyTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerPowerSupplyTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerPowerSupplyTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerPowerSupplyTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyTypeEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerPowerSupplyTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerPowerSupplyTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerPowerSupplyTypeWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerPowerSupplyTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerPowerSupplyTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerPowerSupplyTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerPowerSupplyWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerPowerSupplyWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerPowerSupplyWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerPowerSupplyWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerPowerSupplyWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyWhereInput(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerPowerSupplyWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

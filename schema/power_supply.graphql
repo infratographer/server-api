@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverPowerSupply by ID.
+  """
+  serverPowerSupply(
+    """
+    The server power supply ID.
+    """
+    id: ID!
+  ): ServerPowerSupply!
+}
+
+extend type Mutation {
+  """
+  Create a server power supply.
+  """
+  serverPowerSupply(
+    input: CreateServerPowerSupplyInput!
+  ): ServerPowerSupplyCreatePayload!
+  """
+  Update a server power supply.
+  """
+  serverPowerSupplyUpdate(
+    id: ID!
+    input: UpdateServerPowerSupplyInput!
+  ): ServerPowerSupplyUpdatePayload!
+  """
+  Delete a server power supply.
+  """
+  serverPowerSupplyDelete(id: ID!): ServerPowerSupplyTypeDeletePayload!
+}
+
+"""
+Return response from serverPowerSupplyCreate
+"""
+type ServerPowerSupplyCreatePayload {
+  """
+  The created server power supply.
+  """
+  serverPowerSupply: ServerPowerSupply!
+}
+
+"""
+Return response from serverPowerSupplyDelete
+"""
+type ServerPowerSupplyDeletePayload {
+  """
+  The ID of the deleted server power supply.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverPowerSupplyUpdate
+"""
+type ServerPowerSupplyUpdatePayload {
+  """
+  The updated server power supply.
+  """
+  serverPowerSupply: ServerPowerSupply!
+}

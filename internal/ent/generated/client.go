@@ -43,6 +43,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 )
 
@@ -79,6 +81,10 @@ type Client struct {
 	ServerMotherboard *ServerMotherboardClient
 	// ServerMotherboardType is the client for interacting with the ServerMotherboardType builders.
 	ServerMotherboardType *ServerMotherboardTypeClient
+	// ServerPowerSupply is the client for interacting with the ServerPowerSupply builders.
+	ServerPowerSupply *ServerPowerSupplyClient
+	// ServerPowerSupplyType is the client for interacting with the ServerPowerSupplyType builders.
+	ServerPowerSupplyType *ServerPowerSupplyTypeClient
 	// ServerType is the client for interacting with the ServerType builders.
 	ServerType *ServerTypeClient
 }
@@ -108,6 +114,8 @@ func (c *Client) init() {
 	c.ServerMemoryType = NewServerMemoryTypeClient(c.config)
 	c.ServerMotherboard = NewServerMotherboardClient(c.config)
 	c.ServerMotherboardType = NewServerMotherboardTypeClient(c.config)
+	c.ServerPowerSupply = NewServerPowerSupplyClient(c.config)
+	c.ServerPowerSupplyType = NewServerPowerSupplyTypeClient(c.config)
 	c.ServerType = NewServerTypeClient(c.config)
 }
 
@@ -205,6 +213,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
 		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
+		ServerPowerSupply:     NewServerPowerSupplyClient(cfg),
+		ServerPowerSupplyType: NewServerPowerSupplyTypeClient(cfg),
 		ServerType:            NewServerTypeClient(cfg),
 	}, nil
 }
@@ -239,6 +249,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
 		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
+		ServerPowerSupply:     NewServerPowerSupplyClient(cfg),
+		ServerPowerSupplyType: NewServerPowerSupplyTypeClient(cfg),
 		ServerType:            NewServerTypeClient(cfg),
 	}, nil
 }
@@ -272,7 +284,8 @@ func (c *Client) Use(hooks ...Hook) {
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
 		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
 		c.ServerHardDrive, c.ServerHardDriveType, c.ServerMemory, c.ServerMemoryType,
-		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerPowerSupply,
+		c.ServerPowerSupplyType, c.ServerType,
 	} {
 		n.Use(hooks...)
 	}
@@ -285,7 +298,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
 		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
 		c.ServerHardDrive, c.ServerHardDriveType, c.ServerMemory, c.ServerMemoryType,
-		c.ServerMotherboard, c.ServerMotherboardType, c.ServerType,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerPowerSupply,
+		c.ServerPowerSupplyType, c.ServerType,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -322,6 +336,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ServerMotherboard.mutate(ctx, m)
 	case *ServerMotherboardTypeMutation:
 		return c.ServerMotherboardType.mutate(ctx, m)
+	case *ServerPowerSupplyMutation:
+		return c.ServerPowerSupply.mutate(ctx, m)
+	case *ServerPowerSupplyTypeMutation:
+		return c.ServerPowerSupplyType.mutate(ctx, m)
 	case *ServerTypeMutation:
 		return c.ServerType.mutate(ctx, m)
 	default:
@@ -2317,6 +2335,274 @@ func (c *ServerMotherboardTypeClient) mutate(ctx context.Context, m *ServerMothe
 	}
 }
 
+// ServerPowerSupplyClient is a client for the ServerPowerSupply schema.
+type ServerPowerSupplyClient struct {
+	config
+}
+
+// NewServerPowerSupplyClient returns a client for the ServerPowerSupply from the given config.
+func NewServerPowerSupplyClient(c config) *ServerPowerSupplyClient {
+	return &ServerPowerSupplyClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `serverpowersupply.Hooks(f(g(h())))`.
+func (c *ServerPowerSupplyClient) Use(hooks ...Hook) {
+	c.hooks.ServerPowerSupply = append(c.hooks.ServerPowerSupply, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `serverpowersupply.Intercept(f(g(h())))`.
+func (c *ServerPowerSupplyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerPowerSupply = append(c.inters.ServerPowerSupply, interceptors...)
+}
+
+// Create returns a builder for creating a ServerPowerSupply entity.
+func (c *ServerPowerSupplyClient) Create() *ServerPowerSupplyCreate {
+	mutation := newServerPowerSupplyMutation(c.config, OpCreate)
+	return &ServerPowerSupplyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerPowerSupply entities.
+func (c *ServerPowerSupplyClient) CreateBulk(builders ...*ServerPowerSupplyCreate) *ServerPowerSupplyCreateBulk {
+	return &ServerPowerSupplyCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerPowerSupply.
+func (c *ServerPowerSupplyClient) Update() *ServerPowerSupplyUpdate {
+	mutation := newServerPowerSupplyMutation(c.config, OpUpdate)
+	return &ServerPowerSupplyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerPowerSupplyClient) UpdateOne(sps *ServerPowerSupply) *ServerPowerSupplyUpdateOne {
+	mutation := newServerPowerSupplyMutation(c.config, OpUpdateOne, withServerPowerSupply(sps))
+	return &ServerPowerSupplyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerPowerSupplyClient) UpdateOneID(id gidx.PrefixedID) *ServerPowerSupplyUpdateOne {
+	mutation := newServerPowerSupplyMutation(c.config, OpUpdateOne, withServerPowerSupplyID(id))
+	return &ServerPowerSupplyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerPowerSupply.
+func (c *ServerPowerSupplyClient) Delete() *ServerPowerSupplyDelete {
+	mutation := newServerPowerSupplyMutation(c.config, OpDelete)
+	return &ServerPowerSupplyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerPowerSupplyClient) DeleteOne(sps *ServerPowerSupply) *ServerPowerSupplyDeleteOne {
+	return c.DeleteOneID(sps.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerPowerSupplyClient) DeleteOneID(id gidx.PrefixedID) *ServerPowerSupplyDeleteOne {
+	builder := c.Delete().Where(serverpowersupply.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerPowerSupplyDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerPowerSupply.
+func (c *ServerPowerSupplyClient) Query() *ServerPowerSupplyQuery {
+	return &ServerPowerSupplyQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerPowerSupply},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerPowerSupply entity by its id.
+func (c *ServerPowerSupplyClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupply, error) {
+	return c.Query().Where(serverpowersupply.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerPowerSupplyClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerPowerSupply {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryServer queries the server edge of a ServerPowerSupply.
+func (c *ServerPowerSupplyClient) QueryServer(sps *ServerPowerSupply) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sps.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverpowersupply.Table, serverpowersupply.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverpowersupply.ServerTable, serverpowersupply.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(sps.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryServerPowerSupplyType queries the server_power_supply_type edge of a ServerPowerSupply.
+func (c *ServerPowerSupplyClient) QueryServerPowerSupplyType(sps *ServerPowerSupply) *ServerPowerSupplyTypeQuery {
+	query := (&ServerPowerSupplyTypeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sps.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(serverpowersupply.Table, serverpowersupply.FieldID, id),
+			sqlgraph.To(serverpowersupplytype.Table, serverpowersupplytype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverpowersupply.ServerPowerSupplyTypeTable, serverpowersupply.ServerPowerSupplyTypeColumn),
+		)
+		fromV = sqlgraph.Neighbors(sps.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerPowerSupplyClient) Hooks() []Hook {
+	return c.hooks.ServerPowerSupply
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerPowerSupplyClient) Interceptors() []Interceptor {
+	return c.inters.ServerPowerSupply
+}
+
+func (c *ServerPowerSupplyClient) mutate(ctx context.Context, m *ServerPowerSupplyMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerPowerSupplyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerPowerSupplyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerPowerSupplyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerPowerSupplyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerPowerSupply mutation op: %q", m.Op())
+	}
+}
+
+// ServerPowerSupplyTypeClient is a client for the ServerPowerSupplyType schema.
+type ServerPowerSupplyTypeClient struct {
+	config
+}
+
+// NewServerPowerSupplyTypeClient returns a client for the ServerPowerSupplyType from the given config.
+func NewServerPowerSupplyTypeClient(c config) *ServerPowerSupplyTypeClient {
+	return &ServerPowerSupplyTypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `serverpowersupplytype.Hooks(f(g(h())))`.
+func (c *ServerPowerSupplyTypeClient) Use(hooks ...Hook) {
+	c.hooks.ServerPowerSupplyType = append(c.hooks.ServerPowerSupplyType, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `serverpowersupplytype.Intercept(f(g(h())))`.
+func (c *ServerPowerSupplyTypeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerPowerSupplyType = append(c.inters.ServerPowerSupplyType, interceptors...)
+}
+
+// Create returns a builder for creating a ServerPowerSupplyType entity.
+func (c *ServerPowerSupplyTypeClient) Create() *ServerPowerSupplyTypeCreate {
+	mutation := newServerPowerSupplyTypeMutation(c.config, OpCreate)
+	return &ServerPowerSupplyTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerPowerSupplyType entities.
+func (c *ServerPowerSupplyTypeClient) CreateBulk(builders ...*ServerPowerSupplyTypeCreate) *ServerPowerSupplyTypeCreateBulk {
+	return &ServerPowerSupplyTypeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerPowerSupplyType.
+func (c *ServerPowerSupplyTypeClient) Update() *ServerPowerSupplyTypeUpdate {
+	mutation := newServerPowerSupplyTypeMutation(c.config, OpUpdate)
+	return &ServerPowerSupplyTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerPowerSupplyTypeClient) UpdateOne(spst *ServerPowerSupplyType) *ServerPowerSupplyTypeUpdateOne {
+	mutation := newServerPowerSupplyTypeMutation(c.config, OpUpdateOne, withServerPowerSupplyType(spst))
+	return &ServerPowerSupplyTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerPowerSupplyTypeClient) UpdateOneID(id gidx.PrefixedID) *ServerPowerSupplyTypeUpdateOne {
+	mutation := newServerPowerSupplyTypeMutation(c.config, OpUpdateOne, withServerPowerSupplyTypeID(id))
+	return &ServerPowerSupplyTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerPowerSupplyType.
+func (c *ServerPowerSupplyTypeClient) Delete() *ServerPowerSupplyTypeDelete {
+	mutation := newServerPowerSupplyTypeMutation(c.config, OpDelete)
+	return &ServerPowerSupplyTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerPowerSupplyTypeClient) DeleteOne(spst *ServerPowerSupplyType) *ServerPowerSupplyTypeDeleteOne {
+	return c.DeleteOneID(spst.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerPowerSupplyTypeClient) DeleteOneID(id gidx.PrefixedID) *ServerPowerSupplyTypeDeleteOne {
+	builder := c.Delete().Where(serverpowersupplytype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerPowerSupplyTypeDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerPowerSupplyType.
+func (c *ServerPowerSupplyTypeClient) Query() *ServerPowerSupplyTypeQuery {
+	return &ServerPowerSupplyTypeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerPowerSupplyType},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerPowerSupplyType entity by its id.
+func (c *ServerPowerSupplyTypeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyType, error) {
+	return c.Query().Where(serverpowersupplytype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerPowerSupplyTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerPowerSupplyType {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ServerPowerSupplyTypeClient) Hooks() []Hook {
+	return c.hooks.ServerPowerSupplyType
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerPowerSupplyTypeClient) Interceptors() []Interceptor {
+	return c.inters.ServerPowerSupplyType
+}
+
+func (c *ServerPowerSupplyTypeClient) mutate(ctx context.Context, m *ServerPowerSupplyTypeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerPowerSupplyTypeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerPowerSupplyTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerPowerSupplyTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerPowerSupplyTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerPowerSupplyType mutation op: %q", m.Op())
+	}
+}
+
 // ServerTypeClient is a client for the ServerType schema.
 type ServerTypeClient struct {
 	config
@@ -2457,12 +2743,12 @@ type (
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
 		ServerComponent, ServerComponentType, ServerHardDrive, ServerHardDriveType,
 		ServerMemory, ServerMemoryType, ServerMotherboard, ServerMotherboardType,
-		ServerType []ent.Hook
+		ServerPowerSupply, ServerPowerSupplyType, ServerType []ent.Hook
 	}
 	inters struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
 		ServerComponent, ServerComponentType, ServerHardDrive, ServerHardDriveType,
 		ServerMemory, ServerMemoryType, ServerMotherboard, ServerMotherboardType,
-		ServerType []ent.Interceptor
+		ServerPowerSupply, ServerPowerSupplyType, ServerType []ent.Interceptor
 	}
 )

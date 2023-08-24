@@ -340,6 +340,46 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 				list[idx[i]] = entity
 				return nil
 			}
+		case "ServerPowerSupply":
+			resolverName, err := entityResolverNameForServerPowerSupply(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerPowerSupply": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerPowerSupplyByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerPowerSupplyByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerPowerSupplyByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerPowerSupply": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
+		case "ServerPowerSupplyType":
+			resolverName, err := entityResolverNameForServerPowerSupplyType(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerPowerSupplyType": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerPowerSupplyTypeByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerPowerSupplyTypeByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerPowerSupplyTypeByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerPowerSupplyType": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
 		case "ServerProvider":
 			resolverName, err := entityResolverNameForServerProvider(ctx, rep)
 			if err != nil {
@@ -668,6 +708,40 @@ func entityResolverNameForServerMotherboardType(ctx context.Context, rep map[str
 		return "findServerMotherboardTypeByID", nil
 	}
 	return "", fmt.Errorf("%w for ServerMotherboardType", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerPowerSupply(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerPowerSupplyByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerPowerSupply", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerPowerSupplyType(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerPowerSupplyTypeByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerPowerSupplyType", ErrTypeNotFound)
 }
 
 func entityResolverNameForServerProvider(ctx context.Context, rep map[string]interface{}) (string, error) {

@@ -40,6 +40,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 )
 
@@ -115,6 +117,8 @@ func checkColumn(table, column string) error {
 			servermemorytype.Table:      servermemorytype.ValidColumn,
 			servermotherboard.Table:     servermotherboard.ValidColumn,
 			servermotherboardtype.Table: servermotherboardtype.ValidColumn,
+			serverpowersupply.Table:     serverpowersupply.ValidColumn,
+			serverpowersupplytype.Table: serverpowersupplytype.ValidColumn,
 			servertype.Table:            servertype.ValidColumn,
 		})
 	})

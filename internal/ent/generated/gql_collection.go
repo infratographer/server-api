@@ -38,6 +38,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -2298,6 +2300,242 @@ func newServerMotherboardTypePaginateArgs(rv map[string]any) *servermotherboardt
 	}
 	if v, ok := rv[whereField].(*ServerMotherboardTypeWhereInput); ok {
 		args.opts = append(args.opts, WithServerMotherboardTypeFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sps *ServerPowerSupplyQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerPowerSupplyQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sps, nil
+	}
+	if err := sps.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sps, nil
+}
+
+func (sps *ServerPowerSupplyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(serverpowersupply.Columns))
+		selectedFields = []string{serverpowersupply.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "server":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerClient{config: sps.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sps.withServer = query
+			if _, ok := fieldSeen[serverpowersupply.FieldServerID]; !ok {
+				selectedFields = append(selectedFields, serverpowersupply.FieldServerID)
+				fieldSeen[serverpowersupply.FieldServerID] = struct{}{}
+			}
+		case "serverPowerSupplyType":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerPowerSupplyTypeClient{config: sps.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			sps.withServerPowerSupplyType = query
+			if _, ok := fieldSeen[serverpowersupply.FieldServerPowerSupplyTypeID]; !ok {
+				selectedFields = append(selectedFields, serverpowersupply.FieldServerPowerSupplyTypeID)
+				fieldSeen[serverpowersupply.FieldServerPowerSupplyTypeID] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[serverpowersupply.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, serverpowersupply.FieldCreatedAt)
+				fieldSeen[serverpowersupply.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[serverpowersupply.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, serverpowersupply.FieldUpdatedAt)
+				fieldSeen[serverpowersupply.FieldUpdatedAt] = struct{}{}
+			}
+		case "serial":
+			if _, ok := fieldSeen[serverpowersupply.FieldSerial]; !ok {
+				selectedFields = append(selectedFields, serverpowersupply.FieldSerial)
+				fieldSeen[serverpowersupply.FieldSerial] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sps.Select(selectedFields...)
+	}
+	return nil
+}
+
+type serverpowersupplyPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerPowerSupplyPaginateOption
+}
+
+func newServerPowerSupplyPaginateArgs(rv map[string]any) *serverpowersupplyPaginateArgs {
+	args := &serverpowersupplyPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerPowerSupplyOrder{Field: &ServerPowerSupplyOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerPowerSupplyOrder(order))
+			}
+		case *ServerPowerSupplyOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerPowerSupplyOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerPowerSupplyWhereInput); ok {
+		args.opts = append(args.opts, WithServerPowerSupplyFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (spst *ServerPowerSupplyTypeQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerPowerSupplyTypeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return spst, nil
+	}
+	if err := spst.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return spst, nil
+}
+
+func (spst *ServerPowerSupplyTypeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(serverpowersupplytype.Columns))
+		selectedFields = []string{serverpowersupplytype.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "createdAt":
+			if _, ok := fieldSeen[serverpowersupplytype.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, serverpowersupplytype.FieldCreatedAt)
+				fieldSeen[serverpowersupplytype.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[serverpowersupplytype.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, serverpowersupplytype.FieldUpdatedAt)
+				fieldSeen[serverpowersupplytype.FieldUpdatedAt] = struct{}{}
+			}
+		case "vendor":
+			if _, ok := fieldSeen[serverpowersupplytype.FieldVendor]; !ok {
+				selectedFields = append(selectedFields, serverpowersupplytype.FieldVendor)
+				fieldSeen[serverpowersupplytype.FieldVendor] = struct{}{}
+			}
+		case "model":
+			if _, ok := fieldSeen[serverpowersupplytype.FieldModel]; !ok {
+				selectedFields = append(selectedFields, serverpowersupplytype.FieldModel)
+				fieldSeen[serverpowersupplytype.FieldModel] = struct{}{}
+			}
+		case "watts":
+			if _, ok := fieldSeen[serverpowersupplytype.FieldWatts]; !ok {
+				selectedFields = append(selectedFields, serverpowersupplytype.FieldWatts)
+				fieldSeen[serverpowersupplytype.FieldWatts] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		spst.Select(selectedFields...)
+	}
+	return nil
+}
+
+type serverpowersupplytypePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerPowerSupplyTypePaginateOption
+}
+
+func newServerPowerSupplyTypePaginateArgs(rv map[string]any) *serverpowersupplytypePaginateArgs {
+	args := &serverpowersupplytypePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerPowerSupplyTypeOrder{Field: &ServerPowerSupplyTypeOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerPowerSupplyTypeOrder(order))
+			}
+		case *ServerPowerSupplyTypeOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerPowerSupplyTypeOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerPowerSupplyTypeWhereInput); ok {
+		args.opts = append(args.opts, WithServerPowerSupplyTypeFilter(v.Filter))
 	}
 	return args
 }

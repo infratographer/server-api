@@ -36,6 +36,8 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
 	"go.infratographer.com/x/gidx"
 )
@@ -4859,6 +4861,650 @@ func (i *ServerMotherboardTypeWhereInput) P() (predicate.ServerMotherboardType, 
 		return predicates[0], nil
 	default:
 		return servermotherboardtype.And(predicates...), nil
+	}
+}
+
+// ServerPowerSupplyWhereInput represents a where input for filtering ServerPowerSupply queries.
+type ServerPowerSupplyWhereInput struct {
+	Predicates []predicate.ServerPowerSupply  `json:"-"`
+	Not        *ServerPowerSupplyWhereInput   `json:"not,omitempty"`
+	Or         []*ServerPowerSupplyWhereInput `json:"or,omitempty"`
+	And        []*ServerPowerSupplyWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "serial" field predicates.
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNEQ          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGT           *string  `json:"serialGT,omitempty"`
+	SerialGTE          *string  `json:"serialGTE,omitempty"`
+	SerialLT           *string  `json:"serialLT,omitempty"`
+	SerialLTE          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+
+	// "server" edge predicates.
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+
+	// "server_power_supply_type" edge predicates.
+	HasServerPowerSupplyType     *bool                              `json:"hasServerPowerSupplyType,omitempty"`
+	HasServerPowerSupplyTypeWith []*ServerPowerSupplyTypeWhereInput `json:"hasServerPowerSupplyTypeWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerPowerSupplyWhereInput) AddPredicates(predicates ...predicate.ServerPowerSupply) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerPowerSupplyWhereInput filter on the ServerPowerSupplyQuery builder.
+func (i *ServerPowerSupplyWhereInput) Filter(q *ServerPowerSupplyQuery) (*ServerPowerSupplyQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerPowerSupplyWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerPowerSupplyWhereInput is returned in case the ServerPowerSupplyWhereInput is empty.
+var ErrEmptyServerPowerSupplyWhereInput = errors.New("generated: empty predicate ServerPowerSupplyWhereInput")
+
+// P returns a predicate for filtering serverpowersupplies.
+// An error is returned if the input is empty or invalid.
+func (i *ServerPowerSupplyWhereInput) P() (predicate.ServerPowerSupply, error) {
+	var predicates []predicate.ServerPowerSupply
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, serverpowersupply.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerPowerSupply, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, serverpowersupply.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerPowerSupply, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, serverpowersupply.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, serverpowersupply.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, serverpowersupply.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, serverpowersupply.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, serverpowersupply.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, serverpowersupply.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, serverpowersupply.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, serverpowersupply.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, serverpowersupply.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, serverpowersupply.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, serverpowersupply.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, serverpowersupply.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, serverpowersupply.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, serverpowersupply.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, serverpowersupply.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, serverpowersupply.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, serverpowersupply.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, serverpowersupply.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, serverpowersupply.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, serverpowersupply.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, serverpowersupply.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, serverpowersupply.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, serverpowersupply.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, serverpowersupply.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, serverpowersupply.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Serial != nil {
+		predicates = append(predicates, serverpowersupply.SerialEQ(*i.Serial))
+	}
+	if i.SerialNEQ != nil {
+		predicates = append(predicates, serverpowersupply.SerialNEQ(*i.SerialNEQ))
+	}
+	if len(i.SerialIn) > 0 {
+		predicates = append(predicates, serverpowersupply.SerialIn(i.SerialIn...))
+	}
+	if len(i.SerialNotIn) > 0 {
+		predicates = append(predicates, serverpowersupply.SerialNotIn(i.SerialNotIn...))
+	}
+	if i.SerialGT != nil {
+		predicates = append(predicates, serverpowersupply.SerialGT(*i.SerialGT))
+	}
+	if i.SerialGTE != nil {
+		predicates = append(predicates, serverpowersupply.SerialGTE(*i.SerialGTE))
+	}
+	if i.SerialLT != nil {
+		predicates = append(predicates, serverpowersupply.SerialLT(*i.SerialLT))
+	}
+	if i.SerialLTE != nil {
+		predicates = append(predicates, serverpowersupply.SerialLTE(*i.SerialLTE))
+	}
+	if i.SerialContains != nil {
+		predicates = append(predicates, serverpowersupply.SerialContains(*i.SerialContains))
+	}
+	if i.SerialHasPrefix != nil {
+		predicates = append(predicates, serverpowersupply.SerialHasPrefix(*i.SerialHasPrefix))
+	}
+	if i.SerialHasSuffix != nil {
+		predicates = append(predicates, serverpowersupply.SerialHasSuffix(*i.SerialHasSuffix))
+	}
+	if i.SerialEqualFold != nil {
+		predicates = append(predicates, serverpowersupply.SerialEqualFold(*i.SerialEqualFold))
+	}
+	if i.SerialContainsFold != nil {
+		predicates = append(predicates, serverpowersupply.SerialContainsFold(*i.SerialContainsFold))
+	}
+
+	if i.HasServer != nil {
+		p := serverpowersupply.HasServer()
+		if !*i.HasServer {
+			p = serverpowersupply.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerWith) > 0 {
+		with := make([]predicate.Server, 0, len(i.HasServerWith))
+		for _, w := range i.HasServerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverpowersupply.HasServerWith(with...))
+	}
+	if i.HasServerPowerSupplyType != nil {
+		p := serverpowersupply.HasServerPowerSupplyType()
+		if !*i.HasServerPowerSupplyType {
+			p = serverpowersupply.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerPowerSupplyTypeWith) > 0 {
+		with := make([]predicate.ServerPowerSupplyType, 0, len(i.HasServerPowerSupplyTypeWith))
+		for _, w := range i.HasServerPowerSupplyTypeWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerPowerSupplyTypeWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, serverpowersupply.HasServerPowerSupplyTypeWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerPowerSupplyWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return serverpowersupply.And(predicates...), nil
+	}
+}
+
+// ServerPowerSupplyTypeWhereInput represents a where input for filtering ServerPowerSupplyType queries.
+type ServerPowerSupplyTypeWhereInput struct {
+	Predicates []predicate.ServerPowerSupplyType  `json:"-"`
+	Not        *ServerPowerSupplyTypeWhereInput   `json:"not,omitempty"`
+	Or         []*ServerPowerSupplyTypeWhereInput `json:"or,omitempty"`
+	And        []*ServerPowerSupplyTypeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "vendor" field predicates.
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNEQ          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGT           *string  `json:"vendorGT,omitempty"`
+	VendorGTE          *string  `json:"vendorGTE,omitempty"`
+	VendorLT           *string  `json:"vendorLT,omitempty"`
+	VendorLTE          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+
+	// "model" field predicates.
+	Model             *string  `json:"model,omitempty"`
+	ModelNEQ          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGT           *string  `json:"modelGT,omitempty"`
+	ModelGTE          *string  `json:"modelGTE,omitempty"`
+	ModelLT           *string  `json:"modelLT,omitempty"`
+	ModelLTE          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+
+	// "watts" field predicates.
+	Watts             *string  `json:"watts,omitempty"`
+	WattsNEQ          *string  `json:"wattsNEQ,omitempty"`
+	WattsIn           []string `json:"wattsIn,omitempty"`
+	WattsNotIn        []string `json:"wattsNotIn,omitempty"`
+	WattsGT           *string  `json:"wattsGT,omitempty"`
+	WattsGTE          *string  `json:"wattsGTE,omitempty"`
+	WattsLT           *string  `json:"wattsLT,omitempty"`
+	WattsLTE          *string  `json:"wattsLTE,omitempty"`
+	WattsContains     *string  `json:"wattsContains,omitempty"`
+	WattsHasPrefix    *string  `json:"wattsHasPrefix,omitempty"`
+	WattsHasSuffix    *string  `json:"wattsHasSuffix,omitempty"`
+	WattsEqualFold    *string  `json:"wattsEqualFold,omitempty"`
+	WattsContainsFold *string  `json:"wattsContainsFold,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerPowerSupplyTypeWhereInput) AddPredicates(predicates ...predicate.ServerPowerSupplyType) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerPowerSupplyTypeWhereInput filter on the ServerPowerSupplyTypeQuery builder.
+func (i *ServerPowerSupplyTypeWhereInput) Filter(q *ServerPowerSupplyTypeQuery) (*ServerPowerSupplyTypeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerPowerSupplyTypeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerPowerSupplyTypeWhereInput is returned in case the ServerPowerSupplyTypeWhereInput is empty.
+var ErrEmptyServerPowerSupplyTypeWhereInput = errors.New("generated: empty predicate ServerPowerSupplyTypeWhereInput")
+
+// P returns a predicate for filtering serverpowersupplytypes.
+// An error is returned if the input is empty or invalid.
+func (i *ServerPowerSupplyTypeWhereInput) P() (predicate.ServerPowerSupplyType, error) {
+	var predicates []predicate.ServerPowerSupplyType
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, serverpowersupplytype.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerPowerSupplyType, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, serverpowersupplytype.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerPowerSupplyType, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, serverpowersupplytype.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, serverpowersupplytype.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, serverpowersupplytype.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, serverpowersupplytype.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, serverpowersupplytype.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, serverpowersupplytype.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, serverpowersupplytype.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, serverpowersupplytype.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, serverpowersupplytype.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Vendor != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorEQ(*i.Vendor))
+	}
+	if i.VendorNEQ != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorNEQ(*i.VendorNEQ))
+	}
+	if len(i.VendorIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.VendorIn(i.VendorIn...))
+	}
+	if len(i.VendorNotIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.VendorNotIn(i.VendorNotIn...))
+	}
+	if i.VendorGT != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorGT(*i.VendorGT))
+	}
+	if i.VendorGTE != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorGTE(*i.VendorGTE))
+	}
+	if i.VendorLT != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorLT(*i.VendorLT))
+	}
+	if i.VendorLTE != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorLTE(*i.VendorLTE))
+	}
+	if i.VendorContains != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorContains(*i.VendorContains))
+	}
+	if i.VendorHasPrefix != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorHasPrefix(*i.VendorHasPrefix))
+	}
+	if i.VendorHasSuffix != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorHasSuffix(*i.VendorHasSuffix))
+	}
+	if i.VendorEqualFold != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorEqualFold(*i.VendorEqualFold))
+	}
+	if i.VendorContainsFold != nil {
+		predicates = append(predicates, serverpowersupplytype.VendorContainsFold(*i.VendorContainsFold))
+	}
+	if i.Model != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelEQ(*i.Model))
+	}
+	if i.ModelNEQ != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelNEQ(*i.ModelNEQ))
+	}
+	if len(i.ModelIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.ModelIn(i.ModelIn...))
+	}
+	if len(i.ModelNotIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.ModelNotIn(i.ModelNotIn...))
+	}
+	if i.ModelGT != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelGT(*i.ModelGT))
+	}
+	if i.ModelGTE != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelGTE(*i.ModelGTE))
+	}
+	if i.ModelLT != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelLT(*i.ModelLT))
+	}
+	if i.ModelLTE != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelLTE(*i.ModelLTE))
+	}
+	if i.ModelContains != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelContains(*i.ModelContains))
+	}
+	if i.ModelHasPrefix != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelHasPrefix(*i.ModelHasPrefix))
+	}
+	if i.ModelHasSuffix != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelHasSuffix(*i.ModelHasSuffix))
+	}
+	if i.ModelEqualFold != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelEqualFold(*i.ModelEqualFold))
+	}
+	if i.ModelContainsFold != nil {
+		predicates = append(predicates, serverpowersupplytype.ModelContainsFold(*i.ModelContainsFold))
+	}
+	if i.Watts != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsEQ(*i.Watts))
+	}
+	if i.WattsNEQ != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsNEQ(*i.WattsNEQ))
+	}
+	if len(i.WattsIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.WattsIn(i.WattsIn...))
+	}
+	if len(i.WattsNotIn) > 0 {
+		predicates = append(predicates, serverpowersupplytype.WattsNotIn(i.WattsNotIn...))
+	}
+	if i.WattsGT != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsGT(*i.WattsGT))
+	}
+	if i.WattsGTE != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsGTE(*i.WattsGTE))
+	}
+	if i.WattsLT != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsLT(*i.WattsLT))
+	}
+	if i.WattsLTE != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsLTE(*i.WattsLTE))
+	}
+	if i.WattsContains != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsContains(*i.WattsContains))
+	}
+	if i.WattsHasPrefix != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsHasPrefix(*i.WattsHasPrefix))
+	}
+	if i.WattsHasSuffix != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsHasSuffix(*i.WattsHasSuffix))
+	}
+	if i.WattsEqualFold != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsEqualFold(*i.WattsEqualFold))
+	}
+	if i.WattsContainsFold != nil {
+		predicates = append(predicates, serverpowersupplytype.WattsContainsFold(*i.WattsContainsFold))
+	}
+
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerPowerSupplyTypeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return serverpowersupplytype.And(predicates...), nil
 	}
 }
 

@@ -828,6 +828,102 @@ func (c *ServerMotherboardTypeUpdateOne) SetInput(i UpdateServerMotherboardTypeI
 	return c
 }
 
+// CreateServerPowerSupplyInput represents a mutation input for creating serverpowersupplies.
+type CreateServerPowerSupplyInput struct {
+	Serial                  string
+	ServerID                gidx.PrefixedID
+	ServerPowerSupplyTypeID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerPowerSupplyInput on the ServerPowerSupplyMutation builder.
+func (i *CreateServerPowerSupplyInput) Mutate(m *ServerPowerSupplyMutation) {
+	m.SetSerial(i.Serial)
+	m.SetServerID(i.ServerID)
+	m.SetServerPowerSupplyTypeID(i.ServerPowerSupplyTypeID)
+}
+
+// SetInput applies the change-set in the CreateServerPowerSupplyInput on the ServerPowerSupplyCreate builder.
+func (c *ServerPowerSupplyCreate) SetInput(i CreateServerPowerSupplyInput) *ServerPowerSupplyCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerPowerSupplyInput represents a mutation input for updating serverpowersupplies.
+type UpdateServerPowerSupplyInput struct {
+	Serial *string
+}
+
+// Mutate applies the UpdateServerPowerSupplyInput on the ServerPowerSupplyMutation builder.
+func (i *UpdateServerPowerSupplyInput) Mutate(m *ServerPowerSupplyMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerPowerSupplyInput on the ServerPowerSupplyUpdate builder.
+func (c *ServerPowerSupplyUpdate) SetInput(i UpdateServerPowerSupplyInput) *ServerPowerSupplyUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerPowerSupplyInput on the ServerPowerSupplyUpdateOne builder.
+func (c *ServerPowerSupplyUpdateOne) SetInput(i UpdateServerPowerSupplyInput) *ServerPowerSupplyUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateServerPowerSupplyTypeInput represents a mutation input for creating serverpowersupplytypes.
+type CreateServerPowerSupplyTypeInput struct {
+	Vendor string
+	Model  string
+	Watts  string
+}
+
+// Mutate applies the CreateServerPowerSupplyTypeInput on the ServerPowerSupplyTypeMutation builder.
+func (i *CreateServerPowerSupplyTypeInput) Mutate(m *ServerPowerSupplyTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	m.SetWatts(i.Watts)
+}
+
+// SetInput applies the change-set in the CreateServerPowerSupplyTypeInput on the ServerPowerSupplyTypeCreate builder.
+func (c *ServerPowerSupplyTypeCreate) SetInput(i CreateServerPowerSupplyTypeInput) *ServerPowerSupplyTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerPowerSupplyTypeInput represents a mutation input for updating serverpowersupplytypes.
+type UpdateServerPowerSupplyTypeInput struct {
+	Vendor *string
+	Model  *string
+	Watts  *string
+}
+
+// Mutate applies the UpdateServerPowerSupplyTypeInput on the ServerPowerSupplyTypeMutation builder.
+func (i *UpdateServerPowerSupplyTypeInput) Mutate(m *ServerPowerSupplyTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if v := i.Watts; v != nil {
+		m.SetWatts(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerPowerSupplyTypeInput on the ServerPowerSupplyTypeUpdate builder.
+func (c *ServerPowerSupplyTypeUpdate) SetInput(i UpdateServerPowerSupplyTypeInput) *ServerPowerSupplyTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerPowerSupplyTypeInput on the ServerPowerSupplyTypeUpdateOne builder.
+func (c *ServerPowerSupplyTypeUpdateOne) SetInput(i UpdateServerPowerSupplyTypeInput) *ServerPowerSupplyTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerTypeInput represents a mutation input for creating servertypes.
 type CreateServerTypeInput struct {
 	Name    string
