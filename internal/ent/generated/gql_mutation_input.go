@@ -828,6 +828,176 @@ func (c *ServerMotherboardTypeUpdateOne) SetInput(i UpdateServerMotherboardTypeI
 	return c
 }
 
+// CreateServerNetworkCardInput represents a mutation input for creating servernetworkcards.
+type CreateServerNetworkCardInput struct {
+	Serial            string
+	NetworkCardTypeID gidx.PrefixedID
+	ServerID          gidx.PrefixedID
+	NetworkPortIDs    []gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerNetworkCardInput on the ServerNetworkCardMutation builder.
+func (i *CreateServerNetworkCardInput) Mutate(m *ServerNetworkCardMutation) {
+	m.SetSerial(i.Serial)
+	m.SetNetworkCardTypeID(i.NetworkCardTypeID)
+	m.SetServerID(i.ServerID)
+	if v := i.NetworkPortIDs; len(v) > 0 {
+		m.AddNetworkPortIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateServerNetworkCardInput on the ServerNetworkCardCreate builder.
+func (c *ServerNetworkCardCreate) SetInput(i CreateServerNetworkCardInput) *ServerNetworkCardCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerNetworkCardInput represents a mutation input for updating servernetworkcards.
+type UpdateServerNetworkCardInput struct {
+	Serial               *string
+	ClearNetworkPort     bool
+	AddNetworkPortIDs    []gidx.PrefixedID
+	RemoveNetworkPortIDs []gidx.PrefixedID
+}
+
+// Mutate applies the UpdateServerNetworkCardInput on the ServerNetworkCardMutation builder.
+func (i *UpdateServerNetworkCardInput) Mutate(m *ServerNetworkCardMutation) {
+	if v := i.Serial; v != nil {
+		m.SetSerial(*v)
+	}
+	if i.ClearNetworkPort {
+		m.ClearNetworkPort()
+	}
+	if v := i.AddNetworkPortIDs; len(v) > 0 {
+		m.AddNetworkPortIDs(v...)
+	}
+	if v := i.RemoveNetworkPortIDs; len(v) > 0 {
+		m.RemoveNetworkPortIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerNetworkCardInput on the ServerNetworkCardUpdate builder.
+func (c *ServerNetworkCardUpdate) SetInput(i UpdateServerNetworkCardInput) *ServerNetworkCardUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerNetworkCardInput on the ServerNetworkCardUpdateOne builder.
+func (c *ServerNetworkCardUpdateOne) SetInput(i UpdateServerNetworkCardInput) *ServerNetworkCardUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateServerNetworkCardTypeInput represents a mutation input for creating servernetworkcardtypes.
+type CreateServerNetworkCardTypeInput struct {
+	Vendor         string
+	Model          string
+	PortCount      int
+	NetworkCardIDs []gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerNetworkCardTypeInput on the ServerNetworkCardTypeMutation builder.
+func (i *CreateServerNetworkCardTypeInput) Mutate(m *ServerNetworkCardTypeMutation) {
+	m.SetVendor(i.Vendor)
+	m.SetModel(i.Model)
+	m.SetPortCount(i.PortCount)
+	if v := i.NetworkCardIDs; len(v) > 0 {
+		m.AddNetworkCardIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateServerNetworkCardTypeInput on the ServerNetworkCardTypeCreate builder.
+func (c *ServerNetworkCardTypeCreate) SetInput(i CreateServerNetworkCardTypeInput) *ServerNetworkCardTypeCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerNetworkCardTypeInput represents a mutation input for updating servernetworkcardtypes.
+type UpdateServerNetworkCardTypeInput struct {
+	Vendor               *string
+	Model                *string
+	PortCount            *int
+	ClearNetworkCard     bool
+	AddNetworkCardIDs    []gidx.PrefixedID
+	RemoveNetworkCardIDs []gidx.PrefixedID
+}
+
+// Mutate applies the UpdateServerNetworkCardTypeInput on the ServerNetworkCardTypeMutation builder.
+func (i *UpdateServerNetworkCardTypeInput) Mutate(m *ServerNetworkCardTypeMutation) {
+	if v := i.Vendor; v != nil {
+		m.SetVendor(*v)
+	}
+	if v := i.Model; v != nil {
+		m.SetModel(*v)
+	}
+	if v := i.PortCount; v != nil {
+		m.SetPortCount(*v)
+	}
+	if i.ClearNetworkCard {
+		m.ClearNetworkCard()
+	}
+	if v := i.AddNetworkCardIDs; len(v) > 0 {
+		m.AddNetworkCardIDs(v...)
+	}
+	if v := i.RemoveNetworkCardIDs; len(v) > 0 {
+		m.RemoveNetworkCardIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerNetworkCardTypeInput on the ServerNetworkCardTypeUpdate builder.
+func (c *ServerNetworkCardTypeUpdate) SetInput(i UpdateServerNetworkCardTypeInput) *ServerNetworkCardTypeUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerNetworkCardTypeInput on the ServerNetworkCardTypeUpdateOne builder.
+func (c *ServerNetworkCardTypeUpdateOne) SetInput(i UpdateServerNetworkCardTypeInput) *ServerNetworkCardTypeUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateServerNetworkPortInput represents a mutation input for creating servernetworkports.
+type CreateServerNetworkPortInput struct {
+	MACAddress    string
+	NetworkCardID gidx.PrefixedID
+}
+
+// Mutate applies the CreateServerNetworkPortInput on the ServerNetworkPortMutation builder.
+func (i *CreateServerNetworkPortInput) Mutate(m *ServerNetworkPortMutation) {
+	m.SetMACAddress(i.MACAddress)
+	m.SetNetworkCardID(i.NetworkCardID)
+}
+
+// SetInput applies the change-set in the CreateServerNetworkPortInput on the ServerNetworkPortCreate builder.
+func (c *ServerNetworkPortCreate) SetInput(i CreateServerNetworkPortInput) *ServerNetworkPortCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateServerNetworkPortInput represents a mutation input for updating servernetworkports.
+type UpdateServerNetworkPortInput struct {
+	MACAddress *string
+}
+
+// Mutate applies the UpdateServerNetworkPortInput on the ServerNetworkPortMutation builder.
+func (i *UpdateServerNetworkPortInput) Mutate(m *ServerNetworkPortMutation) {
+	if v := i.MACAddress; v != nil {
+		m.SetMACAddress(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateServerNetworkPortInput on the ServerNetworkPortUpdate builder.
+func (c *ServerNetworkPortUpdate) SetInput(i UpdateServerNetworkPortInput) *ServerNetworkPortUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateServerNetworkPortInput on the ServerNetworkPortUpdateOne builder.
+func (c *ServerNetworkPortUpdateOne) SetInput(i UpdateServerNetworkPortInput) *ServerNetworkPortUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateServerPowerSupplyInput represents a mutation input for creating serverpowersupplies.
 type CreateServerPowerSupplyInput struct {
 	Serial                  string

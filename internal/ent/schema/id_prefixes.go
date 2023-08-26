@@ -42,6 +42,12 @@ const (
 	ServerPowerSupplyTypePrefix = ApplicationPrefix + "pst"
 	// ServerPowerSupplyPrefix is the prefix for all ServerPowerSupply nodes
 	ServerPowerSupplyPrefix = ApplicationPrefix + "psu"
+	// ServerNetworkCardTypePrefix is the prefix for all ServerNetworkCardType nodes
+	ServerNetworkCardTypePrefix = ApplicationPrefix + "nct"
+	// ServerNetworkCardPrefix is the prefix for all ServerNetworkCard nodes
+	ServerNetworkCardPrefix = ApplicationPrefix + "nwc"
+	// ServerNetworkPortPrefix is the prefix for all ServerNetworkPort nodes
+	ServerNetworkPortPrefix = ApplicationPrefix + "nwp"
 )
 
 func prefixIDDirective(prefix string) entgql.Annotation {

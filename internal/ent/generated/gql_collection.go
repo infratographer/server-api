@@ -38,6 +38,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -2300,6 +2303,523 @@ func newServerMotherboardTypePaginateArgs(rv map[string]any) *servermotherboardt
 	}
 	if v, ok := rv[whereField].(*ServerMotherboardTypeWhereInput); ok {
 		args.opts = append(args.opts, WithServerMotherboardTypeFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (snc *ServerNetworkCardQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerNetworkCardQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return snc, nil
+	}
+	if err := snc.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return snc, nil
+}
+
+func (snc *ServerNetworkCardQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servernetworkcard.Columns))
+		selectedFields = []string{servernetworkcard.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "networkCardType":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerNetworkCardTypeClient{config: snc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			snc.withNetworkCardType = query
+			if _, ok := fieldSeen[servernetworkcard.FieldNetworkCardTypeID]; !ok {
+				selectedFields = append(selectedFields, servernetworkcard.FieldNetworkCardTypeID)
+				fieldSeen[servernetworkcard.FieldNetworkCardTypeID] = struct{}{}
+			}
+		case "server":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerClient{config: snc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			snc.withServer = query
+			if _, ok := fieldSeen[servernetworkcard.FieldServerID]; !ok {
+				selectedFields = append(selectedFields, servernetworkcard.FieldServerID)
+				fieldSeen[servernetworkcard.FieldServerID] = struct{}{}
+			}
+		case "networkPort":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerNetworkPortClient{config: snc.config}).Query()
+			)
+			args := newServerNetworkPortPaginateArgs(fieldArgs(ctx, new(ServerNetworkPortWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newServerNetworkPortPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					snc.loadTotal = append(snc.loadTotal, func(ctx context.Context, nodes []*ServerNetworkCard) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID gidx.PrefixedID `sql:"network_card_id"`
+							Count  int             `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(servernetworkcard.NetworkPortColumn), ids...))
+						})
+						if err := query.GroupBy(servernetworkcard.NetworkPortColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[gidx.PrefixedID]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[2] == nil {
+								nodes[i].Edges.totalCount[2] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[2][alias] = n
+						}
+						return nil
+					})
+				} else {
+					snc.loadTotal = append(snc.loadTotal, func(_ context.Context, nodes []*ServerNetworkCard) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.NetworkPort)
+							if nodes[i].Edges.totalCount[2] == nil {
+								nodes[i].Edges.totalCount[2] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[2][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "ServerNetworkPort")...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				modify := limitRows(servernetworkcard.NetworkPortColumn, limit, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
+			} else {
+				query = pager.applyOrder(query)
+			}
+			snc.WithNamedNetworkPort(alias, func(wq *ServerNetworkPortQuery) {
+				*wq = *query
+			})
+		case "createdAt":
+			if _, ok := fieldSeen[servernetworkcard.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servernetworkcard.FieldCreatedAt)
+				fieldSeen[servernetworkcard.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servernetworkcard.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servernetworkcard.FieldUpdatedAt)
+				fieldSeen[servernetworkcard.FieldUpdatedAt] = struct{}{}
+			}
+		case "serial":
+			if _, ok := fieldSeen[servernetworkcard.FieldSerial]; !ok {
+				selectedFields = append(selectedFields, servernetworkcard.FieldSerial)
+				fieldSeen[servernetworkcard.FieldSerial] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		snc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servernetworkcardPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerNetworkCardPaginateOption
+}
+
+func newServerNetworkCardPaginateArgs(rv map[string]any) *servernetworkcardPaginateArgs {
+	args := &servernetworkcardPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerNetworkCardOrder{Field: &ServerNetworkCardOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerNetworkCardOrder(order))
+			}
+		case *ServerNetworkCardOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerNetworkCardOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerNetworkCardWhereInput); ok {
+		args.opts = append(args.opts, WithServerNetworkCardFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (snct *ServerNetworkCardTypeQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerNetworkCardTypeQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return snct, nil
+	}
+	if err := snct.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return snct, nil
+}
+
+func (snct *ServerNetworkCardTypeQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servernetworkcardtype.Columns))
+		selectedFields = []string{servernetworkcardtype.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "networkCard":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerNetworkCardClient{config: snct.config}).Query()
+			)
+			args := newServerNetworkCardPaginateArgs(fieldArgs(ctx, new(ServerNetworkCardWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newServerNetworkCardPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					snct.loadTotal = append(snct.loadTotal, func(ctx context.Context, nodes []*ServerNetworkCardType) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID gidx.PrefixedID `sql:"network_card_type_id"`
+							Count  int             `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(servernetworkcardtype.NetworkCardColumn), ids...))
+						})
+						if err := query.GroupBy(servernetworkcardtype.NetworkCardColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[gidx.PrefixedID]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				} else {
+					snct.loadTotal = append(snct.loadTotal, func(_ context.Context, nodes []*ServerNetworkCardType) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.NetworkCard)
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "ServerNetworkCard")...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				modify := limitRows(servernetworkcardtype.NetworkCardColumn, limit, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
+			} else {
+				query = pager.applyOrder(query)
+			}
+			snct.WithNamedNetworkCard(alias, func(wq *ServerNetworkCardQuery) {
+				*wq = *query
+			})
+		case "createdAt":
+			if _, ok := fieldSeen[servernetworkcardtype.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servernetworkcardtype.FieldCreatedAt)
+				fieldSeen[servernetworkcardtype.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servernetworkcardtype.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servernetworkcardtype.FieldUpdatedAt)
+				fieldSeen[servernetworkcardtype.FieldUpdatedAt] = struct{}{}
+			}
+		case "vendor":
+			if _, ok := fieldSeen[servernetworkcardtype.FieldVendor]; !ok {
+				selectedFields = append(selectedFields, servernetworkcardtype.FieldVendor)
+				fieldSeen[servernetworkcardtype.FieldVendor] = struct{}{}
+			}
+		case "model":
+			if _, ok := fieldSeen[servernetworkcardtype.FieldModel]; !ok {
+				selectedFields = append(selectedFields, servernetworkcardtype.FieldModel)
+				fieldSeen[servernetworkcardtype.FieldModel] = struct{}{}
+			}
+		case "portCount":
+			if _, ok := fieldSeen[servernetworkcardtype.FieldPortCount]; !ok {
+				selectedFields = append(selectedFields, servernetworkcardtype.FieldPortCount)
+				fieldSeen[servernetworkcardtype.FieldPortCount] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		snct.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servernetworkcardtypePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerNetworkCardTypePaginateOption
+}
+
+func newServerNetworkCardTypePaginateArgs(rv map[string]any) *servernetworkcardtypePaginateArgs {
+	args := &servernetworkcardtypePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerNetworkCardTypeOrder{Field: &ServerNetworkCardTypeOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerNetworkCardTypeOrder(order))
+			}
+		case *ServerNetworkCardTypeOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerNetworkCardTypeOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerNetworkCardTypeWhereInput); ok {
+		args.opts = append(args.opts, WithServerNetworkCardTypeFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (snp *ServerNetworkPortQuery) CollectFields(ctx context.Context, satisfies ...string) (*ServerNetworkPortQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return snp, nil
+	}
+	if err := snp.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return snp, nil
+}
+
+func (snp *ServerNetworkPortQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(servernetworkport.Columns))
+		selectedFields = []string{servernetworkport.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "networkCard":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ServerNetworkCardClient{config: snp.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			snp.withNetworkCard = query
+			if _, ok := fieldSeen[servernetworkport.FieldNetworkCardID]; !ok {
+				selectedFields = append(selectedFields, servernetworkport.FieldNetworkCardID)
+				fieldSeen[servernetworkport.FieldNetworkCardID] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[servernetworkport.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, servernetworkport.FieldCreatedAt)
+				fieldSeen[servernetworkport.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[servernetworkport.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, servernetworkport.FieldUpdatedAt)
+				fieldSeen[servernetworkport.FieldUpdatedAt] = struct{}{}
+			}
+		case "macAddress":
+			if _, ok := fieldSeen[servernetworkport.FieldMACAddress]; !ok {
+				selectedFields = append(selectedFields, servernetworkport.FieldMACAddress)
+				fieldSeen[servernetworkport.FieldMACAddress] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		snp.Select(selectedFields...)
+	}
+	return nil
+}
+
+type servernetworkportPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ServerNetworkPortPaginateOption
+}
+
+func newServerNetworkPortPaginateArgs(rv map[string]any) *servernetworkportPaginateArgs {
+	args := &servernetworkportPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &ServerNetworkPortOrder{Field: &ServerNetworkPortOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithServerNetworkPortOrder(order))
+			}
+		case *ServerNetworkPortOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithServerNetworkPortOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*ServerNetworkPortWhereInput); ok {
+		args.opts = append(args.opts, WithServerNetworkPortFilter(v.Filter))
 	}
 	return args
 }

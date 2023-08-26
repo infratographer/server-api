@@ -77,6 +77,21 @@ func (r *entityResolver) FindServerMotherboardTypeByID(ctx context.Context, id g
 	panic(fmt.Errorf("not implemented: FindServerMotherboardTypeByID - findServerMotherboardTypeByID"))
 }
 
+// FindServerNetworkCardByID is the resolver for the findServerNetworkCardByID field.
+func (r *entityResolver) FindServerNetworkCardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCard, error) {
+	panic(fmt.Errorf("not implemented: FindServerNetworkCardByID - findServerNetworkCardByID"))
+}
+
+// FindServerNetworkCardTypeByID is the resolver for the findServerNetworkCardTypeByID field.
+func (r *entityResolver) FindServerNetworkCardTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCardType, error) {
+	panic(fmt.Errorf("not implemented: FindServerNetworkCardTypeByID - findServerNetworkCardTypeByID"))
+}
+
+// FindServerNetworkPortByID is the resolver for the findServerNetworkPortByID field.
+func (r *entityResolver) FindServerNetworkPortByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkPort, error) {
+	panic(fmt.Errorf("not implemented: FindServerNetworkPortByID - findServerNetworkPortByID"))
+}
+
 // FindServerPowerSupplyByID is the resolver for the findServerPowerSupplyByID field.
 func (r *entityResolver) FindServerPowerSupplyByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupply, error) {
 	panic(fmt.Errorf("not implemented: FindServerPowerSupplyByID - findServerPowerSupplyByID"))

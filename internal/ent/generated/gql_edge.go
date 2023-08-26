@@ -281,6 +281,72 @@ func (smt *ServerMotherboardType) Motherboard(
 	return smt.QueryMotherboard().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (snc *ServerNetworkCard) NetworkCardType(ctx context.Context) (*ServerNetworkCardType, error) {
+	result, err := snc.Edges.NetworkCardTypeOrErr()
+	if IsNotLoaded(err) {
+		result, err = snc.QueryNetworkCardType().Only(ctx)
+	}
+	return result, err
+}
+
+func (snc *ServerNetworkCard) Server(ctx context.Context) (*Server, error) {
+	result, err := snc.Edges.ServerOrErr()
+	if IsNotLoaded(err) {
+		result, err = snc.QueryServer().Only(ctx)
+	}
+	return result, err
+}
+
+func (snc *ServerNetworkCard) NetworkPort(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerNetworkPortOrder, where *ServerNetworkPortWhereInput,
+) (*ServerNetworkPortConnection, error) {
+	opts := []ServerNetworkPortPaginateOption{
+		WithServerNetworkPortOrder(orderBy),
+		WithServerNetworkPortFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := snc.Edges.totalCount[2][alias]
+	if nodes, err := snc.NamedNetworkPort(alias); err == nil || hasTotalCount {
+		pager, err := newServerNetworkPortPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerNetworkPortConnection{Edges: []*ServerNetworkPortEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return snc.QueryNetworkPort().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (snct *ServerNetworkCardType) NetworkCard(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *ServerNetworkCardOrder, where *ServerNetworkCardWhereInput,
+) (*ServerNetworkCardConnection, error) {
+	opts := []ServerNetworkCardPaginateOption{
+		WithServerNetworkCardOrder(orderBy),
+		WithServerNetworkCardFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := snct.Edges.totalCount[0][alias]
+	if nodes, err := snct.NamedNetworkCard(alias); err == nil || hasTotalCount {
+		pager, err := newServerNetworkCardPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &ServerNetworkCardConnection{Edges: []*ServerNetworkCardEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return snct.QueryNetworkCard().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (snp *ServerNetworkPort) NetworkCard(ctx context.Context) (*ServerNetworkCard, error) {
+	result, err := snp.Edges.NetworkCardOrErr()
+	if IsNotLoaded(err) {
+		result, err = snp.QueryNetworkCard().Only(ctx)
+	}
+	return result, err
+}
+
 func (sps *ServerPowerSupply) Server(ctx context.Context) (*Server, error) {
 	result, err := sps.Edges.ServerOrErr()
 	if IsNotLoaded(err) {

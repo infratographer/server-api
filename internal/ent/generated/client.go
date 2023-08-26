@@ -43,6 +43,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -81,6 +84,12 @@ type Client struct {
 	ServerMotherboard *ServerMotherboardClient
 	// ServerMotherboardType is the client for interacting with the ServerMotherboardType builders.
 	ServerMotherboardType *ServerMotherboardTypeClient
+	// ServerNetworkCard is the client for interacting with the ServerNetworkCard builders.
+	ServerNetworkCard *ServerNetworkCardClient
+	// ServerNetworkCardType is the client for interacting with the ServerNetworkCardType builders.
+	ServerNetworkCardType *ServerNetworkCardTypeClient
+	// ServerNetworkPort is the client for interacting with the ServerNetworkPort builders.
+	ServerNetworkPort *ServerNetworkPortClient
 	// ServerPowerSupply is the client for interacting with the ServerPowerSupply builders.
 	ServerPowerSupply *ServerPowerSupplyClient
 	// ServerPowerSupplyType is the client for interacting with the ServerPowerSupplyType builders.
@@ -114,6 +123,9 @@ func (c *Client) init() {
 	c.ServerMemoryType = NewServerMemoryTypeClient(c.config)
 	c.ServerMotherboard = NewServerMotherboardClient(c.config)
 	c.ServerMotherboardType = NewServerMotherboardTypeClient(c.config)
+	c.ServerNetworkCard = NewServerNetworkCardClient(c.config)
+	c.ServerNetworkCardType = NewServerNetworkCardTypeClient(c.config)
+	c.ServerNetworkPort = NewServerNetworkPortClient(c.config)
 	c.ServerPowerSupply = NewServerPowerSupplyClient(c.config)
 	c.ServerPowerSupplyType = NewServerPowerSupplyTypeClient(c.config)
 	c.ServerType = NewServerTypeClient(c.config)
@@ -213,6 +225,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
 		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
+		ServerNetworkCard:     NewServerNetworkCardClient(cfg),
+		ServerNetworkCardType: NewServerNetworkCardTypeClient(cfg),
+		ServerNetworkPort:     NewServerNetworkPortClient(cfg),
 		ServerPowerSupply:     NewServerPowerSupplyClient(cfg),
 		ServerPowerSupplyType: NewServerPowerSupplyTypeClient(cfg),
 		ServerType:            NewServerTypeClient(cfg),
@@ -249,6 +264,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ServerMemoryType:      NewServerMemoryTypeClient(cfg),
 		ServerMotherboard:     NewServerMotherboardClient(cfg),
 		ServerMotherboardType: NewServerMotherboardTypeClient(cfg),
+		ServerNetworkCard:     NewServerNetworkCardClient(cfg),
+		ServerNetworkCardType: NewServerNetworkCardTypeClient(cfg),
+		ServerNetworkPort:     NewServerNetworkPortClient(cfg),
 		ServerPowerSupply:     NewServerPowerSupplyClient(cfg),
 		ServerPowerSupplyType: NewServerPowerSupplyTypeClient(cfg),
 		ServerType:            NewServerTypeClient(cfg),
@@ -284,7 +302,8 @@ func (c *Client) Use(hooks ...Hook) {
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
 		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
 		c.ServerHardDrive, c.ServerHardDriveType, c.ServerMemory, c.ServerMemoryType,
-		c.ServerMotherboard, c.ServerMotherboardType, c.ServerPowerSupply,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerNetworkCard,
+		c.ServerNetworkCardType, c.ServerNetworkPort, c.ServerPowerSupply,
 		c.ServerPowerSupplyType, c.ServerType,
 	} {
 		n.Use(hooks...)
@@ -298,7 +317,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.Provider, c.Server, c.ServerCPU, c.ServerCPUType, c.ServerChassis,
 		c.ServerChassisType, c.ServerComponent, c.ServerComponentType,
 		c.ServerHardDrive, c.ServerHardDriveType, c.ServerMemory, c.ServerMemoryType,
-		c.ServerMotherboard, c.ServerMotherboardType, c.ServerPowerSupply,
+		c.ServerMotherboard, c.ServerMotherboardType, c.ServerNetworkCard,
+		c.ServerNetworkCardType, c.ServerNetworkPort, c.ServerPowerSupply,
 		c.ServerPowerSupplyType, c.ServerType,
 	} {
 		n.Intercept(interceptors...)
@@ -336,6 +356,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ServerMotherboard.mutate(ctx, m)
 	case *ServerMotherboardTypeMutation:
 		return c.ServerMotherboardType.mutate(ctx, m)
+	case *ServerNetworkCardMutation:
+		return c.ServerNetworkCard.mutate(ctx, m)
+	case *ServerNetworkCardTypeMutation:
+		return c.ServerNetworkCardType.mutate(ctx, m)
+	case *ServerNetworkPortMutation:
+		return c.ServerNetworkPort.mutate(ctx, m)
 	case *ServerPowerSupplyMutation:
 		return c.ServerPowerSupply.mutate(ctx, m)
 	case *ServerPowerSupplyTypeMutation:
@@ -2335,6 +2361,440 @@ func (c *ServerMotherboardTypeClient) mutate(ctx context.Context, m *ServerMothe
 	}
 }
 
+// ServerNetworkCardClient is a client for the ServerNetworkCard schema.
+type ServerNetworkCardClient struct {
+	config
+}
+
+// NewServerNetworkCardClient returns a client for the ServerNetworkCard from the given config.
+func NewServerNetworkCardClient(c config) *ServerNetworkCardClient {
+	return &ServerNetworkCardClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servernetworkcard.Hooks(f(g(h())))`.
+func (c *ServerNetworkCardClient) Use(hooks ...Hook) {
+	c.hooks.ServerNetworkCard = append(c.hooks.ServerNetworkCard, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servernetworkcard.Intercept(f(g(h())))`.
+func (c *ServerNetworkCardClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerNetworkCard = append(c.inters.ServerNetworkCard, interceptors...)
+}
+
+// Create returns a builder for creating a ServerNetworkCard entity.
+func (c *ServerNetworkCardClient) Create() *ServerNetworkCardCreate {
+	mutation := newServerNetworkCardMutation(c.config, OpCreate)
+	return &ServerNetworkCardCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerNetworkCard entities.
+func (c *ServerNetworkCardClient) CreateBulk(builders ...*ServerNetworkCardCreate) *ServerNetworkCardCreateBulk {
+	return &ServerNetworkCardCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerNetworkCard.
+func (c *ServerNetworkCardClient) Update() *ServerNetworkCardUpdate {
+	mutation := newServerNetworkCardMutation(c.config, OpUpdate)
+	return &ServerNetworkCardUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerNetworkCardClient) UpdateOne(snc *ServerNetworkCard) *ServerNetworkCardUpdateOne {
+	mutation := newServerNetworkCardMutation(c.config, OpUpdateOne, withServerNetworkCard(snc))
+	return &ServerNetworkCardUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerNetworkCardClient) UpdateOneID(id gidx.PrefixedID) *ServerNetworkCardUpdateOne {
+	mutation := newServerNetworkCardMutation(c.config, OpUpdateOne, withServerNetworkCardID(id))
+	return &ServerNetworkCardUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerNetworkCard.
+func (c *ServerNetworkCardClient) Delete() *ServerNetworkCardDelete {
+	mutation := newServerNetworkCardMutation(c.config, OpDelete)
+	return &ServerNetworkCardDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerNetworkCardClient) DeleteOne(snc *ServerNetworkCard) *ServerNetworkCardDeleteOne {
+	return c.DeleteOneID(snc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerNetworkCardClient) DeleteOneID(id gidx.PrefixedID) *ServerNetworkCardDeleteOne {
+	builder := c.Delete().Where(servernetworkcard.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerNetworkCardDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerNetworkCard.
+func (c *ServerNetworkCardClient) Query() *ServerNetworkCardQuery {
+	return &ServerNetworkCardQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerNetworkCard},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerNetworkCard entity by its id.
+func (c *ServerNetworkCardClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCard, error) {
+	return c.Query().Where(servernetworkcard.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerNetworkCardClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerNetworkCard {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryNetworkCardType queries the network_card_type edge of a ServerNetworkCard.
+func (c *ServerNetworkCardClient) QueryNetworkCardType(snc *ServerNetworkCard) *ServerNetworkCardTypeQuery {
+	query := (&ServerNetworkCardTypeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := snc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servernetworkcard.Table, servernetworkcard.FieldID, id),
+			sqlgraph.To(servernetworkcardtype.Table, servernetworkcardtype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servernetworkcard.NetworkCardTypeTable, servernetworkcard.NetworkCardTypeColumn),
+		)
+		fromV = sqlgraph.Neighbors(snc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryServer queries the server edge of a ServerNetworkCard.
+func (c *ServerNetworkCardClient) QueryServer(snc *ServerNetworkCard) *ServerQuery {
+	query := (&ServerClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := snc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servernetworkcard.Table, servernetworkcard.FieldID, id),
+			sqlgraph.To(server.Table, server.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servernetworkcard.ServerTable, servernetworkcard.ServerColumn),
+		)
+		fromV = sqlgraph.Neighbors(snc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNetworkPort queries the network_port edge of a ServerNetworkCard.
+func (c *ServerNetworkCardClient) QueryNetworkPort(snc *ServerNetworkCard) *ServerNetworkPortQuery {
+	query := (&ServerNetworkPortClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := snc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servernetworkcard.Table, servernetworkcard.FieldID, id),
+			sqlgraph.To(servernetworkport.Table, servernetworkport.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, servernetworkcard.NetworkPortTable, servernetworkcard.NetworkPortColumn),
+		)
+		fromV = sqlgraph.Neighbors(snc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerNetworkCardClient) Hooks() []Hook {
+	return c.hooks.ServerNetworkCard
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerNetworkCardClient) Interceptors() []Interceptor {
+	return c.inters.ServerNetworkCard
+}
+
+func (c *ServerNetworkCardClient) mutate(ctx context.Context, m *ServerNetworkCardMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerNetworkCardCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerNetworkCardUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerNetworkCardUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerNetworkCardDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerNetworkCard mutation op: %q", m.Op())
+	}
+}
+
+// ServerNetworkCardTypeClient is a client for the ServerNetworkCardType schema.
+type ServerNetworkCardTypeClient struct {
+	config
+}
+
+// NewServerNetworkCardTypeClient returns a client for the ServerNetworkCardType from the given config.
+func NewServerNetworkCardTypeClient(c config) *ServerNetworkCardTypeClient {
+	return &ServerNetworkCardTypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servernetworkcardtype.Hooks(f(g(h())))`.
+func (c *ServerNetworkCardTypeClient) Use(hooks ...Hook) {
+	c.hooks.ServerNetworkCardType = append(c.hooks.ServerNetworkCardType, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servernetworkcardtype.Intercept(f(g(h())))`.
+func (c *ServerNetworkCardTypeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerNetworkCardType = append(c.inters.ServerNetworkCardType, interceptors...)
+}
+
+// Create returns a builder for creating a ServerNetworkCardType entity.
+func (c *ServerNetworkCardTypeClient) Create() *ServerNetworkCardTypeCreate {
+	mutation := newServerNetworkCardTypeMutation(c.config, OpCreate)
+	return &ServerNetworkCardTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerNetworkCardType entities.
+func (c *ServerNetworkCardTypeClient) CreateBulk(builders ...*ServerNetworkCardTypeCreate) *ServerNetworkCardTypeCreateBulk {
+	return &ServerNetworkCardTypeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerNetworkCardType.
+func (c *ServerNetworkCardTypeClient) Update() *ServerNetworkCardTypeUpdate {
+	mutation := newServerNetworkCardTypeMutation(c.config, OpUpdate)
+	return &ServerNetworkCardTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerNetworkCardTypeClient) UpdateOne(snct *ServerNetworkCardType) *ServerNetworkCardTypeUpdateOne {
+	mutation := newServerNetworkCardTypeMutation(c.config, OpUpdateOne, withServerNetworkCardType(snct))
+	return &ServerNetworkCardTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerNetworkCardTypeClient) UpdateOneID(id gidx.PrefixedID) *ServerNetworkCardTypeUpdateOne {
+	mutation := newServerNetworkCardTypeMutation(c.config, OpUpdateOne, withServerNetworkCardTypeID(id))
+	return &ServerNetworkCardTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerNetworkCardType.
+func (c *ServerNetworkCardTypeClient) Delete() *ServerNetworkCardTypeDelete {
+	mutation := newServerNetworkCardTypeMutation(c.config, OpDelete)
+	return &ServerNetworkCardTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerNetworkCardTypeClient) DeleteOne(snct *ServerNetworkCardType) *ServerNetworkCardTypeDeleteOne {
+	return c.DeleteOneID(snct.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerNetworkCardTypeClient) DeleteOneID(id gidx.PrefixedID) *ServerNetworkCardTypeDeleteOne {
+	builder := c.Delete().Where(servernetworkcardtype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerNetworkCardTypeDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerNetworkCardType.
+func (c *ServerNetworkCardTypeClient) Query() *ServerNetworkCardTypeQuery {
+	return &ServerNetworkCardTypeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerNetworkCardType},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerNetworkCardType entity by its id.
+func (c *ServerNetworkCardTypeClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCardType, error) {
+	return c.Query().Where(servernetworkcardtype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerNetworkCardTypeClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerNetworkCardType {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryNetworkCard queries the network_card edge of a ServerNetworkCardType.
+func (c *ServerNetworkCardTypeClient) QueryNetworkCard(snct *ServerNetworkCardType) *ServerNetworkCardQuery {
+	query := (&ServerNetworkCardClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := snct.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servernetworkcardtype.Table, servernetworkcardtype.FieldID, id),
+			sqlgraph.To(servernetworkcard.Table, servernetworkcard.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, servernetworkcardtype.NetworkCardTable, servernetworkcardtype.NetworkCardColumn),
+		)
+		fromV = sqlgraph.Neighbors(snct.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerNetworkCardTypeClient) Hooks() []Hook {
+	return c.hooks.ServerNetworkCardType
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerNetworkCardTypeClient) Interceptors() []Interceptor {
+	return c.inters.ServerNetworkCardType
+}
+
+func (c *ServerNetworkCardTypeClient) mutate(ctx context.Context, m *ServerNetworkCardTypeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerNetworkCardTypeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerNetworkCardTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerNetworkCardTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerNetworkCardTypeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerNetworkCardType mutation op: %q", m.Op())
+	}
+}
+
+// ServerNetworkPortClient is a client for the ServerNetworkPort schema.
+type ServerNetworkPortClient struct {
+	config
+}
+
+// NewServerNetworkPortClient returns a client for the ServerNetworkPort from the given config.
+func NewServerNetworkPortClient(c config) *ServerNetworkPortClient {
+	return &ServerNetworkPortClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servernetworkport.Hooks(f(g(h())))`.
+func (c *ServerNetworkPortClient) Use(hooks ...Hook) {
+	c.hooks.ServerNetworkPort = append(c.hooks.ServerNetworkPort, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `servernetworkport.Intercept(f(g(h())))`.
+func (c *ServerNetworkPortClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ServerNetworkPort = append(c.inters.ServerNetworkPort, interceptors...)
+}
+
+// Create returns a builder for creating a ServerNetworkPort entity.
+func (c *ServerNetworkPortClient) Create() *ServerNetworkPortCreate {
+	mutation := newServerNetworkPortMutation(c.config, OpCreate)
+	return &ServerNetworkPortCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ServerNetworkPort entities.
+func (c *ServerNetworkPortClient) CreateBulk(builders ...*ServerNetworkPortCreate) *ServerNetworkPortCreateBulk {
+	return &ServerNetworkPortCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ServerNetworkPort.
+func (c *ServerNetworkPortClient) Update() *ServerNetworkPortUpdate {
+	mutation := newServerNetworkPortMutation(c.config, OpUpdate)
+	return &ServerNetworkPortUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServerNetworkPortClient) UpdateOne(snp *ServerNetworkPort) *ServerNetworkPortUpdateOne {
+	mutation := newServerNetworkPortMutation(c.config, OpUpdateOne, withServerNetworkPort(snp))
+	return &ServerNetworkPortUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServerNetworkPortClient) UpdateOneID(id gidx.PrefixedID) *ServerNetworkPortUpdateOne {
+	mutation := newServerNetworkPortMutation(c.config, OpUpdateOne, withServerNetworkPortID(id))
+	return &ServerNetworkPortUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ServerNetworkPort.
+func (c *ServerNetworkPortClient) Delete() *ServerNetworkPortDelete {
+	mutation := newServerNetworkPortMutation(c.config, OpDelete)
+	return &ServerNetworkPortDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServerNetworkPortClient) DeleteOne(snp *ServerNetworkPort) *ServerNetworkPortDeleteOne {
+	return c.DeleteOneID(snp.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServerNetworkPortClient) DeleteOneID(id gidx.PrefixedID) *ServerNetworkPortDeleteOne {
+	builder := c.Delete().Where(servernetworkport.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServerNetworkPortDeleteOne{builder}
+}
+
+// Query returns a query builder for ServerNetworkPort.
+func (c *ServerNetworkPortClient) Query() *ServerNetworkPortQuery {
+	return &ServerNetworkPortQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeServerNetworkPort},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ServerNetworkPort entity by its id.
+func (c *ServerNetworkPortClient) Get(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkPort, error) {
+	return c.Query().Where(servernetworkport.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServerNetworkPortClient) GetX(ctx context.Context, id gidx.PrefixedID) *ServerNetworkPort {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryNetworkCard queries the network_card edge of a ServerNetworkPort.
+func (c *ServerNetworkPortClient) QueryNetworkCard(snp *ServerNetworkPort) *ServerNetworkCardQuery {
+	query := (&ServerNetworkCardClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := snp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(servernetworkport.Table, servernetworkport.FieldID, id),
+			sqlgraph.To(servernetworkcard.Table, servernetworkcard.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, servernetworkport.NetworkCardTable, servernetworkport.NetworkCardColumn),
+		)
+		fromV = sqlgraph.Neighbors(snp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ServerNetworkPortClient) Hooks() []Hook {
+	return c.hooks.ServerNetworkPort
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServerNetworkPortClient) Interceptors() []Interceptor {
+	return c.inters.ServerNetworkPort
+}
+
+func (c *ServerNetworkPortClient) mutate(ctx context.Context, m *ServerNetworkPortMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServerNetworkPortCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServerNetworkPortUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServerNetworkPortUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServerNetworkPortDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown ServerNetworkPort mutation op: %q", m.Op())
+	}
+}
+
 // ServerPowerSupplyClient is a client for the ServerPowerSupply schema.
 type ServerPowerSupplyClient struct {
 	config
@@ -2743,12 +3203,14 @@ type (
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
 		ServerComponent, ServerComponentType, ServerHardDrive, ServerHardDriveType,
 		ServerMemory, ServerMemoryType, ServerMotherboard, ServerMotherboardType,
-		ServerPowerSupply, ServerPowerSupplyType, ServerType []ent.Hook
+		ServerNetworkCard, ServerNetworkCardType, ServerNetworkPort, ServerPowerSupply,
+		ServerPowerSupplyType, ServerType []ent.Hook
 	}
 	inters struct {
 		Provider, Server, ServerCPU, ServerCPUType, ServerChassis, ServerChassisType,
 		ServerComponent, ServerComponentType, ServerHardDrive, ServerHardDriveType,
 		ServerMemory, ServerMemoryType, ServerMotherboard, ServerMotherboardType,
-		ServerPowerSupply, ServerPowerSupplyType, ServerType []ent.Interceptor
+		ServerNetworkCard, ServerNetworkCardType, ServerNetworkPort, ServerPowerSupply,
+		ServerPowerSupplyType, ServerType []ent.Interceptor
 	}
 )

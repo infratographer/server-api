@@ -65,6 +65,9 @@ type ComplexityRoot struct {
 		FindServerMemoryTypeByID      func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMotherboardByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerMotherboardTypeByID func(childComplexity int, id gidx.PrefixedID) int
+		FindServerNetworkCardByID     func(childComplexity int, id gidx.PrefixedID) int
+		FindServerNetworkCardTypeByID func(childComplexity int, id gidx.PrefixedID) int
+		FindServerNetworkPortByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerPowerSupplyByID     func(childComplexity int, id gidx.PrefixedID) int
 		FindServerPowerSupplyTypeByID func(childComplexity int, id gidx.PrefixedID) int
 		FindServerProviderByID        func(childComplexity int, id gidx.PrefixedID) int
@@ -110,6 +113,15 @@ type ComplexityRoot struct {
 		ServerMotherboardTypeDelete func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboardTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) int
 		ServerMotherboardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) int
+		ServerNetworkCard           func(childComplexity int, input generated.CreateServerNetworkCardInput) int
+		ServerNetworkCardDelete     func(childComplexity int, id gidx.PrefixedID) int
+		ServerNetworkCardType       func(childComplexity int, input generated.CreateServerNetworkCardTypeInput) int
+		ServerNetworkCardTypeDelete func(childComplexity int, id gidx.PrefixedID) int
+		ServerNetworkCardTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerNetworkCardTypeInput) int
+		ServerNetworkCardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerNetworkCardInput) int
+		ServerNetworkPort           func(childComplexity int, input generated.CreateServerNetworkPortInput) int
+		ServerNetworkPortDelete     func(childComplexity int, id gidx.PrefixedID) int
+		ServerNetworkPortUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerNetworkPortInput) int
 		ServerPowerSupply           func(childComplexity int, input generated.CreateServerPowerSupplyInput) int
 		ServerPowerSupplyDelete     func(childComplexity int, id gidx.PrefixedID) int
 		ServerPowerSupplyType       func(childComplexity int, input generated.CreateServerPowerSupplyTypeInput) int
@@ -146,6 +158,9 @@ type ComplexityRoot struct {
 		ServerMemoryType      func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboard     func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboardType func(childComplexity int, id gidx.PrefixedID) int
+		ServerNetworkCard     func(childComplexity int, id gidx.PrefixedID) int
+		ServerNetworkCardType func(childComplexity int, id gidx.PrefixedID) int
+		ServerNetworkPort     func(childComplexity int, id gidx.PrefixedID) int
 		ServerPowerSupply     func(childComplexity int, id gidx.PrefixedID) int
 		ServerPowerSupplyType func(childComplexity int, id gidx.PrefixedID) int
 		ServerProvider        func(childComplexity int, id gidx.PrefixedID) int
@@ -578,6 +593,103 @@ type ComplexityRoot struct {
 		ServerMotherboard func(childComplexity int) int
 	}
 
+	ServerNetworkCard struct {
+		CreatedAt       func(childComplexity int) int
+		ID              func(childComplexity int) int
+		NetworkCardType func(childComplexity int) int
+		NetworkPort     func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerNetworkPortOrder, where *generated.ServerNetworkPortWhereInput) int
+		Serial          func(childComplexity int) int
+		Server          func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+	}
+
+	ServerNetworkCardConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerNetworkCardCreatePayload struct {
+		ServerNetworkCard func(childComplexity int) int
+	}
+
+	ServerNetworkCardDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerNetworkCardEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerNetworkCardType struct {
+		CreatedAt   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Model       func(childComplexity int) int
+		NetworkCard func(childComplexity int, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerNetworkCardOrder, where *generated.ServerNetworkCardWhereInput) int
+		PortCount   func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		Vendor      func(childComplexity int) int
+	}
+
+	ServerNetworkCardTypeConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerNetworkCardTypeCreatePayload struct {
+		ServerNetworkCardType func(childComplexity int) int
+	}
+
+	ServerNetworkCardTypeDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerNetworkCardTypeEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerNetworkCardTypeUpdatePayload struct {
+		ServerNetworkCardType func(childComplexity int) int
+	}
+
+	ServerNetworkCardUpdatePayload struct {
+		ServerNetworkCard func(childComplexity int) int
+	}
+
+	ServerNetworkPort struct {
+		CreatedAt   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		MACAddress  func(childComplexity int) int
+		NetworkCard func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+	}
+
+	ServerNetworkPortConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	ServerNetworkPortCreatePayload struct {
+		ServerNetworkPort func(childComplexity int) int
+	}
+
+	ServerNetworkPortDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	ServerNetworkPortEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	ServerNetworkPortUpdatePayload struct {
+		ServerNetworkPort func(childComplexity int) int
+	}
+
 	ServerPowerSupply struct {
 		CreatedAt             func(childComplexity int) int
 		ID                    func(childComplexity int) int
@@ -727,6 +839,9 @@ type EntityResolver interface {
 	FindServerMemoryTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error)
 	FindServerMotherboardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
 	FindServerMotherboardTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboardType, error)
+	FindServerNetworkCardByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCard, error)
+	FindServerNetworkCardTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCardType, error)
+	FindServerNetworkPortByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkPort, error)
 	FindServerPowerSupplyByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupply, error)
 	FindServerPowerSupplyTypeByID(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupplyType, error)
 	FindServerProviderByID(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
@@ -769,6 +884,15 @@ type MutationResolver interface {
 	ServerMotherboardType(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error)
 	ServerMotherboardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) (*ServerMotherboardTypeUpdatePayload, error)
 	ServerMotherboardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardTypeDeletePayload, error)
+	ServerNetworkCard(ctx context.Context, input generated.CreateServerNetworkCardInput) (*ServerNetworkCardCreatePayload, error)
+	ServerNetworkCardUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkCardInput) (*ServerNetworkCardUpdatePayload, error)
+	ServerNetworkCardDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCardDeletePayload, error)
+	ServerNetworkCardType(ctx context.Context, input generated.CreateServerNetworkCardTypeInput) (*ServerNetworkCardTypeCreatePayload, error)
+	ServerNetworkCardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkCardTypeInput) (*ServerNetworkCardTypeUpdatePayload, error)
+	ServerNetworkCardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCardTypeDeletePayload, error)
+	ServerNetworkPort(ctx context.Context, input generated.CreateServerNetworkPortInput) (*ServerNetworkPortCreatePayload, error)
+	ServerNetworkPortUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkPortInput) (*ServerNetworkPortUpdatePayload, error)
+	ServerNetworkPortDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkPortDeletePayload, error)
 	ServerPowerSupply(ctx context.Context, input generated.CreateServerPowerSupplyInput) (*ServerPowerSupplyCreatePayload, error)
 	ServerPowerSupplyUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyInput) (*ServerPowerSupplyUpdatePayload, error)
 	ServerPowerSupplyDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyTypeDeletePayload, error)
@@ -798,6 +922,9 @@ type QueryResolver interface {
 	ServerMemoryType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error)
 	ServerMotherboard(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error)
 	ServerMotherboardType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboardType, error)
+	ServerNetworkCard(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCard, error)
+	ServerNetworkCardType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCardType, error)
+	ServerNetworkPort(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkPort, error)
 	ServerPowerSupply(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupply, error)
 	ServerPowerSupplyType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupplyType, error)
 	ServerProvider(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error)
@@ -975,6 +1102,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Entity.FindServerMotherboardTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerNetworkCardByID":
+		if e.complexity.Entity.FindServerNetworkCardByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerNetworkCardByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerNetworkCardByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerNetworkCardTypeByID":
+		if e.complexity.Entity.FindServerNetworkCardTypeByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerNetworkCardTypeByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerNetworkCardTypeByID(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Entity.findServerNetworkPortByID":
+		if e.complexity.Entity.FindServerNetworkPortByID == nil {
+			break
+		}
+
+		args, err := ec.field_Entity_findServerNetworkPortByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Entity.FindServerNetworkPortByID(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Entity.findServerPowerSupplyByID":
 		if e.complexity.Entity.FindServerPowerSupplyByID == nil {
@@ -1480,6 +1643,114 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerMotherboardUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerMotherboardInput)), true
 
+	case "Mutation.serverNetworkCard":
+		if e.complexity.Mutation.ServerNetworkCard == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkCard_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkCard(childComplexity, args["input"].(generated.CreateServerNetworkCardInput)), true
+
+	case "Mutation.serverNetworkCardDelete":
+		if e.complexity.Mutation.ServerNetworkCardDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkCardDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkCardDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverNetworkCardType":
+		if e.complexity.Mutation.ServerNetworkCardType == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkCardType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkCardType(childComplexity, args["input"].(generated.CreateServerNetworkCardTypeInput)), true
+
+	case "Mutation.serverNetworkCardTypeDelete":
+		if e.complexity.Mutation.ServerNetworkCardTypeDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkCardTypeDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkCardTypeDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverNetworkCardTypeUpdate":
+		if e.complexity.Mutation.ServerNetworkCardTypeUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkCardTypeUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkCardTypeUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerNetworkCardTypeInput)), true
+
+	case "Mutation.serverNetworkCardUpdate":
+		if e.complexity.Mutation.ServerNetworkCardUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkCardUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkCardUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerNetworkCardInput)), true
+
+	case "Mutation.serverNetworkPort":
+		if e.complexity.Mutation.ServerNetworkPort == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkPort_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkPort(childComplexity, args["input"].(generated.CreateServerNetworkPortInput)), true
+
+	case "Mutation.serverNetworkPortDelete":
+		if e.complexity.Mutation.ServerNetworkPortDelete == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkPortDelete_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkPortDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Mutation.serverNetworkPortUpdate":
+		if e.complexity.Mutation.ServerNetworkPortUpdate == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_serverNetworkPortUpdate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ServerNetworkPortUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerNetworkPortInput)), true
+
 	case "Mutation.serverPowerSupply":
 		if e.complexity.Mutation.ServerPowerSupply == nil {
 			break
@@ -1819,6 +2090,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ServerMotherboardType(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverNetworkCard":
+		if e.complexity.Query.ServerNetworkCard == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverNetworkCard_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerNetworkCard(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverNetworkCardType":
+		if e.complexity.Query.ServerNetworkCardType == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverNetworkCardType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerNetworkCardType(childComplexity, args["id"].(gidx.PrefixedID)), true
+
+	case "Query.serverNetworkPort":
+		if e.complexity.Query.ServerNetworkPort == nil {
+			break
+		}
+
+		args, err := ec.field_Query_serverNetworkPort_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ServerNetworkPort(childComplexity, args["id"].(gidx.PrefixedID)), true
 
 	case "Query.serverPowerSupply":
 		if e.complexity.Query.ServerPowerSupply == nil {
@@ -3268,6 +3575,317 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ServerMotherboardUpdatePayload.ServerMotherboard(childComplexity), true
 
+	case "ServerNetworkCard.createdAt":
+		if e.complexity.ServerNetworkCard.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCard.CreatedAt(childComplexity), true
+
+	case "ServerNetworkCard.id":
+		if e.complexity.ServerNetworkCard.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCard.ID(childComplexity), true
+
+	case "ServerNetworkCard.networkCardType":
+		if e.complexity.ServerNetworkCard.NetworkCardType == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCard.NetworkCardType(childComplexity), true
+
+	case "ServerNetworkCard.networkPort":
+		if e.complexity.ServerNetworkCard.NetworkPort == nil {
+			break
+		}
+
+		args, err := ec.field_ServerNetworkCard_networkPort_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ServerNetworkCard.NetworkPort(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerNetworkPortOrder), args["where"].(*generated.ServerNetworkPortWhereInput)), true
+
+	case "ServerNetworkCard.serial":
+		if e.complexity.ServerNetworkCard.Serial == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCard.Serial(childComplexity), true
+
+	case "ServerNetworkCard.server":
+		if e.complexity.ServerNetworkCard.Server == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCard.Server(childComplexity), true
+
+	case "ServerNetworkCard.updatedAt":
+		if e.complexity.ServerNetworkCard.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCard.UpdatedAt(childComplexity), true
+
+	case "ServerNetworkCardConnection.edges":
+		if e.complexity.ServerNetworkCardConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardConnection.Edges(childComplexity), true
+
+	case "ServerNetworkCardConnection.pageInfo":
+		if e.complexity.ServerNetworkCardConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardConnection.PageInfo(childComplexity), true
+
+	case "ServerNetworkCardConnection.totalCount":
+		if e.complexity.ServerNetworkCardConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardConnection.TotalCount(childComplexity), true
+
+	case "ServerNetworkCardCreatePayload.serverNetworkCard":
+		if e.complexity.ServerNetworkCardCreatePayload.ServerNetworkCard == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardCreatePayload.ServerNetworkCard(childComplexity), true
+
+	case "ServerNetworkCardDeletePayload.deletedID":
+		if e.complexity.ServerNetworkCardDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerNetworkCardEdge.cursor":
+		if e.complexity.ServerNetworkCardEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardEdge.Cursor(childComplexity), true
+
+	case "ServerNetworkCardEdge.node":
+		if e.complexity.ServerNetworkCardEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardEdge.Node(childComplexity), true
+
+	case "ServerNetworkCardType.createdAt":
+		if e.complexity.ServerNetworkCardType.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardType.CreatedAt(childComplexity), true
+
+	case "ServerNetworkCardType.id":
+		if e.complexity.ServerNetworkCardType.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardType.ID(childComplexity), true
+
+	case "ServerNetworkCardType.model":
+		if e.complexity.ServerNetworkCardType.Model == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardType.Model(childComplexity), true
+
+	case "ServerNetworkCardType.networkCard":
+		if e.complexity.ServerNetworkCardType.NetworkCard == nil {
+			break
+		}
+
+		args, err := ec.field_ServerNetworkCardType_networkCard_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ServerNetworkCardType.NetworkCard(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerNetworkCardOrder), args["where"].(*generated.ServerNetworkCardWhereInput)), true
+
+	case "ServerNetworkCardType.portCount":
+		if e.complexity.ServerNetworkCardType.PortCount == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardType.PortCount(childComplexity), true
+
+	case "ServerNetworkCardType.updatedAt":
+		if e.complexity.ServerNetworkCardType.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardType.UpdatedAt(childComplexity), true
+
+	case "ServerNetworkCardType.vendor":
+		if e.complexity.ServerNetworkCardType.Vendor == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardType.Vendor(childComplexity), true
+
+	case "ServerNetworkCardTypeConnection.edges":
+		if e.complexity.ServerNetworkCardTypeConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeConnection.Edges(childComplexity), true
+
+	case "ServerNetworkCardTypeConnection.pageInfo":
+		if e.complexity.ServerNetworkCardTypeConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeConnection.PageInfo(childComplexity), true
+
+	case "ServerNetworkCardTypeConnection.totalCount":
+		if e.complexity.ServerNetworkCardTypeConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeConnection.TotalCount(childComplexity), true
+
+	case "ServerNetworkCardTypeCreatePayload.serverNetworkCardType":
+		if e.complexity.ServerNetworkCardTypeCreatePayload.ServerNetworkCardType == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeCreatePayload.ServerNetworkCardType(childComplexity), true
+
+	case "ServerNetworkCardTypeDeletePayload.deletedID":
+		if e.complexity.ServerNetworkCardTypeDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerNetworkCardTypeEdge.cursor":
+		if e.complexity.ServerNetworkCardTypeEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeEdge.Cursor(childComplexity), true
+
+	case "ServerNetworkCardTypeEdge.node":
+		if e.complexity.ServerNetworkCardTypeEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeEdge.Node(childComplexity), true
+
+	case "ServerNetworkCardTypeUpdatePayload.serverNetworkCardType":
+		if e.complexity.ServerNetworkCardTypeUpdatePayload.ServerNetworkCardType == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardTypeUpdatePayload.ServerNetworkCardType(childComplexity), true
+
+	case "ServerNetworkCardUpdatePayload.serverNetworkCard":
+		if e.complexity.ServerNetworkCardUpdatePayload.ServerNetworkCard == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkCardUpdatePayload.ServerNetworkCard(childComplexity), true
+
+	case "ServerNetworkPort.createdAt":
+		if e.complexity.ServerNetworkPort.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPort.CreatedAt(childComplexity), true
+
+	case "ServerNetworkPort.id":
+		if e.complexity.ServerNetworkPort.ID == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPort.ID(childComplexity), true
+
+	case "ServerNetworkPort.macAddress":
+		if e.complexity.ServerNetworkPort.MACAddress == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPort.MACAddress(childComplexity), true
+
+	case "ServerNetworkPort.networkCard":
+		if e.complexity.ServerNetworkPort.NetworkCard == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPort.NetworkCard(childComplexity), true
+
+	case "ServerNetworkPort.updatedAt":
+		if e.complexity.ServerNetworkPort.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPort.UpdatedAt(childComplexity), true
+
+	case "ServerNetworkPortConnection.edges":
+		if e.complexity.ServerNetworkPortConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortConnection.Edges(childComplexity), true
+
+	case "ServerNetworkPortConnection.pageInfo":
+		if e.complexity.ServerNetworkPortConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortConnection.PageInfo(childComplexity), true
+
+	case "ServerNetworkPortConnection.totalCount":
+		if e.complexity.ServerNetworkPortConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortConnection.TotalCount(childComplexity), true
+
+	case "ServerNetworkPortCreatePayload.serverNetworkPort":
+		if e.complexity.ServerNetworkPortCreatePayload.ServerNetworkPort == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortCreatePayload.ServerNetworkPort(childComplexity), true
+
+	case "ServerNetworkPortDeletePayload.deletedID":
+		if e.complexity.ServerNetworkPortDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortDeletePayload.DeletedID(childComplexity), true
+
+	case "ServerNetworkPortEdge.cursor":
+		if e.complexity.ServerNetworkPortEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortEdge.Cursor(childComplexity), true
+
+	case "ServerNetworkPortEdge.node":
+		if e.complexity.ServerNetworkPortEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortEdge.Node(childComplexity), true
+
+	case "ServerNetworkPortUpdatePayload.serverNetworkPort":
+		if e.complexity.ServerNetworkPortUpdatePayload.ServerNetworkPort == nil {
+			break
+		}
+
+		return e.complexity.ServerNetworkPortUpdatePayload.ServerNetworkPort(childComplexity), true
+
 	case "ServerPowerSupply.createdAt":
 		if e.complexity.ServerPowerSupply.CreatedAt == nil {
 			break
@@ -3691,6 +4309,9 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateServerMemoryTypeInput,
 		ec.unmarshalInputCreateServerMotherboardInput,
 		ec.unmarshalInputCreateServerMotherboardTypeInput,
+		ec.unmarshalInputCreateServerNetworkCardInput,
+		ec.unmarshalInputCreateServerNetworkCardTypeInput,
+		ec.unmarshalInputCreateServerNetworkPortInput,
 		ec.unmarshalInputCreateServerPowerSupplyInput,
 		ec.unmarshalInputCreateServerPowerSupplyTypeInput,
 		ec.unmarshalInputCreateServerProviderInput,
@@ -3719,6 +4340,12 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputServerMotherboardTypeOrder,
 		ec.unmarshalInputServerMotherboardTypeWhereInput,
 		ec.unmarshalInputServerMotherboardWhereInput,
+		ec.unmarshalInputServerNetworkCardOrder,
+		ec.unmarshalInputServerNetworkCardTypeOrder,
+		ec.unmarshalInputServerNetworkCardTypeWhereInput,
+		ec.unmarshalInputServerNetworkCardWhereInput,
+		ec.unmarshalInputServerNetworkPortOrder,
+		ec.unmarshalInputServerNetworkPortWhereInput,
 		ec.unmarshalInputServerOrder,
 		ec.unmarshalInputServerPowerSupplyOrder,
 		ec.unmarshalInputServerPowerSupplyTypeOrder,
@@ -3742,6 +4369,9 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateServerMemoryTypeInput,
 		ec.unmarshalInputUpdateServerMotherboardInput,
 		ec.unmarshalInputUpdateServerMotherboardTypeInput,
+		ec.unmarshalInputUpdateServerNetworkCardInput,
+		ec.unmarshalInputUpdateServerNetworkCardTypeInput,
+		ec.unmarshalInputUpdateServerNetworkPortInput,
 		ec.unmarshalInputUpdateServerPowerSupplyInput,
 		ec.unmarshalInputUpdateServerPowerSupplyTypeInput,
 		ec.unmarshalInputUpdateServerProviderInput,
@@ -4339,6 +4969,30 @@ input CreateServerMotherboardTypeInput {
   """The mode of the server chassis type."""
   model: String!
   motherboardIDs: [ID!]
+}
+"""Input information to create a server network card type."""
+input CreateServerNetworkCardInput {
+  """The serial number for the server network card."""
+  serial: String!
+  networkCardTypeID: ID!
+  serverID: ID!
+  networkPortIDs: [ID!]
+}
+"""Input information to create a server network card type."""
+input CreateServerNetworkCardTypeInput {
+  """The name of the vendor for the server network card type."""
+  vendor: String!
+  """The model of the server network card type."""
+  model: String!
+  """The number of ports on the server network card type."""
+  portCount: Int!
+  networkCardIDs: [ID!]
+}
+"""Input information to create a server network card type."""
+input CreateServerNetworkPortInput {
+  """The mac address for the server network port."""
+  macAddress: String!
+  networkCardID: ID!
 }
 """Input information to create a server power supply."""
 input CreateServerPowerSupplyInput {
@@ -5937,6 +6591,356 @@ input ServerMotherboardWhereInput {
   hasServerMotherboardType: Boolean
   hasServerMotherboardTypeWith: [ServerMotherboardTypeWhereInput!]
 }
+type ServerNetworkCard implements Node @key(fields: "id") @prefixedID(prefix: "srvrnwc") {
+  """The ID of the server network card type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The serial number for the server network card."""
+  serial: String!
+  networkCardType: ServerNetworkCardType!
+  server: Server!
+  networkPort(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerNetworkPorts returned from the connection."""
+    orderBy: ServerNetworkPortOrder
+
+    """Filtering options for ServerNetworkPorts returned from the connection."""
+    where: ServerNetworkPortWhereInput
+  ): ServerNetworkPortConnection!
+}
+"""A connection to a list of items."""
+type ServerNetworkCardConnection {
+  """A list of edges."""
+  edges: [ServerNetworkCardEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerNetworkCardEdge {
+  """The item at the end of the edge."""
+  node: ServerNetworkCard
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerNetworkCard connections"""
+input ServerNetworkCardOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerNetworkCards."""
+  field: ServerNetworkCardOrderField!
+}
+"""Properties by which ServerNetworkCard connections can be ordered."""
+enum ServerNetworkCardOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  SERIAL
+  SERVER
+  NETWORK_CARD_TYPE
+}
+type ServerNetworkCardType implements Node @key(fields: "id") @prefixedID(prefix: "srvrnct") {
+  """The ID of the server network card type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The name of the vendor for the server network card type."""
+  vendor: String!
+  """The model of the server network card type."""
+  model: String!
+  """The number of ports on the server network card type."""
+  portCount: Int!
+  networkCard(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for ServerNetworkCards returned from the connection."""
+    orderBy: ServerNetworkCardOrder
+
+    """Filtering options for ServerNetworkCards returned from the connection."""
+    where: ServerNetworkCardWhereInput
+  ): ServerNetworkCardConnection!
+}
+"""A connection to a list of items."""
+type ServerNetworkCardTypeConnection {
+  """A list of edges."""
+  edges: [ServerNetworkCardTypeEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerNetworkCardTypeEdge {
+  """The item at the end of the edge."""
+  node: ServerNetworkCardType
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerNetworkCardType connections"""
+input ServerNetworkCardTypeOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerNetworkCardTypes."""
+  field: ServerNetworkCardTypeOrderField!
+}
+"""Properties by which ServerNetworkCardType connections can be ordered."""
+enum ServerNetworkCardTypeOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  NAME
+}
+"""
+ServerNetworkCardTypeWhereInput is used for filtering ServerNetworkCardType objects.
+Input was generated by ent.
+"""
+input ServerNetworkCardTypeWhereInput {
+  not: ServerNetworkCardTypeWhereInput
+  and: [ServerNetworkCardTypeWhereInput!]
+  or: [ServerNetworkCardTypeWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """vendor field predicates"""
+  vendor: String
+  vendorNEQ: String
+  vendorIn: [String!]
+  vendorNotIn: [String!]
+  vendorGT: String
+  vendorGTE: String
+  vendorLT: String
+  vendorLTE: String
+  vendorContains: String
+  vendorHasPrefix: String
+  vendorHasSuffix: String
+  vendorEqualFold: String
+  vendorContainsFold: String
+  """model field predicates"""
+  model: String
+  modelNEQ: String
+  modelIn: [String!]
+  modelNotIn: [String!]
+  modelGT: String
+  modelGTE: String
+  modelLT: String
+  modelLTE: String
+  modelContains: String
+  modelHasPrefix: String
+  modelHasSuffix: String
+  modelEqualFold: String
+  modelContainsFold: String
+  """port_count field predicates"""
+  portCount: Int
+  portCountNEQ: Int
+  portCountIn: [Int!]
+  portCountNotIn: [Int!]
+  portCountGT: Int
+  portCountGTE: Int
+  portCountLT: Int
+  portCountLTE: Int
+  """network_card edge predicates"""
+  hasNetworkCard: Boolean
+  hasNetworkCardWith: [ServerNetworkCardWhereInput!]
+}
+"""
+ServerNetworkCardWhereInput is used for filtering ServerNetworkCard objects.
+Input was generated by ent.
+"""
+input ServerNetworkCardWhereInput {
+  not: ServerNetworkCardWhereInput
+  and: [ServerNetworkCardWhereInput!]
+  or: [ServerNetworkCardWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """serial field predicates"""
+  serial: String
+  serialNEQ: String
+  serialIn: [String!]
+  serialNotIn: [String!]
+  serialGT: String
+  serialGTE: String
+  serialLT: String
+  serialLTE: String
+  serialContains: String
+  serialHasPrefix: String
+  serialHasSuffix: String
+  serialEqualFold: String
+  serialContainsFold: String
+  """network_card_type edge predicates"""
+  hasNetworkCardType: Boolean
+  hasNetworkCardTypeWith: [ServerNetworkCardTypeWhereInput!]
+  """server edge predicates"""
+  hasServer: Boolean
+  hasServerWith: [ServerWhereInput!]
+  """network_port edge predicates"""
+  hasNetworkPort: Boolean
+  hasNetworkPortWith: [ServerNetworkPortWhereInput!]
+}
+type ServerNetworkPort implements Node @key(fields: "id") @prefixedID(prefix: "srvrnwp") {
+  """The ID of the server network card type."""
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  """The mac address for the server network port."""
+  macAddress: String!
+  networkCard: ServerNetworkCard!
+}
+"""A connection to a list of items."""
+type ServerNetworkPortConnection {
+  """A list of edges."""
+  edges: [ServerNetworkPortEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type ServerNetworkPortEdge {
+  """The item at the end of the edge."""
+  node: ServerNetworkPort
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for ServerNetworkPort connections"""
+input ServerNetworkPortOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order ServerNetworkPorts."""
+  field: ServerNetworkPortOrderField!
+}
+"""Properties by which ServerNetworkPort connections can be ordered."""
+enum ServerNetworkPortOrderField {
+  ID
+  CREATED_AT
+  UPDATED_AT
+  MAC_ADDRESS
+  NETWORK_CARD
+}
+"""
+ServerNetworkPortWhereInput is used for filtering ServerNetworkPort objects.
+Input was generated by ent.
+"""
+input ServerNetworkPortWhereInput {
+  not: ServerNetworkPortWhereInput
+  and: [ServerNetworkPortWhereInput!]
+  or: [ServerNetworkPortWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  """mac_address field predicates"""
+  macAddress: String
+  macAddressNEQ: String
+  macAddressIn: [String!]
+  macAddressNotIn: [String!]
+  macAddressGT: String
+  macAddressGTE: String
+  macAddressLT: String
+  macAddressLTE: String
+  macAddressContains: String
+  macAddressHasPrefix: String
+  macAddressHasSuffix: String
+  macAddressEqualFold: String
+  macAddressContainsFold: String
+  """network_card edge predicates"""
+  hasNetworkCard: Boolean
+  hasNetworkCardWith: [ServerNetworkCardWhereInput!]
+}
 """Ordering options for Server connections"""
 input ServerOrder {
   """The ordering direction."""
@@ -6590,6 +7594,31 @@ input UpdateServerMotherboardTypeInput {
   removeMotherboardIDs: [ID!]
   clearMotherboard: Boolean
 }
+"""Input information to update a server network card type."""
+input UpdateServerNetworkCardInput {
+  """The serial number for the server network card."""
+  serial: String
+  addNetworkPortIDs: [ID!]
+  removeNetworkPortIDs: [ID!]
+  clearNetworkPort: Boolean
+}
+"""Input information to update a server network card type."""
+input UpdateServerNetworkCardTypeInput {
+  """The name of the vendor for the server network card type."""
+  vendor: String
+  """The model of the server network card type."""
+  model: String
+  """The number of ports on the server network card type."""
+  portCount: Int
+  addNetworkCardIDs: [ID!]
+  removeNetworkCardIDs: [ID!]
+  clearNetworkCard: Boolean
+}
+"""Input information to update a server network card type."""
+input UpdateServerNetworkPortInput {
+  """The mac address for the server network port."""
+  macAddress: String
+}
 """Input information to update a server power supply."""
 input UpdateServerPowerSupplyInput {
   """The serial of the server power supply."""
@@ -6984,6 +8013,189 @@ type ServerMotherboardTypeUpdatePayload {
   """
   serverMotherboardType: ServerMotherboardType!
 }`, BuiltIn: false},
+	{Name: "../../schema/network_card.graphql", Input: `extend type Query {
+  """
+  Lookup a serverNetworkCard by ID.
+  """
+  serverNetworkCard(
+    """
+    The server network card ID.
+    """
+    id: ID!
+  ): ServerNetworkCard!
+}
+
+extend type Mutation {
+  """
+  Create a server network card.
+  """
+  serverNetworkCard(
+    input: CreateServerNetworkCardInput!
+  ): ServerNetworkCardCreatePayload!
+  """
+  Update a server network card.
+  """
+  serverNetworkCardUpdate(
+    id: ID!
+    input: UpdateServerNetworkCardInput!
+  ): ServerNetworkCardUpdatePayload!
+  """
+  Delete a server network card.
+  """
+  serverNetworkCardDelete(id: ID!): ServerNetworkCardDeletePayload!
+}
+
+"""
+Return response from serverNetworkCardCreate
+"""
+type ServerNetworkCardCreatePayload {
+  """
+  The created server network card.
+  """
+  serverNetworkCard: ServerNetworkCard!
+}
+
+"""
+Return response from serverNetworkCardDelete
+"""
+type ServerNetworkCardDeletePayload {
+  """
+  The ID of the deleted server network card.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverNetworkCardUpdate
+"""
+type ServerNetworkCardUpdatePayload {
+  """
+  The updated server network card.
+  """
+  serverNetworkCard: ServerNetworkCard!
+}`, BuiltIn: false},
+	{Name: "../../schema/network_card_type.graphql", Input: `extend type Query {
+  """
+  Lookup a serverNetworkCardType by ID.
+  """
+  serverNetworkCardType(
+    """
+    The server network card type ID.
+    """
+    id: ID!
+  ): ServerNetworkCardType!
+}
+
+extend type Mutation {
+  """
+  Create a server network card type.
+  """
+  serverNetworkCardType(
+    input: CreateServerNetworkCardTypeInput!
+  ): ServerNetworkCardTypeCreatePayload!
+  """
+  Update a server network card type.
+  """
+  serverNetworkCardTypeUpdate(
+    id: ID!
+    input: UpdateServerNetworkCardTypeInput!
+  ): ServerNetworkCardTypeUpdatePayload!
+  """
+  Delete a server network card type.
+  """
+  serverNetworkCardTypeDelete(id: ID!): ServerNetworkCardTypeDeletePayload!
+}
+
+"""
+Return response from serverNetworkCardTypeCreate
+"""
+type ServerNetworkCardTypeCreatePayload {
+  """
+  The created server network card type.
+  """
+  serverNetworkCardType: ServerNetworkCardType!
+}
+
+"""
+Return response from serverNetworkCardTypeDelete
+"""
+type ServerNetworkCardTypeDeletePayload {
+  """
+  The ID of the deleted server network card type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverNetworkCardTypeUpdate
+"""
+type ServerNetworkCardTypeUpdatePayload {
+  """
+  The updated server network card type.
+  """
+  serverNetworkCardType: ServerNetworkCardType!
+}`, BuiltIn: false},
+	{Name: "../../schema/network_port.graphql", Input: `extend type Query {
+  """
+  Lookup a serverNetworkPort by ID.
+  """
+  serverNetworkPort(
+    """
+    The server network port ID.
+    """
+    id: ID!
+  ): ServerNetworkPort!
+}
+
+extend type Mutation {
+  """
+  Create a server network port.
+  """
+  serverNetworkPort(
+    input: CreateServerNetworkPortInput!
+  ): ServerNetworkPortCreatePayload!
+  """
+  Update a server network port.
+  """
+  serverNetworkPortUpdate(
+    id: ID!
+    input: UpdateServerNetworkPortInput!
+  ): ServerNetworkPortUpdatePayload!
+  """
+  Delete a server network port.
+  """
+  serverNetworkPortDelete(id: ID!): ServerNetworkPortDeletePayload!
+}
+
+"""
+Return response from serverNetworkPortCreate
+"""
+type ServerNetworkPortCreatePayload {
+  """
+  The created server network port.
+  """
+  serverNetworkPort: ServerNetworkPort!
+}
+
+"""
+Return response from serverNetworkPortDelete
+"""
+type ServerNetworkPortDeletePayload {
+  """
+  The ID of the deleted server network port.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverNetworkPortUpdate
+"""
+type ServerNetworkPortUpdatePayload {
+  """
+  The updated server network port.
+  """
+  serverNetworkPort: ServerNetworkPort!
+}`, BuiltIn: false},
 	{Name: "../../schema/power_supply.graphql", Input: `extend type Query {
   """
   Lookup a serverPowerSupply by ID.
@@ -7329,7 +8541,7 @@ type ServerTypeUpdatePayload {
 `, BuiltIn: true},
 	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
-union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerPowerSupply | ServerPowerSupplyType | ServerProvider | ServerType
+union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerNetworkCard | ServerNetworkCardType | ServerNetworkPort | ServerPowerSupply | ServerPowerSupplyType | ServerProvider | ServerType
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
@@ -7346,6 +8558,9 @@ type Entity {
 	findServerMemoryTypeByID(id: ID!,): ServerMemoryType!
 	findServerMotherboardByID(id: ID!,): ServerMotherboard!
 	findServerMotherboardTypeByID(id: ID!,): ServerMotherboardType!
+	findServerNetworkCardByID(id: ID!,): ServerNetworkCard!
+	findServerNetworkCardTypeByID(id: ID!,): ServerNetworkCardType!
+	findServerNetworkPortByID(id: ID!,): ServerNetworkPort!
 	findServerPowerSupplyByID(id: ID!,): ServerPowerSupply!
 	findServerPowerSupplyTypeByID(id: ID!,): ServerPowerSupplyType!
 	findServerProviderByID(id: ID!,): ServerProvider!
@@ -7565,6 +8780,51 @@ func (ec *executionContext) field_Entity_findServerMotherboardByID_args(ctx cont
 }
 
 func (ec *executionContext) field_Entity_findServerMotherboardTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerNetworkCardByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerNetworkCardTypeByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Entity_findServerNetworkPortByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -8317,6 +9577,168 @@ func (ec *executionContext) field_Mutation_serverMotherboard_args(ctx context.Co
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverNetworkCardDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkCardTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkCardTypeUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerNetworkCardTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerNetworkCardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerNetworkCardTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkCardType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerNetworkCardTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerNetworkCardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkCardTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkCardUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerNetworkCardInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerNetworkCardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerNetworkCardInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkCard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerNetworkCardInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerNetworkCardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkCardInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkPortDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkPortUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 generated.UpdateServerNetworkPortInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateServerNetworkPortInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerNetworkPortInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_serverNetworkPort_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerNetworkPortInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerNetworkPortInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkPortInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverPowerSupplyDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -8767,6 +10189,51 @@ func (ec *executionContext) field_Query_serverMotherboard_args(ctx context.Conte
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_serverNetworkCardType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverNetworkCard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_serverNetworkPort_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gidx.PrefixedID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_serverPowerSupplyType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9134,6 +10601,126 @@ func (ec *executionContext) field_ServerMotherboardType_motherboard_args(ctx con
 	if tmp, ok := rawArgs["where"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
 		arg5, err = ec.unmarshalOServerMotherboardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerMotherboardWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_ServerNetworkCardType_networkCard_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *generated.ServerNetworkCardOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOServerNetworkCardOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *generated.ServerNetworkCardWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOServerNetworkCardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_ServerNetworkCard_networkPort_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[gidx.PrefixedID]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *generated.ServerNetworkPortOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOServerNetworkPortOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *generated.ServerNetworkPortWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOServerNetworkPortWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -10275,6 +11862,215 @@ func (ec *executionContext) fieldContext_Entity_findServerMotherboardTypeByID(ct
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Entity_findServerMotherboardTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerNetworkCardByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerNetworkCardByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerNetworkCardByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCard)
+	fc.Result = res
+	return ec.marshalNServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerNetworkCardByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+			case "networkCardType":
+				return ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerNetworkCard_server(ctx, field)
+			case "networkPort":
+				return ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCard", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerNetworkCardByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerNetworkCardTypeByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerNetworkCardTypeByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerNetworkCardTypeByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardType)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerNetworkCardTypeByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+			case "portCount":
+				return ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerNetworkCardTypeByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Entity_findServerNetworkPortByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findServerNetworkPortByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Entity().FindServerNetworkPortByID(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkPort)
+	fc.Result = res
+	return ec.marshalNServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Entity_findServerNetworkPortByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Entity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkPort_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkPort_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkPort_updatedAt(ctx, field)
+			case "macAddress":
+				return ec.fieldContext_ServerNetworkPort_macAddress(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkPort_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPort", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Entity_findServerNetworkPortByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12677,6 +14473,537 @@ func (ec *executionContext) fieldContext_Mutation_serverMotherboardTypeDelete(ct
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_serverNetworkCard(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkCard(rctx, fc.Args["input"].(generated.CreateServerNetworkCardInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkCardCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverNetworkCard":
+				return ec.fieldContext_ServerNetworkCardCreatePayload_serverNetworkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkCard_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkCardUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCardUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkCardUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerNetworkCardInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkCardUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCardUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverNetworkCard":
+				return ec.fieldContext_ServerNetworkCardUpdatePayload_serverNetworkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkCardUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkCardDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCardDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkCardDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkCardDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCardDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerNetworkCardDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkCardDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkCardType(rctx, fc.Args["input"].(generated.CreateServerNetworkCardTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkCardTypeCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverNetworkCardType":
+				return ec.fieldContext_ServerNetworkCardTypeCreatePayload_serverNetworkCardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardTypeCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkCardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkCardTypeUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCardTypeUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkCardTypeUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerNetworkCardTypeInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkCardTypeUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCardTypeUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverNetworkCardType":
+				return ec.fieldContext_ServerNetworkCardTypeUpdatePayload_serverNetworkCardType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardTypeUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkCardTypeUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkCardTypeDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCardTypeDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkCardTypeDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkCardTypeDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCardTypeDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerNetworkCardTypeDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardTypeDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkCardTypeDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkPort(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkPort(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkPort(rctx, fc.Args["input"].(generated.CreateServerNetworkPortInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkPortCreatePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkPortCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortCreatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverNetworkPort":
+				return ec.fieldContext_ServerNetworkPortCreatePayload_serverNetworkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPortCreatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkPort_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkPortUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkPortUpdate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkPortUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateServerNetworkPortInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkPortUpdatePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkPortUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortUpdatePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkPortUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "serverNetworkPort":
+				return ec.fieldContext_ServerNetworkPortUpdatePayload_serverNetworkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPortUpdatePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkPortUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_serverNetworkPortDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkPortDelete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ServerNetworkPortDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ServerNetworkPortDeletePayload)
+	fc.Result = res
+	return ec.marshalNServerNetworkPortDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortDeletePayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_serverNetworkPortDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "deletedID":
+				return ec.fieldContext_ServerNetworkPortDeletePayload_deletedID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPortDeletePayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_serverNetworkPortDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_serverPowerSupply(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_serverPowerSupply(ctx, field)
 	if err != nil {
@@ -14574,6 +16901,215 @@ func (ec *executionContext) fieldContext_Query_serverMotherboardType(ctx context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_serverMotherboardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverNetworkCard(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverNetworkCard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerNetworkCard(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCard)
+	fc.Result = res
+	return ec.marshalNServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverNetworkCard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+			case "networkCardType":
+				return ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerNetworkCard_server(ctx, field)
+			case "networkPort":
+				return ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCard", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverNetworkCard_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverNetworkCardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerNetworkCardType(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardType)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+			case "portCount":
+				return ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardType", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverNetworkCardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_serverNetworkPort(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_serverNetworkPort(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ServerNetworkPort(rctx, fc.Args["id"].(gidx.PrefixedID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkPort)
+	fc.Result = res
+	return ec.marshalNServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_serverNetworkPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkPort_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkPort_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkPort_updatedAt(ctx, field)
+			case "macAddress":
+				return ec.fieldContext_ServerNetworkPort_macAddress(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkPort_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPort", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_serverNetworkPort_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -24720,6 +27256,2148 @@ func (ec *executionContext) fieldContext_ServerMotherboardUpdatePayload_serverMo
 	return fc, nil
 }
 
+func (ec *executionContext) _ServerNetworkCard_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCard_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCard_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCard_serial(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Serial, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_serial(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCard_networkCardType(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NetworkCardType(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardType)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_networkCardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+			case "portCount":
+				return ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCard_server(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_server(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Server(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.Server)
+	fc.Result = res
+	return ec.marshalNServer2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServer(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_server(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Server_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Server_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Server_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Server_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Server_description(ctx, field)
+			case "serverProvider":
+				return ec.fieldContext_Server_serverProvider(ctx, field)
+			case "serverType":
+				return ec.fieldContext_Server_serverType(ctx, field)
+			case "components":
+				return ec.fieldContext_Server_components(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Server", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCard_networkPort(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCard) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NetworkPort(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerNetworkPortOrder), fc.Args["where"].(*generated.ServerNetworkPortWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkPortConnection)
+	fc.Result = res
+	return ec.marshalNServerNetworkPortConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCard_networkPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCard",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_ServerNetworkPortConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ServerNetworkPortConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ServerNetworkPortConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPortConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ServerNetworkCard_networkPort_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerNetworkCardEdge)
+	fc.Result = res
+	return ec.marshalOServerNetworkCardEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerNetworkCardEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerNetworkCardEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardCreatePayload_serverNetworkCard(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkCardCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardCreatePayload_serverNetworkCard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerNetworkCard, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCard)
+	fc.Result = res
+	return ec.marshalNServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardCreatePayload_serverNetworkCard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+			case "networkCardType":
+				return ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerNetworkCard_server(ctx, field)
+			case "networkPort":
+				return ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkCardDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCard)
+	fc.Result = res
+	return ec.marshalOServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+			case "networkCardType":
+				return ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerNetworkCard_server(ctx, field)
+			case "networkPort":
+				return ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_vendor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Vendor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_vendor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_model(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Model, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_model(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_portCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PortCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_portCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardType_networkCard(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardType) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NetworkCard(ctx, fc.Args["after"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[gidx.PrefixedID]), fc.Args["last"].(*int), fc.Args["orderBy"].(*generated.ServerNetworkCardOrder), fc.Args["where"].(*generated.ServerNetworkCardWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardConnection)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardType_networkCard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardType",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_ServerNetworkCardConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_ServerNetworkCardConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_ServerNetworkCardConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ServerNetworkCardType_networkCard_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerNetworkCardTypeEdge)
+	fc.Result = res
+	return ec.marshalOServerNetworkCardTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerNetworkCardTypeEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerNetworkCardTypeEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardTypeEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardTypeConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeCreatePayload_serverNetworkCardType(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkCardTypeCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeCreatePayload_serverNetworkCardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerNetworkCardType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardType)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeCreatePayload_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+			case "portCount":
+				return ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkCardTypeDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardType)
+	fc.Result = res
+	return ec.marshalOServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+			case "portCount":
+				return ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkCardTypeEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardTypeUpdatePayload_serverNetworkCardType(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkCardTypeUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardTypeUpdatePayload_serverNetworkCardType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerNetworkCardType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCardType)
+	fc.Result = res
+	return ec.marshalNServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardTypeUpdatePayload_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardTypeUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCardType_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCardType_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCardType_updatedAt(ctx, field)
+			case "vendor":
+				return ec.fieldContext_ServerNetworkCardType_vendor(ctx, field)
+			case "model":
+				return ec.fieldContext_ServerNetworkCardType_model(ctx, field)
+			case "portCount":
+				return ec.fieldContext_ServerNetworkCardType_portCount(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkCardType_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCardType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkCardUpdatePayload_serverNetworkCard(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkCardUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkCardUpdatePayload_serverNetworkCard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerNetworkCard, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCard)
+	fc.Result = res
+	return ec.marshalNServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkCardUpdatePayload_serverNetworkCard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkCardUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+			case "networkCardType":
+				return ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerNetworkCard_server(ctx, field)
+			case "networkPort":
+				return ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPort_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPort_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPort_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPort_createdAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPort_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPort_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPort_updatedAt(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPort_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPort_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPort_macAddress(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPort_macAddress(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MACAddress, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPort_macAddress(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPort_networkCard(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPort_networkCard(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NetworkCard(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkCard)
+	fc.Result = res
+	return ec.marshalNServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPort_networkCard(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPort",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkCard_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkCard_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkCard_updatedAt(ctx, field)
+			case "serial":
+				return ec.fieldContext_ServerNetworkCard_serial(ctx, field)
+			case "networkCardType":
+				return ec.fieldContext_ServerNetworkCard_networkCardType(ctx, field)
+			case "server":
+				return ec.fieldContext_ServerNetworkCard_server(ctx, field)
+			case "networkPort":
+				return ec.fieldContext_ServerNetworkCard_networkPort(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkCard", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortConnection_edges(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPortConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.ServerNetworkPortEdge)
+	fc.Result = res
+	return ec.marshalOServerNetworkPortEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_ServerNetworkPortEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_ServerNetworkPortEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPortEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPortConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPortConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortCreatePayload_serverNetworkPort(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkPortCreatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortCreatePayload_serverNetworkPort(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerNetworkPort, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkPort)
+	fc.Result = res
+	return ec.marshalNServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortCreatePayload_serverNetworkPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortCreatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkPort_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkPort_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkPort_updatedAt(ctx, field)
+			case "macAddress":
+				return ec.fieldContext_ServerNetworkPort_macAddress(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkPort_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPort", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkPortDeletePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortDeletePayload_deletedID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(gidx.PrefixedID)
+	fc.Result = res
+	return ec.marshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortDeletePayload_deletedID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortDeletePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortEdge_node(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPortEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkPort)
+	fc.Result = res
+	return ec.marshalOServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkPort_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkPort_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkPort_updatedAt(ctx, field)
+			case "macAddress":
+				return ec.fieldContext_ServerNetworkPort_macAddress(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkPort_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPort", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *generated.ServerNetworkPortEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[gidx.PrefixedID])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ServerNetworkPortUpdatePayload_serverNetworkPort(ctx context.Context, field graphql.CollectedField, obj *ServerNetworkPortUpdatePayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ServerNetworkPortUpdatePayload_serverNetworkPort(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServerNetworkPort, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*generated.ServerNetworkPort)
+	fc.Result = res
+	return ec.marshalNServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ServerNetworkPortUpdatePayload_serverNetworkPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ServerNetworkPortUpdatePayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_ServerNetworkPort_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_ServerNetworkPort_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_ServerNetworkPort_updatedAt(ctx, field)
+			case "macAddress":
+				return ec.fieldContext_ServerNetworkPort_macAddress(ctx, field)
+			case "networkCard":
+				return ec.fieldContext_ServerNetworkPort_networkCard(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ServerNetworkPort", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ServerPowerSupply_id(ctx context.Context, field graphql.CollectedField, obj *generated.ServerPowerSupply) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ServerPowerSupply_id(ctx, field)
 	if err != nil {
@@ -29987,6 +34665,156 @@ func (ec *executionContext) unmarshalInputCreateServerMotherboardTypeInput(ctx c
 				return it, err
 			}
 			it.MotherboardIDs = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerNetworkCardInput(ctx context.Context, obj interface{}) (generated.CreateServerNetworkCardInput, error) {
+	var it generated.CreateServerNetworkCardInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial", "networkCardTypeID", "serverID", "networkPortIDs"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "networkCardTypeID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("networkCardTypeID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NetworkCardTypeID = data
+		case "serverID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ServerID = data
+		case "networkPortIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("networkPortIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NetworkPortIDs = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerNetworkCardTypeInput(ctx context.Context, obj interface{}) (generated.CreateServerNetworkCardTypeInput, error) {
+	var it generated.CreateServerNetworkCardTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "portCount", "networkCardIDs"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "portCount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCount"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCount = data
+		case "networkCardIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("networkCardIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NetworkCardIDs = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateServerNetworkPortInput(ctx context.Context, obj interface{}) (generated.CreateServerNetworkPortInput, error) {
+	var it generated.CreateServerNetworkPortInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"macAddress", "networkCardID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "macAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddress"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddress = data
+		case "networkCardID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("networkCardID"))
+			data, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NetworkCardID = data
 		}
 	}
 
@@ -37378,6 +42206,1551 @@ func (ec *executionContext) unmarshalInputServerMotherboardWhereInput(ctx contex
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputServerNetworkCardOrder(ctx context.Context, obj interface{}) (generated.ServerNetworkCardOrder, error) {
+	var it generated.ServerNetworkCardOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerNetworkCardOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerNetworkCardTypeOrder(ctx context.Context, obj interface{}) (generated.ServerNetworkCardTypeOrder, error) {
+	var it generated.ServerNetworkCardTypeOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerNetworkCardTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerNetworkCardTypeWhereInput(ctx context.Context, obj interface{}) (generated.ServerNetworkCardTypeWhereInput, error) {
+	var it generated.ServerNetworkCardTypeWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "portCount", "portCountNEQ", "portCountIn", "portCountNotIn", "portCountGT", "portCountGTE", "portCountLT", "portCountLTE", "hasNetworkCard", "hasNetworkCardWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerNetworkCardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerNetworkCardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerNetworkCardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "vendorNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNEQ = data
+		case "vendorIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorIn = data
+		case "vendorNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorNotIn = data
+		case "vendorGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGT = data
+		case "vendorGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorGTE = data
+		case "vendorLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLT = data
+		case "vendorLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorLTE = data
+		case "vendorContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContains = data
+		case "vendorHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasPrefix = data
+		case "vendorHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorHasSuffix = data
+		case "vendorEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorEqualFold = data
+		case "vendorContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendorContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VendorContainsFold = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "modelNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNEQ = data
+		case "modelIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelIn = data
+		case "modelNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelNotIn = data
+		case "modelGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGT = data
+		case "modelGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelGTE = data
+		case "modelLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLT = data
+		case "modelLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelLTE = data
+		case "modelContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContains = data
+		case "modelHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasPrefix = data
+		case "modelHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelHasSuffix = data
+		case "modelEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelEqualFold = data
+		case "modelContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modelContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ModelContainsFold = data
+		case "portCount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCount"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCount = data
+		case "portCountNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountNEQ = data
+		case "portCountIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountIn = data
+		case "portCountNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountNotIn = data
+		case "portCountGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountGT = data
+		case "portCountGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountGTE = data
+		case "portCountLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountLT = data
+		case "portCountLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCountLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCountLTE = data
+		case "hasNetworkCard":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkCard"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkCard = data
+		case "hasNetworkCardWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkCardWith"))
+			data, err := ec.unmarshalOServerNetworkCardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkCardWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerNetworkCardWhereInput(ctx context.Context, obj interface{}) (generated.ServerNetworkCardWhereInput, error) {
+	var it generated.ServerNetworkCardWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "serial", "serialNEQ", "serialIn", "serialNotIn", "serialGT", "serialGTE", "serialLT", "serialLTE", "serialContains", "serialHasPrefix", "serialHasSuffix", "serialEqualFold", "serialContainsFold", "hasNetworkCardType", "hasNetworkCardTypeWith", "hasServer", "hasServerWith", "hasNetworkPort", "hasNetworkPortWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerNetworkCardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerNetworkCardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerNetworkCardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "serialNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNEQ = data
+		case "serialIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialIn = data
+		case "serialNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialNotIn = data
+		case "serialGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGT = data
+		case "serialGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialGTE = data
+		case "serialLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLT = data
+		case "serialLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialLTE = data
+		case "serialContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContains = data
+		case "serialHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasPrefix = data
+		case "serialHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialHasSuffix = data
+		case "serialEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialEqualFold = data
+		case "serialContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serialContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SerialContainsFold = data
+		case "hasNetworkCardType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkCardType"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkCardType = data
+		case "hasNetworkCardTypeWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkCardTypeWith"))
+			data, err := ec.unmarshalOServerNetworkCardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkCardTypeWith = data
+		case "hasServer":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServer"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServer = data
+		case "hasServerWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasServerWith"))
+			data, err := ec.unmarshalOServerWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasServerWith = data
+		case "hasNetworkPort":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkPort"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkPort = data
+		case "hasNetworkPortWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkPortWith"))
+			data, err := ec.unmarshalOServerNetworkPortWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkPortWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerNetworkPortOrder(ctx context.Context, obj interface{}) (generated.ServerNetworkPortOrder, error) {
+	var it generated.ServerNetworkPortOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNServerNetworkPortOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputServerNetworkPortWhereInput(ctx context.Context, obj interface{}) (generated.ServerNetworkPortWhereInput, error) {
+	var it generated.ServerNetworkPortWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "macAddress", "macAddressNEQ", "macAddressIn", "macAddressNotIn", "macAddressGT", "macAddressGTE", "macAddressLT", "macAddressLTE", "macAddressContains", "macAddressHasPrefix", "macAddressHasSuffix", "macAddressEqualFold", "macAddressContainsFold", "hasNetworkCard", "hasNetworkCardWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOServerNetworkPortWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOServerNetworkPortWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOServerNetworkPortWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "macAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddress"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddress = data
+		case "macAddressNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressNEQ = data
+		case "macAddressIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressIn = data
+		case "macAddressNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressNotIn = data
+		case "macAddressGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressGT = data
+		case "macAddressGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressGTE = data
+		case "macAddressLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressLT = data
+		case "macAddressLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressLTE = data
+		case "macAddressContains":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressContains = data
+		case "macAddressHasPrefix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressHasPrefix = data
+		case "macAddressHasSuffix":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressHasSuffix = data
+		case "macAddressEqualFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressEqualFold = data
+		case "macAddressContainsFold":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddressContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddressContainsFold = data
+		case "hasNetworkCard":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkCard"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkCard = data
+		case "hasNetworkCardWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasNetworkCardWith"))
+			data, err := ec.unmarshalOServerNetworkCardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasNetworkCardWith = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputServerOrder(ctx context.Context, obj interface{}) (generated.ServerOrder, error) {
 	var it generated.ServerOrder
 	asMap := map[string]interface{}{}
@@ -40693,6 +47066,165 @@ func (ec *executionContext) unmarshalInputUpdateServerMotherboardTypeInput(ctx c
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateServerNetworkCardInput(ctx context.Context, obj interface{}) (generated.UpdateServerNetworkCardInput, error) {
+	var it generated.UpdateServerNetworkCardInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"serial", "addNetworkPortIDs", "removeNetworkPortIDs", "clearNetworkPort"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "serial":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serial"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Serial = data
+		case "addNetworkPortIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addNetworkPortIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddNetworkPortIDs = data
+		case "removeNetworkPortIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeNetworkPortIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveNetworkPortIDs = data
+		case "clearNetworkPort":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearNetworkPort"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearNetworkPort = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateServerNetworkCardTypeInput(ctx context.Context, obj interface{}) (generated.UpdateServerNetworkCardTypeInput, error) {
+	var it generated.UpdateServerNetworkCardTypeInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"vendor", "model", "portCount", "addNetworkCardIDs", "removeNetworkCardIDs", "clearNetworkCard"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "vendor":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("vendor"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Vendor = data
+		case "model":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("model"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Model = data
+		case "portCount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("portCount"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PortCount = data
+		case "addNetworkCardIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addNetworkCardIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddNetworkCardIDs = data
+		case "removeNetworkCardIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeNetworkCardIDs"))
+			data, err := ec.unmarshalOID2ᚕgoᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveNetworkCardIDs = data
+		case "clearNetworkCard":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearNetworkCard"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearNetworkCard = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateServerNetworkPortInput(ctx context.Context, obj interface{}) (generated.UpdateServerNetworkPortInput, error) {
+	var it generated.UpdateServerNetworkPortInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"macAddress"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "macAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("macAddress"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MACAddress = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateServerPowerSupplyInput(ctx context.Context, obj interface{}) (generated.UpdateServerPowerSupplyInput, error) {
 	var it generated.UpdateServerPowerSupplyInput
 	asMap := map[string]interface{}{}
@@ -40916,6 +47448,21 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._ServerMotherboardType(ctx, sel, obj)
+	case *generated.ServerNetworkCard:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerNetworkCard(ctx, sel, obj)
+	case *generated.ServerNetworkCardType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerNetworkCardType(ctx, sel, obj)
+	case *generated.ServerNetworkPort:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerNetworkPort(ctx, sel, obj)
 	case *generated.ServerPowerSupply:
 		if obj == nil {
 			return graphql.Null
@@ -41036,6 +47583,27 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._ServerMotherboardType(ctx, sel, obj)
+	case generated.ServerNetworkCard:
+		return ec._ServerNetworkCard(ctx, sel, &obj)
+	case *generated.ServerNetworkCard:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerNetworkCard(ctx, sel, obj)
+	case generated.ServerNetworkCardType:
+		return ec._ServerNetworkCardType(ctx, sel, &obj)
+	case *generated.ServerNetworkCardType:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerNetworkCardType(ctx, sel, obj)
+	case generated.ServerNetworkPort:
+		return ec._ServerNetworkPort(ctx, sel, &obj)
+	case *generated.ServerNetworkPort:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ServerNetworkPort(ctx, sel, obj)
 	case generated.ServerPowerSupply:
 		return ec._ServerPowerSupply(ctx, sel, &obj)
 	case *generated.ServerPowerSupply:
@@ -41366,6 +47934,72 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 					}
 				}()
 				res = ec._Entity_findServerMotherboardTypeByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerNetworkCardByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerNetworkCardByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerNetworkCardTypeByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerNetworkCardTypeByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findServerNetworkPortByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Entity_findServerNetworkPortByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -41756,6 +48390,69 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "serverMotherboardTypeDelete":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_serverMotherboardTypeDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkCard":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkCard(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkCardUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkCardUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkCardDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkCardDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkCardType":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkCardType(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkCardTypeUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkCardTypeUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkCardTypeDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkCardTypeDelete(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkPort":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkPort(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkPortUpdate":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkPortUpdate(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "serverNetworkPortDelete":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_serverNetworkPortDelete(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -42207,6 +48904,72 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_serverMotherboardType(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverNetworkCard":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverNetworkCard(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverNetworkCardType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverNetworkCardType(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "serverNetworkPort":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_serverNetworkPort(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -46526,6 +53289,970 @@ func (ec *executionContext) _ServerMotherboardUpdatePayload(ctx context.Context,
 	return out
 }
 
+var serverNetworkCardImplementors = []string{"ServerNetworkCard", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerNetworkCard(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkCard) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCard")
+		case "id":
+			out.Values[i] = ec._ServerNetworkCard_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerNetworkCard_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerNetworkCard_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "serial":
+			out.Values[i] = ec._ServerNetworkCard_serial(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "networkCardType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerNetworkCard_networkCardType(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "server":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerNetworkCard_server(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "networkPort":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerNetworkCard_networkPort(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardConnectionImplementors = []string{"ServerNetworkCardConnection"}
+
+func (ec *executionContext) _ServerNetworkCardConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkCardConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardConnection")
+		case "edges":
+			out.Values[i] = ec._ServerNetworkCardConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerNetworkCardConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerNetworkCardConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardCreatePayloadImplementors = []string{"ServerNetworkCardCreatePayload"}
+
+func (ec *executionContext) _ServerNetworkCardCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkCardCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardCreatePayload")
+		case "serverNetworkCard":
+			out.Values[i] = ec._ServerNetworkCardCreatePayload_serverNetworkCard(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardDeletePayloadImplementors = []string{"ServerNetworkCardDeletePayload"}
+
+func (ec *executionContext) _ServerNetworkCardDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkCardDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerNetworkCardDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardEdgeImplementors = []string{"ServerNetworkCardEdge"}
+
+func (ec *executionContext) _ServerNetworkCardEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkCardEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardEdge")
+		case "node":
+			out.Values[i] = ec._ServerNetworkCardEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerNetworkCardEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardTypeImplementors = []string{"ServerNetworkCardType", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerNetworkCardType(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkCardType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardType")
+		case "id":
+			out.Values[i] = ec._ServerNetworkCardType_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerNetworkCardType_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerNetworkCardType_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "vendor":
+			out.Values[i] = ec._ServerNetworkCardType_vendor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "model":
+			out.Values[i] = ec._ServerNetworkCardType_model(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "portCount":
+			out.Values[i] = ec._ServerNetworkCardType_portCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "networkCard":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerNetworkCardType_networkCard(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardTypeConnectionImplementors = []string{"ServerNetworkCardTypeConnection"}
+
+func (ec *executionContext) _ServerNetworkCardTypeConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkCardTypeConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardTypeConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardTypeConnection")
+		case "edges":
+			out.Values[i] = ec._ServerNetworkCardTypeConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerNetworkCardTypeConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerNetworkCardTypeConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardTypeCreatePayloadImplementors = []string{"ServerNetworkCardTypeCreatePayload"}
+
+func (ec *executionContext) _ServerNetworkCardTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkCardTypeCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardTypeCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardTypeCreatePayload")
+		case "serverNetworkCardType":
+			out.Values[i] = ec._ServerNetworkCardTypeCreatePayload_serverNetworkCardType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardTypeDeletePayloadImplementors = []string{"ServerNetworkCardTypeDeletePayload"}
+
+func (ec *executionContext) _ServerNetworkCardTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkCardTypeDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardTypeDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardTypeDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerNetworkCardTypeDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardTypeEdgeImplementors = []string{"ServerNetworkCardTypeEdge"}
+
+func (ec *executionContext) _ServerNetworkCardTypeEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkCardTypeEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardTypeEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardTypeEdge")
+		case "node":
+			out.Values[i] = ec._ServerNetworkCardTypeEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerNetworkCardTypeEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardTypeUpdatePayloadImplementors = []string{"ServerNetworkCardTypeUpdatePayload"}
+
+func (ec *executionContext) _ServerNetworkCardTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkCardTypeUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardTypeUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardTypeUpdatePayload")
+		case "serverNetworkCardType":
+			out.Values[i] = ec._ServerNetworkCardTypeUpdatePayload_serverNetworkCardType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkCardUpdatePayloadImplementors = []string{"ServerNetworkCardUpdatePayload"}
+
+func (ec *executionContext) _ServerNetworkCardUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkCardUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkCardUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkCardUpdatePayload")
+		case "serverNetworkCard":
+			out.Values[i] = ec._ServerNetworkCardUpdatePayload_serverNetworkCard(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkPortImplementors = []string{"ServerNetworkPort", "Node", "_Entity"}
+
+func (ec *executionContext) _ServerNetworkPort(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkPort) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkPortImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkPort")
+		case "id":
+			out.Values[i] = ec._ServerNetworkPort_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._ServerNetworkPort_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ServerNetworkPort_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "macAddress":
+			out.Values[i] = ec._ServerNetworkPort_macAddress(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "networkCard":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ServerNetworkPort_networkCard(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkPortConnectionImplementors = []string{"ServerNetworkPortConnection"}
+
+func (ec *executionContext) _ServerNetworkPortConnection(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkPortConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkPortConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkPortConnection")
+		case "edges":
+			out.Values[i] = ec._ServerNetworkPortConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._ServerNetworkPortConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._ServerNetworkPortConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkPortCreatePayloadImplementors = []string{"ServerNetworkPortCreatePayload"}
+
+func (ec *executionContext) _ServerNetworkPortCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkPortCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkPortCreatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkPortCreatePayload")
+		case "serverNetworkPort":
+			out.Values[i] = ec._ServerNetworkPortCreatePayload_serverNetworkPort(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkPortDeletePayloadImplementors = []string{"ServerNetworkPortDeletePayload"}
+
+func (ec *executionContext) _ServerNetworkPortDeletePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkPortDeletePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkPortDeletePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkPortDeletePayload")
+		case "deletedID":
+			out.Values[i] = ec._ServerNetworkPortDeletePayload_deletedID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkPortEdgeImplementors = []string{"ServerNetworkPortEdge"}
+
+func (ec *executionContext) _ServerNetworkPortEdge(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerNetworkPortEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkPortEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkPortEdge")
+		case "node":
+			out.Values[i] = ec._ServerNetworkPortEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._ServerNetworkPortEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var serverNetworkPortUpdatePayloadImplementors = []string{"ServerNetworkPortUpdatePayload"}
+
+func (ec *executionContext) _ServerNetworkPortUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *ServerNetworkPortUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, serverNetworkPortUpdatePayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ServerNetworkPortUpdatePayload")
+		case "serverNetworkPort":
+			out.Values[i] = ec._ServerNetworkPortUpdatePayload_serverNetworkPort(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var serverPowerSupplyImplementors = []string{"ServerPowerSupply", "Node", "_Entity"}
 
 func (ec *executionContext) _ServerPowerSupply(ctx context.Context, sel ast.SelectionSet, obj *generated.ServerPowerSupply) graphql.Marshaler {
@@ -48193,6 +55920,21 @@ func (ec *executionContext) unmarshalNCreateServerMotherboardTypeInput2goᚗinfr
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNCreateServerNetworkCardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkCardInput(ctx context.Context, v interface{}) (generated.CreateServerNetworkCardInput, error) {
+	res, err := ec.unmarshalInputCreateServerNetworkCardInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateServerNetworkCardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkCardTypeInput(ctx context.Context, v interface{}) (generated.CreateServerNetworkCardTypeInput, error) {
+	res, err := ec.unmarshalInputCreateServerNetworkCardTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateServerNetworkPortInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkPortInput(ctx context.Context, v interface{}) (generated.CreateServerNetworkPortInput, error) {
+	res, err := ec.unmarshalInputCreateServerNetworkPortInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateServerPowerSupplyInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerPowerSupplyInput(ctx context.Context, v interface{}) (generated.CreateServerPowerSupplyInput, error) {
 	res, err := ec.unmarshalInputCreateServerPowerSupplyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -49313,6 +57055,257 @@ func (ec *executionContext) unmarshalNServerMotherboardWhereInput2ᚖgoᚗinfrat
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNServerNetworkCard2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx context.Context, sel ast.SelectionSet, v generated.ServerNetworkCard) graphql.Marshaler {
+	return ec._ServerNetworkCard(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCard) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCard(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkCardCreatePayload) graphql.Marshaler {
+	return ec._ServerNetworkCardCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkCardCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkCardDeletePayload) graphql.Marshaler {
+	return ec._ServerNetworkCardDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkCardDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerNetworkCardOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardOrderField(ctx context.Context, v interface{}) (*generated.ServerNetworkCardOrderField, error) {
+	var res = new(generated.ServerNetworkCardOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerNetworkCardType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx context.Context, sel ast.SelectionSet, v generated.ServerNetworkCardType) graphql.Marshaler {
+	return ec._ServerNetworkCardType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardType) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkCardTypeCreatePayload) graphql.Marshaler {
+	return ec._ServerNetworkCardTypeCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkCardTypeCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardTypeCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkCardTypeDeletePayload) graphql.Marshaler {
+	return ec._ServerNetworkCardTypeDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkCardTypeDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardTypeDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerNetworkCardTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeOrderField(ctx context.Context, v interface{}) (*generated.ServerNetworkCardTypeOrderField, error) {
+	var res = new(generated.ServerNetworkCardTypeOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardTypeOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkCardTypeUpdatePayload) graphql.Marshaler {
+	return ec._ServerNetworkCardTypeUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardTypeUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkCardTypeUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardTypeUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerNetworkCardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerNetworkCardTypeWhereInput, error) {
+	res, err := ec.unmarshalInputServerNetworkCardTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkCardUpdatePayload) graphql.Marshaler {
+	return ec._ServerNetworkCardUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkCardUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkCardUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerNetworkCardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInput(ctx context.Context, v interface{}) (*generated.ServerNetworkCardWhereInput, error) {
+	res, err := ec.unmarshalInputServerNetworkCardWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerNetworkPort2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx context.Context, sel ast.SelectionSet, v generated.ServerNetworkPort) graphql.Marshaler {
+	return ec._ServerNetworkPort(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkPort) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkPort(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortConnection2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortConnection(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkPortConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkPortConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortCreatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortCreatePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkPortCreatePayload) graphql.Marshaler {
+	return ec._ServerNetworkPortCreatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortCreatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkPortCreatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkPortCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkPortDeletePayload) graphql.Marshaler {
+	return ec._ServerNetworkPortDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkPortDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkPortDeletePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerNetworkPortOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortOrderField(ctx context.Context, v interface{}) (*generated.ServerNetworkPortOrderField, error) {
+	var res = new(generated.ServerNetworkPortOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortOrderField(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkPortOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
+func (ec *executionContext) marshalNServerNetworkPortUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerNetworkPortUpdatePayload) graphql.Marshaler {
+	return ec._ServerNetworkPortUpdatePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerNetworkPortUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkPortUpdatePayload(ctx context.Context, sel ast.SelectionSet, v *ServerNetworkPortUpdatePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerNetworkPortUpdatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNServerNetworkPortWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInput(ctx context.Context, v interface{}) (*generated.ServerNetworkPortWhereInput, error) {
+	res, err := ec.unmarshalInputServerNetworkPortWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNServerOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerOrderField(ctx context.Context, v interface{}) (*generated.ServerOrderField, error) {
 	var res = new(generated.ServerOrderField)
 	err := res.UnmarshalGQL(v)
@@ -49734,6 +57727,21 @@ func (ec *executionContext) unmarshalNUpdateServerMotherboardInput2goᚗinfratog
 
 func (ec *executionContext) unmarshalNUpdateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerMotherboardTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerMotherboardTypeInput, error) {
 	res, err := ec.unmarshalInputUpdateServerMotherboardTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerNetworkCardInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerNetworkCardInput(ctx context.Context, v interface{}) (generated.UpdateServerNetworkCardInput, error) {
+	res, err := ec.unmarshalInputUpdateServerNetworkCardInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerNetworkCardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerNetworkCardTypeInput(ctx context.Context, v interface{}) (generated.UpdateServerNetworkCardTypeInput, error) {
+	res, err := ec.unmarshalInputUpdateServerNetworkCardTypeInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateServerNetworkPortInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐUpdateServerNetworkPortInput(ctx context.Context, v interface{}) (generated.UpdateServerNetworkPortInput, error) {
+	res, err := ec.unmarshalInputUpdateServerNetworkPortInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -51351,6 +59359,271 @@ func (ec *executionContext) unmarshalOServerMotherboardWhereInput2ᚖgoᚗinfrat
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputServerMotherboardWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerNetworkCard2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCard(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCard) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerNetworkCard(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerNetworkCardEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerNetworkCardEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerNetworkCardEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerNetworkCardEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerNetworkCardOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardOrder(ctx context.Context, v interface{}) (*generated.ServerNetworkCardOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerNetworkCardOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerNetworkCardType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardType(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardType(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerNetworkCardTypeEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerNetworkCardTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerNetworkCardTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerNetworkCardTypeEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkCardTypeEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerNetworkCardTypeEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerNetworkCardTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerNetworkCardTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerNetworkCardTypeWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerNetworkCardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerNetworkCardTypeWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardTypeWhereInput(ctx context.Context, v interface{}) (*generated.ServerNetworkCardTypeWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerNetworkCardTypeWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerNetworkCardWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerNetworkCardWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerNetworkCardWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerNetworkCardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerNetworkCardWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkCardWhereInput(ctx context.Context, v interface{}) (*generated.ServerNetworkCardWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerNetworkCardWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerNetworkPort2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPort(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkPort) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerNetworkPort(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOServerNetworkPortEdge2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortEdge(ctx context.Context, sel ast.SelectionSet, v []*generated.ServerNetworkPortEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOServerNetworkPortEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOServerNetworkPortEdge2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortEdge(ctx context.Context, sel ast.SelectionSet, v *generated.ServerNetworkPortEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServerNetworkPortEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerNetworkPortOrder2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortOrder(ctx context.Context, v interface{}) (*generated.ServerNetworkPortOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerNetworkPortOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOServerNetworkPortWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerNetworkPortWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*generated.ServerNetworkPortWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerNetworkPortWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOServerNetworkPortWhereInput2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerNetworkPortWhereInput(ctx context.Context, v interface{}) (*generated.ServerNetworkPortWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServerNetworkPortWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

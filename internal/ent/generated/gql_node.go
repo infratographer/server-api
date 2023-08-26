@@ -37,6 +37,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -89,6 +92,15 @@ func (n *ServerMotherboard) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerMotherboardType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerNetworkCard) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerNetworkCardType) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *ServerNetworkPort) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *ServerPowerSupply) IsNode() {}
@@ -373,6 +385,54 @@ func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (N
 		query := c.ServerMotherboardType.Query().
 			Where(servermotherboardtype.ID(uid))
 		query, err := query.CollectFields(ctx, "ServerMotherboardType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servernetworkcard.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerNetworkCard.Query().
+			Where(servernetworkcard.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerNetworkCard")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servernetworkcardtype.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerNetworkCardType.Query().
+			Where(servernetworkcardtype.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerNetworkCardType")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case servernetworkport.Table:
+		var uid gidx.PrefixedID
+		if err := uid.UnmarshalGQL(id); err != nil {
+			return nil, err
+		}
+		query := c.ServerNetworkPort.Query().
+			Where(servernetworkport.ID(uid))
+		query, err := query.CollectFields(ctx, "ServerNetworkPort")
 		if err != nil {
 			return nil, err
 		}
@@ -714,6 +774,54 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		query := c.ServerMotherboardType.Query().
 			Where(servermotherboardtype.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "ServerMotherboardType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servernetworkcard.Table:
+		query := c.ServerNetworkCard.Query().
+			Where(servernetworkcard.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerNetworkCard")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servernetworkcardtype.Table:
+		query := c.ServerNetworkCardType.Query().
+			Where(servernetworkcardtype.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerNetworkCardType")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case servernetworkport.Table:
+		query := c.ServerNetworkPort.Query().
+			Where(servernetworkport.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "ServerNetworkPort")
 		if err != nil {
 			return nil, err
 		}

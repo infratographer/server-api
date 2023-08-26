@@ -40,6 +40,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -69,6 +72,9 @@ const (
 	TypeServerMemoryType      = "ServerMemoryType"
 	TypeServerMotherboard     = "ServerMotherboard"
 	TypeServerMotherboardType = "ServerMotherboardType"
+	TypeServerNetworkCard     = "ServerNetworkCard"
+	TypeServerNetworkCardType = "ServerNetworkCardType"
+	TypeServerNetworkPort     = "ServerNetworkPort"
 	TypeServerPowerSupply     = "ServerPowerSupply"
 	TypeServerPowerSupplyType = "ServerPowerSupplyType"
 	TypeServerType            = "ServerType"
@@ -9630,6 +9636,1961 @@ func (m *ServerMotherboardTypeMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown ServerMotherboardType edge %s", name)
+}
+
+// ServerNetworkCardMutation represents an operation that mutates the ServerNetworkCard nodes in the graph.
+type ServerNetworkCardMutation struct {
+	config
+	op                       Op
+	typ                      string
+	id                       *gidx.PrefixedID
+	created_at               *time.Time
+	updated_at               *time.Time
+	serial                   *string
+	clearedFields            map[string]struct{}
+	network_card_type        *gidx.PrefixedID
+	clearednetwork_card_type bool
+	server                   *gidx.PrefixedID
+	clearedserver            bool
+	network_port             map[gidx.PrefixedID]struct{}
+	removednetwork_port      map[gidx.PrefixedID]struct{}
+	clearednetwork_port      bool
+	done                     bool
+	oldValue                 func(context.Context) (*ServerNetworkCard, error)
+	predicates               []predicate.ServerNetworkCard
+}
+
+var _ ent.Mutation = (*ServerNetworkCardMutation)(nil)
+
+// servernetworkcardOption allows management of the mutation configuration using functional options.
+type servernetworkcardOption func(*ServerNetworkCardMutation)
+
+// newServerNetworkCardMutation creates new mutation for the ServerNetworkCard entity.
+func newServerNetworkCardMutation(c config, op Op, opts ...servernetworkcardOption) *ServerNetworkCardMutation {
+	m := &ServerNetworkCardMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerNetworkCard,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerNetworkCardID sets the ID field of the mutation.
+func withServerNetworkCardID(id gidx.PrefixedID) servernetworkcardOption {
+	return func(m *ServerNetworkCardMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerNetworkCard
+		)
+		m.oldValue = func(ctx context.Context) (*ServerNetworkCard, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerNetworkCard.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerNetworkCard sets the old ServerNetworkCard of the mutation.
+func withServerNetworkCard(node *ServerNetworkCard) servernetworkcardOption {
+	return func(m *ServerNetworkCardMutation) {
+		m.oldValue = func(context.Context) (*ServerNetworkCard, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerNetworkCardMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerNetworkCardMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerNetworkCard entities.
+func (m *ServerNetworkCardMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerNetworkCardMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerNetworkCardMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerNetworkCard.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerNetworkCardMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerNetworkCardMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerNetworkCard entity.
+// If the ServerNetworkCard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerNetworkCardMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerNetworkCardMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerNetworkCardMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerNetworkCard entity.
+// If the ServerNetworkCard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerNetworkCardMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetSerial sets the "serial" field.
+func (m *ServerNetworkCardMutation) SetSerial(s string) {
+	m.serial = &s
+}
+
+// Serial returns the value of the "serial" field in the mutation.
+func (m *ServerNetworkCardMutation) Serial() (r string, exists bool) {
+	v := m.serial
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSerial returns the old "serial" field's value of the ServerNetworkCard entity.
+// If the ServerNetworkCard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardMutation) OldSerial(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSerial is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSerial requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSerial: %w", err)
+	}
+	return oldValue.Serial, nil
+}
+
+// ResetSerial resets all changes to the "serial" field.
+func (m *ServerNetworkCardMutation) ResetSerial() {
+	m.serial = nil
+}
+
+// SetServerID sets the "server_id" field.
+func (m *ServerNetworkCardMutation) SetServerID(gi gidx.PrefixedID) {
+	m.server = &gi
+}
+
+// ServerID returns the value of the "server_id" field in the mutation.
+func (m *ServerNetworkCardMutation) ServerID() (r gidx.PrefixedID, exists bool) {
+	v := m.server
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerID returns the old "server_id" field's value of the ServerNetworkCard entity.
+// If the ServerNetworkCard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardMutation) OldServerID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerID: %w", err)
+	}
+	return oldValue.ServerID, nil
+}
+
+// ResetServerID resets all changes to the "server_id" field.
+func (m *ServerNetworkCardMutation) ResetServerID() {
+	m.server = nil
+}
+
+// SetNetworkCardTypeID sets the "network_card_type_id" field.
+func (m *ServerNetworkCardMutation) SetNetworkCardTypeID(gi gidx.PrefixedID) {
+	m.network_card_type = &gi
+}
+
+// NetworkCardTypeID returns the value of the "network_card_type_id" field in the mutation.
+func (m *ServerNetworkCardMutation) NetworkCardTypeID() (r gidx.PrefixedID, exists bool) {
+	v := m.network_card_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNetworkCardTypeID returns the old "network_card_type_id" field's value of the ServerNetworkCard entity.
+// If the ServerNetworkCard object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardMutation) OldNetworkCardTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNetworkCardTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNetworkCardTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNetworkCardTypeID: %w", err)
+	}
+	return oldValue.NetworkCardTypeID, nil
+}
+
+// ResetNetworkCardTypeID resets all changes to the "network_card_type_id" field.
+func (m *ServerNetworkCardMutation) ResetNetworkCardTypeID() {
+	m.network_card_type = nil
+}
+
+// ClearNetworkCardType clears the "network_card_type" edge to the ServerNetworkCardType entity.
+func (m *ServerNetworkCardMutation) ClearNetworkCardType() {
+	m.clearednetwork_card_type = true
+}
+
+// NetworkCardTypeCleared reports if the "network_card_type" edge to the ServerNetworkCardType entity was cleared.
+func (m *ServerNetworkCardMutation) NetworkCardTypeCleared() bool {
+	return m.clearednetwork_card_type
+}
+
+// NetworkCardTypeIDs returns the "network_card_type" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NetworkCardTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerNetworkCardMutation) NetworkCardTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.network_card_type; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetNetworkCardType resets all changes to the "network_card_type" edge.
+func (m *ServerNetworkCardMutation) ResetNetworkCardType() {
+	m.network_card_type = nil
+	m.clearednetwork_card_type = false
+}
+
+// ClearServer clears the "server" edge to the Server entity.
+func (m *ServerNetworkCardMutation) ClearServer() {
+	m.clearedserver = true
+}
+
+// ServerCleared reports if the "server" edge to the Server entity was cleared.
+func (m *ServerNetworkCardMutation) ServerCleared() bool {
+	return m.clearedserver
+}
+
+// ServerIDs returns the "server" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ServerID instead. It exists only for internal usage by the builders.
+func (m *ServerNetworkCardMutation) ServerIDs() (ids []gidx.PrefixedID) {
+	if id := m.server; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetServer resets all changes to the "server" edge.
+func (m *ServerNetworkCardMutation) ResetServer() {
+	m.server = nil
+	m.clearedserver = false
+}
+
+// AddNetworkPortIDs adds the "network_port" edge to the ServerNetworkPort entity by ids.
+func (m *ServerNetworkCardMutation) AddNetworkPortIDs(ids ...gidx.PrefixedID) {
+	if m.network_port == nil {
+		m.network_port = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.network_port[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNetworkPort clears the "network_port" edge to the ServerNetworkPort entity.
+func (m *ServerNetworkCardMutation) ClearNetworkPort() {
+	m.clearednetwork_port = true
+}
+
+// NetworkPortCleared reports if the "network_port" edge to the ServerNetworkPort entity was cleared.
+func (m *ServerNetworkCardMutation) NetworkPortCleared() bool {
+	return m.clearednetwork_port
+}
+
+// RemoveNetworkPortIDs removes the "network_port" edge to the ServerNetworkPort entity by IDs.
+func (m *ServerNetworkCardMutation) RemoveNetworkPortIDs(ids ...gidx.PrefixedID) {
+	if m.removednetwork_port == nil {
+		m.removednetwork_port = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.network_port, ids[i])
+		m.removednetwork_port[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNetworkPort returns the removed IDs of the "network_port" edge to the ServerNetworkPort entity.
+func (m *ServerNetworkCardMutation) RemovedNetworkPortIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removednetwork_port {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NetworkPortIDs returns the "network_port" edge IDs in the mutation.
+func (m *ServerNetworkCardMutation) NetworkPortIDs() (ids []gidx.PrefixedID) {
+	for id := range m.network_port {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNetworkPort resets all changes to the "network_port" edge.
+func (m *ServerNetworkCardMutation) ResetNetworkPort() {
+	m.network_port = nil
+	m.clearednetwork_port = false
+	m.removednetwork_port = nil
+}
+
+// Where appends a list predicates to the ServerNetworkCardMutation builder.
+func (m *ServerNetworkCardMutation) Where(ps ...predicate.ServerNetworkCard) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerNetworkCardMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerNetworkCardMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerNetworkCard, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerNetworkCardMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerNetworkCardMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerNetworkCard).
+func (m *ServerNetworkCardMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerNetworkCardMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, servernetworkcard.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servernetworkcard.FieldUpdatedAt)
+	}
+	if m.serial != nil {
+		fields = append(fields, servernetworkcard.FieldSerial)
+	}
+	if m.server != nil {
+		fields = append(fields, servernetworkcard.FieldServerID)
+	}
+	if m.network_card_type != nil {
+		fields = append(fields, servernetworkcard.FieldNetworkCardTypeID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerNetworkCardMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servernetworkcard.FieldCreatedAt:
+		return m.CreatedAt()
+	case servernetworkcard.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servernetworkcard.FieldSerial:
+		return m.Serial()
+	case servernetworkcard.FieldServerID:
+		return m.ServerID()
+	case servernetworkcard.FieldNetworkCardTypeID:
+		return m.NetworkCardTypeID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerNetworkCardMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servernetworkcard.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servernetworkcard.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servernetworkcard.FieldSerial:
+		return m.OldSerial(ctx)
+	case servernetworkcard.FieldServerID:
+		return m.OldServerID(ctx)
+	case servernetworkcard.FieldNetworkCardTypeID:
+		return m.OldNetworkCardTypeID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerNetworkCard field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerNetworkCardMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servernetworkcard.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servernetworkcard.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servernetworkcard.FieldSerial:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSerial(v)
+		return nil
+	case servernetworkcard.FieldServerID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerID(v)
+		return nil
+	case servernetworkcard.FieldNetworkCardTypeID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNetworkCardTypeID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCard field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerNetworkCardMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerNetworkCardMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerNetworkCardMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerNetworkCard numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerNetworkCardMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerNetworkCardMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerNetworkCardMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerNetworkCard nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerNetworkCardMutation) ResetField(name string) error {
+	switch name {
+	case servernetworkcard.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servernetworkcard.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servernetworkcard.FieldSerial:
+		m.ResetSerial()
+		return nil
+	case servernetworkcard.FieldServerID:
+		m.ResetServerID()
+		return nil
+	case servernetworkcard.FieldNetworkCardTypeID:
+		m.ResetNetworkCardTypeID()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCard field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerNetworkCardMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.network_card_type != nil {
+		edges = append(edges, servernetworkcard.EdgeNetworkCardType)
+	}
+	if m.server != nil {
+		edges = append(edges, servernetworkcard.EdgeServer)
+	}
+	if m.network_port != nil {
+		edges = append(edges, servernetworkcard.EdgeNetworkPort)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerNetworkCardMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servernetworkcard.EdgeNetworkCardType:
+		if id := m.network_card_type; id != nil {
+			return []ent.Value{*id}
+		}
+	case servernetworkcard.EdgeServer:
+		if id := m.server; id != nil {
+			return []ent.Value{*id}
+		}
+	case servernetworkcard.EdgeNetworkPort:
+		ids := make([]ent.Value, 0, len(m.network_port))
+		for id := range m.network_port {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerNetworkCardMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.removednetwork_port != nil {
+		edges = append(edges, servernetworkcard.EdgeNetworkPort)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerNetworkCardMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case servernetworkcard.EdgeNetworkPort:
+		ids := make([]ent.Value, 0, len(m.removednetwork_port))
+		for id := range m.removednetwork_port {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerNetworkCardMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearednetwork_card_type {
+		edges = append(edges, servernetworkcard.EdgeNetworkCardType)
+	}
+	if m.clearedserver {
+		edges = append(edges, servernetworkcard.EdgeServer)
+	}
+	if m.clearednetwork_port {
+		edges = append(edges, servernetworkcard.EdgeNetworkPort)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerNetworkCardMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servernetworkcard.EdgeNetworkCardType:
+		return m.clearednetwork_card_type
+	case servernetworkcard.EdgeServer:
+		return m.clearedserver
+	case servernetworkcard.EdgeNetworkPort:
+		return m.clearednetwork_port
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerNetworkCardMutation) ClearEdge(name string) error {
+	switch name {
+	case servernetworkcard.EdgeNetworkCardType:
+		m.ClearNetworkCardType()
+		return nil
+	case servernetworkcard.EdgeServer:
+		m.ClearServer()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCard unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerNetworkCardMutation) ResetEdge(name string) error {
+	switch name {
+	case servernetworkcard.EdgeNetworkCardType:
+		m.ResetNetworkCardType()
+		return nil
+	case servernetworkcard.EdgeServer:
+		m.ResetServer()
+		return nil
+	case servernetworkcard.EdgeNetworkPort:
+		m.ResetNetworkPort()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCard edge %s", name)
+}
+
+// ServerNetworkCardTypeMutation represents an operation that mutates the ServerNetworkCardType nodes in the graph.
+type ServerNetworkCardTypeMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *gidx.PrefixedID
+	created_at          *time.Time
+	updated_at          *time.Time
+	vendor              *string
+	model               *string
+	port_count          *int
+	addport_count       *int
+	clearedFields       map[string]struct{}
+	network_card        map[gidx.PrefixedID]struct{}
+	removednetwork_card map[gidx.PrefixedID]struct{}
+	clearednetwork_card bool
+	done                bool
+	oldValue            func(context.Context) (*ServerNetworkCardType, error)
+	predicates          []predicate.ServerNetworkCardType
+}
+
+var _ ent.Mutation = (*ServerNetworkCardTypeMutation)(nil)
+
+// servernetworkcardtypeOption allows management of the mutation configuration using functional options.
+type servernetworkcardtypeOption func(*ServerNetworkCardTypeMutation)
+
+// newServerNetworkCardTypeMutation creates new mutation for the ServerNetworkCardType entity.
+func newServerNetworkCardTypeMutation(c config, op Op, opts ...servernetworkcardtypeOption) *ServerNetworkCardTypeMutation {
+	m := &ServerNetworkCardTypeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerNetworkCardType,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerNetworkCardTypeID sets the ID field of the mutation.
+func withServerNetworkCardTypeID(id gidx.PrefixedID) servernetworkcardtypeOption {
+	return func(m *ServerNetworkCardTypeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerNetworkCardType
+		)
+		m.oldValue = func(ctx context.Context) (*ServerNetworkCardType, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerNetworkCardType.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerNetworkCardType sets the old ServerNetworkCardType of the mutation.
+func withServerNetworkCardType(node *ServerNetworkCardType) servernetworkcardtypeOption {
+	return func(m *ServerNetworkCardTypeMutation) {
+		m.oldValue = func(context.Context) (*ServerNetworkCardType, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerNetworkCardTypeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerNetworkCardTypeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerNetworkCardType entities.
+func (m *ServerNetworkCardTypeMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerNetworkCardTypeMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerNetworkCardTypeMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerNetworkCardType.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerNetworkCardTypeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerNetworkCardTypeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerNetworkCardType entity.
+// If the ServerNetworkCardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerNetworkCardTypeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerNetworkCardTypeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerNetworkCardTypeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerNetworkCardType entity.
+// If the ServerNetworkCardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerNetworkCardTypeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetVendor sets the "vendor" field.
+func (m *ServerNetworkCardTypeMutation) SetVendor(s string) {
+	m.vendor = &s
+}
+
+// Vendor returns the value of the "vendor" field in the mutation.
+func (m *ServerNetworkCardTypeMutation) Vendor() (r string, exists bool) {
+	v := m.vendor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVendor returns the old "vendor" field's value of the ServerNetworkCardType entity.
+// If the ServerNetworkCardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardTypeMutation) OldVendor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVendor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVendor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVendor: %w", err)
+	}
+	return oldValue.Vendor, nil
+}
+
+// ResetVendor resets all changes to the "vendor" field.
+func (m *ServerNetworkCardTypeMutation) ResetVendor() {
+	m.vendor = nil
+}
+
+// SetModel sets the "model" field.
+func (m *ServerNetworkCardTypeMutation) SetModel(s string) {
+	m.model = &s
+}
+
+// Model returns the value of the "model" field in the mutation.
+func (m *ServerNetworkCardTypeMutation) Model() (r string, exists bool) {
+	v := m.model
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModel returns the old "model" field's value of the ServerNetworkCardType entity.
+// If the ServerNetworkCardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardTypeMutation) OldModel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModel: %w", err)
+	}
+	return oldValue.Model, nil
+}
+
+// ResetModel resets all changes to the "model" field.
+func (m *ServerNetworkCardTypeMutation) ResetModel() {
+	m.model = nil
+}
+
+// SetPortCount sets the "port_count" field.
+func (m *ServerNetworkCardTypeMutation) SetPortCount(i int) {
+	m.port_count = &i
+	m.addport_count = nil
+}
+
+// PortCount returns the value of the "port_count" field in the mutation.
+func (m *ServerNetworkCardTypeMutation) PortCount() (r int, exists bool) {
+	v := m.port_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPortCount returns the old "port_count" field's value of the ServerNetworkCardType entity.
+// If the ServerNetworkCardType object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkCardTypeMutation) OldPortCount(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPortCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPortCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPortCount: %w", err)
+	}
+	return oldValue.PortCount, nil
+}
+
+// AddPortCount adds i to the "port_count" field.
+func (m *ServerNetworkCardTypeMutation) AddPortCount(i int) {
+	if m.addport_count != nil {
+		*m.addport_count += i
+	} else {
+		m.addport_count = &i
+	}
+}
+
+// AddedPortCount returns the value that was added to the "port_count" field in this mutation.
+func (m *ServerNetworkCardTypeMutation) AddedPortCount() (r int, exists bool) {
+	v := m.addport_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPortCount resets all changes to the "port_count" field.
+func (m *ServerNetworkCardTypeMutation) ResetPortCount() {
+	m.port_count = nil
+	m.addport_count = nil
+}
+
+// AddNetworkCardIDs adds the "network_card" edge to the ServerNetworkCard entity by ids.
+func (m *ServerNetworkCardTypeMutation) AddNetworkCardIDs(ids ...gidx.PrefixedID) {
+	if m.network_card == nil {
+		m.network_card = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		m.network_card[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNetworkCard clears the "network_card" edge to the ServerNetworkCard entity.
+func (m *ServerNetworkCardTypeMutation) ClearNetworkCard() {
+	m.clearednetwork_card = true
+}
+
+// NetworkCardCleared reports if the "network_card" edge to the ServerNetworkCard entity was cleared.
+func (m *ServerNetworkCardTypeMutation) NetworkCardCleared() bool {
+	return m.clearednetwork_card
+}
+
+// RemoveNetworkCardIDs removes the "network_card" edge to the ServerNetworkCard entity by IDs.
+func (m *ServerNetworkCardTypeMutation) RemoveNetworkCardIDs(ids ...gidx.PrefixedID) {
+	if m.removednetwork_card == nil {
+		m.removednetwork_card = make(map[gidx.PrefixedID]struct{})
+	}
+	for i := range ids {
+		delete(m.network_card, ids[i])
+		m.removednetwork_card[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNetworkCard returns the removed IDs of the "network_card" edge to the ServerNetworkCard entity.
+func (m *ServerNetworkCardTypeMutation) RemovedNetworkCardIDs() (ids []gidx.PrefixedID) {
+	for id := range m.removednetwork_card {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NetworkCardIDs returns the "network_card" edge IDs in the mutation.
+func (m *ServerNetworkCardTypeMutation) NetworkCardIDs() (ids []gidx.PrefixedID) {
+	for id := range m.network_card {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNetworkCard resets all changes to the "network_card" edge.
+func (m *ServerNetworkCardTypeMutation) ResetNetworkCard() {
+	m.network_card = nil
+	m.clearednetwork_card = false
+	m.removednetwork_card = nil
+}
+
+// Where appends a list predicates to the ServerNetworkCardTypeMutation builder.
+func (m *ServerNetworkCardTypeMutation) Where(ps ...predicate.ServerNetworkCardType) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerNetworkCardTypeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerNetworkCardTypeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerNetworkCardType, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerNetworkCardTypeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerNetworkCardTypeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerNetworkCardType).
+func (m *ServerNetworkCardTypeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerNetworkCardTypeMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, servernetworkcardtype.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servernetworkcardtype.FieldUpdatedAt)
+	}
+	if m.vendor != nil {
+		fields = append(fields, servernetworkcardtype.FieldVendor)
+	}
+	if m.model != nil {
+		fields = append(fields, servernetworkcardtype.FieldModel)
+	}
+	if m.port_count != nil {
+		fields = append(fields, servernetworkcardtype.FieldPortCount)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerNetworkCardTypeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servernetworkcardtype.FieldCreatedAt:
+		return m.CreatedAt()
+	case servernetworkcardtype.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servernetworkcardtype.FieldVendor:
+		return m.Vendor()
+	case servernetworkcardtype.FieldModel:
+		return m.Model()
+	case servernetworkcardtype.FieldPortCount:
+		return m.PortCount()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerNetworkCardTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servernetworkcardtype.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servernetworkcardtype.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servernetworkcardtype.FieldVendor:
+		return m.OldVendor(ctx)
+	case servernetworkcardtype.FieldModel:
+		return m.OldModel(ctx)
+	case servernetworkcardtype.FieldPortCount:
+		return m.OldPortCount(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerNetworkCardType field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerNetworkCardTypeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servernetworkcardtype.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servernetworkcardtype.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servernetworkcardtype.FieldVendor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVendor(v)
+		return nil
+	case servernetworkcardtype.FieldModel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModel(v)
+		return nil
+	case servernetworkcardtype.FieldPortCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPortCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCardType field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerNetworkCardTypeMutation) AddedFields() []string {
+	var fields []string
+	if m.addport_count != nil {
+		fields = append(fields, servernetworkcardtype.FieldPortCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerNetworkCardTypeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case servernetworkcardtype.FieldPortCount:
+		return m.AddedPortCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerNetworkCardTypeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case servernetworkcardtype.FieldPortCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPortCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCardType numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerNetworkCardTypeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerNetworkCardTypeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerNetworkCardTypeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerNetworkCardType nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerNetworkCardTypeMutation) ResetField(name string) error {
+	switch name {
+	case servernetworkcardtype.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servernetworkcardtype.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servernetworkcardtype.FieldVendor:
+		m.ResetVendor()
+		return nil
+	case servernetworkcardtype.FieldModel:
+		m.ResetModel()
+		return nil
+	case servernetworkcardtype.FieldPortCount:
+		m.ResetPortCount()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCardType field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerNetworkCardTypeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.network_card != nil {
+		edges = append(edges, servernetworkcardtype.EdgeNetworkCard)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerNetworkCardTypeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servernetworkcardtype.EdgeNetworkCard:
+		ids := make([]ent.Value, 0, len(m.network_card))
+		for id := range m.network_card {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerNetworkCardTypeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removednetwork_card != nil {
+		edges = append(edges, servernetworkcardtype.EdgeNetworkCard)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerNetworkCardTypeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case servernetworkcardtype.EdgeNetworkCard:
+		ids := make([]ent.Value, 0, len(m.removednetwork_card))
+		for id := range m.removednetwork_card {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerNetworkCardTypeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearednetwork_card {
+		edges = append(edges, servernetworkcardtype.EdgeNetworkCard)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerNetworkCardTypeMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servernetworkcardtype.EdgeNetworkCard:
+		return m.clearednetwork_card
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerNetworkCardTypeMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerNetworkCardType unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerNetworkCardTypeMutation) ResetEdge(name string) error {
+	switch name {
+	case servernetworkcardtype.EdgeNetworkCard:
+		m.ResetNetworkCard()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkCardType edge %s", name)
+}
+
+// ServerNetworkPortMutation represents an operation that mutates the ServerNetworkPort nodes in the graph.
+type ServerNetworkPortMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *gidx.PrefixedID
+	created_at          *time.Time
+	updated_at          *time.Time
+	mac_address         *string
+	clearedFields       map[string]struct{}
+	network_card        *gidx.PrefixedID
+	clearednetwork_card bool
+	done                bool
+	oldValue            func(context.Context) (*ServerNetworkPort, error)
+	predicates          []predicate.ServerNetworkPort
+}
+
+var _ ent.Mutation = (*ServerNetworkPortMutation)(nil)
+
+// servernetworkportOption allows management of the mutation configuration using functional options.
+type servernetworkportOption func(*ServerNetworkPortMutation)
+
+// newServerNetworkPortMutation creates new mutation for the ServerNetworkPort entity.
+func newServerNetworkPortMutation(c config, op Op, opts ...servernetworkportOption) *ServerNetworkPortMutation {
+	m := &ServerNetworkPortMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeServerNetworkPort,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withServerNetworkPortID sets the ID field of the mutation.
+func withServerNetworkPortID(id gidx.PrefixedID) servernetworkportOption {
+	return func(m *ServerNetworkPortMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ServerNetworkPort
+		)
+		m.oldValue = func(ctx context.Context) (*ServerNetworkPort, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ServerNetworkPort.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withServerNetworkPort sets the old ServerNetworkPort of the mutation.
+func withServerNetworkPort(node *ServerNetworkPort) servernetworkportOption {
+	return func(m *ServerNetworkPortMutation) {
+		m.oldValue = func(context.Context) (*ServerNetworkPort, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ServerNetworkPortMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ServerNetworkPortMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("generated: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ServerNetworkPort entities.
+func (m *ServerNetworkPortMutation) SetID(id gidx.PrefixedID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ServerNetworkPortMutation) ID() (id gidx.PrefixedID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ServerNetworkPortMutation) IDs(ctx context.Context) ([]gidx.PrefixedID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []gidx.PrefixedID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ServerNetworkPort.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ServerNetworkPortMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ServerNetworkPortMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the ServerNetworkPort entity.
+// If the ServerNetworkPort object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkPortMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ServerNetworkPortMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ServerNetworkPortMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ServerNetworkPortMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the ServerNetworkPort entity.
+// If the ServerNetworkPort object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkPortMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ServerNetworkPortMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetMACAddress sets the "mac_address" field.
+func (m *ServerNetworkPortMutation) SetMACAddress(s string) {
+	m.mac_address = &s
+}
+
+// MACAddress returns the value of the "mac_address" field in the mutation.
+func (m *ServerNetworkPortMutation) MACAddress() (r string, exists bool) {
+	v := m.mac_address
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMACAddress returns the old "mac_address" field's value of the ServerNetworkPort entity.
+// If the ServerNetworkPort object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkPortMutation) OldMACAddress(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMACAddress is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMACAddress requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMACAddress: %w", err)
+	}
+	return oldValue.MACAddress, nil
+}
+
+// ResetMACAddress resets all changes to the "mac_address" field.
+func (m *ServerNetworkPortMutation) ResetMACAddress() {
+	m.mac_address = nil
+}
+
+// SetNetworkCardID sets the "network_card_id" field.
+func (m *ServerNetworkPortMutation) SetNetworkCardID(gi gidx.PrefixedID) {
+	m.network_card = &gi
+}
+
+// NetworkCardID returns the value of the "network_card_id" field in the mutation.
+func (m *ServerNetworkPortMutation) NetworkCardID() (r gidx.PrefixedID, exists bool) {
+	v := m.network_card
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNetworkCardID returns the old "network_card_id" field's value of the ServerNetworkPort entity.
+// If the ServerNetworkPort object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ServerNetworkPortMutation) OldNetworkCardID(ctx context.Context) (v gidx.PrefixedID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNetworkCardID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNetworkCardID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNetworkCardID: %w", err)
+	}
+	return oldValue.NetworkCardID, nil
+}
+
+// ResetNetworkCardID resets all changes to the "network_card_id" field.
+func (m *ServerNetworkPortMutation) ResetNetworkCardID() {
+	m.network_card = nil
+}
+
+// ClearNetworkCard clears the "network_card" edge to the ServerNetworkCard entity.
+func (m *ServerNetworkPortMutation) ClearNetworkCard() {
+	m.clearednetwork_card = true
+}
+
+// NetworkCardCleared reports if the "network_card" edge to the ServerNetworkCard entity was cleared.
+func (m *ServerNetworkPortMutation) NetworkCardCleared() bool {
+	return m.clearednetwork_card
+}
+
+// NetworkCardIDs returns the "network_card" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NetworkCardID instead. It exists only for internal usage by the builders.
+func (m *ServerNetworkPortMutation) NetworkCardIDs() (ids []gidx.PrefixedID) {
+	if id := m.network_card; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetNetworkCard resets all changes to the "network_card" edge.
+func (m *ServerNetworkPortMutation) ResetNetworkCard() {
+	m.network_card = nil
+	m.clearednetwork_card = false
+}
+
+// Where appends a list predicates to the ServerNetworkPortMutation builder.
+func (m *ServerNetworkPortMutation) Where(ps ...predicate.ServerNetworkPort) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ServerNetworkPortMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ServerNetworkPortMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ServerNetworkPort, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ServerNetworkPortMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ServerNetworkPortMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ServerNetworkPort).
+func (m *ServerNetworkPortMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ServerNetworkPortMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.created_at != nil {
+		fields = append(fields, servernetworkport.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, servernetworkport.FieldUpdatedAt)
+	}
+	if m.mac_address != nil {
+		fields = append(fields, servernetworkport.FieldMACAddress)
+	}
+	if m.network_card != nil {
+		fields = append(fields, servernetworkport.FieldNetworkCardID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ServerNetworkPortMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case servernetworkport.FieldCreatedAt:
+		return m.CreatedAt()
+	case servernetworkport.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case servernetworkport.FieldMACAddress:
+		return m.MACAddress()
+	case servernetworkport.FieldNetworkCardID:
+		return m.NetworkCardID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ServerNetworkPortMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case servernetworkport.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case servernetworkport.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case servernetworkport.FieldMACAddress:
+		return m.OldMACAddress(ctx)
+	case servernetworkport.FieldNetworkCardID:
+		return m.OldNetworkCardID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ServerNetworkPort field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerNetworkPortMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case servernetworkport.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case servernetworkport.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case servernetworkport.FieldMACAddress:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMACAddress(v)
+		return nil
+	case servernetworkport.FieldNetworkCardID:
+		v, ok := value.(gidx.PrefixedID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNetworkCardID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkPort field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ServerNetworkPortMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ServerNetworkPortMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ServerNetworkPortMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ServerNetworkPort numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ServerNetworkPortMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ServerNetworkPortMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ServerNetworkPortMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ServerNetworkPort nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ServerNetworkPortMutation) ResetField(name string) error {
+	switch name {
+	case servernetworkport.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case servernetworkport.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case servernetworkport.FieldMACAddress:
+		m.ResetMACAddress()
+		return nil
+	case servernetworkport.FieldNetworkCardID:
+		m.ResetNetworkCardID()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkPort field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ServerNetworkPortMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.network_card != nil {
+		edges = append(edges, servernetworkport.EdgeNetworkCard)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ServerNetworkPortMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case servernetworkport.EdgeNetworkCard:
+		if id := m.network_card; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ServerNetworkPortMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ServerNetworkPortMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ServerNetworkPortMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearednetwork_card {
+		edges = append(edges, servernetworkport.EdgeNetworkCard)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ServerNetworkPortMutation) EdgeCleared(name string) bool {
+	switch name {
+	case servernetworkport.EdgeNetworkCard:
+		return m.clearednetwork_card
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ServerNetworkPortMutation) ClearEdge(name string) error {
+	switch name {
+	case servernetworkport.EdgeNetworkCard:
+		m.ClearNetworkCard()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkPort unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ServerNetworkPortMutation) ResetEdge(name string) error {
+	switch name {
+	case servernetworkport.EdgeNetworkCard:
+		m.ResetNetworkCard()
+		return nil
+	}
+	return fmt.Errorf("unknown ServerNetworkPort edge %s", name)
 }
 
 // ServerPowerSupplyMutation represents an operation that mutates the ServerPowerSupply nodes in the graph.

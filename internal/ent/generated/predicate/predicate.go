@@ -62,6 +62,15 @@ type ServerMotherboard func(*sql.Selector)
 // ServerMotherboardType is the predicate function for servermotherboardtype builders.
 type ServerMotherboardType func(*sql.Selector)
 
+// ServerNetworkCard is the predicate function for servernetworkcard builders.
+type ServerNetworkCard func(*sql.Selector)
+
+// ServerNetworkCardType is the predicate function for servernetworkcardtype builders.
+type ServerNetworkCardType func(*sql.Selector)
+
+// ServerNetworkPort is the predicate function for servernetworkport builders.
+type ServerNetworkPort func(*sql.Selector)
+
 // ServerPowerSupply is the predicate function for serverpowersupply builders.
 type ServerPowerSupply func(*sql.Selector)
 

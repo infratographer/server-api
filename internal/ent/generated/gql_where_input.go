@@ -36,6 +36,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -4861,6 +4864,942 @@ func (i *ServerMotherboardTypeWhereInput) P() (predicate.ServerMotherboardType, 
 		return predicates[0], nil
 	default:
 		return servermotherboardtype.And(predicates...), nil
+	}
+}
+
+// ServerNetworkCardWhereInput represents a where input for filtering ServerNetworkCard queries.
+type ServerNetworkCardWhereInput struct {
+	Predicates []predicate.ServerNetworkCard  `json:"-"`
+	Not        *ServerNetworkCardWhereInput   `json:"not,omitempty"`
+	Or         []*ServerNetworkCardWhereInput `json:"or,omitempty"`
+	And        []*ServerNetworkCardWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "serial" field predicates.
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNEQ          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGT           *string  `json:"serialGT,omitempty"`
+	SerialGTE          *string  `json:"serialGTE,omitempty"`
+	SerialLT           *string  `json:"serialLT,omitempty"`
+	SerialLTE          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+
+	// "network_card_type" edge predicates.
+	HasNetworkCardType     *bool                              `json:"hasNetworkCardType,omitempty"`
+	HasNetworkCardTypeWith []*ServerNetworkCardTypeWhereInput `json:"hasNetworkCardTypeWith,omitempty"`
+
+	// "server" edge predicates.
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+
+	// "network_port" edge predicates.
+	HasNetworkPort     *bool                          `json:"hasNetworkPort,omitempty"`
+	HasNetworkPortWith []*ServerNetworkPortWhereInput `json:"hasNetworkPortWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerNetworkCardWhereInput) AddPredicates(predicates ...predicate.ServerNetworkCard) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerNetworkCardWhereInput filter on the ServerNetworkCardQuery builder.
+func (i *ServerNetworkCardWhereInput) Filter(q *ServerNetworkCardQuery) (*ServerNetworkCardQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerNetworkCardWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerNetworkCardWhereInput is returned in case the ServerNetworkCardWhereInput is empty.
+var ErrEmptyServerNetworkCardWhereInput = errors.New("generated: empty predicate ServerNetworkCardWhereInput")
+
+// P returns a predicate for filtering servernetworkcards.
+// An error is returned if the input is empty or invalid.
+func (i *ServerNetworkCardWhereInput) P() (predicate.ServerNetworkCard, error) {
+	var predicates []predicate.ServerNetworkCard
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, servernetworkcard.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerNetworkCard, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, servernetworkcard.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerNetworkCard, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, servernetworkcard.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, servernetworkcard.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, servernetworkcard.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, servernetworkcard.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, servernetworkcard.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, servernetworkcard.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, servernetworkcard.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, servernetworkcard.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, servernetworkcard.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, servernetworkcard.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, servernetworkcard.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, servernetworkcard.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, servernetworkcard.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, servernetworkcard.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, servernetworkcard.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, servernetworkcard.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, servernetworkcard.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, servernetworkcard.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, servernetworkcard.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, servernetworkcard.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, servernetworkcard.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, servernetworkcard.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, servernetworkcard.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, servernetworkcard.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, servernetworkcard.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Serial != nil {
+		predicates = append(predicates, servernetworkcard.SerialEQ(*i.Serial))
+	}
+	if i.SerialNEQ != nil {
+		predicates = append(predicates, servernetworkcard.SerialNEQ(*i.SerialNEQ))
+	}
+	if len(i.SerialIn) > 0 {
+		predicates = append(predicates, servernetworkcard.SerialIn(i.SerialIn...))
+	}
+	if len(i.SerialNotIn) > 0 {
+		predicates = append(predicates, servernetworkcard.SerialNotIn(i.SerialNotIn...))
+	}
+	if i.SerialGT != nil {
+		predicates = append(predicates, servernetworkcard.SerialGT(*i.SerialGT))
+	}
+	if i.SerialGTE != nil {
+		predicates = append(predicates, servernetworkcard.SerialGTE(*i.SerialGTE))
+	}
+	if i.SerialLT != nil {
+		predicates = append(predicates, servernetworkcard.SerialLT(*i.SerialLT))
+	}
+	if i.SerialLTE != nil {
+		predicates = append(predicates, servernetworkcard.SerialLTE(*i.SerialLTE))
+	}
+	if i.SerialContains != nil {
+		predicates = append(predicates, servernetworkcard.SerialContains(*i.SerialContains))
+	}
+	if i.SerialHasPrefix != nil {
+		predicates = append(predicates, servernetworkcard.SerialHasPrefix(*i.SerialHasPrefix))
+	}
+	if i.SerialHasSuffix != nil {
+		predicates = append(predicates, servernetworkcard.SerialHasSuffix(*i.SerialHasSuffix))
+	}
+	if i.SerialEqualFold != nil {
+		predicates = append(predicates, servernetworkcard.SerialEqualFold(*i.SerialEqualFold))
+	}
+	if i.SerialContainsFold != nil {
+		predicates = append(predicates, servernetworkcard.SerialContainsFold(*i.SerialContainsFold))
+	}
+
+	if i.HasNetworkCardType != nil {
+		p := servernetworkcard.HasNetworkCardType()
+		if !*i.HasNetworkCardType {
+			p = servernetworkcard.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasNetworkCardTypeWith) > 0 {
+		with := make([]predicate.ServerNetworkCardType, 0, len(i.HasNetworkCardTypeWith))
+		for _, w := range i.HasNetworkCardTypeWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasNetworkCardTypeWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servernetworkcard.HasNetworkCardTypeWith(with...))
+	}
+	if i.HasServer != nil {
+		p := servernetworkcard.HasServer()
+		if !*i.HasServer {
+			p = servernetworkcard.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasServerWith) > 0 {
+		with := make([]predicate.Server, 0, len(i.HasServerWith))
+		for _, w := range i.HasServerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasServerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servernetworkcard.HasServerWith(with...))
+	}
+	if i.HasNetworkPort != nil {
+		p := servernetworkcard.HasNetworkPort()
+		if !*i.HasNetworkPort {
+			p = servernetworkcard.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasNetworkPortWith) > 0 {
+		with := make([]predicate.ServerNetworkPort, 0, len(i.HasNetworkPortWith))
+		for _, w := range i.HasNetworkPortWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasNetworkPortWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servernetworkcard.HasNetworkPortWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerNetworkCardWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return servernetworkcard.And(predicates...), nil
+	}
+}
+
+// ServerNetworkCardTypeWhereInput represents a where input for filtering ServerNetworkCardType queries.
+type ServerNetworkCardTypeWhereInput struct {
+	Predicates []predicate.ServerNetworkCardType  `json:"-"`
+	Not        *ServerNetworkCardTypeWhereInput   `json:"not,omitempty"`
+	Or         []*ServerNetworkCardTypeWhereInput `json:"or,omitempty"`
+	And        []*ServerNetworkCardTypeWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "vendor" field predicates.
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNEQ          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGT           *string  `json:"vendorGT,omitempty"`
+	VendorGTE          *string  `json:"vendorGTE,omitempty"`
+	VendorLT           *string  `json:"vendorLT,omitempty"`
+	VendorLTE          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+
+	// "model" field predicates.
+	Model             *string  `json:"model,omitempty"`
+	ModelNEQ          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGT           *string  `json:"modelGT,omitempty"`
+	ModelGTE          *string  `json:"modelGTE,omitempty"`
+	ModelLT           *string  `json:"modelLT,omitempty"`
+	ModelLTE          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+
+	// "port_count" field predicates.
+	PortCount      *int  `json:"portCount,omitempty"`
+	PortCountNEQ   *int  `json:"portCountNEQ,omitempty"`
+	PortCountIn    []int `json:"portCountIn,omitempty"`
+	PortCountNotIn []int `json:"portCountNotIn,omitempty"`
+	PortCountGT    *int  `json:"portCountGT,omitempty"`
+	PortCountGTE   *int  `json:"portCountGTE,omitempty"`
+	PortCountLT    *int  `json:"portCountLT,omitempty"`
+	PortCountLTE   *int  `json:"portCountLTE,omitempty"`
+
+	// "network_card" edge predicates.
+	HasNetworkCard     *bool                          `json:"hasNetworkCard,omitempty"`
+	HasNetworkCardWith []*ServerNetworkCardWhereInput `json:"hasNetworkCardWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerNetworkCardTypeWhereInput) AddPredicates(predicates ...predicate.ServerNetworkCardType) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerNetworkCardTypeWhereInput filter on the ServerNetworkCardTypeQuery builder.
+func (i *ServerNetworkCardTypeWhereInput) Filter(q *ServerNetworkCardTypeQuery) (*ServerNetworkCardTypeQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerNetworkCardTypeWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerNetworkCardTypeWhereInput is returned in case the ServerNetworkCardTypeWhereInput is empty.
+var ErrEmptyServerNetworkCardTypeWhereInput = errors.New("generated: empty predicate ServerNetworkCardTypeWhereInput")
+
+// P returns a predicate for filtering servernetworkcardtypes.
+// An error is returned if the input is empty or invalid.
+func (i *ServerNetworkCardTypeWhereInput) P() (predicate.ServerNetworkCardType, error) {
+	var predicates []predicate.ServerNetworkCardType
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, servernetworkcardtype.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerNetworkCardType, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, servernetworkcardtype.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerNetworkCardType, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, servernetworkcardtype.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, servernetworkcardtype.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, servernetworkcardtype.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, servernetworkcardtype.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, servernetworkcardtype.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, servernetworkcardtype.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, servernetworkcardtype.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, servernetworkcardtype.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, servernetworkcardtype.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.Vendor != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorEQ(*i.Vendor))
+	}
+	if i.VendorNEQ != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorNEQ(*i.VendorNEQ))
+	}
+	if len(i.VendorIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.VendorIn(i.VendorIn...))
+	}
+	if len(i.VendorNotIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.VendorNotIn(i.VendorNotIn...))
+	}
+	if i.VendorGT != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorGT(*i.VendorGT))
+	}
+	if i.VendorGTE != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorGTE(*i.VendorGTE))
+	}
+	if i.VendorLT != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorLT(*i.VendorLT))
+	}
+	if i.VendorLTE != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorLTE(*i.VendorLTE))
+	}
+	if i.VendorContains != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorContains(*i.VendorContains))
+	}
+	if i.VendorHasPrefix != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorHasPrefix(*i.VendorHasPrefix))
+	}
+	if i.VendorHasSuffix != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorHasSuffix(*i.VendorHasSuffix))
+	}
+	if i.VendorEqualFold != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorEqualFold(*i.VendorEqualFold))
+	}
+	if i.VendorContainsFold != nil {
+		predicates = append(predicates, servernetworkcardtype.VendorContainsFold(*i.VendorContainsFold))
+	}
+	if i.Model != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelEQ(*i.Model))
+	}
+	if i.ModelNEQ != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelNEQ(*i.ModelNEQ))
+	}
+	if len(i.ModelIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.ModelIn(i.ModelIn...))
+	}
+	if len(i.ModelNotIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.ModelNotIn(i.ModelNotIn...))
+	}
+	if i.ModelGT != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelGT(*i.ModelGT))
+	}
+	if i.ModelGTE != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelGTE(*i.ModelGTE))
+	}
+	if i.ModelLT != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelLT(*i.ModelLT))
+	}
+	if i.ModelLTE != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelLTE(*i.ModelLTE))
+	}
+	if i.ModelContains != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelContains(*i.ModelContains))
+	}
+	if i.ModelHasPrefix != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelHasPrefix(*i.ModelHasPrefix))
+	}
+	if i.ModelHasSuffix != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelHasSuffix(*i.ModelHasSuffix))
+	}
+	if i.ModelEqualFold != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelEqualFold(*i.ModelEqualFold))
+	}
+	if i.ModelContainsFold != nil {
+		predicates = append(predicates, servernetworkcardtype.ModelContainsFold(*i.ModelContainsFold))
+	}
+	if i.PortCount != nil {
+		predicates = append(predicates, servernetworkcardtype.PortCountEQ(*i.PortCount))
+	}
+	if i.PortCountNEQ != nil {
+		predicates = append(predicates, servernetworkcardtype.PortCountNEQ(*i.PortCountNEQ))
+	}
+	if len(i.PortCountIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.PortCountIn(i.PortCountIn...))
+	}
+	if len(i.PortCountNotIn) > 0 {
+		predicates = append(predicates, servernetworkcardtype.PortCountNotIn(i.PortCountNotIn...))
+	}
+	if i.PortCountGT != nil {
+		predicates = append(predicates, servernetworkcardtype.PortCountGT(*i.PortCountGT))
+	}
+	if i.PortCountGTE != nil {
+		predicates = append(predicates, servernetworkcardtype.PortCountGTE(*i.PortCountGTE))
+	}
+	if i.PortCountLT != nil {
+		predicates = append(predicates, servernetworkcardtype.PortCountLT(*i.PortCountLT))
+	}
+	if i.PortCountLTE != nil {
+		predicates = append(predicates, servernetworkcardtype.PortCountLTE(*i.PortCountLTE))
+	}
+
+	if i.HasNetworkCard != nil {
+		p := servernetworkcardtype.HasNetworkCard()
+		if !*i.HasNetworkCard {
+			p = servernetworkcardtype.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasNetworkCardWith) > 0 {
+		with := make([]predicate.ServerNetworkCard, 0, len(i.HasNetworkCardWith))
+		for _, w := range i.HasNetworkCardWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasNetworkCardWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servernetworkcardtype.HasNetworkCardWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerNetworkCardTypeWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return servernetworkcardtype.And(predicates...), nil
+	}
+}
+
+// ServerNetworkPortWhereInput represents a where input for filtering ServerNetworkPort queries.
+type ServerNetworkPortWhereInput struct {
+	Predicates []predicate.ServerNetworkPort  `json:"-"`
+	Not        *ServerNetworkPortWhereInput   `json:"not,omitempty"`
+	Or         []*ServerNetworkPortWhereInput `json:"or,omitempty"`
+	And        []*ServerNetworkPortWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNEQ   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGT    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGTE   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLT    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLTE   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt      *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ   *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT    *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE   *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT    *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE   *time.Time  `json:"updatedAtLTE,omitempty"`
+
+	// "mac_address" field predicates.
+	MACAddress             *string  `json:"macAddress,omitempty"`
+	MACAddressNEQ          *string  `json:"macAddressNEQ,omitempty"`
+	MACAddressIn           []string `json:"macAddressIn,omitempty"`
+	MACAddressNotIn        []string `json:"macAddressNotIn,omitempty"`
+	MACAddressGT           *string  `json:"macAddressGT,omitempty"`
+	MACAddressGTE          *string  `json:"macAddressGTE,omitempty"`
+	MACAddressLT           *string  `json:"macAddressLT,omitempty"`
+	MACAddressLTE          *string  `json:"macAddressLTE,omitempty"`
+	MACAddressContains     *string  `json:"macAddressContains,omitempty"`
+	MACAddressHasPrefix    *string  `json:"macAddressHasPrefix,omitempty"`
+	MACAddressHasSuffix    *string  `json:"macAddressHasSuffix,omitempty"`
+	MACAddressEqualFold    *string  `json:"macAddressEqualFold,omitempty"`
+	MACAddressContainsFold *string  `json:"macAddressContainsFold,omitempty"`
+
+	// "network_card" edge predicates.
+	HasNetworkCard     *bool                          `json:"hasNetworkCard,omitempty"`
+	HasNetworkCardWith []*ServerNetworkCardWhereInput `json:"hasNetworkCardWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *ServerNetworkPortWhereInput) AddPredicates(predicates ...predicate.ServerNetworkPort) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the ServerNetworkPortWhereInput filter on the ServerNetworkPortQuery builder.
+func (i *ServerNetworkPortWhereInput) Filter(q *ServerNetworkPortQuery) (*ServerNetworkPortQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyServerNetworkPortWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyServerNetworkPortWhereInput is returned in case the ServerNetworkPortWhereInput is empty.
+var ErrEmptyServerNetworkPortWhereInput = errors.New("generated: empty predicate ServerNetworkPortWhereInput")
+
+// P returns a predicate for filtering servernetworkports.
+// An error is returned if the input is empty or invalid.
+func (i *ServerNetworkPortWhereInput) P() (predicate.ServerNetworkPort, error) {
+	var predicates []predicate.ServerNetworkPort
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, servernetworkport.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.ServerNetworkPort, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, servernetworkport.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.ServerNetworkPort, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, servernetworkport.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, servernetworkport.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, servernetworkport.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, servernetworkport.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, servernetworkport.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, servernetworkport.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, servernetworkport.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, servernetworkport.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, servernetworkport.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, servernetworkport.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, servernetworkport.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, servernetworkport.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, servernetworkport.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, servernetworkport.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, servernetworkport.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, servernetworkport.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, servernetworkport.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, servernetworkport.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, servernetworkport.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, servernetworkport.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, servernetworkport.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, servernetworkport.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, servernetworkport.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, servernetworkport.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, servernetworkport.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.MACAddress != nil {
+		predicates = append(predicates, servernetworkport.MACAddressEQ(*i.MACAddress))
+	}
+	if i.MACAddressNEQ != nil {
+		predicates = append(predicates, servernetworkport.MACAddressNEQ(*i.MACAddressNEQ))
+	}
+	if len(i.MACAddressIn) > 0 {
+		predicates = append(predicates, servernetworkport.MACAddressIn(i.MACAddressIn...))
+	}
+	if len(i.MACAddressNotIn) > 0 {
+		predicates = append(predicates, servernetworkport.MACAddressNotIn(i.MACAddressNotIn...))
+	}
+	if i.MACAddressGT != nil {
+		predicates = append(predicates, servernetworkport.MACAddressGT(*i.MACAddressGT))
+	}
+	if i.MACAddressGTE != nil {
+		predicates = append(predicates, servernetworkport.MACAddressGTE(*i.MACAddressGTE))
+	}
+	if i.MACAddressLT != nil {
+		predicates = append(predicates, servernetworkport.MACAddressLT(*i.MACAddressLT))
+	}
+	if i.MACAddressLTE != nil {
+		predicates = append(predicates, servernetworkport.MACAddressLTE(*i.MACAddressLTE))
+	}
+	if i.MACAddressContains != nil {
+		predicates = append(predicates, servernetworkport.MACAddressContains(*i.MACAddressContains))
+	}
+	if i.MACAddressHasPrefix != nil {
+		predicates = append(predicates, servernetworkport.MACAddressHasPrefix(*i.MACAddressHasPrefix))
+	}
+	if i.MACAddressHasSuffix != nil {
+		predicates = append(predicates, servernetworkport.MACAddressHasSuffix(*i.MACAddressHasSuffix))
+	}
+	if i.MACAddressEqualFold != nil {
+		predicates = append(predicates, servernetworkport.MACAddressEqualFold(*i.MACAddressEqualFold))
+	}
+	if i.MACAddressContainsFold != nil {
+		predicates = append(predicates, servernetworkport.MACAddressContainsFold(*i.MACAddressContainsFold))
+	}
+
+	if i.HasNetworkCard != nil {
+		p := servernetworkport.HasNetworkCard()
+		if !*i.HasNetworkCard {
+			p = servernetworkport.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasNetworkCardWith) > 0 {
+		with := make([]predicate.ServerNetworkCard, 0, len(i.HasNetworkCardWith))
+		for _, w := range i.HasNetworkCardWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasNetworkCardWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, servernetworkport.HasNetworkCardWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyServerNetworkPortWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return servernetworkport.And(predicates...), nil
 	}
 }
 

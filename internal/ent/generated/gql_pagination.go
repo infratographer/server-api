@@ -43,6 +43,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -5257,6 +5260,1101 @@ func (smt *ServerMotherboardType) ToEdge(order *ServerMotherboardTypeOrder) *Ser
 	return &ServerMotherboardTypeEdge{
 		Node:   smt,
 		Cursor: order.Field.toCursor(smt),
+	}
+}
+
+// ServerNetworkCardEdge is the edge representation of ServerNetworkCard.
+type ServerNetworkCardEdge struct {
+	Node   *ServerNetworkCard `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// ServerNetworkCardConnection is the connection containing edges to ServerNetworkCard.
+type ServerNetworkCardConnection struct {
+	Edges      []*ServerNetworkCardEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+func (c *ServerNetworkCardConnection) build(nodes []*ServerNetworkCard, pager *servernetworkcardPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerNetworkCard
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerNetworkCard {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerNetworkCard {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerNetworkCardEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerNetworkCardEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerNetworkCardPaginateOption enables pagination customization.
+type ServerNetworkCardPaginateOption func(*servernetworkcardPager) error
+
+// WithServerNetworkCardOrder configures pagination ordering.
+func WithServerNetworkCardOrder(order *ServerNetworkCardOrder) ServerNetworkCardPaginateOption {
+	if order == nil {
+		order = DefaultServerNetworkCardOrder
+	}
+	o := *order
+	return func(pager *servernetworkcardPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerNetworkCardOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerNetworkCardFilter configures pagination filter.
+func WithServerNetworkCardFilter(filter func(*ServerNetworkCardQuery) (*ServerNetworkCardQuery, error)) ServerNetworkCardPaginateOption {
+	return func(pager *servernetworkcardPager) error {
+		if filter == nil {
+			return errors.New("ServerNetworkCardQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servernetworkcardPager struct {
+	reverse bool
+	order   *ServerNetworkCardOrder
+	filter  func(*ServerNetworkCardQuery) (*ServerNetworkCardQuery, error)
+}
+
+func newServerNetworkCardPager(opts []ServerNetworkCardPaginateOption, reverse bool) (*servernetworkcardPager, error) {
+	pager := &servernetworkcardPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerNetworkCardOrder
+	}
+	return pager, nil
+}
+
+func (p *servernetworkcardPager) applyFilter(query *ServerNetworkCardQuery) (*ServerNetworkCardQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servernetworkcardPager) toCursor(snc *ServerNetworkCard) Cursor {
+	return p.order.Field.toCursor(snc)
+}
+
+func (p *servernetworkcardPager) applyCursors(query *ServerNetworkCardQuery, after, before *Cursor) (*ServerNetworkCardQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerNetworkCardOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servernetworkcardPager) applyOrder(query *ServerNetworkCardQuery) *ServerNetworkCardQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerNetworkCardOrder.Field {
+		query = query.Order(DefaultServerNetworkCardOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servernetworkcardPager) orderExpr(query *ServerNetworkCardQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerNetworkCardOrder.Field {
+			b.Comma().Ident(DefaultServerNetworkCardOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerNetworkCard.
+func (snc *ServerNetworkCardQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerNetworkCardPaginateOption,
+) (*ServerNetworkCardConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerNetworkCardPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if snc, err = pager.applyFilter(snc); err != nil {
+		return nil, err
+	}
+	conn := &ServerNetworkCardConnection{Edges: []*ServerNetworkCardEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = snc.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if snc, err = pager.applyCursors(snc, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		snc.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := snc.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	snc = pager.applyOrder(snc)
+	nodes, err := snc.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerNetworkCardOrderFieldID orders ServerNetworkCard by id.
+	ServerNetworkCardOrderFieldID = &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.ID, nil
+		},
+		column: servernetworkcard.FieldID,
+		toTerm: servernetworkcard.ByID,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{
+				ID:    snc.ID,
+				Value: snc.ID,
+			}
+		},
+	}
+	// ServerNetworkCardOrderFieldCreatedAt orders ServerNetworkCard by created_at.
+	ServerNetworkCardOrderFieldCreatedAt = &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.CreatedAt, nil
+		},
+		column: servernetworkcard.FieldCreatedAt,
+		toTerm: servernetworkcard.ByCreatedAt,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{
+				ID:    snc.ID,
+				Value: snc.CreatedAt,
+			}
+		},
+	}
+	// ServerNetworkCardOrderFieldUpdatedAt orders ServerNetworkCard by updated_at.
+	ServerNetworkCardOrderFieldUpdatedAt = &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.UpdatedAt, nil
+		},
+		column: servernetworkcard.FieldUpdatedAt,
+		toTerm: servernetworkcard.ByUpdatedAt,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{
+				ID:    snc.ID,
+				Value: snc.UpdatedAt,
+			}
+		},
+	}
+	// ServerNetworkCardOrderFieldSerial orders ServerNetworkCard by serial.
+	ServerNetworkCardOrderFieldSerial = &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.Serial, nil
+		},
+		column: servernetworkcard.FieldSerial,
+		toTerm: servernetworkcard.BySerial,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{
+				ID:    snc.ID,
+				Value: snc.Serial,
+			}
+		},
+	}
+	// ServerNetworkCardOrderFieldServerID orders ServerNetworkCard by server_id.
+	ServerNetworkCardOrderFieldServerID = &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.ServerID, nil
+		},
+		column: servernetworkcard.FieldServerID,
+		toTerm: servernetworkcard.ByServerID,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{
+				ID:    snc.ID,
+				Value: snc.ServerID,
+			}
+		},
+	}
+	// ServerNetworkCardOrderFieldNetworkCardTypeID orders ServerNetworkCard by network_card_type_id.
+	ServerNetworkCardOrderFieldNetworkCardTypeID = &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.NetworkCardTypeID, nil
+		},
+		column: servernetworkcard.FieldNetworkCardTypeID,
+		toTerm: servernetworkcard.ByNetworkCardTypeID,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{
+				ID:    snc.ID,
+				Value: snc.NetworkCardTypeID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerNetworkCardOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerNetworkCardOrderFieldID.column:
+		str = "ID"
+	case ServerNetworkCardOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerNetworkCardOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerNetworkCardOrderFieldSerial.column:
+		str = "SERIAL"
+	case ServerNetworkCardOrderFieldServerID.column:
+		str = "SERVER"
+	case ServerNetworkCardOrderFieldNetworkCardTypeID.column:
+		str = "NETWORK_CARD_TYPE"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerNetworkCardOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerNetworkCardOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerNetworkCardOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerNetworkCardOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerNetworkCardOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerNetworkCardOrderFieldUpdatedAt
+	case "SERIAL":
+		*f = *ServerNetworkCardOrderFieldSerial
+	case "SERVER":
+		*f = *ServerNetworkCardOrderFieldServerID
+	case "NETWORK_CARD_TYPE":
+		*f = *ServerNetworkCardOrderFieldNetworkCardTypeID
+	default:
+		return fmt.Errorf("%s is not a valid ServerNetworkCardOrderField", str)
+	}
+	return nil
+}
+
+// ServerNetworkCardOrderField defines the ordering field of ServerNetworkCard.
+type ServerNetworkCardOrderField struct {
+	// Value extracts the ordering value from the given ServerNetworkCard.
+	Value    func(*ServerNetworkCard) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servernetworkcard.OrderOption
+	toCursor func(*ServerNetworkCard) Cursor
+}
+
+// ServerNetworkCardOrder defines the ordering of ServerNetworkCard.
+type ServerNetworkCardOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *ServerNetworkCardOrderField `json:"field"`
+}
+
+// DefaultServerNetworkCardOrder is the default ordering of ServerNetworkCard.
+var DefaultServerNetworkCardOrder = &ServerNetworkCardOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerNetworkCardOrderField{
+		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
+			return snc.ID, nil
+		},
+		column: servernetworkcard.FieldID,
+		toTerm: servernetworkcard.ByID,
+		toCursor: func(snc *ServerNetworkCard) Cursor {
+			return Cursor{ID: snc.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerNetworkCard into ServerNetworkCardEdge.
+func (snc *ServerNetworkCard) ToEdge(order *ServerNetworkCardOrder) *ServerNetworkCardEdge {
+	if order == nil {
+		order = DefaultServerNetworkCardOrder
+	}
+	return &ServerNetworkCardEdge{
+		Node:   snc,
+		Cursor: order.Field.toCursor(snc),
+	}
+}
+
+// ServerNetworkCardTypeEdge is the edge representation of ServerNetworkCardType.
+type ServerNetworkCardTypeEdge struct {
+	Node   *ServerNetworkCardType `json:"node"`
+	Cursor Cursor                 `json:"cursor"`
+}
+
+// ServerNetworkCardTypeConnection is the connection containing edges to ServerNetworkCardType.
+type ServerNetworkCardTypeConnection struct {
+	Edges      []*ServerNetworkCardTypeEdge `json:"edges"`
+	PageInfo   PageInfo                     `json:"pageInfo"`
+	TotalCount int                          `json:"totalCount"`
+}
+
+func (c *ServerNetworkCardTypeConnection) build(nodes []*ServerNetworkCardType, pager *servernetworkcardtypePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerNetworkCardType
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerNetworkCardType {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerNetworkCardType {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerNetworkCardTypeEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerNetworkCardTypeEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerNetworkCardTypePaginateOption enables pagination customization.
+type ServerNetworkCardTypePaginateOption func(*servernetworkcardtypePager) error
+
+// WithServerNetworkCardTypeOrder configures pagination ordering.
+func WithServerNetworkCardTypeOrder(order *ServerNetworkCardTypeOrder) ServerNetworkCardTypePaginateOption {
+	if order == nil {
+		order = DefaultServerNetworkCardTypeOrder
+	}
+	o := *order
+	return func(pager *servernetworkcardtypePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerNetworkCardTypeOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerNetworkCardTypeFilter configures pagination filter.
+func WithServerNetworkCardTypeFilter(filter func(*ServerNetworkCardTypeQuery) (*ServerNetworkCardTypeQuery, error)) ServerNetworkCardTypePaginateOption {
+	return func(pager *servernetworkcardtypePager) error {
+		if filter == nil {
+			return errors.New("ServerNetworkCardTypeQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servernetworkcardtypePager struct {
+	reverse bool
+	order   *ServerNetworkCardTypeOrder
+	filter  func(*ServerNetworkCardTypeQuery) (*ServerNetworkCardTypeQuery, error)
+}
+
+func newServerNetworkCardTypePager(opts []ServerNetworkCardTypePaginateOption, reverse bool) (*servernetworkcardtypePager, error) {
+	pager := &servernetworkcardtypePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerNetworkCardTypeOrder
+	}
+	return pager, nil
+}
+
+func (p *servernetworkcardtypePager) applyFilter(query *ServerNetworkCardTypeQuery) (*ServerNetworkCardTypeQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servernetworkcardtypePager) toCursor(snct *ServerNetworkCardType) Cursor {
+	return p.order.Field.toCursor(snct)
+}
+
+func (p *servernetworkcardtypePager) applyCursors(query *ServerNetworkCardTypeQuery, after, before *Cursor) (*ServerNetworkCardTypeQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerNetworkCardTypeOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servernetworkcardtypePager) applyOrder(query *ServerNetworkCardTypeQuery) *ServerNetworkCardTypeQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerNetworkCardTypeOrder.Field {
+		query = query.Order(DefaultServerNetworkCardTypeOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servernetworkcardtypePager) orderExpr(query *ServerNetworkCardTypeQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerNetworkCardTypeOrder.Field {
+			b.Comma().Ident(DefaultServerNetworkCardTypeOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerNetworkCardType.
+func (snct *ServerNetworkCardTypeQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerNetworkCardTypePaginateOption,
+) (*ServerNetworkCardTypeConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerNetworkCardTypePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if snct, err = pager.applyFilter(snct); err != nil {
+		return nil, err
+	}
+	conn := &ServerNetworkCardTypeConnection{Edges: []*ServerNetworkCardTypeEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = snct.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if snct, err = pager.applyCursors(snct, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		snct.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := snct.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	snct = pager.applyOrder(snct)
+	nodes, err := snct.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerNetworkCardTypeOrderFieldID orders ServerNetworkCardType by id.
+	ServerNetworkCardTypeOrderFieldID = &ServerNetworkCardTypeOrderField{
+		Value: func(snct *ServerNetworkCardType) (ent.Value, error) {
+			return snct.ID, nil
+		},
+		column: servernetworkcardtype.FieldID,
+		toTerm: servernetworkcardtype.ByID,
+		toCursor: func(snct *ServerNetworkCardType) Cursor {
+			return Cursor{
+				ID:    snct.ID,
+				Value: snct.ID,
+			}
+		},
+	}
+	// ServerNetworkCardTypeOrderFieldCreatedAt orders ServerNetworkCardType by created_at.
+	ServerNetworkCardTypeOrderFieldCreatedAt = &ServerNetworkCardTypeOrderField{
+		Value: func(snct *ServerNetworkCardType) (ent.Value, error) {
+			return snct.CreatedAt, nil
+		},
+		column: servernetworkcardtype.FieldCreatedAt,
+		toTerm: servernetworkcardtype.ByCreatedAt,
+		toCursor: func(snct *ServerNetworkCardType) Cursor {
+			return Cursor{
+				ID:    snct.ID,
+				Value: snct.CreatedAt,
+			}
+		},
+	}
+	// ServerNetworkCardTypeOrderFieldUpdatedAt orders ServerNetworkCardType by updated_at.
+	ServerNetworkCardTypeOrderFieldUpdatedAt = &ServerNetworkCardTypeOrderField{
+		Value: func(snct *ServerNetworkCardType) (ent.Value, error) {
+			return snct.UpdatedAt, nil
+		},
+		column: servernetworkcardtype.FieldUpdatedAt,
+		toTerm: servernetworkcardtype.ByUpdatedAt,
+		toCursor: func(snct *ServerNetworkCardType) Cursor {
+			return Cursor{
+				ID:    snct.ID,
+				Value: snct.UpdatedAt,
+			}
+		},
+	}
+	// ServerNetworkCardTypeOrderFieldVendor orders ServerNetworkCardType by vendor.
+	ServerNetworkCardTypeOrderFieldVendor = &ServerNetworkCardTypeOrderField{
+		Value: func(snct *ServerNetworkCardType) (ent.Value, error) {
+			return snct.Vendor, nil
+		},
+		column: servernetworkcardtype.FieldVendor,
+		toTerm: servernetworkcardtype.ByVendor,
+		toCursor: func(snct *ServerNetworkCardType) Cursor {
+			return Cursor{
+				ID:    snct.ID,
+				Value: snct.Vendor,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerNetworkCardTypeOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerNetworkCardTypeOrderFieldID.column:
+		str = "ID"
+	case ServerNetworkCardTypeOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerNetworkCardTypeOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerNetworkCardTypeOrderFieldVendor.column:
+		str = "NAME"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerNetworkCardTypeOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerNetworkCardTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerNetworkCardTypeOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerNetworkCardTypeOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerNetworkCardTypeOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerNetworkCardTypeOrderFieldUpdatedAt
+	case "NAME":
+		*f = *ServerNetworkCardTypeOrderFieldVendor
+	default:
+		return fmt.Errorf("%s is not a valid ServerNetworkCardTypeOrderField", str)
+	}
+	return nil
+}
+
+// ServerNetworkCardTypeOrderField defines the ordering field of ServerNetworkCardType.
+type ServerNetworkCardTypeOrderField struct {
+	// Value extracts the ordering value from the given ServerNetworkCardType.
+	Value    func(*ServerNetworkCardType) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servernetworkcardtype.OrderOption
+	toCursor func(*ServerNetworkCardType) Cursor
+}
+
+// ServerNetworkCardTypeOrder defines the ordering of ServerNetworkCardType.
+type ServerNetworkCardTypeOrder struct {
+	Direction OrderDirection                   `json:"direction"`
+	Field     *ServerNetworkCardTypeOrderField `json:"field"`
+}
+
+// DefaultServerNetworkCardTypeOrder is the default ordering of ServerNetworkCardType.
+var DefaultServerNetworkCardTypeOrder = &ServerNetworkCardTypeOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerNetworkCardTypeOrderField{
+		Value: func(snct *ServerNetworkCardType) (ent.Value, error) {
+			return snct.ID, nil
+		},
+		column: servernetworkcardtype.FieldID,
+		toTerm: servernetworkcardtype.ByID,
+		toCursor: func(snct *ServerNetworkCardType) Cursor {
+			return Cursor{ID: snct.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerNetworkCardType into ServerNetworkCardTypeEdge.
+func (snct *ServerNetworkCardType) ToEdge(order *ServerNetworkCardTypeOrder) *ServerNetworkCardTypeEdge {
+	if order == nil {
+		order = DefaultServerNetworkCardTypeOrder
+	}
+	return &ServerNetworkCardTypeEdge{
+		Node:   snct,
+		Cursor: order.Field.toCursor(snct),
+	}
+}
+
+// ServerNetworkPortEdge is the edge representation of ServerNetworkPort.
+type ServerNetworkPortEdge struct {
+	Node   *ServerNetworkPort `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// ServerNetworkPortConnection is the connection containing edges to ServerNetworkPort.
+type ServerNetworkPortConnection struct {
+	Edges      []*ServerNetworkPortEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+func (c *ServerNetworkPortConnection) build(nodes []*ServerNetworkPort, pager *servernetworkportPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *ServerNetworkPort
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *ServerNetworkPort {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *ServerNetworkPort {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ServerNetworkPortEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ServerNetworkPortEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ServerNetworkPortPaginateOption enables pagination customization.
+type ServerNetworkPortPaginateOption func(*servernetworkportPager) error
+
+// WithServerNetworkPortOrder configures pagination ordering.
+func WithServerNetworkPortOrder(order *ServerNetworkPortOrder) ServerNetworkPortPaginateOption {
+	if order == nil {
+		order = DefaultServerNetworkPortOrder
+	}
+	o := *order
+	return func(pager *servernetworkportPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultServerNetworkPortOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithServerNetworkPortFilter configures pagination filter.
+func WithServerNetworkPortFilter(filter func(*ServerNetworkPortQuery) (*ServerNetworkPortQuery, error)) ServerNetworkPortPaginateOption {
+	return func(pager *servernetworkportPager) error {
+		if filter == nil {
+			return errors.New("ServerNetworkPortQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type servernetworkportPager struct {
+	reverse bool
+	order   *ServerNetworkPortOrder
+	filter  func(*ServerNetworkPortQuery) (*ServerNetworkPortQuery, error)
+}
+
+func newServerNetworkPortPager(opts []ServerNetworkPortPaginateOption, reverse bool) (*servernetworkportPager, error) {
+	pager := &servernetworkportPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultServerNetworkPortOrder
+	}
+	return pager, nil
+}
+
+func (p *servernetworkportPager) applyFilter(query *ServerNetworkPortQuery) (*ServerNetworkPortQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *servernetworkportPager) toCursor(snp *ServerNetworkPort) Cursor {
+	return p.order.Field.toCursor(snp)
+}
+
+func (p *servernetworkportPager) applyCursors(query *ServerNetworkPortQuery, after, before *Cursor) (*ServerNetworkPortQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultServerNetworkPortOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *servernetworkportPager) applyOrder(query *ServerNetworkPortQuery) *ServerNetworkPortQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultServerNetworkPortOrder.Field {
+		query = query.Order(DefaultServerNetworkPortOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *servernetworkportPager) orderExpr(query *ServerNetworkPortQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultServerNetworkPortOrder.Field {
+			b.Comma().Ident(DefaultServerNetworkPortOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to ServerNetworkPort.
+func (snp *ServerNetworkPortQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ServerNetworkPortPaginateOption,
+) (*ServerNetworkPortConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newServerNetworkPortPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if snp, err = pager.applyFilter(snp); err != nil {
+		return nil, err
+	}
+	conn := &ServerNetworkPortConnection{Edges: []*ServerNetworkPortEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = snp.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if snp, err = pager.applyCursors(snp, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		snp.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := snp.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	snp = pager.applyOrder(snp)
+	nodes, err := snp.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// ServerNetworkPortOrderFieldID orders ServerNetworkPort by id.
+	ServerNetworkPortOrderFieldID = &ServerNetworkPortOrderField{
+		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
+			return snp.ID, nil
+		},
+		column: servernetworkport.FieldID,
+		toTerm: servernetworkport.ByID,
+		toCursor: func(snp *ServerNetworkPort) Cursor {
+			return Cursor{
+				ID:    snp.ID,
+				Value: snp.ID,
+			}
+		},
+	}
+	// ServerNetworkPortOrderFieldCreatedAt orders ServerNetworkPort by created_at.
+	ServerNetworkPortOrderFieldCreatedAt = &ServerNetworkPortOrderField{
+		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
+			return snp.CreatedAt, nil
+		},
+		column: servernetworkport.FieldCreatedAt,
+		toTerm: servernetworkport.ByCreatedAt,
+		toCursor: func(snp *ServerNetworkPort) Cursor {
+			return Cursor{
+				ID:    snp.ID,
+				Value: snp.CreatedAt,
+			}
+		},
+	}
+	// ServerNetworkPortOrderFieldUpdatedAt orders ServerNetworkPort by updated_at.
+	ServerNetworkPortOrderFieldUpdatedAt = &ServerNetworkPortOrderField{
+		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
+			return snp.UpdatedAt, nil
+		},
+		column: servernetworkport.FieldUpdatedAt,
+		toTerm: servernetworkport.ByUpdatedAt,
+		toCursor: func(snp *ServerNetworkPort) Cursor {
+			return Cursor{
+				ID:    snp.ID,
+				Value: snp.UpdatedAt,
+			}
+		},
+	}
+	// ServerNetworkPortOrderFieldMACAddress orders ServerNetworkPort by mac_address.
+	ServerNetworkPortOrderFieldMACAddress = &ServerNetworkPortOrderField{
+		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
+			return snp.MACAddress, nil
+		},
+		column: servernetworkport.FieldMACAddress,
+		toTerm: servernetworkport.ByMACAddress,
+		toCursor: func(snp *ServerNetworkPort) Cursor {
+			return Cursor{
+				ID:    snp.ID,
+				Value: snp.MACAddress,
+			}
+		},
+	}
+	// ServerNetworkPortOrderFieldNetworkCardID orders ServerNetworkPort by network_card_id.
+	ServerNetworkPortOrderFieldNetworkCardID = &ServerNetworkPortOrderField{
+		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
+			return snp.NetworkCardID, nil
+		},
+		column: servernetworkport.FieldNetworkCardID,
+		toTerm: servernetworkport.ByNetworkCardID,
+		toCursor: func(snp *ServerNetworkPort) Cursor {
+			return Cursor{
+				ID:    snp.ID,
+				Value: snp.NetworkCardID,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f ServerNetworkPortOrderField) String() string {
+	var str string
+	switch f.column {
+	case ServerNetworkPortOrderFieldID.column:
+		str = "ID"
+	case ServerNetworkPortOrderFieldCreatedAt.column:
+		str = "CREATED_AT"
+	case ServerNetworkPortOrderFieldUpdatedAt.column:
+		str = "UPDATED_AT"
+	case ServerNetworkPortOrderFieldMACAddress.column:
+		str = "MAC_ADDRESS"
+	case ServerNetworkPortOrderFieldNetworkCardID.column:
+		str = "NETWORK_CARD"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f ServerNetworkPortOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *ServerNetworkPortOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("ServerNetworkPortOrderField %T must be a string", v)
+	}
+	switch str {
+	case "ID":
+		*f = *ServerNetworkPortOrderFieldID
+	case "CREATED_AT":
+		*f = *ServerNetworkPortOrderFieldCreatedAt
+	case "UPDATED_AT":
+		*f = *ServerNetworkPortOrderFieldUpdatedAt
+	case "MAC_ADDRESS":
+		*f = *ServerNetworkPortOrderFieldMACAddress
+	case "NETWORK_CARD":
+		*f = *ServerNetworkPortOrderFieldNetworkCardID
+	default:
+		return fmt.Errorf("%s is not a valid ServerNetworkPortOrderField", str)
+	}
+	return nil
+}
+
+// ServerNetworkPortOrderField defines the ordering field of ServerNetworkPort.
+type ServerNetworkPortOrderField struct {
+	// Value extracts the ordering value from the given ServerNetworkPort.
+	Value    func(*ServerNetworkPort) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) servernetworkport.OrderOption
+	toCursor func(*ServerNetworkPort) Cursor
+}
+
+// ServerNetworkPortOrder defines the ordering of ServerNetworkPort.
+type ServerNetworkPortOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *ServerNetworkPortOrderField `json:"field"`
+}
+
+// DefaultServerNetworkPortOrder is the default ordering of ServerNetworkPort.
+var DefaultServerNetworkPortOrder = &ServerNetworkPortOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ServerNetworkPortOrderField{
+		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
+			return snp.ID, nil
+		},
+		column: servernetworkport.FieldID,
+		toTerm: servernetworkport.ByID,
+		toCursor: func(snp *ServerNetworkPort) Cursor {
+			return Cursor{ID: snp.ID}
+		},
+	},
+}
+
+// ToEdge converts ServerNetworkPort into ServerNetworkPortEdge.
+func (snp *ServerNetworkPort) ToEdge(order *ServerNetworkPortOrder) *ServerNetworkPortEdge {
+	if order == nil {
+		order = DefaultServerNetworkPortOrder
+	}
+	return &ServerNetworkPortEdge{
+		Node:   snp,
+		Cursor: order.Field.toCursor(snp),
 	}
 }
 

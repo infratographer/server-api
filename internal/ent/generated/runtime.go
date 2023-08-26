@@ -33,6 +33,9 @@ import (
 	"go.infratographer.com/server-api/internal/ent/generated/servermemorytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboard"
 	"go.infratographer.com/server-api/internal/ent/generated/servermotherboardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcardtype"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkport"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupplytype"
 	"go.infratographer.com/server-api/internal/ent/generated/servertype"
@@ -446,6 +449,83 @@ func init() {
 	servermotherboardtypeDescID := servermotherboardtypeFields[0].Descriptor()
 	// servermotherboardtype.DefaultID holds the default value on creation for the id field.
 	servermotherboardtype.DefaultID = servermotherboardtypeDescID.Default.(func() gidx.PrefixedID)
+	servernetworkcardMixin := schema.ServerNetworkCard{}.Mixin()
+	servernetworkcardMixinFields0 := servernetworkcardMixin[0].Fields()
+	_ = servernetworkcardMixinFields0
+	servernetworkcardFields := schema.ServerNetworkCard{}.Fields()
+	_ = servernetworkcardFields
+	// servernetworkcardDescCreatedAt is the schema descriptor for created_at field.
+	servernetworkcardDescCreatedAt := servernetworkcardMixinFields0[0].Descriptor()
+	// servernetworkcard.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servernetworkcard.DefaultCreatedAt = servernetworkcardDescCreatedAt.Default.(func() time.Time)
+	// servernetworkcardDescUpdatedAt is the schema descriptor for updated_at field.
+	servernetworkcardDescUpdatedAt := servernetworkcardMixinFields0[1].Descriptor()
+	// servernetworkcard.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servernetworkcard.DefaultUpdatedAt = servernetworkcardDescUpdatedAt.Default.(func() time.Time)
+	// servernetworkcard.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servernetworkcard.UpdateDefaultUpdatedAt = servernetworkcardDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servernetworkcardDescSerial is the schema descriptor for serial field.
+	servernetworkcardDescSerial := servernetworkcardFields[1].Descriptor()
+	// servernetworkcard.SerialValidator is a validator for the "serial" field. It is called by the builders before save.
+	servernetworkcard.SerialValidator = servernetworkcardDescSerial.Validators[0].(func(string) error)
+	// servernetworkcardDescID is the schema descriptor for id field.
+	servernetworkcardDescID := servernetworkcardFields[0].Descriptor()
+	// servernetworkcard.DefaultID holds the default value on creation for the id field.
+	servernetworkcard.DefaultID = servernetworkcardDescID.Default.(func() gidx.PrefixedID)
+	servernetworkcardtypeMixin := schema.ServerNetworkCardType{}.Mixin()
+	servernetworkcardtypeMixinFields0 := servernetworkcardtypeMixin[0].Fields()
+	_ = servernetworkcardtypeMixinFields0
+	servernetworkcardtypeFields := schema.ServerNetworkCardType{}.Fields()
+	_ = servernetworkcardtypeFields
+	// servernetworkcardtypeDescCreatedAt is the schema descriptor for created_at field.
+	servernetworkcardtypeDescCreatedAt := servernetworkcardtypeMixinFields0[0].Descriptor()
+	// servernetworkcardtype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servernetworkcardtype.DefaultCreatedAt = servernetworkcardtypeDescCreatedAt.Default.(func() time.Time)
+	// servernetworkcardtypeDescUpdatedAt is the schema descriptor for updated_at field.
+	servernetworkcardtypeDescUpdatedAt := servernetworkcardtypeMixinFields0[1].Descriptor()
+	// servernetworkcardtype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servernetworkcardtype.DefaultUpdatedAt = servernetworkcardtypeDescUpdatedAt.Default.(func() time.Time)
+	// servernetworkcardtype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servernetworkcardtype.UpdateDefaultUpdatedAt = servernetworkcardtypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servernetworkcardtypeDescVendor is the schema descriptor for vendor field.
+	servernetworkcardtypeDescVendor := servernetworkcardtypeFields[1].Descriptor()
+	// servernetworkcardtype.VendorValidator is a validator for the "vendor" field. It is called by the builders before save.
+	servernetworkcardtype.VendorValidator = servernetworkcardtypeDescVendor.Validators[0].(func(string) error)
+	// servernetworkcardtypeDescModel is the schema descriptor for model field.
+	servernetworkcardtypeDescModel := servernetworkcardtypeFields[2].Descriptor()
+	// servernetworkcardtype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	servernetworkcardtype.ModelValidator = servernetworkcardtypeDescModel.Validators[0].(func(string) error)
+	// servernetworkcardtypeDescPortCount is the schema descriptor for port_count field.
+	servernetworkcardtypeDescPortCount := servernetworkcardtypeFields[3].Descriptor()
+	// servernetworkcardtype.PortCountValidator is a validator for the "port_count" field. It is called by the builders before save.
+	servernetworkcardtype.PortCountValidator = servernetworkcardtypeDescPortCount.Validators[0].(func(int) error)
+	// servernetworkcardtypeDescID is the schema descriptor for id field.
+	servernetworkcardtypeDescID := servernetworkcardtypeFields[0].Descriptor()
+	// servernetworkcardtype.DefaultID holds the default value on creation for the id field.
+	servernetworkcardtype.DefaultID = servernetworkcardtypeDescID.Default.(func() gidx.PrefixedID)
+	servernetworkportMixin := schema.ServerNetworkPort{}.Mixin()
+	servernetworkportMixinFields0 := servernetworkportMixin[0].Fields()
+	_ = servernetworkportMixinFields0
+	servernetworkportFields := schema.ServerNetworkPort{}.Fields()
+	_ = servernetworkportFields
+	// servernetworkportDescCreatedAt is the schema descriptor for created_at field.
+	servernetworkportDescCreatedAt := servernetworkportMixinFields0[0].Descriptor()
+	// servernetworkport.DefaultCreatedAt holds the default value on creation for the created_at field.
+	servernetworkport.DefaultCreatedAt = servernetworkportDescCreatedAt.Default.(func() time.Time)
+	// servernetworkportDescUpdatedAt is the schema descriptor for updated_at field.
+	servernetworkportDescUpdatedAt := servernetworkportMixinFields0[1].Descriptor()
+	// servernetworkport.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	servernetworkport.DefaultUpdatedAt = servernetworkportDescUpdatedAt.Default.(func() time.Time)
+	// servernetworkport.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	servernetworkport.UpdateDefaultUpdatedAt = servernetworkportDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// servernetworkportDescMACAddress is the schema descriptor for mac_address field.
+	servernetworkportDescMACAddress := servernetworkportFields[1].Descriptor()
+	// servernetworkport.MACAddressValidator is a validator for the "mac_address" field. It is called by the builders before save.
+	servernetworkport.MACAddressValidator = servernetworkportDescMACAddress.Validators[0].(func(string) error)
+	// servernetworkportDescID is the schema descriptor for id field.
+	servernetworkportDescID := servernetworkportFields[0].Descriptor()
+	// servernetworkport.DefaultID holds the default value on creation for the id field.
+	servernetworkport.DefaultID = servernetworkportDescID.Default.(func() gidx.PrefixedID)
 	serverpowersupplyMixin := schema.ServerPowerSupply{}.Mixin()
 	serverpowersupplyMixinFields0 := serverpowersupplyMixin[0].Fields()
 	_ = serverpowersupplyMixinFields0

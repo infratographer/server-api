@@ -171,6 +171,33 @@ type CreateServerMotherboardTypeInput struct {
 	MotherboardIDs []gidx.PrefixedID `json:"motherboardIDs,omitempty"`
 }
 
+// Input information to create a server network card type.
+type CreateServerNetworkCardInput struct {
+	// The serial number for the server network card.
+	Serial            string            `json:"serial"`
+	NetworkCardTypeID gidx.PrefixedID   `json:"networkCardTypeID"`
+	ServerID          gidx.PrefixedID   `json:"serverID"`
+	NetworkPortIDs    []gidx.PrefixedID `json:"networkPortIDs,omitempty"`
+}
+
+// Input information to create a server network card type.
+type CreateServerNetworkCardTypeInput struct {
+	// The name of the vendor for the server network card type.
+	Vendor string `json:"vendor"`
+	// The model of the server network card type.
+	Model string `json:"model"`
+	// The number of ports on the server network card type.
+	PortCount      int64             `json:"portCount"`
+	NetworkCardIDs []gidx.PrefixedID `json:"networkCardIDs,omitempty"`
+}
+
+// Input information to create a server network card type.
+type CreateServerNetworkPortInput struct {
+	// The mac address for the server network port.
+	MacAddress    string          `json:"macAddress"`
+	NetworkCardID gidx.PrefixedID `json:"networkCardID"`
+}
+
 // Input information to create a server power supply.
 type CreateServerPowerSupplyInput struct {
 	// The serial of the server power supply.
@@ -1905,6 +1932,380 @@ type ServerMotherboardWhereInput struct {
 	HasServerMotherboardTypeWith []*ServerMotherboardTypeWhereInput `json:"hasServerMotherboardTypeWith,omitempty"`
 }
 
+type ServerNetworkCard struct {
+	// The ID of the server network card type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The serial number for the server network card.
+	Serial          string                      `json:"serial"`
+	NetworkCardType ServerNetworkCardType       `json:"networkCardType"`
+	Server          Server                      `json:"server"`
+	NetworkPort     ServerNetworkPortConnection `json:"networkPort"`
+}
+
+func (ServerNetworkCard) IsNode() {}
+
+// The id of the object.
+func (this ServerNetworkCard) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerNetworkCard) IsEntity() {}
+
+// A connection to a list of items.
+type ServerNetworkCardConnection struct {
+	// A list of edges.
+	Edges []*ServerNetworkCardEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverNetworkCardCreate
+type ServerNetworkCardCreatePayload struct {
+	// The created server network card.
+	ServerNetworkCard ServerNetworkCard `json:"serverNetworkCard"`
+}
+
+// Return response from serverNetworkCardDelete
+type ServerNetworkCardDeletePayload struct {
+	// The ID of the deleted server network card.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerNetworkCardEdge struct {
+	// The item at the end of the edge.
+	Node *ServerNetworkCard `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerNetworkCard connections
+type ServerNetworkCardOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerNetworkCards.
+	Field ServerNetworkCardOrderField `json:"field"`
+}
+
+type ServerNetworkCardType struct {
+	// The ID of the server network card type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The name of the vendor for the server network card type.
+	Vendor string `json:"vendor"`
+	// The model of the server network card type.
+	Model string `json:"model"`
+	// The number of ports on the server network card type.
+	PortCount   int64                       `json:"portCount"`
+	NetworkCard ServerNetworkCardConnection `json:"networkCard"`
+}
+
+func (ServerNetworkCardType) IsNode() {}
+
+// The id of the object.
+func (this ServerNetworkCardType) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerNetworkCardType) IsEntity() {}
+
+// A connection to a list of items.
+type ServerNetworkCardTypeConnection struct {
+	// A list of edges.
+	Edges []*ServerNetworkCardTypeEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverNetworkCardTypeCreate
+type ServerNetworkCardTypeCreatePayload struct {
+	// The created server network card type.
+	ServerNetworkCardType ServerNetworkCardType `json:"serverNetworkCardType"`
+}
+
+// Return response from serverNetworkCardTypeDelete
+type ServerNetworkCardTypeDeletePayload struct {
+	// The ID of the deleted server network card type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerNetworkCardTypeEdge struct {
+	// The item at the end of the edge.
+	Node *ServerNetworkCardType `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerNetworkCardType connections
+type ServerNetworkCardTypeOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerNetworkCardTypes.
+	Field ServerNetworkCardTypeOrderField `json:"field"`
+}
+
+// Return response from serverNetworkCardTypeUpdate
+type ServerNetworkCardTypeUpdatePayload struct {
+	// The updated server network card type.
+	ServerNetworkCardType ServerNetworkCardType `json:"serverNetworkCardType"`
+}
+
+// ServerNetworkCardTypeWhereInput is used for filtering ServerNetworkCardType objects.
+// Input was generated by ent.
+type ServerNetworkCardTypeWhereInput struct {
+	Not *ServerNetworkCardTypeWhereInput   `json:"not,omitempty"`
+	And []*ServerNetworkCardTypeWhereInput `json:"and,omitempty"`
+	Or  []*ServerNetworkCardTypeWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// vendor field predicates
+	Vendor             *string  `json:"vendor,omitempty"`
+	VendorNeq          *string  `json:"vendorNEQ,omitempty"`
+	VendorIn           []string `json:"vendorIn,omitempty"`
+	VendorNotIn        []string `json:"vendorNotIn,omitempty"`
+	VendorGt           *string  `json:"vendorGT,omitempty"`
+	VendorGte          *string  `json:"vendorGTE,omitempty"`
+	VendorLt           *string  `json:"vendorLT,omitempty"`
+	VendorLte          *string  `json:"vendorLTE,omitempty"`
+	VendorContains     *string  `json:"vendorContains,omitempty"`
+	VendorHasPrefix    *string  `json:"vendorHasPrefix,omitempty"`
+	VendorHasSuffix    *string  `json:"vendorHasSuffix,omitempty"`
+	VendorEqualFold    *string  `json:"vendorEqualFold,omitempty"`
+	VendorContainsFold *string  `json:"vendorContainsFold,omitempty"`
+	// model field predicates
+	Model             *string  `json:"model,omitempty"`
+	ModelNeq          *string  `json:"modelNEQ,omitempty"`
+	ModelIn           []string `json:"modelIn,omitempty"`
+	ModelNotIn        []string `json:"modelNotIn,omitempty"`
+	ModelGt           *string  `json:"modelGT,omitempty"`
+	ModelGte          *string  `json:"modelGTE,omitempty"`
+	ModelLt           *string  `json:"modelLT,omitempty"`
+	ModelLte          *string  `json:"modelLTE,omitempty"`
+	ModelContains     *string  `json:"modelContains,omitempty"`
+	ModelHasPrefix    *string  `json:"modelHasPrefix,omitempty"`
+	ModelHasSuffix    *string  `json:"modelHasSuffix,omitempty"`
+	ModelEqualFold    *string  `json:"modelEqualFold,omitempty"`
+	ModelContainsFold *string  `json:"modelContainsFold,omitempty"`
+	// port_count field predicates
+	PortCount      *int64  `json:"portCount,omitempty"`
+	PortCountNeq   *int64  `json:"portCountNEQ,omitempty"`
+	PortCountIn    []int64 `json:"portCountIn,omitempty"`
+	PortCountNotIn []int64 `json:"portCountNotIn,omitempty"`
+	PortCountGt    *int64  `json:"portCountGT,omitempty"`
+	PortCountGte   *int64  `json:"portCountGTE,omitempty"`
+	PortCountLt    *int64  `json:"portCountLT,omitempty"`
+	PortCountLte   *int64  `json:"portCountLTE,omitempty"`
+	// network_card edge predicates
+	HasNetworkCard     *bool                          `json:"hasNetworkCard,omitempty"`
+	HasNetworkCardWith []*ServerNetworkCardWhereInput `json:"hasNetworkCardWith,omitempty"`
+}
+
+// Return response from serverNetworkCardUpdate
+type ServerNetworkCardUpdatePayload struct {
+	// The updated server network card.
+	ServerNetworkCard ServerNetworkCard `json:"serverNetworkCard"`
+}
+
+// ServerNetworkCardWhereInput is used for filtering ServerNetworkCard objects.
+// Input was generated by ent.
+type ServerNetworkCardWhereInput struct {
+	Not *ServerNetworkCardWhereInput   `json:"not,omitempty"`
+	And []*ServerNetworkCardWhereInput `json:"and,omitempty"`
+	Or  []*ServerNetworkCardWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// serial field predicates
+	Serial             *string  `json:"serial,omitempty"`
+	SerialNeq          *string  `json:"serialNEQ,omitempty"`
+	SerialIn           []string `json:"serialIn,omitempty"`
+	SerialNotIn        []string `json:"serialNotIn,omitempty"`
+	SerialGt           *string  `json:"serialGT,omitempty"`
+	SerialGte          *string  `json:"serialGTE,omitempty"`
+	SerialLt           *string  `json:"serialLT,omitempty"`
+	SerialLte          *string  `json:"serialLTE,omitempty"`
+	SerialContains     *string  `json:"serialContains,omitempty"`
+	SerialHasPrefix    *string  `json:"serialHasPrefix,omitempty"`
+	SerialHasSuffix    *string  `json:"serialHasSuffix,omitempty"`
+	SerialEqualFold    *string  `json:"serialEqualFold,omitempty"`
+	SerialContainsFold *string  `json:"serialContainsFold,omitempty"`
+	// network_card_type edge predicates
+	HasNetworkCardType     *bool                              `json:"hasNetworkCardType,omitempty"`
+	HasNetworkCardTypeWith []*ServerNetworkCardTypeWhereInput `json:"hasNetworkCardTypeWith,omitempty"`
+	// server edge predicates
+	HasServer     *bool               `json:"hasServer,omitempty"`
+	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
+	// network_port edge predicates
+	HasNetworkPort     *bool                          `json:"hasNetworkPort,omitempty"`
+	HasNetworkPortWith []*ServerNetworkPortWhereInput `json:"hasNetworkPortWith,omitempty"`
+}
+
+type ServerNetworkPort struct {
+	// The ID of the server network card type.
+	ID        gidx.PrefixedID `json:"id"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
+	// The mac address for the server network port.
+	MacAddress  string            `json:"macAddress"`
+	NetworkCard ServerNetworkCard `json:"networkCard"`
+}
+
+func (ServerNetworkPort) IsNode() {}
+
+// The id of the object.
+func (this ServerNetworkPort) GetID() gidx.PrefixedID { return this.ID }
+
+func (ServerNetworkPort) IsEntity() {}
+
+// A connection to a list of items.
+type ServerNetworkPortConnection struct {
+	// A list of edges.
+	Edges []*ServerNetworkPortEdge `json:"edges,omitempty"`
+	// Information to aid in pagination.
+	PageInfo PageInfo `json:"pageInfo"`
+	// Identifies the total count of items in the connection.
+	TotalCount int64 `json:"totalCount"`
+}
+
+// Return response from serverNetworkPortCreate
+type ServerNetworkPortCreatePayload struct {
+	// The created server network port.
+	ServerNetworkPort ServerNetworkPort `json:"serverNetworkPort"`
+}
+
+// Return response from serverNetworkPortDelete
+type ServerNetworkPortDeletePayload struct {
+	// The ID of the deleted server network port.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// An edge in a connection.
+type ServerNetworkPortEdge struct {
+	// The item at the end of the edge.
+	Node *ServerNetworkPort `json:"node,omitempty"`
+	// A cursor for use in pagination.
+	Cursor string `json:"cursor"`
+}
+
+// Ordering options for ServerNetworkPort connections
+type ServerNetworkPortOrder struct {
+	// The ordering direction.
+	Direction OrderDirection `json:"direction"`
+	// The field by which to order ServerNetworkPorts.
+	Field ServerNetworkPortOrderField `json:"field"`
+}
+
+// Return response from serverNetworkPortUpdate
+type ServerNetworkPortUpdatePayload struct {
+	// The updated server network port.
+	ServerNetworkPort ServerNetworkPort `json:"serverNetworkPort"`
+}
+
+// ServerNetworkPortWhereInput is used for filtering ServerNetworkPort objects.
+// Input was generated by ent.
+type ServerNetworkPortWhereInput struct {
+	Not *ServerNetworkPortWhereInput   `json:"not,omitempty"`
+	And []*ServerNetworkPortWhereInput `json:"and,omitempty"`
+	Or  []*ServerNetworkPortWhereInput `json:"or,omitempty"`
+	// id field predicates
+	ID      *gidx.PrefixedID  `json:"id,omitempty"`
+	IDNeq   *gidx.PrefixedID  `json:"idNEQ,omitempty"`
+	IDIn    []gidx.PrefixedID `json:"idIn,omitempty"`
+	IDNotIn []gidx.PrefixedID `json:"idNotIn,omitempty"`
+	IDGt    *gidx.PrefixedID  `json:"idGT,omitempty"`
+	IDGte   *gidx.PrefixedID  `json:"idGTE,omitempty"`
+	IDLt    *gidx.PrefixedID  `json:"idLT,omitempty"`
+	IDLte   *gidx.PrefixedID  `json:"idLTE,omitempty"`
+	// created_at field predicates
+	CreatedAt      *time.Time   `json:"createdAt,omitempty"`
+	CreatedAtNeq   *time.Time   `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []*time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []*time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGt    *time.Time   `json:"createdAtGT,omitempty"`
+	CreatedAtGte   *time.Time   `json:"createdAtGTE,omitempty"`
+	CreatedAtLt    *time.Time   `json:"createdAtLT,omitempty"`
+	CreatedAtLte   *time.Time   `json:"createdAtLTE,omitempty"`
+	// updated_at field predicates
+	UpdatedAt      *time.Time   `json:"updatedAt,omitempty"`
+	UpdatedAtNeq   *time.Time   `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn    []*time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn []*time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGt    *time.Time   `json:"updatedAtGT,omitempty"`
+	UpdatedAtGte   *time.Time   `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLt    *time.Time   `json:"updatedAtLT,omitempty"`
+	UpdatedAtLte   *time.Time   `json:"updatedAtLTE,omitempty"`
+	// mac_address field predicates
+	MacAddress             *string  `json:"macAddress,omitempty"`
+	MacAddressNeq          *string  `json:"macAddressNEQ,omitempty"`
+	MacAddressIn           []string `json:"macAddressIn,omitempty"`
+	MacAddressNotIn        []string `json:"macAddressNotIn,omitempty"`
+	MacAddressGt           *string  `json:"macAddressGT,omitempty"`
+	MacAddressGte          *string  `json:"macAddressGTE,omitempty"`
+	MacAddressLt           *string  `json:"macAddressLT,omitempty"`
+	MacAddressLte          *string  `json:"macAddressLTE,omitempty"`
+	MacAddressContains     *string  `json:"macAddressContains,omitempty"`
+	MacAddressHasPrefix    *string  `json:"macAddressHasPrefix,omitempty"`
+	MacAddressHasSuffix    *string  `json:"macAddressHasSuffix,omitempty"`
+	MacAddressEqualFold    *string  `json:"macAddressEqualFold,omitempty"`
+	MacAddressContainsFold *string  `json:"macAddressContainsFold,omitempty"`
+	// network_card edge predicates
+	HasNetworkCard     *bool                          `json:"hasNetworkCard,omitempty"`
+	HasNetworkCardWith []*ServerNetworkCardWhereInput `json:"hasNetworkCardWith,omitempty"`
+}
+
 // Ordering options for Server connections
 type ServerOrder struct {
 	// The ordering direction.
@@ -2593,6 +2994,34 @@ type UpdateServerMotherboardTypeInput struct {
 	ClearMotherboard     *bool             `json:"clearMotherboard,omitempty"`
 }
 
+// Input information to update a server network card type.
+type UpdateServerNetworkCardInput struct {
+	// The serial number for the server network card.
+	Serial               *string           `json:"serial,omitempty"`
+	AddNetworkPortIDs    []gidx.PrefixedID `json:"addNetworkPortIDs,omitempty"`
+	RemoveNetworkPortIDs []gidx.PrefixedID `json:"removeNetworkPortIDs,omitempty"`
+	ClearNetworkPort     *bool             `json:"clearNetworkPort,omitempty"`
+}
+
+// Input information to update a server network card type.
+type UpdateServerNetworkCardTypeInput struct {
+	// The name of the vendor for the server network card type.
+	Vendor *string `json:"vendor,omitempty"`
+	// The model of the server network card type.
+	Model *string `json:"model,omitempty"`
+	// The number of ports on the server network card type.
+	PortCount            *int64            `json:"portCount,omitempty"`
+	AddNetworkCardIDs    []gidx.PrefixedID `json:"addNetworkCardIDs,omitempty"`
+	RemoveNetworkCardIDs []gidx.PrefixedID `json:"removeNetworkCardIDs,omitempty"`
+	ClearNetworkCard     *bool             `json:"clearNetworkCard,omitempty"`
+}
+
+// Input information to update a server network card type.
+type UpdateServerNetworkPortInput struct {
+	// The mac address for the server network port.
+	MacAddress *string `json:"macAddress,omitempty"`
+}
+
 // Input information to update a server power supply.
 type UpdateServerPowerSupplyInput struct {
 	// The serial of the server power supply.
@@ -3240,6 +3669,150 @@ func (e *ServerMotherboardTypeOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ServerMotherboardTypeOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerNetworkCard connections can be ordered.
+type ServerNetworkCardOrderField string
+
+const (
+	ServerNetworkCardOrderFieldID              ServerNetworkCardOrderField = "ID"
+	ServerNetworkCardOrderFieldCreatedAt       ServerNetworkCardOrderField = "CREATED_AT"
+	ServerNetworkCardOrderFieldUpdatedAt       ServerNetworkCardOrderField = "UPDATED_AT"
+	ServerNetworkCardOrderFieldSerial          ServerNetworkCardOrderField = "SERIAL"
+	ServerNetworkCardOrderFieldServer          ServerNetworkCardOrderField = "SERVER"
+	ServerNetworkCardOrderFieldNetworkCardType ServerNetworkCardOrderField = "NETWORK_CARD_TYPE"
+)
+
+var AllServerNetworkCardOrderField = []ServerNetworkCardOrderField{
+	ServerNetworkCardOrderFieldID,
+	ServerNetworkCardOrderFieldCreatedAt,
+	ServerNetworkCardOrderFieldUpdatedAt,
+	ServerNetworkCardOrderFieldSerial,
+	ServerNetworkCardOrderFieldServer,
+	ServerNetworkCardOrderFieldNetworkCardType,
+}
+
+func (e ServerNetworkCardOrderField) IsValid() bool {
+	switch e {
+	case ServerNetworkCardOrderFieldID, ServerNetworkCardOrderFieldCreatedAt, ServerNetworkCardOrderFieldUpdatedAt, ServerNetworkCardOrderFieldSerial, ServerNetworkCardOrderFieldServer, ServerNetworkCardOrderFieldNetworkCardType:
+		return true
+	}
+	return false
+}
+
+func (e ServerNetworkCardOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerNetworkCardOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerNetworkCardOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerNetworkCardOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerNetworkCardOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerNetworkCardType connections can be ordered.
+type ServerNetworkCardTypeOrderField string
+
+const (
+	ServerNetworkCardTypeOrderFieldID        ServerNetworkCardTypeOrderField = "ID"
+	ServerNetworkCardTypeOrderFieldCreatedAt ServerNetworkCardTypeOrderField = "CREATED_AT"
+	ServerNetworkCardTypeOrderFieldUpdatedAt ServerNetworkCardTypeOrderField = "UPDATED_AT"
+	ServerNetworkCardTypeOrderFieldName      ServerNetworkCardTypeOrderField = "NAME"
+)
+
+var AllServerNetworkCardTypeOrderField = []ServerNetworkCardTypeOrderField{
+	ServerNetworkCardTypeOrderFieldID,
+	ServerNetworkCardTypeOrderFieldCreatedAt,
+	ServerNetworkCardTypeOrderFieldUpdatedAt,
+	ServerNetworkCardTypeOrderFieldName,
+}
+
+func (e ServerNetworkCardTypeOrderField) IsValid() bool {
+	switch e {
+	case ServerNetworkCardTypeOrderFieldID, ServerNetworkCardTypeOrderFieldCreatedAt, ServerNetworkCardTypeOrderFieldUpdatedAt, ServerNetworkCardTypeOrderFieldName:
+		return true
+	}
+	return false
+}
+
+func (e ServerNetworkCardTypeOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerNetworkCardTypeOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerNetworkCardTypeOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerNetworkCardTypeOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerNetworkCardTypeOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which ServerNetworkPort connections can be ordered.
+type ServerNetworkPortOrderField string
+
+const (
+	ServerNetworkPortOrderFieldID          ServerNetworkPortOrderField = "ID"
+	ServerNetworkPortOrderFieldCreatedAt   ServerNetworkPortOrderField = "CREATED_AT"
+	ServerNetworkPortOrderFieldUpdatedAt   ServerNetworkPortOrderField = "UPDATED_AT"
+	ServerNetworkPortOrderFieldMacAddress  ServerNetworkPortOrderField = "MAC_ADDRESS"
+	ServerNetworkPortOrderFieldNetworkCard ServerNetworkPortOrderField = "NETWORK_CARD"
+)
+
+var AllServerNetworkPortOrderField = []ServerNetworkPortOrderField{
+	ServerNetworkPortOrderFieldID,
+	ServerNetworkPortOrderFieldCreatedAt,
+	ServerNetworkPortOrderFieldUpdatedAt,
+	ServerNetworkPortOrderFieldMacAddress,
+	ServerNetworkPortOrderFieldNetworkCard,
+}
+
+func (e ServerNetworkPortOrderField) IsValid() bool {
+	switch e {
+	case ServerNetworkPortOrderFieldID, ServerNetworkPortOrderFieldCreatedAt, ServerNetworkPortOrderFieldUpdatedAt, ServerNetworkPortOrderFieldMacAddress, ServerNetworkPortOrderFieldNetworkCard:
+		return true
+	}
+	return false
+}
+
+func (e ServerNetworkPortOrderField) String() string {
+	return string(e)
+}
+
+func (e *ServerNetworkPortOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerNetworkPortOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerNetworkPortOrderField", str)
+	}
+	return nil
+}
+
+func (e ServerNetworkPortOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

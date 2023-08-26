@@ -340,6 +340,66 @@ func (ec *executionContext) __resolve_entities(ctx context.Context, representati
 				list[idx[i]] = entity
 				return nil
 			}
+		case "ServerNetworkCard":
+			resolverName, err := entityResolverNameForServerNetworkCard(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerNetworkCard": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerNetworkCardByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerNetworkCardByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerNetworkCardByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerNetworkCard": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
+		case "ServerNetworkCardType":
+			resolverName, err := entityResolverNameForServerNetworkCardType(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerNetworkCardType": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerNetworkCardTypeByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerNetworkCardTypeByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerNetworkCardTypeByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerNetworkCardType": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
+		case "ServerNetworkPort":
+			resolverName, err := entityResolverNameForServerNetworkPort(ctx, rep)
+			if err != nil {
+				return fmt.Errorf(`finding resolver for Entity "ServerNetworkPort": %w`, err)
+			}
+			switch resolverName {
+
+			case "findServerNetworkPortByID":
+				id0, err := ec.unmarshalNID2goᚗinfratographerᚗcomᚋxᚋgidxᚐPrefixedID(ctx, rep["id"])
+				if err != nil {
+					return fmt.Errorf(`unmarshalling param 0 for findServerNetworkPortByID(): %w`, err)
+				}
+				entity, err := ec.resolvers.Entity().FindServerNetworkPortByID(ctx, id0)
+				if err != nil {
+					return fmt.Errorf(`resolving Entity "ServerNetworkPort": %w`, err)
+				}
+
+				list[idx[i]] = entity
+				return nil
+			}
 		case "ServerPowerSupply":
 			resolverName, err := entityResolverNameForServerPowerSupply(ctx, rep)
 			if err != nil {
@@ -708,6 +768,57 @@ func entityResolverNameForServerMotherboardType(ctx context.Context, rep map[str
 		return "findServerMotherboardTypeByID", nil
 	}
 	return "", fmt.Errorf("%w for ServerMotherboardType", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerNetworkCard(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerNetworkCardByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerNetworkCard", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerNetworkCardType(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerNetworkCardTypeByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerNetworkCardType", ErrTypeNotFound)
+}
+
+func entityResolverNameForServerNetworkPort(ctx context.Context, rep map[string]interface{}) (string, error) {
+	for {
+		var (
+			m   map[string]interface{}
+			val interface{}
+			ok  bool
+		)
+		_ = val
+		m = rep
+		if _, ok = m["id"]; !ok {
+			break
+		}
+		return "findServerNetworkPortByID", nil
+	}
+	return "", fmt.Errorf("%w for ServerNetworkPort", ErrTypeNotFound)
 }
 
 func entityResolverNameForServerPowerSupply(ctx context.Context, rep map[string]interface{}) (string, error) {

@@ -235,6 +235,60 @@ type ServerMotherboardUpdatePayload struct {
 	ServerMotherboard *generated.ServerMotherboard `json:"serverMotherboard"`
 }
 
+// Return response from serverNetworkCardCreate
+type ServerNetworkCardCreatePayload struct {
+	// The created server network card.
+	ServerNetworkCard *generated.ServerNetworkCard `json:"serverNetworkCard"`
+}
+
+// Return response from serverNetworkCardDelete
+type ServerNetworkCardDeletePayload struct {
+	// The ID of the deleted server network card.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverNetworkCardTypeCreate
+type ServerNetworkCardTypeCreatePayload struct {
+	// The created server network card type.
+	ServerNetworkCardType *generated.ServerNetworkCardType `json:"serverNetworkCardType"`
+}
+
+// Return response from serverNetworkCardTypeDelete
+type ServerNetworkCardTypeDeletePayload struct {
+	// The ID of the deleted server network card type.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverNetworkCardTypeUpdate
+type ServerNetworkCardTypeUpdatePayload struct {
+	// The updated server network card type.
+	ServerNetworkCardType *generated.ServerNetworkCardType `json:"serverNetworkCardType"`
+}
+
+// Return response from serverNetworkCardUpdate
+type ServerNetworkCardUpdatePayload struct {
+	// The updated server network card.
+	ServerNetworkCard *generated.ServerNetworkCard `json:"serverNetworkCard"`
+}
+
+// Return response from serverNetworkPortCreate
+type ServerNetworkPortCreatePayload struct {
+	// The created server network port.
+	ServerNetworkPort *generated.ServerNetworkPort `json:"serverNetworkPort"`
+}
+
+// Return response from serverNetworkPortDelete
+type ServerNetworkPortDeletePayload struct {
+	// The ID of the deleted server network port.
+	DeletedID gidx.PrefixedID `json:"deletedID"`
+}
+
+// Return response from serverNetworkPortUpdate
+type ServerNetworkPortUpdatePayload struct {
+	// The updated server network port.
+	ServerNetworkPort *generated.ServerNetworkPort `json:"serverNetworkPort"`
+}
+
 // Return response from serverPowerSupplyCreate
 type ServerPowerSupplyCreatePayload struct {
 	// The created server power supply.

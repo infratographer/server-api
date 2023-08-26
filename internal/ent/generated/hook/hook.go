@@ -191,6 +191,42 @@ func (f ServerMotherboardTypeFunc) Mutate(ctx context.Context, m generated.Mutat
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerMotherboardTypeMutation", m)
 }
 
+// The ServerNetworkCardFunc type is an adapter to allow the use of ordinary
+// function as ServerNetworkCard mutator.
+type ServerNetworkCardFunc func(context.Context, *generated.ServerNetworkCardMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerNetworkCardFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerNetworkCardMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerNetworkCardMutation", m)
+}
+
+// The ServerNetworkCardTypeFunc type is an adapter to allow the use of ordinary
+// function as ServerNetworkCardType mutator.
+type ServerNetworkCardTypeFunc func(context.Context, *generated.ServerNetworkCardTypeMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerNetworkCardTypeFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerNetworkCardTypeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerNetworkCardTypeMutation", m)
+}
+
+// The ServerNetworkPortFunc type is an adapter to allow the use of ordinary
+// function as ServerNetworkPort mutator.
+type ServerNetworkPortFunc func(context.Context, *generated.ServerNetworkPortMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServerNetworkPortFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.ServerNetworkPortMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ServerNetworkPortMutation", m)
+}
+
 // The ServerPowerSupplyFunc type is an adapter to allow the use of ordinary
 // function as ServerPowerSupply mutator.
 type ServerPowerSupplyFunc func(context.Context, *generated.ServerPowerSupplyMutation) (generated.Value, error)

@@ -592,6 +592,108 @@ var (
 			},
 		},
 	}
+	// ServerNetworkCardsColumns holds the columns for the "server_network_cards" table.
+	ServerNetworkCardsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "serial", Type: field.TypeString, Size: 2147483647},
+		{Name: "network_card_type_id", Type: field.TypeString},
+		{Name: "server_id", Type: field.TypeString},
+	}
+	// ServerNetworkCardsTable holds the schema information for the "server_network_cards" table.
+	ServerNetworkCardsTable = &schema.Table{
+		Name:       "server_network_cards",
+		Columns:    ServerNetworkCardsColumns,
+		PrimaryKey: []*schema.Column{ServerNetworkCardsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_network_cards_server_network_card_types_network_card_type",
+				Columns:    []*schema.Column{ServerNetworkCardsColumns[4]},
+				RefColumns: []*schema.Column{ServerNetworkCardTypesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "server_network_cards_servers_server",
+				Columns:    []*schema.Column{ServerNetworkCardsColumns[5]},
+				RefColumns: []*schema.Column{ServersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servernetworkcard_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerNetworkCardsColumns[1]},
+			},
+			{
+				Name:    "servernetworkcard_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerNetworkCardsColumns[2]},
+			},
+		},
+	}
+	// ServerNetworkCardTypesColumns holds the columns for the "server_network_card_types" table.
+	ServerNetworkCardTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
+		{Name: "model", Type: field.TypeString, Size: 2147483647},
+		{Name: "port_count", Type: field.TypeInt},
+	}
+	// ServerNetworkCardTypesTable holds the schema information for the "server_network_card_types" table.
+	ServerNetworkCardTypesTable = &schema.Table{
+		Name:       "server_network_card_types",
+		Columns:    ServerNetworkCardTypesColumns,
+		PrimaryKey: []*schema.Column{ServerNetworkCardTypesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servernetworkcardtype_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerNetworkCardTypesColumns[1]},
+			},
+			{
+				Name:    "servernetworkcardtype_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerNetworkCardTypesColumns[2]},
+			},
+		},
+	}
+	// ServerNetworkPortsColumns holds the columns for the "server_network_ports" table.
+	ServerNetworkPortsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "mac_address", Type: field.TypeString, Size: 2147483647},
+		{Name: "network_card_id", Type: field.TypeString},
+	}
+	// ServerNetworkPortsTable holds the schema information for the "server_network_ports" table.
+	ServerNetworkPortsTable = &schema.Table{
+		Name:       "server_network_ports",
+		Columns:    ServerNetworkPortsColumns,
+		PrimaryKey: []*schema.Column{ServerNetworkPortsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "server_network_ports_server_network_cards_network_card",
+				Columns:    []*schema.Column{ServerNetworkPortsColumns[4]},
+				RefColumns: []*schema.Column{ServerNetworkCardsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "servernetworkport_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerNetworkPortsColumns[1]},
+			},
+			{
+				Name:    "servernetworkport_updated_at",
+				Unique:  false,
+				Columns: []*schema.Column{ServerNetworkPortsColumns[2]},
+			},
+		},
+	}
 	// ServerPowerSuppliesColumns holds the columns for the "server_power_supplies" table.
 	ServerPowerSuppliesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -717,6 +819,9 @@ var (
 		ServerMemoryTypesTable,
 		ServerMotherboardsTable,
 		ServerMotherboardTypesTable,
+		ServerNetworkCardsTable,
+		ServerNetworkCardTypesTable,
+		ServerNetworkPortsTable,
 		ServerPowerSuppliesTable,
 		ServerPowerSupplyTypesTable,
 		ServerTypesTable,
@@ -738,6 +843,9 @@ func init() {
 	ServerMemoriesTable.ForeignKeys[1].RefTable = ServerMemoryTypesTable
 	ServerMotherboardsTable.ForeignKeys[0].RefTable = ServersTable
 	ServerMotherboardsTable.ForeignKeys[1].RefTable = ServerMotherboardTypesTable
+	ServerNetworkCardsTable.ForeignKeys[0].RefTable = ServerNetworkCardTypesTable
+	ServerNetworkCardsTable.ForeignKeys[1].RefTable = ServersTable
+	ServerNetworkPortsTable.ForeignKeys[0].RefTable = ServerNetworkCardsTable
 	ServerPowerSuppliesTable.ForeignKeys[0].RefTable = ServersTable
 	ServerPowerSuppliesTable.ForeignKeys[1].RefTable = ServerPowerSupplyTypesTable
 }
