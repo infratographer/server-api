@@ -4,19 +4,23 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3" // sqlite3 driver
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.infratographer.com/permissions-api/pkg/permissions"
+	"go.infratographer.com/x/crdbx"
 	"go.infratographer.com/x/echojwtx"
 	"go.infratographer.com/x/echox"
+	"go.infratographer.com/x/events"
 	"go.infratographer.com/x/versionx"
 	"go.uber.org/zap"
 
 	"go.infratographer.com/server-api/internal/config"
 	ent "go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/eventhooks"
 	"go.infratographer.com/server-api/internal/graphapi"
 )
 
@@ -56,7 +60,19 @@ func serve(ctx context.Context) error {
 		config.AppConfig.Server.WithMiddleware(middleware.CORS())
 	}
 
-	cOpts := []ent.Option{}
+	events, err := events.NewConnection(config.AppConfig.Events, events.WithLogger(logger))
+	if err != nil {
+		logger.Fatal("unable to initialize events", zap.Error(err))
+	}
+
+	db, err := crdbx.NewDB(config.AppConfig.CRDB, config.AppConfig.Tracing.Enabled)
+	if err != nil {
+		logger.Fatal("unable to initialize crdb client", zap.Error(err))
+	}
+
+	entDB := entsql.OpenDB(dialect.Postgres, db)
+
+	cOpts := []ent.Option{ent.Driver(entDB), ent.EventsPublisher(events)}
 
 	if config.AppConfig.Logging.Debug {
 		cOpts = append(cOpts,
@@ -71,6 +87,8 @@ func serve(ctx context.Context) error {
 		return err
 	}
 	defer client.Close()
+
+	eventhooks.EventHooks(client)
 
 	// Run the automatic migration tool to create all schema resources.
 	if err := client.Schema.Create(ctx); err != nil {

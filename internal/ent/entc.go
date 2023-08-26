@@ -23,6 +23,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
+	"entgo.io/ent/schema/field"
 	"go.infratographer.com/x/entx"
 )
 
@@ -33,6 +34,7 @@ func main() {
 	xExt, err := entx.NewExtension(
 		entx.WithFederation(),
 		entx.WithJSONScalar(),
+		entx.WithEventHooks(),
 	)
 	if err != nil {
 		log.Fatalf("creating entx extension: %v", err)
@@ -57,7 +59,14 @@ func main() {
 			gqlExt,
 		),
 		entc.TemplateDir("./internal/ent/templates"),
-		// entc.FeatureNames("intercept"),
+		entc.FeatureNames("intercept"),
+		entc.Dependency(
+			entc.DependencyName("EventsPublisher"),
+			entc.DependencyTypeInfo(&field.TypeInfo{
+				Ident:   "events.Connection",
+				PkgPath: "go.infratographer.com/x/events",
+			}),
+		),
 	}
 
 	if err := entc.Generate("./internal/ent/schema", &gen.Config{
