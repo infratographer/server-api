@@ -6,7 +6,7 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -14,20 +14,62 @@ import (
 
 // ServerCPU is the resolver for the serverCPU field.
 func (r *mutationResolver) ServerCPU(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerCPU - serverCPU"))
+	// TODO: check permissions
+
+	cpu, err := r.client.ServerCPU.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerCPUCreatePayload{ServerCPU: cpu}, nil
 }
 
 // ServerCPUUpdate is the resolver for the serverCPUUpdate field.
 func (r *mutationResolver) ServerCPUUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUInput) (*ServerCPUUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerCPUUpdate - serverCPUUpdate"))
+	// TODO: check permissions
+
+	cpu, err := r.client.ServerCPU.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	cpu, err = cpu.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerCPUUpdatePayload{ServerCPU: cpu}, nil
 }
 
 // ServerCPUDelete is the resolver for the serverCPUDelete field.
 func (r *mutationResolver) ServerCPUDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerCPUDelete - serverCPUDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.Server.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerCPUDeletePayload{DeletedID: id}, nil
 }
 
 // ServerCPU is the resolver for the serverCPU field.
 func (r *queryResolver) ServerCPU(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPU, error) {
-	panic(fmt.Errorf("not implemented: ServerCPU - serverCPU"))
+	return r.client.ServerCPU.Get(ctx, id)
 }
