@@ -6,6 +6,7 @@ package graphapi
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
@@ -14,6 +15,10 @@ import (
 
 // ServerCreate is the resolver for the serverCreate field.
 func (r *mutationResolver) ServerCreate(ctx context.Context, input generated.CreateServerInput) (*ServerCreatePayload, error) {
+	// if err := permissions.CheckAccess(ctx, input.OwnerID, actionServerCreate); err != nil {
+	// 	return nil, err
+	// }
+
 	srv, err := r.client.Server.Create().SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -24,12 +29,47 @@ func (r *mutationResolver) ServerCreate(ctx context.Context, input generated.Cre
 
 // ServerUpdate is the resolver for the serverUpdate field.
 func (r *mutationResolver) ServerUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerInput) (*ServerUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerUpdate - serverUpdate"))
+	// TODO: check permissions
+
+	srv, err := r.client.Server.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	srv, err = srv.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerUpdatePayload{Server: srv}, nil
 }
 
 // ServerDelete is the resolver for the serverDelete field.
 func (r *mutationResolver) ServerDelete(ctx context.Context, id gidx.PrefixedID) (*ServerDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerDelete - serverDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.Server.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerDeletePayload{DeletedID: id}, nil
 }
 
 // Server is the resolver for the server field.
