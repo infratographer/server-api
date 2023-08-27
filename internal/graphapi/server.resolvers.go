@@ -7,7 +7,6 @@ package graphapi
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -53,6 +52,8 @@ func (r *mutationResolver) ServerDelete(ctx context.Context, id gidx.PrefixedID)
 		return nil, err
 	}
 
+	// TODO: theres a whole lotta things we got do some cascading deletes for
+
 	if err := tx.Server.DeleteOneID(id).Exec(ctx); err != nil {
 		r.logger.Errorw("failed to commit transaction", "error", err)
 		if rerr := tx.Rollback(); rerr != nil {
@@ -74,5 +75,7 @@ func (r *mutationResolver) ServerDelete(ctx context.Context, id gidx.PrefixedID)
 
 // Server is the resolver for the server field.
 func (r *queryResolver) Server(ctx context.Context, id gidx.PrefixedID) (*generated.Server, error) {
-	panic(fmt.Errorf("not implemented: Server - server"))
+	//TODO: check permissions
+
+	return r.client.Server.Get(ctx, id)
 }

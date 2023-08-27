@@ -6,9 +6,11 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -24,15 +26,71 @@ func (r *mutationResolver) ServerProviderCreate(ctx context.Context, input gener
 
 // ServerProviderUpdate is the resolver for the serverProviderUpdate field.
 func (r *mutationResolver) ServerProviderUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerProviderInput) (*ServerProviderUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerProviderUpdate - serverProviderUpdate"))
+	// TODO: check permissions
+
+	prv, err := r.client.Provider.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	prv, err = prv.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerProviderUpdatePayload{ServerProvider: prv}, nil
 }
 
 // ServerProviderDelete is the resolver for the serverProviderDelete field.
 func (r *mutationResolver) ServerProviderDelete(ctx context.Context, id gidx.PrefixedID) (*ServerProviderDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerProviderDelete - serverProviderDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup servers associated with provider
+	servers, err := tx.Server.Query().Where(predicate.Server(server.ProviderIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query servers", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query servers")
+		}
+		return nil, err
+	}
+
+	for _, s := range servers {
+		if err = tx.Server.DeleteOne(s).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server", "port", s.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete port")
+			}
+		}
+	}
+
+	if err := tx.Provider.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerProviderDeletePayload{DeletedID: id}, nil
 }
 
 // ServerProvider is the resolver for the serverProvider field.
 func (r *queryResolver) ServerProvider(ctx context.Context, id gidx.PrefixedID) (*generated.Provider, error) {
-	panic(fmt.Errorf("not implemented: ServerProvider - serverProvider"))
+	//TODO: check permissions
+
+	return r.client.Provider.Get(ctx, id)
 }
