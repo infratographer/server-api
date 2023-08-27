@@ -6,28 +6,91 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/servercpu"
 	"go.infratographer.com/x/gidx"
 )
 
 // ServerCPUType is the resolver for the serverCPUType field.
 func (r *mutationResolver) ServerCPUType(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerCPUType - serverCPUType"))
+	// TODO: check permissions
+
+	ct, err := r.client.ServerCPUType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerCPUTypeCreatePayload{ServerCPUType: ct}, nil
 }
 
 // ServerCPUTypeUpdate is the resolver for the serverCPUTypeUpdate field.
 func (r *mutationResolver) ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) (*ServerCPUTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerCPUTypeUpdate - serverCPUTypeUpdate"))
+	// TODO: check permissions
+
+	ct, err := r.client.ServerCPUType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	ct, err = ct.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerCPUTypeUpdatePayload{ServerCPUType: ct}, nil
 }
 
 // ServerCPUTypeDelete is the resolver for the serverCPUTypeDelete field.
 func (r *mutationResolver) ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerCPUTypeDelete - serverCPUTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup cpus associated with type
+	cpus, err := tx.ServerCPU.Query().Where(predicate.ServerCPU(servercpu.ServerCPUTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query cpus", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query servers")
+		}
+		return nil, err
+	}
+
+	for _, c := range cpus {
+		if err = tx.ServerCPU.DeleteOne(c).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server", "port", c.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete port")
+			}
+		}
+	}
+
+	if err := tx.Server.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerCPUTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerCPUType is the resolver for the serverCPUType field.
 func (r *queryResolver) ServerCPUType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error) {
-	panic(fmt.Errorf("not implemented: ServerCPUType - serverCPUType"))
+	return r.client.ServerCPUType.Get(ctx, id)
 }

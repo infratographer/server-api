@@ -7,7 +7,6 @@ package graphapi
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/server-api/internal/ent/generated/predicate"
@@ -91,5 +90,5 @@ func (r *mutationResolver) ServerTypeDelete(ctx context.Context, id gidx.Prefixe
 
 // ServerType is the resolver for the serverType field.
 func (r *queryResolver) ServerType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerType, error) {
-	panic(fmt.Errorf("not implemented: ServerType - serverType"))
+	return r.client.ServerType.Get(ctx, id)
 }
