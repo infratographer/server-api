@@ -6,9 +6,12 @@ package graphapi
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/server"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -24,12 +27,66 @@ func (r *mutationResolver) ServerTypeCreate(ctx context.Context, input generated
 
 // ServerTypeUpdate is the resolver for the serverTypeUpdate field.
 func (r *mutationResolver) ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerTypeInput) (*ServerTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerTypeUpdate - serverTypeUpdate"))
+	// TODO: check permissions
+
+	t, err := r.client.ServerType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	t, err = t.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerTypeUpdatePayload{ServerType: t}, nil
 }
 
 // ServerTypeDelete is the resolver for the serverTypeDelete field.
 func (r *mutationResolver) ServerTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerTypeDelete - serverTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup servers associated with type
+	servers, err := tx.Server.Query().Where(predicate.Server(server.ServerTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query servers", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query servers")
+		}
+		return nil, err
+	}
+
+	for _, s := range servers {
+		if err = tx.Server.DeleteOne(s).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server", "port", s.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete port")
+			}
+		}
+	}
+
+	if err := tx.Provider.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerType is the resolver for the serverType field.
