@@ -6,7 +6,7 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -14,20 +14,62 @@ import (
 
 // ServerMotherboard is the resolver for the serverMotherboard field.
 func (r *mutationResolver) ServerMotherboard(ctx context.Context, input generated.CreateServerMotherboardInput) (*ServerMotherboardCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMotherboard - serverMotherboard"))
+	// TODO: check permissions
+
+	mb, err := r.client.ServerMotherboard.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerMotherboardCreatePayload{ServerMotherboard: mb}, nil
 }
 
 // ServerMotherboardUpdate is the resolver for the serverMotherboardUpdate field.
 func (r *mutationResolver) ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) (*ServerMotherboardUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMotherboardUpdate - serverMotherboardUpdate"))
+	// TODO: check permissions
+
+	mb, err := r.client.ServerMotherboard.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	mb, err = mb.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerMotherboardUpdatePayload{ServerMotherboard: mb}, nil
 }
 
 // ServerMotherboardDelete is the resolver for the serverMotherboardDelete field.
 func (r *mutationResolver) ServerMotherboardDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMotherboardDelete - serverMotherboardDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.ServerMotherboard.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete motherboard")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerMotherboardDeletePayload{DeletedID: id}, nil
 }
 
 // ServerMotherboard is the resolver for the serverMotherboard field.
 func (r *queryResolver) ServerMotherboard(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMotherboard, error) {
-	panic(fmt.Errorf("not implemented: ServerMotherboard - serverMotherboard"))
+	return r.client.ServerMotherboard.Get(ctx, id)
 }
