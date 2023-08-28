@@ -66,15 +66,15 @@ func (r *mutationResolver) ServerCPUTypeDelete(ctx context.Context, id gidx.Pref
 		if err = tx.ServerCPU.DeleteOne(c).Exec(ctx); err != nil {
 			r.logger.Errorw("failed to delete server", "port", c.ID, "error", err)
 			if rerr := tx.Rollback(); rerr != nil {
-				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete port")
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete cpu")
 			}
 		}
 	}
 
-	if err := tx.Server.DeleteOneID(id).Exec(ctx); err != nil {
+	if err := tx.ServerCPUType.DeleteOneID(id).Exec(ctx); err != nil {
 		r.logger.Errorw("failed to commit transaction", "error", err)
 		if rerr := tx.Rollback(); rerr != nil {
-			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server cpu type")
 		}
 		return nil, err
 	}

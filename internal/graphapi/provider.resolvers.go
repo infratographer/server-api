@@ -64,7 +64,7 @@ func (r *mutationResolver) ServerProviderDelete(ctx context.Context, id gidx.Pre
 		if err = tx.Server.DeleteOne(s).Exec(ctx); err != nil {
 			r.logger.Errorw("failed to delete server", "port", s.ID, "error", err)
 			if rerr := tx.Rollback(); rerr != nil {
-				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete port")
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
 			}
 		}
 	}
@@ -72,7 +72,7 @@ func (r *mutationResolver) ServerProviderDelete(ctx context.Context, id gidx.Pre
 	if err := tx.Provider.DeleteOneID(id).Exec(ctx); err != nil {
 		r.logger.Errorw("failed to commit transaction", "error", err)
 		if rerr := tx.Rollback(); rerr != nil {
-			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete provider")
 		}
 		return nil, err
 	}
