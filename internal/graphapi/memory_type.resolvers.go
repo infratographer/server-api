@@ -93,5 +93,4 @@ func (r *mutationResolver) ServerMemoryTypeDelete(ctx context.Context, id gidx.P
 // ServerMemoryType is the resolver for the serverMemoryType field.
 func (r *queryResolver) ServerMemoryType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error) {
 	return r.client.ServerMemoryType.Get(ctx, id)
-
 }

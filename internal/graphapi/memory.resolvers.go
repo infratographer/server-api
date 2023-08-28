@@ -6,7 +6,7 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -14,20 +14,62 @@ import (
 
 // ServerMemory is the resolver for the serverMemory field.
 func (r *mutationResolver) ServerMemory(ctx context.Context, input generated.CreateServerMemoryInput) (*ServerMemoryCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMemory - serverMemory"))
+	// TODO: check permissions
+
+	m, err := r.client.ServerMemory.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerMemoryCreatePayload{ServerMemory: m}, nil
 }
 
 // ServerMemoryUpdate is the resolver for the serverMemoryUpdate field.
 func (r *mutationResolver) ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMemoryInput) (*ServerMemoryUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMemoryUpdate - serverMemoryUpdate"))
+	// TODO: check permissions
+
+	m, err := r.client.ServerMemory.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	m, err = m.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerMemoryUpdatePayload{ServerMemory: m}, nil
 }
 
 // ServerMemoryDelete is the resolver for the serverMemoryDelete field.
 func (r *mutationResolver) ServerMemoryDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMemoryDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMemoryDelete - serverMemoryDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.ServerMemory.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete memory")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerMemoryDeletePayload{DeletedID: id}, nil
 }
 
 // ServerMemory is the resolver for the serverMemory field.
 func (r *queryResolver) ServerMemory(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemory, error) {
-	panic(fmt.Errorf("not implemented: ServerMemory - serverMemory"))
+	return r.client.ServerMemory.Get(ctx, id)
 }
