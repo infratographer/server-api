@@ -6,28 +6,92 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/servermemory"
 	"go.infratographer.com/x/gidx"
 )
 
 // ServerMemoryType is the resolver for the serverMemoryType field.
 func (r *mutationResolver) ServerMemoryType(ctx context.Context, input generated.CreateServerMemoryTypeInput) (*ServerMemoryTypeCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMemoryType - serverMemoryType"))
+	// TODO: check permissions
+
+	mt, err := r.client.ServerMemoryType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerMemoryTypeCreatePayload{ServerMemoryType: mt}, nil
 }
 
 // ServerMemoryTypeUpdate is the resolver for the serverMemoryTypeUpdate field.
 func (r *mutationResolver) ServerMemoryTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMemoryTypeInput) (*ServerMemoryTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMemoryTypeUpdate - serverMemoryTypeUpdate"))
+	// TODO: check permissions
+
+	mt, err := r.client.ServerMemoryType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	mt, err = mt.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerMemoryTypeUpdatePayload{ServerMemoryType: mt}, nil
 }
 
 // ServerMemoryTypeDelete is the resolver for the serverMemoryTypeDelete field.
 func (r *mutationResolver) ServerMemoryTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMemoryTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerMemoryTypeDelete - serverMemoryTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup memory associated with type
+	mem, err := tx.ServerMemory.Query().Where(predicate.ServerMemory(servermemory.ServerMemoryTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query memory", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query memory")
+		}
+		return nil, err
+	}
+
+	for _, m := range mem {
+		if err = tx.ServerMemory.DeleteOne(m).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server", "port", m.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete memory")
+			}
+		}
+	}
+
+	if err := tx.ServerMemoryType.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete memory type")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerMemoryTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerMemoryType is the resolver for the serverMemoryType field.
 func (r *queryResolver) ServerMemoryType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerMemoryType, error) {
-	panic(fmt.Errorf("not implemented: ServerMemoryType - serverMemoryType"))
+	return r.client.ServerMemoryType.Get(ctx, id)
+
 }
