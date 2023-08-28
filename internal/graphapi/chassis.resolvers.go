@@ -6,7 +6,7 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -14,22 +14,64 @@ import (
 
 // ServerChassis is the resolver for the serverChassis field.
 func (r *mutationResolver) ServerChassis(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerChassis - serverChassis"))
+	// TODO: check permissions
+
+	ct, err := r.client.ServerChassis.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerChassisCreatePayload{ServerChassis: ct}, nil
 }
 
 // ServerChassisUpdate is the resolver for the serverChassisUpdate field.
 func (r *mutationResolver) ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerChassisInput) (*ServerChassisUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerChassisUpdate - serverChassisUpdate"))
+	// TODO: check permissions
+
+	ct, err := r.client.ServerChassis.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	ct, err = ct.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerChassisUpdatePayload{ServerChassis: ct}, nil
 }
 
 // ServerChassisDelete is the resolver for the serverChassisDelete field.
 func (r *mutationResolver) ServerChassisDelete(ctx context.Context, id gidx.PrefixedID) (*ServerChassisDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerChassisDelete - serverChassisDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.ServerChassis.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete chassis")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerChassisDeletePayload{DeletedID: id}, nil
 }
 
 // ServerChassis is the resolver for the serverChassis field.
 func (r *queryResolver) ServerChassis(ctx context.Context, id gidx.PrefixedID) (*generated.ServerChassis, error) {
-	panic(fmt.Errorf("not implemented: ServerChassis - serverChassis"))
+	return r.client.ServerChassis.Get(ctx, id)
 }
 
 // Mutation returns MutationResolver implementation.
