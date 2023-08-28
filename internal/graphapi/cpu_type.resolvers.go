@@ -57,7 +57,7 @@ func (r *mutationResolver) ServerCPUTypeDelete(ctx context.Context, id gidx.Pref
 	if err != nil {
 		r.logger.Errorw("failed to query cpus", "error", err)
 		if rerr := tx.Rollback(); rerr != nil {
-			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query servers")
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query cpus")
 		}
 		return nil, err
 	}
