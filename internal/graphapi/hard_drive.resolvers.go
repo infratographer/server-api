@@ -6,7 +6,7 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -14,20 +14,62 @@ import (
 
 // ServerHardDrive is the resolver for the serverHardDrive field.
 func (r *mutationResolver) ServerHardDrive(ctx context.Context, input generated.CreateServerHardDriveInput) (*ServerHardDriveCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDrive - serverHardDrive"))
+	// TODO: check permissions
+
+	hd, err := r.client.ServerHardDrive.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerHardDriveCreatePayload{ServerHardDrive: hd}, nil
 }
 
 // ServerHardDriveUpdate is the resolver for the serverHardDriveUpdate field.
 func (r *mutationResolver) ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerHardDriveInput) (*ServerHardDriveUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDriveUpdate - serverHardDriveUpdate"))
+	// TODO: check permissions
+
+	hd, err := r.client.ServerHardDrive.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	hd, err = hd.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerHardDriveUpdatePayload{ServerHardDrive: hd}, nil
 }
 
 // ServerHardDriveDelete is the resolver for the serverHardDriveDelete field.
 func (r *mutationResolver) ServerHardDriveDelete(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDriveDelete - serverHardDriveDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.ServerHardDrive.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete hard drive")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerHardDriveDeletePayload{DeletedID: id}, nil
 }
 
 // ServerHardDrive is the resolver for the serverHardDrive field.
 func (r *queryResolver) ServerHardDrive(ctx context.Context, id gidx.PrefixedID) (*generated.ServerHardDrive, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDrive - serverHardDrive"))
+	return r.client.ServerHardDrive.Get(ctx, id)
 }
