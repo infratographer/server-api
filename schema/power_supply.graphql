@@ -27,7 +27,7 @@ extend type Mutation {
   """
   Delete a server power supply.
   """
-  serverPowerSupplyDelete(id: ID!): ServerPowerSupplyTypeDeletePayload!
+  serverPowerSupplyDelete(id: ID!): ServerPowerSupplyDeletePayload!
 }
 
 """

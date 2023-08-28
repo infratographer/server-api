@@ -92,7 +92,7 @@ type Mutation struct {
 	ServerNetworkPortDelete     ServerNetworkPortDeletePayload     "json:\"serverNetworkPortDelete\" graphql:\"serverNetworkPortDelete\""
 	ServerPowerSupply           ServerPowerSupplyCreatePayload     "json:\"serverPowerSupply\" graphql:\"serverPowerSupply\""
 	ServerPowerSupplyUpdate     ServerPowerSupplyUpdatePayload     "json:\"serverPowerSupplyUpdate\" graphql:\"serverPowerSupplyUpdate\""
-	ServerPowerSupplyDelete     ServerPowerSupplyTypeDeletePayload "json:\"serverPowerSupplyDelete\" graphql:\"serverPowerSupplyDelete\""
+	ServerPowerSupplyDelete     ServerPowerSupplyDeletePayload     "json:\"serverPowerSupplyDelete\" graphql:\"serverPowerSupplyDelete\""
 	ServerPowerSupplyType       ServerPowerSupplyTypeCreatePayload "json:\"serverPowerSupplyType\" graphql:\"serverPowerSupplyType\""
 	ServerPowerSupplyTypeUpdate ServerPowerSupplyTypeUpdatePayload "json:\"serverPowerSupplyTypeUpdate\" graphql:\"serverPowerSupplyTypeUpdate\""
 	ServerPowerSupplyTypeDelete ServerPowerSupplyTypeDeletePayload "json:\"serverPowerSupplyTypeDelete\" graphql:\"serverPowerSupplyTypeDelete\""

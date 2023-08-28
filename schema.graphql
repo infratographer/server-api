@@ -290,7 +290,7 @@ type Mutation {
 	"""Update a server power supply."""
 	serverPowerSupplyUpdate(id: ID!, input: UpdateServerPowerSupplyInput!): ServerPowerSupplyUpdatePayload!
 	"""Delete a server power supply."""
-	serverPowerSupplyDelete(id: ID!): ServerPowerSupplyTypeDeletePayload!
+	serverPowerSupplyDelete(id: ID!): ServerPowerSupplyDeletePayload!
 	"""Create a server power supply type."""
 	serverPowerSupplyType(input: CreateServerPowerSupplyTypeInput!): ServerPowerSupplyTypeCreatePayload!
 	"""Update a server power supply type."""

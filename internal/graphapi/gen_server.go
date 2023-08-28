@@ -895,7 +895,7 @@ type MutationResolver interface {
 	ServerNetworkPortDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkPortDeletePayload, error)
 	ServerPowerSupply(ctx context.Context, input generated.CreateServerPowerSupplyInput) (*ServerPowerSupplyCreatePayload, error)
 	ServerPowerSupplyUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyInput) (*ServerPowerSupplyUpdatePayload, error)
-	ServerPowerSupplyDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyTypeDeletePayload, error)
+	ServerPowerSupplyDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyDeletePayload, error)
 	ServerPowerSupplyType(ctx context.Context, input generated.CreateServerPowerSupplyTypeInput) (*ServerPowerSupplyTypeCreatePayload, error)
 	ServerPowerSupplyTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyTypeInput) (*ServerPowerSupplyTypeUpdatePayload, error)
 	ServerPowerSupplyTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyTypeDeletePayload, error)
@@ -8225,7 +8225,7 @@ extend type Mutation {
   """
   Delete a server power supply.
   """
-  serverPowerSupplyDelete(id: ID!): ServerPowerSupplyTypeDeletePayload!
+  serverPowerSupplyDelete(id: ID!): ServerPowerSupplyDeletePayload!
 }
 
 """
@@ -15148,9 +15148,9 @@ func (ec *executionContext) _Mutation_serverPowerSupplyDelete(ctx context.Contex
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ServerPowerSupplyTypeDeletePayload)
+	res := resTmp.(*ServerPowerSupplyDeletePayload)
 	fc.Result = res
-	return ec.marshalNServerPowerSupplyTypeDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyTypeDeletePayload(ctx, field.Selections, res)
+	return ec.marshalNServerPowerSupplyDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyDeletePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15162,9 +15162,9 @@ func (ec *executionContext) fieldContext_Mutation_serverPowerSupplyDelete(ctx co
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "deletedID":
-				return ec.fieldContext_ServerPowerSupplyTypeDeletePayload_deletedID(ctx, field)
+				return ec.fieldContext_ServerPowerSupplyDeletePayload_deletedID(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyTypeDeletePayload", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type ServerPowerSupplyDeletePayload", field.Name)
 		},
 	}
 	defer func() {
@@ -57348,6 +57348,20 @@ func (ec *executionContext) marshalNServerPowerSupplyCreatePayload2ᚖgoᚗinfra
 		return graphql.Null
 	}
 	return ec._ServerPowerSupplyCreatePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyDeletePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyDeletePayload(ctx context.Context, sel ast.SelectionSet, v ServerPowerSupplyDeletePayload) graphql.Marshaler {
+	return ec._ServerPowerSupplyDeletePayload(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNServerPowerSupplyDeletePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerPowerSupplyDeletePayload(ctx context.Context, sel ast.SelectionSet, v *ServerPowerSupplyDeletePayload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ServerPowerSupplyDeletePayload(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNServerPowerSupplyOrderField2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerPowerSupplyOrderField(ctx context.Context, v interface{}) (*generated.ServerPowerSupplyOrderField, error) {
