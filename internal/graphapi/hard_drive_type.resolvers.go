@@ -6,28 +6,91 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrive"
 	"go.infratographer.com/x/gidx"
 )
 
 // ServerHardDriveType is the resolver for the serverHardDriveType field.
 func (r *mutationResolver) ServerHardDriveType(ctx context.Context, input generated.CreateServerHardDriveTypeInput) (*ServerHardDriveTypeCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDriveType - serverHardDriveType"))
+	// TODO: check permissions
+
+	hd, err := r.client.ServerHardDriveType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerHardDriveTypeCreatePayload{ServerHardDriveType: hd}, nil
 }
 
 // ServerHardDriveTypeUpdate is the resolver for the serverHardDriveTypeUpdate field.
 func (r *mutationResolver) ServerHardDriveTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerHardDriveTypeInput) (*ServerHardDriveTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDriveTypeUpdate - serverHardDriveTypeUpdate"))
+	// TODO: check permissions
+
+	hd, err := r.client.ServerHardDriveType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	hd, err = hd.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerHardDriveTypeUpdatePayload{ServerHardDriveType: hd}, nil
 }
 
 // ServerHardDriveTypeDelete is the resolver for the serverHardDriveTypeDelete field.
 func (r *mutationResolver) ServerHardDriveTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDriveTypeDelete - serverHardDriveTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup hard drive associated with type
+	hd, err := tx.ServerHardDrive.Query().Where(predicate.ServerHardDrive(serverharddrive.ServerHardDriveTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query hard drives", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query hard drive")
+		}
+		return nil, err
+	}
+
+	for _, h := range hd {
+		if err = tx.ServerHardDrive.DeleteOne(h).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server", "port", h.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete hard drive")
+			}
+		}
+	}
+
+	if err := tx.ServerHardDriveType.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete hard drive type")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerHardDriveTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerHardDriveType is the resolver for the serverHardDriveType field.
 func (r *queryResolver) ServerHardDriveType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerHardDriveType, error) {
-	panic(fmt.Errorf("not implemented: ServerHardDriveType - serverHardDriveType"))
+	return r.client.ServerHardDriveType.Get(ctx, id)
 }
