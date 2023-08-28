@@ -6,28 +6,91 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/servernetworkcard"
 	"go.infratographer.com/x/gidx"
 )
 
 // ServerNetworkCardType is the resolver for the serverNetworkCardType field.
 func (r *mutationResolver) ServerNetworkCardType(ctx context.Context, input generated.CreateServerNetworkCardTypeInput) (*ServerNetworkCardTypeCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkCardType - serverNetworkCardType"))
+	// TODO: check permissions
+
+	nc, err := r.client.ServerNetworkCardType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerNetworkCardTypeCreatePayload{ServerNetworkCardType: nc}, nil
 }
 
 // ServerNetworkCardTypeUpdate is the resolver for the serverNetworkCardTypeUpdate field.
 func (r *mutationResolver) ServerNetworkCardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkCardTypeInput) (*ServerNetworkCardTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkCardTypeUpdate - serverNetworkCardTypeUpdate"))
+	// TODO: check permissions
+
+	nc, err := r.client.ServerNetworkCardType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	nc, err = nc.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerNetworkCardTypeUpdatePayload{ServerNetworkCardType: nc}, nil
 }
 
 // ServerNetworkCardTypeDelete is the resolver for the serverNetworkCardTypeDelete field.
 func (r *mutationResolver) ServerNetworkCardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCardTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkCardTypeDelete - serverNetworkCardTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup network card associated with type
+	ncs, err := tx.ServerNetworkCard.Query().Where(predicate.ServerNetworkCard(servernetworkcard.ServerNetworkCardTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query network cards", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query network card")
+		}
+		return nil, err
+	}
+
+	for _, n := range ncs {
+		if err = tx.ServerNetworkCard.DeleteOne(n).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete network card", "port", n.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete network card")
+			}
+		}
+	}
+
+	if err := tx.ServerNetworkCardType.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete network card type")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerNetworkCardTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerNetworkCardType is the resolver for the serverNetworkCardType field.
 func (r *queryResolver) ServerNetworkCardType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkCardType, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkCardType - serverNetworkCardType"))
+	return r.client.ServerNetworkCardType.Get(ctx, id)
 }

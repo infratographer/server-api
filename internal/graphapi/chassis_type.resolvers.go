@@ -64,7 +64,7 @@ func (r *mutationResolver) ServerChassisTypeDelete(ctx context.Context, id gidx.
 
 	for _, c := range chas {
 		if err = tx.ServerChassis.DeleteOne(c).Exec(ctx); err != nil {
-			r.logger.Errorw("failed to delete server", "port", c.ID, "error", err)
+			r.logger.Errorw("failed to delete server chassis", "port", c.ID, "error", err)
 			if rerr := tx.Rollback(); rerr != nil {
 				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete chassis")
 			}

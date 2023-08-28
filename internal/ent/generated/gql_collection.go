@@ -2338,9 +2338,9 @@ func (snc *ServerNetworkCardQuery) collectField(ctx context.Context, opCtx *grap
 				return err
 			}
 			snc.withNetworkCardType = query
-			if _, ok := fieldSeen[servernetworkcard.FieldNetworkCardTypeID]; !ok {
-				selectedFields = append(selectedFields, servernetworkcard.FieldNetworkCardTypeID)
-				fieldSeen[servernetworkcard.FieldNetworkCardTypeID] = struct{}{}
+			if _, ok := fieldSeen[servernetworkcard.FieldServerNetworkCardTypeID]; !ok {
+				selectedFields = append(selectedFields, servernetworkcard.FieldServerNetworkCardTypeID)
+				fieldSeen[servernetworkcard.FieldServerNetworkCardTypeID] = struct{}{}
 			}
 		case "server":
 			var (
@@ -2567,7 +2567,7 @@ func (snct *ServerNetworkCardTypeQuery) collectField(ctx context.Context, opCtx 
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID gidx.PrefixedID `sql:"network_card_type_id"`
+							NodeID gidx.PrefixedID `sql:"server_network_card_type_id"`
 							Count  int             `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {

@@ -78,9 +78,9 @@ func (sncc *ServerNetworkCardCreate) SetServerID(gi gidx.PrefixedID) *ServerNetw
 	return sncc
 }
 
-// SetNetworkCardTypeID sets the "network_card_type_id" field.
-func (sncc *ServerNetworkCardCreate) SetNetworkCardTypeID(gi gidx.PrefixedID) *ServerNetworkCardCreate {
-	sncc.mutation.SetNetworkCardTypeID(gi)
+// SetServerNetworkCardTypeID sets the "server_network_card_type_id" field.
+func (sncc *ServerNetworkCardCreate) SetServerNetworkCardTypeID(gi gidx.PrefixedID) *ServerNetworkCardCreate {
+	sncc.mutation.SetServerNetworkCardTypeID(gi)
 	return sncc
 }
 
@@ -95,6 +95,12 @@ func (sncc *ServerNetworkCardCreate) SetNillableID(gi *gidx.PrefixedID) *ServerN
 	if gi != nil {
 		sncc.SetID(*gi)
 	}
+	return sncc
+}
+
+// SetNetworkCardTypeID sets the "network_card_type" edge to the ServerNetworkCardType entity by ID.
+func (sncc *ServerNetworkCardCreate) SetNetworkCardTypeID(id gidx.PrefixedID) *ServerNetworkCardCreate {
+	sncc.mutation.SetNetworkCardTypeID(id)
 	return sncc
 }
 
@@ -191,8 +197,8 @@ func (sncc *ServerNetworkCardCreate) check() error {
 	if _, ok := sncc.mutation.ServerID(); !ok {
 		return &ValidationError{Name: "server_id", err: errors.New(`generated: missing required field "ServerNetworkCard.server_id"`)}
 	}
-	if _, ok := sncc.mutation.NetworkCardTypeID(); !ok {
-		return &ValidationError{Name: "network_card_type_id", err: errors.New(`generated: missing required field "ServerNetworkCard.network_card_type_id"`)}
+	if _, ok := sncc.mutation.ServerNetworkCardTypeID(); !ok {
+		return &ValidationError{Name: "server_network_card_type_id", err: errors.New(`generated: missing required field "ServerNetworkCard.server_network_card_type_id"`)}
 	}
 	if _, ok := sncc.mutation.NetworkCardTypeID(); !ok {
 		return &ValidationError{Name: "network_card_type", err: errors.New(`generated: missing required edge "ServerNetworkCard.network_card_type"`)}
@@ -261,7 +267,7 @@ func (sncc *ServerNetworkCardCreate) createSpec() (*ServerNetworkCard, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.NetworkCardTypeID = nodes[0]
+		_node.ServerNetworkCardTypeID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := sncc.mutation.ServerIDs(); len(nodes) > 0 {

@@ -49,7 +49,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "servernetworkcard" package.
 	NetworkCardInverseTable = "server_network_cards"
 	// NetworkCardColumn is the table column denoting the network_card relation/edge.
-	NetworkCardColumn = "network_card_type_id"
+	NetworkCardColumn = "server_network_card_type_id"
 )
 
 // Columns holds all SQL columns for servernetworkcardtype fields.

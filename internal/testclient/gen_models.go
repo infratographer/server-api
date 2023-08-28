@@ -3676,12 +3676,12 @@ func (e ServerMotherboardTypeOrderField) MarshalGQL(w io.Writer) {
 type ServerNetworkCardOrderField string
 
 const (
-	ServerNetworkCardOrderFieldID              ServerNetworkCardOrderField = "ID"
-	ServerNetworkCardOrderFieldCreatedAt       ServerNetworkCardOrderField = "CREATED_AT"
-	ServerNetworkCardOrderFieldUpdatedAt       ServerNetworkCardOrderField = "UPDATED_AT"
-	ServerNetworkCardOrderFieldSerial          ServerNetworkCardOrderField = "SERIAL"
-	ServerNetworkCardOrderFieldServer          ServerNetworkCardOrderField = "SERVER"
-	ServerNetworkCardOrderFieldNetworkCardType ServerNetworkCardOrderField = "NETWORK_CARD_TYPE"
+	ServerNetworkCardOrderFieldID                    ServerNetworkCardOrderField = "ID"
+	ServerNetworkCardOrderFieldCreatedAt             ServerNetworkCardOrderField = "CREATED_AT"
+	ServerNetworkCardOrderFieldUpdatedAt             ServerNetworkCardOrderField = "UPDATED_AT"
+	ServerNetworkCardOrderFieldSerial                ServerNetworkCardOrderField = "SERIAL"
+	ServerNetworkCardOrderFieldServer                ServerNetworkCardOrderField = "SERVER"
+	ServerNetworkCardOrderFieldServerNetworkCardType ServerNetworkCardOrderField = "SERVER_NETWORK_CARD_TYPE"
 )
 
 var AllServerNetworkCardOrderField = []ServerNetworkCardOrderField{
@@ -3690,12 +3690,12 @@ var AllServerNetworkCardOrderField = []ServerNetworkCardOrderField{
 	ServerNetworkCardOrderFieldUpdatedAt,
 	ServerNetworkCardOrderFieldSerial,
 	ServerNetworkCardOrderFieldServer,
-	ServerNetworkCardOrderFieldNetworkCardType,
+	ServerNetworkCardOrderFieldServerNetworkCardType,
 }
 
 func (e ServerNetworkCardOrderField) IsValid() bool {
 	switch e {
-	case ServerNetworkCardOrderFieldID, ServerNetworkCardOrderFieldCreatedAt, ServerNetworkCardOrderFieldUpdatedAt, ServerNetworkCardOrderFieldSerial, ServerNetworkCardOrderFieldServer, ServerNetworkCardOrderFieldNetworkCardType:
+	case ServerNetworkCardOrderFieldID, ServerNetworkCardOrderFieldCreatedAt, ServerNetworkCardOrderFieldUpdatedAt, ServerNetworkCardOrderFieldSerial, ServerNetworkCardOrderFieldServer, ServerNetworkCardOrderFieldServerNetworkCardType:
 		return true
 	}
 	return false

@@ -5539,17 +5539,17 @@ var (
 			}
 		},
 	}
-	// ServerNetworkCardOrderFieldNetworkCardTypeID orders ServerNetworkCard by network_card_type_id.
-	ServerNetworkCardOrderFieldNetworkCardTypeID = &ServerNetworkCardOrderField{
+	// ServerNetworkCardOrderFieldServerNetworkCardTypeID orders ServerNetworkCard by server_network_card_type_id.
+	ServerNetworkCardOrderFieldServerNetworkCardTypeID = &ServerNetworkCardOrderField{
 		Value: func(snc *ServerNetworkCard) (ent.Value, error) {
-			return snc.NetworkCardTypeID, nil
+			return snc.ServerNetworkCardTypeID, nil
 		},
-		column: servernetworkcard.FieldNetworkCardTypeID,
-		toTerm: servernetworkcard.ByNetworkCardTypeID,
+		column: servernetworkcard.FieldServerNetworkCardTypeID,
+		toTerm: servernetworkcard.ByServerNetworkCardTypeID,
 		toCursor: func(snc *ServerNetworkCard) Cursor {
 			return Cursor{
 				ID:    snc.ID,
-				Value: snc.NetworkCardTypeID,
+				Value: snc.ServerNetworkCardTypeID,
 			}
 		},
 	}
@@ -5569,8 +5569,8 @@ func (f ServerNetworkCardOrderField) String() string {
 		str = "SERIAL"
 	case ServerNetworkCardOrderFieldServerID.column:
 		str = "SERVER"
-	case ServerNetworkCardOrderFieldNetworkCardTypeID.column:
-		str = "NETWORK_CARD_TYPE"
+	case ServerNetworkCardOrderFieldServerNetworkCardTypeID.column:
+		str = "SERVER_NETWORK_CARD_TYPE"
 	}
 	return str
 }
@@ -5597,8 +5597,8 @@ func (f *ServerNetworkCardOrderField) UnmarshalGQL(v interface{}) error {
 		*f = *ServerNetworkCardOrderFieldSerial
 	case "SERVER":
 		*f = *ServerNetworkCardOrderFieldServerID
-	case "NETWORK_CARD_TYPE":
-		*f = *ServerNetworkCardOrderFieldNetworkCardTypeID
+	case "SERVER_NETWORK_CARD_TYPE":
+		*f = *ServerNetworkCardOrderFieldServerNetworkCardTypeID
 	default:
 		return fmt.Errorf("%s is not a valid ServerNetworkCardOrderField", str)
 	}

@@ -2238,7 +2238,7 @@ enum ServerNetworkCardOrderField {
 	UPDATED_AT
 	SERIAL
 	SERVER
-	NETWORK_CARD_TYPE
+	SERVER_NETWORK_CARD_TYPE
 }
 type ServerNetworkCardType implements Node @key(fields: "id") @prefixedID(prefix: "srvrnct") {
 	"""The ID of the server network card type."""

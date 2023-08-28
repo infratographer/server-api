@@ -525,7 +525,7 @@ func (sncq *ServerNetworkCardQuery) loadNetworkCardType(ctx context.Context, que
 	ids := make([]gidx.PrefixedID, 0, len(nodes))
 	nodeids := make(map[gidx.PrefixedID][]*ServerNetworkCard)
 	for i := range nodes {
-		fk := nodes[i].NetworkCardTypeID
+		fk := nodes[i].ServerNetworkCardTypeID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -542,7 +542,7 @@ func (sncq *ServerNetworkCardQuery) loadNetworkCardType(ctx context.Context, que
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "network_card_type_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "server_network_card_type_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -639,7 +639,7 @@ func (sncq *ServerNetworkCardQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if sncq.withNetworkCardType != nil {
-			_spec.Node.AddColumnOnce(servernetworkcard.FieldNetworkCardTypeID)
+			_spec.Node.AddColumnOnce(servernetworkcard.FieldServerNetworkCardTypeID)
 		}
 		if sncq.withServer != nil {
 			_spec.Node.AddColumnOnce(servernetworkcard.FieldServerID)

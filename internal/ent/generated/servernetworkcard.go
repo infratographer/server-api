@@ -44,7 +44,7 @@ type ServerNetworkCard struct {
 	// The ID for the server of this server network card.
 	ServerID gidx.PrefixedID `json:"server_id,omitempty"`
 	// The ID for the server of this server network card.
-	NetworkCardTypeID gidx.PrefixedID `json:"network_card_type_id,omitempty"`
+	ServerNetworkCardTypeID gidx.PrefixedID `json:"server_network_card_type_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ServerNetworkCardQuery when eager-loading is set.
 	Edges        ServerNetworkCardEdges `json:"edges"`
@@ -108,7 +108,7 @@ func (*ServerNetworkCard) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case servernetworkcard.FieldID, servernetworkcard.FieldServerID, servernetworkcard.FieldNetworkCardTypeID:
+		case servernetworkcard.FieldID, servernetworkcard.FieldServerID, servernetworkcard.FieldServerNetworkCardTypeID:
 			values[i] = new(gidx.PrefixedID)
 		case servernetworkcard.FieldSerial:
 			values[i] = new(sql.NullString)
@@ -159,11 +159,11 @@ func (snc *ServerNetworkCard) assignValues(columns []string, values []any) error
 			} else if value != nil {
 				snc.ServerID = *value
 			}
-		case servernetworkcard.FieldNetworkCardTypeID:
+		case servernetworkcard.FieldServerNetworkCardTypeID:
 			if value, ok := values[i].(*gidx.PrefixedID); !ok {
-				return fmt.Errorf("unexpected type %T for field network_card_type_id", values[i])
+				return fmt.Errorf("unexpected type %T for field server_network_card_type_id", values[i])
 			} else if value != nil {
-				snc.NetworkCardTypeID = *value
+				snc.ServerNetworkCardTypeID = *value
 			}
 		default:
 			snc.selectValues.Set(columns[i], values[i])
@@ -228,8 +228,8 @@ func (snc *ServerNetworkCard) String() string {
 	builder.WriteString("server_id=")
 	builder.WriteString(fmt.Sprintf("%v", snc.ServerID))
 	builder.WriteString(", ")
-	builder.WriteString("network_card_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", snc.NetworkCardTypeID))
+	builder.WriteString("server_network_card_type_id=")
+	builder.WriteString(fmt.Sprintf("%v", snc.ServerNetworkCardTypeID))
 	builder.WriteByte(')')
 	return builder.String()
 }

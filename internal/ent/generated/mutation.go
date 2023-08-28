@@ -9908,13 +9908,13 @@ func (m *ServerNetworkCardMutation) ResetServerID() {
 	m.server = nil
 }
 
-// SetNetworkCardTypeID sets the "network_card_type_id" field.
-func (m *ServerNetworkCardMutation) SetNetworkCardTypeID(gi gidx.PrefixedID) {
+// SetServerNetworkCardTypeID sets the "server_network_card_type_id" field.
+func (m *ServerNetworkCardMutation) SetServerNetworkCardTypeID(gi gidx.PrefixedID) {
 	m.network_card_type = &gi
 }
 
-// NetworkCardTypeID returns the value of the "network_card_type_id" field in the mutation.
-func (m *ServerNetworkCardMutation) NetworkCardTypeID() (r gidx.PrefixedID, exists bool) {
+// ServerNetworkCardTypeID returns the value of the "server_network_card_type_id" field in the mutation.
+func (m *ServerNetworkCardMutation) ServerNetworkCardTypeID() (r gidx.PrefixedID, exists bool) {
 	v := m.network_card_type
 	if v == nil {
 		return
@@ -9922,26 +9922,31 @@ func (m *ServerNetworkCardMutation) NetworkCardTypeID() (r gidx.PrefixedID, exis
 	return *v, true
 }
 
-// OldNetworkCardTypeID returns the old "network_card_type_id" field's value of the ServerNetworkCard entity.
+// OldServerNetworkCardTypeID returns the old "server_network_card_type_id" field's value of the ServerNetworkCard entity.
 // If the ServerNetworkCard object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerNetworkCardMutation) OldNetworkCardTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
+func (m *ServerNetworkCardMutation) OldServerNetworkCardTypeID(ctx context.Context) (v gidx.PrefixedID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNetworkCardTypeID is only allowed on UpdateOne operations")
+		return v, errors.New("OldServerNetworkCardTypeID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNetworkCardTypeID requires an ID field in the mutation")
+		return v, errors.New("OldServerNetworkCardTypeID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNetworkCardTypeID: %w", err)
+		return v, fmt.Errorf("querying old value for OldServerNetworkCardTypeID: %w", err)
 	}
-	return oldValue.NetworkCardTypeID, nil
+	return oldValue.ServerNetworkCardTypeID, nil
 }
 
-// ResetNetworkCardTypeID resets all changes to the "network_card_type_id" field.
-func (m *ServerNetworkCardMutation) ResetNetworkCardTypeID() {
+// ResetServerNetworkCardTypeID resets all changes to the "server_network_card_type_id" field.
+func (m *ServerNetworkCardMutation) ResetServerNetworkCardTypeID() {
 	m.network_card_type = nil
+}
+
+// SetNetworkCardTypeID sets the "network_card_type" edge to the ServerNetworkCardType entity by id.
+func (m *ServerNetworkCardMutation) SetNetworkCardTypeID(id gidx.PrefixedID) {
+	m.network_card_type = &id
 }
 
 // ClearNetworkCardType clears the "network_card_type" edge to the ServerNetworkCardType entity.
@@ -9952,6 +9957,14 @@ func (m *ServerNetworkCardMutation) ClearNetworkCardType() {
 // NetworkCardTypeCleared reports if the "network_card_type" edge to the ServerNetworkCardType entity was cleared.
 func (m *ServerNetworkCardMutation) NetworkCardTypeCleared() bool {
 	return m.clearednetwork_card_type
+}
+
+// NetworkCardTypeID returns the "network_card_type" edge ID in the mutation.
+func (m *ServerNetworkCardMutation) NetworkCardTypeID() (id gidx.PrefixedID, exists bool) {
+	if m.network_card_type != nil {
+		return *m.network_card_type, true
+	}
+	return
 }
 
 // NetworkCardTypeIDs returns the "network_card_type" edge IDs in the mutation.
@@ -10098,7 +10111,7 @@ func (m *ServerNetworkCardMutation) Fields() []string {
 		fields = append(fields, servernetworkcard.FieldServerID)
 	}
 	if m.network_card_type != nil {
-		fields = append(fields, servernetworkcard.FieldNetworkCardTypeID)
+		fields = append(fields, servernetworkcard.FieldServerNetworkCardTypeID)
 	}
 	return fields
 }
@@ -10116,8 +10129,8 @@ func (m *ServerNetworkCardMutation) Field(name string) (ent.Value, bool) {
 		return m.Serial()
 	case servernetworkcard.FieldServerID:
 		return m.ServerID()
-	case servernetworkcard.FieldNetworkCardTypeID:
-		return m.NetworkCardTypeID()
+	case servernetworkcard.FieldServerNetworkCardTypeID:
+		return m.ServerNetworkCardTypeID()
 	}
 	return nil, false
 }
@@ -10135,8 +10148,8 @@ func (m *ServerNetworkCardMutation) OldField(ctx context.Context, name string) (
 		return m.OldSerial(ctx)
 	case servernetworkcard.FieldServerID:
 		return m.OldServerID(ctx)
-	case servernetworkcard.FieldNetworkCardTypeID:
-		return m.OldNetworkCardTypeID(ctx)
+	case servernetworkcard.FieldServerNetworkCardTypeID:
+		return m.OldServerNetworkCardTypeID(ctx)
 	}
 	return nil, fmt.Errorf("unknown ServerNetworkCard field %s", name)
 }
@@ -10174,12 +10187,12 @@ func (m *ServerNetworkCardMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetServerID(v)
 		return nil
-	case servernetworkcard.FieldNetworkCardTypeID:
+	case servernetworkcard.FieldServerNetworkCardTypeID:
 		v, ok := value.(gidx.PrefixedID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetNetworkCardTypeID(v)
+		m.SetServerNetworkCardTypeID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown ServerNetworkCard field %s", name)
@@ -10242,8 +10255,8 @@ func (m *ServerNetworkCardMutation) ResetField(name string) error {
 	case servernetworkcard.FieldServerID:
 		m.ResetServerID()
 		return nil
-	case servernetworkcard.FieldNetworkCardTypeID:
-		m.ResetNetworkCardTypeID()
+	case servernetworkcard.FieldServerNetworkCardTypeID:
+		m.ResetServerNetworkCardTypeID()
 		return nil
 	}
 	return fmt.Errorf("unknown ServerNetworkCard field %s", name)

@@ -51,7 +51,7 @@ func (ServerNetworkCard) Fields() []ent.Field {
 				entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationUpdateInput, entgql.SkipType),
 				entgql.OrderField("SERVER"),
 			),
-		field.Text("network_card_type_id").
+		field.Text("server_network_card_type_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
 			Comment("The ID for the server of this server network card.").
@@ -59,7 +59,7 @@ func (ServerNetworkCard) Fields() []ent.Field {
 				entgql.QueryField(),
 				entgql.Type("ID"),
 				entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationUpdateInput, entgql.SkipType),
-				entgql.OrderField("NETWORK_CARD_TYPE"),
+				entgql.OrderField("SERVER_NETWORK_CARD_TYPE"),
 			),
 	}
 }
@@ -71,7 +71,7 @@ func (ServerNetworkCard) Edges() []ent.Edge {
 			Unique().
 			Required().
 			Immutable().
-			Field("network_card_type_id").
+			Field("server_network_card_type_id").
 			Annotations(),
 		edge.To("server", Server.Type).
 			Unique().

@@ -37,8 +37,8 @@ const (
 	FieldSerial = "serial"
 	// FieldServerID holds the string denoting the server_id field in the database.
 	FieldServerID = "server_id"
-	// FieldNetworkCardTypeID holds the string denoting the network_card_type_id field in the database.
-	FieldNetworkCardTypeID = "network_card_type_id"
+	// FieldServerNetworkCardTypeID holds the string denoting the server_network_card_type_id field in the database.
+	FieldServerNetworkCardTypeID = "server_network_card_type_id"
 	// EdgeNetworkCardType holds the string denoting the network_card_type edge name in mutations.
 	EdgeNetworkCardType = "network_card_type"
 	// EdgeServer holds the string denoting the server edge name in mutations.
@@ -53,7 +53,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "servernetworkcardtype" package.
 	NetworkCardTypeInverseTable = "server_network_card_types"
 	// NetworkCardTypeColumn is the table column denoting the network_card_type relation/edge.
-	NetworkCardTypeColumn = "network_card_type_id"
+	NetworkCardTypeColumn = "server_network_card_type_id"
 	// ServerTable is the table that holds the server relation/edge.
 	ServerTable = "server_network_cards"
 	// ServerInverseTable is the table name for the Server entity.
@@ -77,7 +77,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldSerial,
 	FieldServerID,
-	FieldNetworkCardTypeID,
+	FieldServerNetworkCardTypeID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -131,9 +131,9 @@ func ByServerID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldServerID, opts...).ToFunc()
 }
 
-// ByNetworkCardTypeID orders the results by the network_card_type_id field.
-func ByNetworkCardTypeID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldNetworkCardTypeID, opts...).ToFunc()
+// ByServerNetworkCardTypeID orders the results by the server_network_card_type_id field.
+func ByServerNetworkCardTypeID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldServerNetworkCardTypeID, opts...).ToFunc()
 }
 
 // ByNetworkCardTypeField orders the results by network_card_type field.

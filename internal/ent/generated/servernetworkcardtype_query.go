@@ -448,7 +448,7 @@ func (snctq *ServerNetworkCardTypeQuery) loadNetworkCard(ctx context.Context, qu
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(servernetworkcard.FieldNetworkCardTypeID)
+		query.ctx.AppendFieldOnce(servernetworkcard.FieldServerNetworkCardTypeID)
 	}
 	query.Where(predicate.ServerNetworkCard(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(servernetworkcardtype.NetworkCardColumn), fks...))
@@ -458,10 +458,10 @@ func (snctq *ServerNetworkCardTypeQuery) loadNetworkCard(ctx context.Context, qu
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.NetworkCardTypeID
+		fk := n.ServerNetworkCardTypeID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "network_card_type_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "server_network_card_type_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

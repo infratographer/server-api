@@ -598,7 +598,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "serial", Type: field.TypeString, Size: 2147483647},
-		{Name: "network_card_type_id", Type: field.TypeString},
+		{Name: "server_network_card_type_id", Type: field.TypeString},
 		{Name: "server_id", Type: field.TypeString},
 	}
 	// ServerNetworkCardsTable holds the schema information for the "server_network_cards" table.

@@ -90,9 +90,9 @@ func ServerID(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	return predicate.ServerNetworkCard(sql.FieldEQ(FieldServerID, v))
 }
 
-// NetworkCardTypeID applies equality check predicate on the "network_card_type_id" field. It's identical to NetworkCardTypeIDEQ.
-func NetworkCardTypeID(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldEQ(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeID applies equality check predicate on the "server_network_card_type_id" field. It's identical to ServerNetworkCardTypeIDEQ.
+func ServerNetworkCardTypeID(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldEQ(FieldServerNetworkCardTypeID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -310,74 +310,74 @@ func ServerIDContainsFold(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	return predicate.ServerNetworkCard(sql.FieldContainsFold(FieldServerID, vc))
 }
 
-// NetworkCardTypeIDEQ applies the EQ predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDEQ(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldEQ(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeIDEQ applies the EQ predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDEQ(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldEQ(FieldServerNetworkCardTypeID, v))
 }
 
-// NetworkCardTypeIDNEQ applies the NEQ predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDNEQ(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldNEQ(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeIDNEQ applies the NEQ predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDNEQ(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldNEQ(FieldServerNetworkCardTypeID, v))
 }
 
-// NetworkCardTypeIDIn applies the In predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDIn(vs ...gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldIn(FieldNetworkCardTypeID, vs...))
+// ServerNetworkCardTypeIDIn applies the In predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDIn(vs ...gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldIn(FieldServerNetworkCardTypeID, vs...))
 }
 
-// NetworkCardTypeIDNotIn applies the NotIn predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDNotIn(vs ...gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldNotIn(FieldNetworkCardTypeID, vs...))
+// ServerNetworkCardTypeIDNotIn applies the NotIn predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDNotIn(vs ...gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldNotIn(FieldServerNetworkCardTypeID, vs...))
 }
 
-// NetworkCardTypeIDGT applies the GT predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDGT(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldGT(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeIDGT applies the GT predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDGT(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldGT(FieldServerNetworkCardTypeID, v))
 }
 
-// NetworkCardTypeIDGTE applies the GTE predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDGTE(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldGTE(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeIDGTE applies the GTE predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDGTE(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldGTE(FieldServerNetworkCardTypeID, v))
 }
 
-// NetworkCardTypeIDLT applies the LT predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDLT(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldLT(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeIDLT applies the LT predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDLT(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldLT(FieldServerNetworkCardTypeID, v))
 }
 
-// NetworkCardTypeIDLTE applies the LTE predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDLTE(v gidx.PrefixedID) predicate.ServerNetworkCard {
-	return predicate.ServerNetworkCard(sql.FieldLTE(FieldNetworkCardTypeID, v))
+// ServerNetworkCardTypeIDLTE applies the LTE predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDLTE(v gidx.PrefixedID) predicate.ServerNetworkCard {
+	return predicate.ServerNetworkCard(sql.FieldLTE(FieldServerNetworkCardTypeID, v))
 }
 
-// NetworkCardTypeIDContains applies the Contains predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDContains(v gidx.PrefixedID) predicate.ServerNetworkCard {
+// ServerNetworkCardTypeIDContains applies the Contains predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDContains(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	vc := string(v)
-	return predicate.ServerNetworkCard(sql.FieldContains(FieldNetworkCardTypeID, vc))
+	return predicate.ServerNetworkCard(sql.FieldContains(FieldServerNetworkCardTypeID, vc))
 }
 
-// NetworkCardTypeIDHasPrefix applies the HasPrefix predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDHasPrefix(v gidx.PrefixedID) predicate.ServerNetworkCard {
+// ServerNetworkCardTypeIDHasPrefix applies the HasPrefix predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDHasPrefix(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	vc := string(v)
-	return predicate.ServerNetworkCard(sql.FieldHasPrefix(FieldNetworkCardTypeID, vc))
+	return predicate.ServerNetworkCard(sql.FieldHasPrefix(FieldServerNetworkCardTypeID, vc))
 }
 
-// NetworkCardTypeIDHasSuffix applies the HasSuffix predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDHasSuffix(v gidx.PrefixedID) predicate.ServerNetworkCard {
+// ServerNetworkCardTypeIDHasSuffix applies the HasSuffix predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDHasSuffix(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	vc := string(v)
-	return predicate.ServerNetworkCard(sql.FieldHasSuffix(FieldNetworkCardTypeID, vc))
+	return predicate.ServerNetworkCard(sql.FieldHasSuffix(FieldServerNetworkCardTypeID, vc))
 }
 
-// NetworkCardTypeIDEqualFold applies the EqualFold predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDEqualFold(v gidx.PrefixedID) predicate.ServerNetworkCard {
+// ServerNetworkCardTypeIDEqualFold applies the EqualFold predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDEqualFold(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	vc := string(v)
-	return predicate.ServerNetworkCard(sql.FieldEqualFold(FieldNetworkCardTypeID, vc))
+	return predicate.ServerNetworkCard(sql.FieldEqualFold(FieldServerNetworkCardTypeID, vc))
 }
 
-// NetworkCardTypeIDContainsFold applies the ContainsFold predicate on the "network_card_type_id" field.
-func NetworkCardTypeIDContainsFold(v gidx.PrefixedID) predicate.ServerNetworkCard {
+// ServerNetworkCardTypeIDContainsFold applies the ContainsFold predicate on the "server_network_card_type_id" field.
+func ServerNetworkCardTypeIDContainsFold(v gidx.PrefixedID) predicate.ServerNetworkCard {
 	vc := string(v)
-	return predicate.ServerNetworkCard(sql.FieldContainsFold(FieldNetworkCardTypeID, vc))
+	return predicate.ServerNetworkCard(sql.FieldContainsFold(FieldServerNetworkCardTypeID, vc))
 }
 
 // HasNetworkCardType applies the HasEdge predicate on the "network_card_type" edge.
