@@ -6,28 +6,91 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/servercomponent"
 	"go.infratographer.com/x/gidx"
 )
 
 // ServerComponentTypeCreate is the resolver for the serverComponentTypeCreate field.
 func (r *mutationResolver) ServerComponentTypeCreate(ctx context.Context, input generated.CreateServerComponentTypeInput) (*ServerComponentTypeCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerComponentTypeCreate - serverComponentTypeCreate"))
+	// TODO: check permissions
+
+	ct, err := r.client.ServerComponentType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerComponentTypeCreatePayload{ServerComponentType: ct}, nil
 }
 
 // ServerComponentTypeUpdate is the resolver for the serverComponentTypeUpdate field.
 func (r *mutationResolver) ServerComponentTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerComponentTypeInput) (*ServerComponentTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerComponentTypeUpdate - serverComponentTypeUpdate"))
+	// TODO: check permissions
+
+	ct, err := r.client.ServerComponentType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	ct, err = ct.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerComponentTypeUpdatePayload{ServerComponentType: ct}, nil
 }
 
 // ServerComponentTypeDelete is the resolver for the serverComponentTypeDelete field.
 func (r *mutationResolver) ServerComponentTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerComponentTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerComponentTypeDelete - serverComponentTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup cpus associated with type
+	comps, err := tx.ServerComponent.Query().Where(predicate.ServerComponent(servercomponent.ComponentTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query components", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query servers")
+		}
+		return nil, err
+	}
+
+	for _, c := range comps {
+		if err = tx.ServerComponent.DeleteOne(c).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server", "port", c.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete component")
+			}
+		}
+	}
+
+	if err := tx.Server.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete server")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerComponentTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerComponentType is the resolver for the serverComponentType field.
 func (r *queryResolver) ServerComponentType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponentType, error) {
-	panic(fmt.Errorf("not implemented: ServerComponentType - serverComponentType"))
+	return r.client.ServerComponentType.Get(ctx, id)
 }
