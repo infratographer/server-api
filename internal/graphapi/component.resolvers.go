@@ -43,7 +43,6 @@ func (r *mutationResolver) ServerComponentUpdate(ctx context.Context, id gidx.Pr
 
 // ServerComponentDelete is the resolver for the serverComponentDelete field.
 func (r *mutationResolver) ServerComponentDelete(ctx context.Context, id gidx.PrefixedID) (*ServerComponentDeletePayload, error) {
-
 	//TODO: check permissions
 
 	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
@@ -68,11 +67,9 @@ func (r *mutationResolver) ServerComponentDelete(ctx context.Context, id gidx.Pr
 	}
 
 	return &ServerComponentDeletePayload{DeletedID: id}, nil
-
 }
 
 // ServerComponent is the resolver for the serverComponent field.
 func (r *queryResolver) ServerComponent(ctx context.Context, id gidx.PrefixedID) (*generated.ServerComponent, error) {
 	return r.client.ServerComponent.Get(ctx, id)
-
 }

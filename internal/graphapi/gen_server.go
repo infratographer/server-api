@@ -7644,7 +7644,7 @@ input UpdateServerTypeInput {
   name: String
 }
 `, BuiltIn: false},
-	{Name: "../../schema/hard_drive_type copy.graphql", Input: `extend type Query {
+	{Name: "../../schema/hard_drive.graphql", Input: `extend type Query {
   """
   Lookup a serverHardDrive by ID.
   """
