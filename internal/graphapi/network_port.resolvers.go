@@ -6,7 +6,7 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
@@ -14,20 +14,62 @@ import (
 
 // ServerNetworkPort is the resolver for the serverNetworkPort field.
 func (r *mutationResolver) ServerNetworkPort(ctx context.Context, input generated.CreateServerNetworkPortInput) (*ServerNetworkPortCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkPort - serverNetworkPort"))
+	// TODO: check permissions
+
+	np, err := r.client.ServerNetworkPort.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerNetworkPortCreatePayload{ServerNetworkPort: np}, nil
 }
 
 // ServerNetworkPortUpdate is the resolver for the serverNetworkPortUpdate field.
 func (r *mutationResolver) ServerNetworkPortUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkPortInput) (*ServerNetworkPortUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkPortUpdate - serverNetworkPortUpdate"))
+	// TODO: check permissions
+
+	np, err := r.client.ServerNetworkPort.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	np, err = np.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerNetworkPortUpdatePayload{ServerNetworkPort: np}, nil
 }
 
 // ServerNetworkPortDelete is the resolver for the serverNetworkPortDelete field.
 func (r *mutationResolver) ServerNetworkPortDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkPortDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkPortDelete - serverNetworkPortDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.ServerNetworkPort.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete network port")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerNetworkPortDeletePayload{DeletedID: id}, nil
 }
 
 // ServerNetworkPort is the resolver for the serverNetworkPort field.
 func (r *queryResolver) ServerNetworkPort(ctx context.Context, id gidx.PrefixedID) (*generated.ServerNetworkPort, error) {
-	panic(fmt.Errorf("not implemented: ServerNetworkPort - serverNetworkPort"))
+	return r.client.ServerNetworkPort.Get(ctx, id)
 }
