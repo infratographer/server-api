@@ -590,7 +590,7 @@ func (sncq *ServerNetworkCardQuery) loadNetworkPort(ctx context.Context, query *
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(servernetworkport.FieldNetworkCardID)
+		query.ctx.AppendFieldOnce(servernetworkport.FieldServerNetworkCardID)
 	}
 	query.Where(predicate.ServerNetworkPort(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(servernetworkcard.NetworkPortColumn), fks...))
@@ -600,10 +600,10 @@ func (sncq *ServerNetworkCardQuery) loadNetworkPort(ctx context.Context, query *
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.NetworkCardID
+		fk := n.ServerNetworkCardID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "network_card_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "server_network_card_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

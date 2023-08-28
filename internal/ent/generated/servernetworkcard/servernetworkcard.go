@@ -67,7 +67,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "servernetworkport" package.
 	NetworkPortInverseTable = "server_network_ports"
 	// NetworkPortColumn is the table column denoting the network_port relation/edge.
-	NetworkPortColumn = "network_card_id"
+	NetworkPortColumn = "server_network_card_id"
 )
 
 // Columns holds all SQL columns for servernetworkcard fields.

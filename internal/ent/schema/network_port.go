@@ -41,7 +41,7 @@ func (ServerNetworkPort) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("MAC_ADDRESS"),
 			),
-		field.Text("network_card_id").
+		field.Text("server_network_card_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
 			Comment("The ID for the server network card of this server network port.").
@@ -61,7 +61,7 @@ func (ServerNetworkPort) Edges() []ent.Edge {
 			Unique().
 			Required().
 			Immutable().
-			Field("network_card_id").
+			Field("server_network_card_id").
 			Annotations(),
 	}
 }

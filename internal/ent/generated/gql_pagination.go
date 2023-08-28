@@ -6255,17 +6255,17 @@ var (
 			}
 		},
 	}
-	// ServerNetworkPortOrderFieldNetworkCardID orders ServerNetworkPort by network_card_id.
-	ServerNetworkPortOrderFieldNetworkCardID = &ServerNetworkPortOrderField{
+	// ServerNetworkPortOrderFieldServerNetworkCardID orders ServerNetworkPort by server_network_card_id.
+	ServerNetworkPortOrderFieldServerNetworkCardID = &ServerNetworkPortOrderField{
 		Value: func(snp *ServerNetworkPort) (ent.Value, error) {
-			return snp.NetworkCardID, nil
+			return snp.ServerNetworkCardID, nil
 		},
-		column: servernetworkport.FieldNetworkCardID,
-		toTerm: servernetworkport.ByNetworkCardID,
+		column: servernetworkport.FieldServerNetworkCardID,
+		toTerm: servernetworkport.ByServerNetworkCardID,
 		toCursor: func(snp *ServerNetworkPort) Cursor {
 			return Cursor{
 				ID:    snp.ID,
-				Value: snp.NetworkCardID,
+				Value: snp.ServerNetworkCardID,
 			}
 		},
 	}
@@ -6283,7 +6283,7 @@ func (f ServerNetworkPortOrderField) String() string {
 		str = "UPDATED_AT"
 	case ServerNetworkPortOrderFieldMACAddress.column:
 		str = "MAC_ADDRESS"
-	case ServerNetworkPortOrderFieldNetworkCardID.column:
+	case ServerNetworkPortOrderFieldServerNetworkCardID.column:
 		str = "NETWORK_CARD"
 	}
 	return str
@@ -6310,7 +6310,7 @@ func (f *ServerNetworkPortOrderField) UnmarshalGQL(v interface{}) error {
 	case "MAC_ADDRESS":
 		*f = *ServerNetworkPortOrderFieldMACAddress
 	case "NETWORK_CARD":
-		*f = *ServerNetworkPortOrderFieldNetworkCardID
+		*f = *ServerNetworkPortOrderFieldServerNetworkCardID
 	default:
 		return fmt.Errorf("%s is not a valid ServerNetworkPortOrderField", str)
 	}

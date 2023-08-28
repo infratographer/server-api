@@ -429,7 +429,7 @@ func (snpq *ServerNetworkPortQuery) loadNetworkCard(ctx context.Context, query *
 	ids := make([]gidx.PrefixedID, 0, len(nodes))
 	nodeids := make(map[gidx.PrefixedID][]*ServerNetworkPort)
 	for i := range nodes {
-		fk := nodes[i].NetworkCardID
+		fk := nodes[i].ServerNetworkCardID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -446,7 +446,7 @@ func (snpq *ServerNetworkPortQuery) loadNetworkCard(ctx context.Context, query *
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "network_card_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "server_network_card_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -484,7 +484,7 @@ func (snpq *ServerNetworkPortQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if snpq.withNetworkCard != nil {
-			_spec.Node.AddColumnOnce(servernetworkport.FieldNetworkCardID)
+			_spec.Node.AddColumnOnce(servernetworkport.FieldServerNetworkCardID)
 		}
 	}
 	if ps := snpq.predicates; len(ps) > 0 {

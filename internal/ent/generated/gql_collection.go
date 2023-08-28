@@ -2384,7 +2384,7 @@ func (snc *ServerNetworkCardQuery) collectField(ctx context.Context, opCtx *grap
 							ids[i] = nodes[i].ID
 						}
 						var v []struct {
-							NodeID gidx.PrefixedID `sql:"network_card_id"`
+							NodeID gidx.PrefixedID `sql:"server_network_card_id"`
 							Count  int             `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
@@ -2742,9 +2742,9 @@ func (snp *ServerNetworkPortQuery) collectField(ctx context.Context, opCtx *grap
 				return err
 			}
 			snp.withNetworkCard = query
-			if _, ok := fieldSeen[servernetworkport.FieldNetworkCardID]; !ok {
-				selectedFields = append(selectedFields, servernetworkport.FieldNetworkCardID)
-				fieldSeen[servernetworkport.FieldNetworkCardID] = struct{}{}
+			if _, ok := fieldSeen[servernetworkport.FieldServerNetworkCardID]; !ok {
+				selectedFields = append(selectedFields, servernetworkport.FieldServerNetworkCardID)
+				fieldSeen[servernetworkport.FieldServerNetworkCardID] = struct{}{}
 			}
 		case "createdAt":
 			if _, ok := fieldSeen[servernetworkport.FieldCreatedAt]; !ok {

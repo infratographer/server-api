@@ -85,9 +85,9 @@ func MACAddress(v string) predicate.ServerNetworkPort {
 	return predicate.ServerNetworkPort(sql.FieldEQ(FieldMACAddress, v))
 }
 
-// NetworkCardID applies equality check predicate on the "network_card_id" field. It's identical to NetworkCardIDEQ.
-func NetworkCardID(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldEQ(FieldNetworkCardID, v))
+// ServerNetworkCardID applies equality check predicate on the "server_network_card_id" field. It's identical to ServerNetworkCardIDEQ.
+func ServerNetworkCardID(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldEQ(FieldServerNetworkCardID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -235,74 +235,74 @@ func MACAddressContainsFold(v string) predicate.ServerNetworkPort {
 	return predicate.ServerNetworkPort(sql.FieldContainsFold(FieldMACAddress, v))
 }
 
-// NetworkCardIDEQ applies the EQ predicate on the "network_card_id" field.
-func NetworkCardIDEQ(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldEQ(FieldNetworkCardID, v))
+// ServerNetworkCardIDEQ applies the EQ predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDEQ(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldEQ(FieldServerNetworkCardID, v))
 }
 
-// NetworkCardIDNEQ applies the NEQ predicate on the "network_card_id" field.
-func NetworkCardIDNEQ(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldNEQ(FieldNetworkCardID, v))
+// ServerNetworkCardIDNEQ applies the NEQ predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDNEQ(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldNEQ(FieldServerNetworkCardID, v))
 }
 
-// NetworkCardIDIn applies the In predicate on the "network_card_id" field.
-func NetworkCardIDIn(vs ...gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldIn(FieldNetworkCardID, vs...))
+// ServerNetworkCardIDIn applies the In predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDIn(vs ...gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldIn(FieldServerNetworkCardID, vs...))
 }
 
-// NetworkCardIDNotIn applies the NotIn predicate on the "network_card_id" field.
-func NetworkCardIDNotIn(vs ...gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldNotIn(FieldNetworkCardID, vs...))
+// ServerNetworkCardIDNotIn applies the NotIn predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDNotIn(vs ...gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldNotIn(FieldServerNetworkCardID, vs...))
 }
 
-// NetworkCardIDGT applies the GT predicate on the "network_card_id" field.
-func NetworkCardIDGT(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldGT(FieldNetworkCardID, v))
+// ServerNetworkCardIDGT applies the GT predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDGT(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldGT(FieldServerNetworkCardID, v))
 }
 
-// NetworkCardIDGTE applies the GTE predicate on the "network_card_id" field.
-func NetworkCardIDGTE(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldGTE(FieldNetworkCardID, v))
+// ServerNetworkCardIDGTE applies the GTE predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDGTE(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldGTE(FieldServerNetworkCardID, v))
 }
 
-// NetworkCardIDLT applies the LT predicate on the "network_card_id" field.
-func NetworkCardIDLT(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldLT(FieldNetworkCardID, v))
+// ServerNetworkCardIDLT applies the LT predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDLT(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldLT(FieldServerNetworkCardID, v))
 }
 
-// NetworkCardIDLTE applies the LTE predicate on the "network_card_id" field.
-func NetworkCardIDLTE(v gidx.PrefixedID) predicate.ServerNetworkPort {
-	return predicate.ServerNetworkPort(sql.FieldLTE(FieldNetworkCardID, v))
+// ServerNetworkCardIDLTE applies the LTE predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDLTE(v gidx.PrefixedID) predicate.ServerNetworkPort {
+	return predicate.ServerNetworkPort(sql.FieldLTE(FieldServerNetworkCardID, v))
 }
 
-// NetworkCardIDContains applies the Contains predicate on the "network_card_id" field.
-func NetworkCardIDContains(v gidx.PrefixedID) predicate.ServerNetworkPort {
+// ServerNetworkCardIDContains applies the Contains predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDContains(v gidx.PrefixedID) predicate.ServerNetworkPort {
 	vc := string(v)
-	return predicate.ServerNetworkPort(sql.FieldContains(FieldNetworkCardID, vc))
+	return predicate.ServerNetworkPort(sql.FieldContains(FieldServerNetworkCardID, vc))
 }
 
-// NetworkCardIDHasPrefix applies the HasPrefix predicate on the "network_card_id" field.
-func NetworkCardIDHasPrefix(v gidx.PrefixedID) predicate.ServerNetworkPort {
+// ServerNetworkCardIDHasPrefix applies the HasPrefix predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDHasPrefix(v gidx.PrefixedID) predicate.ServerNetworkPort {
 	vc := string(v)
-	return predicate.ServerNetworkPort(sql.FieldHasPrefix(FieldNetworkCardID, vc))
+	return predicate.ServerNetworkPort(sql.FieldHasPrefix(FieldServerNetworkCardID, vc))
 }
 
-// NetworkCardIDHasSuffix applies the HasSuffix predicate on the "network_card_id" field.
-func NetworkCardIDHasSuffix(v gidx.PrefixedID) predicate.ServerNetworkPort {
+// ServerNetworkCardIDHasSuffix applies the HasSuffix predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDHasSuffix(v gidx.PrefixedID) predicate.ServerNetworkPort {
 	vc := string(v)
-	return predicate.ServerNetworkPort(sql.FieldHasSuffix(FieldNetworkCardID, vc))
+	return predicate.ServerNetworkPort(sql.FieldHasSuffix(FieldServerNetworkCardID, vc))
 }
 
-// NetworkCardIDEqualFold applies the EqualFold predicate on the "network_card_id" field.
-func NetworkCardIDEqualFold(v gidx.PrefixedID) predicate.ServerNetworkPort {
+// ServerNetworkCardIDEqualFold applies the EqualFold predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDEqualFold(v gidx.PrefixedID) predicate.ServerNetworkPort {
 	vc := string(v)
-	return predicate.ServerNetworkPort(sql.FieldEqualFold(FieldNetworkCardID, vc))
+	return predicate.ServerNetworkPort(sql.FieldEqualFold(FieldServerNetworkCardID, vc))
 }
 
-// NetworkCardIDContainsFold applies the ContainsFold predicate on the "network_card_id" field.
-func NetworkCardIDContainsFold(v gidx.PrefixedID) predicate.ServerNetworkPort {
+// ServerNetworkCardIDContainsFold applies the ContainsFold predicate on the "server_network_card_id" field.
+func ServerNetworkCardIDContainsFold(v gidx.PrefixedID) predicate.ServerNetworkPort {
 	vc := string(v)
-	return predicate.ServerNetworkPort(sql.FieldContainsFold(FieldNetworkCardID, vc))
+	return predicate.ServerNetworkPort(sql.FieldContainsFold(FieldServerNetworkCardID, vc))
 }
 
 // HasNetworkCard applies the HasEdge predicate on the "network_card" edge.

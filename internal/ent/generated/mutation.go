@@ -11288,13 +11288,13 @@ func (m *ServerNetworkPortMutation) ResetMACAddress() {
 	m.mac_address = nil
 }
 
-// SetNetworkCardID sets the "network_card_id" field.
-func (m *ServerNetworkPortMutation) SetNetworkCardID(gi gidx.PrefixedID) {
+// SetServerNetworkCardID sets the "server_network_card_id" field.
+func (m *ServerNetworkPortMutation) SetServerNetworkCardID(gi gidx.PrefixedID) {
 	m.network_card = &gi
 }
 
-// NetworkCardID returns the value of the "network_card_id" field in the mutation.
-func (m *ServerNetworkPortMutation) NetworkCardID() (r gidx.PrefixedID, exists bool) {
+// ServerNetworkCardID returns the value of the "server_network_card_id" field in the mutation.
+func (m *ServerNetworkPortMutation) ServerNetworkCardID() (r gidx.PrefixedID, exists bool) {
 	v := m.network_card
 	if v == nil {
 		return
@@ -11302,26 +11302,31 @@ func (m *ServerNetworkPortMutation) NetworkCardID() (r gidx.PrefixedID, exists b
 	return *v, true
 }
 
-// OldNetworkCardID returns the old "network_card_id" field's value of the ServerNetworkPort entity.
+// OldServerNetworkCardID returns the old "server_network_card_id" field's value of the ServerNetworkPort entity.
 // If the ServerNetworkPort object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerNetworkPortMutation) OldNetworkCardID(ctx context.Context) (v gidx.PrefixedID, err error) {
+func (m *ServerNetworkPortMutation) OldServerNetworkCardID(ctx context.Context) (v gidx.PrefixedID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNetworkCardID is only allowed on UpdateOne operations")
+		return v, errors.New("OldServerNetworkCardID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNetworkCardID requires an ID field in the mutation")
+		return v, errors.New("OldServerNetworkCardID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNetworkCardID: %w", err)
+		return v, fmt.Errorf("querying old value for OldServerNetworkCardID: %w", err)
 	}
-	return oldValue.NetworkCardID, nil
+	return oldValue.ServerNetworkCardID, nil
 }
 
-// ResetNetworkCardID resets all changes to the "network_card_id" field.
-func (m *ServerNetworkPortMutation) ResetNetworkCardID() {
+// ResetServerNetworkCardID resets all changes to the "server_network_card_id" field.
+func (m *ServerNetworkPortMutation) ResetServerNetworkCardID() {
 	m.network_card = nil
+}
+
+// SetNetworkCardID sets the "network_card" edge to the ServerNetworkCard entity by id.
+func (m *ServerNetworkPortMutation) SetNetworkCardID(id gidx.PrefixedID) {
+	m.network_card = &id
 }
 
 // ClearNetworkCard clears the "network_card" edge to the ServerNetworkCard entity.
@@ -11332,6 +11337,14 @@ func (m *ServerNetworkPortMutation) ClearNetworkCard() {
 // NetworkCardCleared reports if the "network_card" edge to the ServerNetworkCard entity was cleared.
 func (m *ServerNetworkPortMutation) NetworkCardCleared() bool {
 	return m.clearednetwork_card
+}
+
+// NetworkCardID returns the "network_card" edge ID in the mutation.
+func (m *ServerNetworkPortMutation) NetworkCardID() (id gidx.PrefixedID, exists bool) {
+	if m.network_card != nil {
+		return *m.network_card, true
+	}
+	return
 }
 
 // NetworkCardIDs returns the "network_card" edge IDs in the mutation.
@@ -11395,7 +11408,7 @@ func (m *ServerNetworkPortMutation) Fields() []string {
 		fields = append(fields, servernetworkport.FieldMACAddress)
 	}
 	if m.network_card != nil {
-		fields = append(fields, servernetworkport.FieldNetworkCardID)
+		fields = append(fields, servernetworkport.FieldServerNetworkCardID)
 	}
 	return fields
 }
@@ -11411,8 +11424,8 @@ func (m *ServerNetworkPortMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case servernetworkport.FieldMACAddress:
 		return m.MACAddress()
-	case servernetworkport.FieldNetworkCardID:
-		return m.NetworkCardID()
+	case servernetworkport.FieldServerNetworkCardID:
+		return m.ServerNetworkCardID()
 	}
 	return nil, false
 }
@@ -11428,8 +11441,8 @@ func (m *ServerNetworkPortMutation) OldField(ctx context.Context, name string) (
 		return m.OldUpdatedAt(ctx)
 	case servernetworkport.FieldMACAddress:
 		return m.OldMACAddress(ctx)
-	case servernetworkport.FieldNetworkCardID:
-		return m.OldNetworkCardID(ctx)
+	case servernetworkport.FieldServerNetworkCardID:
+		return m.OldServerNetworkCardID(ctx)
 	}
 	return nil, fmt.Errorf("unknown ServerNetworkPort field %s", name)
 }
@@ -11460,12 +11473,12 @@ func (m *ServerNetworkPortMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetMACAddress(v)
 		return nil
-	case servernetworkport.FieldNetworkCardID:
+	case servernetworkport.FieldServerNetworkCardID:
 		v, ok := value.(gidx.PrefixedID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetNetworkCardID(v)
+		m.SetServerNetworkCardID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown ServerNetworkPort field %s", name)
@@ -11525,8 +11538,8 @@ func (m *ServerNetworkPortMutation) ResetField(name string) error {
 	case servernetworkport.FieldMACAddress:
 		m.ResetMACAddress()
 		return nil
-	case servernetworkport.FieldNetworkCardID:
-		m.ResetNetworkCardID()
+	case servernetworkport.FieldServerNetworkCardID:
+		m.ResetServerNetworkCardID()
 		return nil
 	}
 	return fmt.Errorf("unknown ServerNetworkPort field %s", name)

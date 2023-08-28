@@ -35,8 +35,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldMACAddress holds the string denoting the mac_address field in the database.
 	FieldMACAddress = "mac_address"
-	// FieldNetworkCardID holds the string denoting the network_card_id field in the database.
-	FieldNetworkCardID = "network_card_id"
+	// FieldServerNetworkCardID holds the string denoting the server_network_card_id field in the database.
+	FieldServerNetworkCardID = "server_network_card_id"
 	// EdgeNetworkCard holds the string denoting the network_card edge name in mutations.
 	EdgeNetworkCard = "network_card"
 	// Table holds the table name of the servernetworkport in the database.
@@ -47,7 +47,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "servernetworkcard" package.
 	NetworkCardInverseTable = "server_network_cards"
 	// NetworkCardColumn is the table column denoting the network_card relation/edge.
-	NetworkCardColumn = "network_card_id"
+	NetworkCardColumn = "server_network_card_id"
 )
 
 // Columns holds all SQL columns for servernetworkport fields.
@@ -56,7 +56,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldMACAddress,
-	FieldNetworkCardID,
+	FieldServerNetworkCardID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -105,9 +105,9 @@ func ByMACAddress(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMACAddress, opts...).ToFunc()
 }
 
-// ByNetworkCardID orders the results by the network_card_id field.
-func ByNetworkCardID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldNetworkCardID, opts...).ToFunc()
+// ByServerNetworkCardID orders the results by the server_network_card_id field.
+func ByServerNetworkCardID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldServerNetworkCardID, opts...).ToFunc()
 }
 
 // ByNetworkCardField orders the results by network_card field.

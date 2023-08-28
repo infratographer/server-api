@@ -41,7 +41,7 @@ type ServerNetworkPort struct {
 	// The mac address for the server network port.
 	MACAddress string `json:"mac_address,omitempty"`
 	// The ID for the server network card of this server network port.
-	NetworkCardID gidx.PrefixedID `json:"network_card_id,omitempty"`
+	ServerNetworkCardID gidx.PrefixedID `json:"server_network_card_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ServerNetworkPortQuery when eager-loading is set.
 	Edges        ServerNetworkPortEdges `json:"edges"`
@@ -77,7 +77,7 @@ func (*ServerNetworkPort) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case servernetworkport.FieldID, servernetworkport.FieldNetworkCardID:
+		case servernetworkport.FieldID, servernetworkport.FieldServerNetworkCardID:
 			values[i] = new(gidx.PrefixedID)
 		case servernetworkport.FieldMACAddress:
 			values[i] = new(sql.NullString)
@@ -122,11 +122,11 @@ func (snp *ServerNetworkPort) assignValues(columns []string, values []any) error
 			} else if value.Valid {
 				snp.MACAddress = value.String
 			}
-		case servernetworkport.FieldNetworkCardID:
+		case servernetworkport.FieldServerNetworkCardID:
 			if value, ok := values[i].(*gidx.PrefixedID); !ok {
-				return fmt.Errorf("unexpected type %T for field network_card_id", values[i])
+				return fmt.Errorf("unexpected type %T for field server_network_card_id", values[i])
 			} else if value != nil {
-				snp.NetworkCardID = *value
+				snp.ServerNetworkCardID = *value
 			}
 		default:
 			snp.selectValues.Set(columns[i], values[i])
@@ -178,8 +178,8 @@ func (snp *ServerNetworkPort) String() string {
 	builder.WriteString("mac_address=")
 	builder.WriteString(snp.MACAddress)
 	builder.WriteString(", ")
-	builder.WriteString("network_card_id=")
-	builder.WriteString(fmt.Sprintf("%v", snp.NetworkCardID))
+	builder.WriteString("server_network_card_id=")
+	builder.WriteString(fmt.Sprintf("%v", snp.ServerNetworkCardID))
 	builder.WriteByte(')')
 	return builder.String()
 }

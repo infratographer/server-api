@@ -70,9 +70,9 @@ func (snpc *ServerNetworkPortCreate) SetMACAddress(s string) *ServerNetworkPortC
 	return snpc
 }
 
-// SetNetworkCardID sets the "network_card_id" field.
-func (snpc *ServerNetworkPortCreate) SetNetworkCardID(gi gidx.PrefixedID) *ServerNetworkPortCreate {
-	snpc.mutation.SetNetworkCardID(gi)
+// SetServerNetworkCardID sets the "server_network_card_id" field.
+func (snpc *ServerNetworkPortCreate) SetServerNetworkCardID(gi gidx.PrefixedID) *ServerNetworkPortCreate {
+	snpc.mutation.SetServerNetworkCardID(gi)
 	return snpc
 }
 
@@ -87,6 +87,12 @@ func (snpc *ServerNetworkPortCreate) SetNillableID(gi *gidx.PrefixedID) *ServerN
 	if gi != nil {
 		snpc.SetID(*gi)
 	}
+	return snpc
+}
+
+// SetNetworkCardID sets the "network_card" edge to the ServerNetworkCard entity by ID.
+func (snpc *ServerNetworkPortCreate) SetNetworkCardID(id gidx.PrefixedID) *ServerNetworkPortCreate {
+	snpc.mutation.SetNetworkCardID(id)
 	return snpc
 }
 
@@ -160,8 +166,8 @@ func (snpc *ServerNetworkPortCreate) check() error {
 			return &ValidationError{Name: "mac_address", err: fmt.Errorf(`generated: validator failed for field "ServerNetworkPort.mac_address": %w`, err)}
 		}
 	}
-	if _, ok := snpc.mutation.NetworkCardID(); !ok {
-		return &ValidationError{Name: "network_card_id", err: errors.New(`generated: missing required field "ServerNetworkPort.network_card_id"`)}
+	if _, ok := snpc.mutation.ServerNetworkCardID(); !ok {
+		return &ValidationError{Name: "server_network_card_id", err: errors.New(`generated: missing required field "ServerNetworkPort.server_network_card_id"`)}
 	}
 	if _, ok := snpc.mutation.NetworkCardID(); !ok {
 		return &ValidationError{Name: "network_card", err: errors.New(`generated: missing required edge "ServerNetworkPort.network_card"`)}
@@ -227,7 +233,7 @@ func (snpc *ServerNetworkPortCreate) createSpec() (*ServerNetworkPort, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.NetworkCardID = nodes[0]
+		_node.ServerNetworkCardID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
