@@ -6,28 +6,91 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/predicate"
+	"go.infratographer.com/server-api/internal/ent/generated/serverpowersupply"
 	"go.infratographer.com/x/gidx"
 )
 
 // ServerPowerSupplyType is the resolver for the serverPowerSupplyType field.
 func (r *mutationResolver) ServerPowerSupplyType(ctx context.Context, input generated.CreateServerPowerSupplyTypeInput) (*ServerPowerSupplyTypeCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerPowerSupplyType - serverPowerSupplyType"))
+	// TODO: check permissions
+
+	ps, err := r.client.ServerPowerSupplyType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerPowerSupplyTypeCreatePayload{ServerPowerSupplyType: ps}, nil
 }
 
 // ServerPowerSupplyTypeUpdate is the resolver for the serverPowerSupplyTypeUpdate field.
 func (r *mutationResolver) ServerPowerSupplyTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerPowerSupplyTypeInput) (*ServerPowerSupplyTypeUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerPowerSupplyTypeUpdate - serverPowerSupplyTypeUpdate"))
+	// TODO: check permissions
+
+	ps, err := r.client.ServerPowerSupplyType.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	ps, err = ps.Update().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerPowerSupplyTypeUpdatePayload{ServerPowerSupplyType: ps}, nil
 }
 
 // ServerPowerSupplyTypeDelete is the resolver for the serverPowerSupplyTypeDelete field.
 func (r *mutationResolver) ServerPowerSupplyTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerPowerSupplyTypeDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: ServerPowerSupplyTypeDelete - serverPowerSupplyTypeDelete"))
+	//TODO: check permissions
+
+	tx, err := r.client.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// cleanup chassis associated with type
+	psup, err := tx.ServerPowerSupply.Query().Where(predicate.ServerPowerSupply(serverpowersupply.ServerPowerSupplyTypeIDEQ(id))).All(ctx)
+	if err != nil {
+		r.logger.Errorw("failed to query components", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "query chassis")
+		}
+		return nil, err
+	}
+
+	for _, p := range psup {
+		if err = tx.ServerPowerSupply.DeleteOne(p).Exec(ctx); err != nil {
+			r.logger.Errorw("failed to delete server chassis", "port", p.ID, "error", err)
+			if rerr := tx.Rollback(); rerr != nil {
+				r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete power supply")
+			}
+		}
+	}
+
+	if err := tx.ServerPowerSupplyType.DeleteOneID(id).Exec(ctx); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "delete power supply type")
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		r.logger.Errorw("failed to commit transaction", "error", err)
+		if rerr := tx.Rollback(); rerr != nil {
+			r.logger.Errorw("failed to rollback transaction", "error", rerr, "stage", "commit transaction")
+		}
+		return nil, err
+	}
+
+	return &ServerPowerSupplyTypeDeletePayload{DeletedID: id}, nil
 }
 
 // ServerPowerSupplyType is the resolver for the serverPowerSupplyType field.
 func (r *queryResolver) ServerPowerSupplyType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerPowerSupplyType, error) {
-	panic(fmt.Errorf("not implemented: ServerPowerSupplyType - serverPowerSupplyType"))
+	return r.client.ServerPowerSupplyType.Get(ctx, id)
 }
