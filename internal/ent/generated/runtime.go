@@ -89,6 +89,10 @@ func init() {
 	serverDescName := serverFields[1].Descriptor()
 	// server.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	server.NameValidator = serverDescName.Validators[0].(func(string) error)
+	// serverDescOwnerID is the schema descriptor for owner_id field.
+	serverDescOwnerID := serverFields[3].Descriptor()
+	// server.OwnerIDValidator is a validator for the "owner_id" field. It is called by the builders before save.
+	server.OwnerIDValidator = serverDescOwnerID.Validators[0].(func(string) error)
 	// serverDescLocationID is the schema descriptor for location_id field.
 	serverDescLocationID := serverFields[4].Descriptor()
 	// server.LocationIDValidator is a validator for the "location_id" field. It is called by the builders before save.
@@ -97,6 +101,10 @@ func init() {
 	serverDescProviderID := serverFields[5].Descriptor()
 	// server.ProviderIDValidator is a validator for the "provider_id" field. It is called by the builders before save.
 	server.ProviderIDValidator = serverDescProviderID.Validators[0].(func(string) error)
+	// serverDescServerTypeID is the schema descriptor for server_type_id field.
+	serverDescServerTypeID := serverFields[6].Descriptor()
+	// server.ServerTypeIDValidator is a validator for the "server_type_id" field. It is called by the builders before save.
+	server.ServerTypeIDValidator = serverDescServerTypeID.Validators[0].(func(string) error)
 	// serverDescID is the schema descriptor for id field.
 	serverDescID := serverFields[0].Descriptor()
 	// server.DefaultID holds the default value on creation for the id field.

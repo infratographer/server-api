@@ -790,20 +790,6 @@ var (
 			}
 		},
 	}
-	// ServerOrderFieldServerTypeID orders Server by server_type_id.
-	ServerOrderFieldServerTypeID = &ServerOrderField{
-		Value: func(s *Server) (ent.Value, error) {
-			return s.ServerTypeID, nil
-		},
-		column: server.FieldServerTypeID,
-		toTerm: server.ByServerTypeID,
-		toCursor: func(s *Server) Cursor {
-			return Cursor{
-				ID:    s.ID,
-				Value: s.ServerTypeID,
-			}
-		},
-	}
 )
 
 // String implement fmt.Stringer interface.
@@ -822,8 +808,6 @@ func (f ServerOrderField) String() string {
 		str = "DESCRIPTION"
 	case ServerOrderFieldOwnerID.column:
 		str = "OWNER"
-	case ServerOrderFieldServerTypeID.column:
-		str = "SERVER_TYPE"
 	}
 	return str
 }
@@ -852,8 +836,6 @@ func (f *ServerOrderField) UnmarshalGQL(v interface{}) error {
 		*f = *ServerOrderFieldDescription
 	case "OWNER":
 		*f = *ServerOrderFieldOwnerID
-	case "SERVER_TYPE":
-		*f = *ServerOrderFieldServerTypeID
 	default:
 		return fmt.Errorf("%s is not a valid ServerOrderField", str)
 	}

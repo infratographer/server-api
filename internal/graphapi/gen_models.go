@@ -7,6 +7,21 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
+type Location struct {
+	ID              gidx.PrefixedID             `json:"id"`
+	ScopedToOwnerID gidx.PrefixedID             `json:"scopedToOwnerID"`
+	Servers         *generated.ServerConnection `json:"servers"`
+}
+
+func (Location) IsEntity() {}
+
+type ResourceOwner struct {
+	ID      gidx.PrefixedID             `json:"id"`
+	Servers *generated.ServerConnection `json:"servers"`
+}
+
+func (ResourceOwner) IsEntity() {}
+
 // Return response from serverCPUCreate
 type ServerCPUCreatePayload struct {
 	// The created server cpu.

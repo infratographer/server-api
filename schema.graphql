@@ -1,5 +1,3 @@
-directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
-directive @goModel(model: String, models: [String!]) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 directive @prefixedID(prefix: String!) on OBJECT
 """Input information to create a server cpu."""
 input CreateServerCPUInput {
@@ -82,13 +80,13 @@ input CreateServerHardDriveTypeInput {
 	capacity: String!
 	hardDriveIDs: [ID!]
 }
-"""Create a new server."""
+"""Input information to create a server."""
 input CreateServerInput {
 	"""The name of the server."""
 	name: String!
 	"""The description of the server."""
 	description: String
-	"""The ID for the owner of this server."""
+	"""The ID for the owner for this server."""
 	ownerID: ID!
 	"""The ID for the location of this server."""
 	locationID: ID!
@@ -194,6 +192,29 @@ interface IPAddressable {
 }
 """A valid JSON string."""
 scalar JSON
+type Location @key(fields: "id") {
+	id: ID!
+	scopedToOwnerID: ID!
+	servers(
+		"""Returns the elements in the list that come after the specified cursor."""
+		after: Cursor
+
+		"""Returns the first _n_ elements from the list."""
+		first: Int
+
+		"""Returns the elements in the list that come before the specified cursor."""
+		before: Cursor
+
+		"""Returns the last _n_ elements from the list."""
+		last: Int
+
+		"""Ordering options for Servers returned from the connection."""
+		orderBy: ServerOrder
+
+		"""Filtering options for Servers returned from the connection."""
+		where: ServerWhereInput
+	): ServerConnection!
+}
 type Mutation {
 	"""Create a server chassis."""
 	serverChassis(input: CreateServerChassisInput!): ServerChassisCreatePayload!
@@ -449,8 +470,30 @@ type Query {
 	_entities(representations: [_Any!]!): [_Entity]!
 	_service: _Service!
 }
+type ResourceOwner @interfaceObject @key(fields: "id") {
+	id: ID!
+	servers(
+		"""Returns the elements in the list that come after the specified cursor."""
+		after: Cursor
+
+		"""Returns the first _n_ elements from the list."""
+		first: Int
+
+		"""Returns the elements in the list that come before the specified cursor."""
+		before: Cursor
+
+		"""Returns the last _n_ elements from the list."""
+		last: Int
+
+		"""Ordering options for Servers returned from the connection."""
+		orderBy: ServerOrder
+
+		"""Filtering options for Servers returned from the connection."""
+		where: ServerWhereInput
+	): ServerConnection!
+}
 type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefix: "srvrsrv") {
-	"""The ID of the server."""
+	"""The ID for the server."""
 	id: ID!
 	createdAt: Time!
 	updatedAt: Time!
@@ -459,7 +502,8 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
 	"""The description of the server."""
 	description: String
 	"""The server provider for the server."""
-	serverProvider: ServerProvider! @goField(name: "Provider", forceResolver: false)
+	serverProvider: ServerProvider!
+	"""The server type for the server."""
 	serverType: ServerType!
 	components(
 		"""Returns the elements in the list that come after the specified cursor."""
@@ -480,6 +524,10 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
 		"""Filtering options for ServerComponents returned from the connection."""
 		where: ServerComponentWhereInput
 	): ServerComponentConnection!
+	"""The location of the server."""
+	location: Location!
+	"""The owner of the load balancer."""
+	owner: ResourceOwner!
 }
 type ServerCPU implements Node @key(fields: "id") @prefixedID(prefix: "srvrcpu") {
 	"""The ID of the server cpu."""
@@ -1051,7 +1099,7 @@ type ServerComponent implements Node @key(fields: "id") @prefixedID(prefix: "srv
 	"""The serial number of the server component."""
 	serial: String!
 	"""The server component type for the server component."""
-	serverComponentType: ServerComponentType! @goField(name: "ComponentType", forceResolver: false)
+	serverComponentType: ServerComponentType!
 	server: Server!
 }
 """A connection to a list of items."""
@@ -2579,7 +2627,6 @@ enum ServerOrderField {
 	NAME
 	DESCRIPTION
 	OWNER
-	SERVER_TYPE
 }
 type ServerPowerSupply implements Node @key(fields: "id") @prefixedID(prefix: "srvrpsu") {
 	"""The ID of the server power supply type."""
@@ -2828,7 +2875,7 @@ input ServerPowerSupplyWhereInput {
 	hasServerPowerSupplyType: Boolean
 	hasServerPowerSupplyTypeWith: [ServerPowerSupplyTypeWhereInput!]
 }
-type ServerProvider implements Node @key(fields: "id") @prefixedID(prefix: "srvrprv") @goModel(model: "go.infratographer.com/server-api/internal/ent/generated.Provider") {
+type ServerProvider implements Node @key(fields: "id") @prefixedID(prefix: "srvrprv") {
 	"""The ID of the server provider."""
 	id: ID!
 	createdAt: Time!
@@ -3237,7 +3284,7 @@ input UpdateServerHardDriveTypeInput {
 	removeHardDriveIDs: [ID!]
 	clearHardDrive: Boolean
 }
-"""Update an existing server."""
+"""Input information to update a server."""
 input UpdateServerInput {
 	"""The name of the server."""
 	name: String
@@ -3331,34 +3378,23 @@ input UpdateServerTypeInput {
 	"""The name of the server type."""
 	name: String
 }
-# a union of all types that use the @key directive
-union _Entity = Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerNetworkCard | ServerNetworkCardType | ServerNetworkPort | ServerPowerSupply | ServerPowerSupplyType | ServerProvider | ServerType
+scalar _Any
+union _Entity = Location | ResourceOwner | Server | ServerCPU | ServerCPUType | ServerChassis | ServerChassisType | ServerComponent | ServerComponentType | ServerHardDrive | ServerHardDriveType | ServerMemory | ServerMemoryType | ServerMotherboard | ServerMotherboardType | ServerNetworkCard | ServerNetworkCardType | ServerNetworkPort | ServerPowerSupply | ServerPowerSupplyType | ServerProvider | ServerType
 type _Service {
 	sdl: String
 }
-scalar _Any
-scalar FieldSet
-directive @requires(fields: FieldSet!) on FIELD_DEFINITION
-directive @provides(fields: FieldSet!) on FIELD_DEFINITION
-directive @extends on OBJECT | INTERFACE
-directive @key(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE
-directive @link(import: [String!], url: String!) repeatable on SCHEMA
-directive @external on FIELD_DEFINITION | OBJECT
-directive @shareable on OBJECT | FIELD_DEFINITION
-directive @tag(name: String!) repeatable on FIELD_DEFINITION | INTERFACE | OBJECT | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
-directive @override(from: String!) on FIELD_DEFINITION
-directive @inaccessible on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
-#directive @interfaceObject on OBJECT
+
 extend schema
   @link(
-	url: "https://specs.apollo.dev/federation/v2.3"
-	import: [
-	  "@key",
-	  "@external",
-	  "@shareable",
-	  "@tag",
-	  "@override",
-	  "@inaccessible",
-	  "@interfaceObject"
-	  ]
+    url: "https://specs.apollo.dev/federation/v2.3"
+    import: [
+      "@key",
+      "@interfaceObject",
+      "@shareable",
+      "@inaccessible",
+      "@override",
+      "@provides",
+      "@requires",
+      "@tag"
+    ]
   )

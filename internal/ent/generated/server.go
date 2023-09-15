@@ -29,11 +29,11 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// Represents a server on the graph.
+// Representation of a server.
 type Server struct {
 	config `json:"-"`
 	// ID of the ent.
-	// The ID of the server.
+	// The ID for the server.
 	ID gidx.PrefixedID `json:"id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -43,7 +43,7 @@ type Server struct {
 	Name string `json:"name,omitempty"`
 	// The description of the server.
 	Description string `json:"description,omitempty"`
-	// The ID for the owner of this server.
+	// The ID for the owner for this server.
 	OwnerID gidx.PrefixedID `json:"owner_id,omitempty"`
 	// The ID for the location of this server.
 	LocationID gidx.PrefixedID `json:"location_id,omitempty"`
@@ -61,7 +61,7 @@ type Server struct {
 type ServerEdges struct {
 	// The server provider for the server.
 	Provider *Provider `json:"provider,omitempty"`
-	// ServerType holds the value of the server_type edge.
+	// The server type for the server.
 	ServerType *ServerType `json:"server_type,omitempty"`
 	// Components holds the value of the components edge.
 	Components []*ServerComponent `json:"components,omitempty"`

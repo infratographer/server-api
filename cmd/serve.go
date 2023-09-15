@@ -44,6 +44,7 @@ var serveCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(serveCmd)
 
+	events.MustViperFlagsForNATS(viper.GetViper(), serveCmd.Flags(), appName)
 	echox.MustViperFlags(viper.GetViper(), serveCmd.Flags(), defaultListenAddr)
 	echojwtx.MustViperFlags(viper.GetViper(), serveCmd.Flags())
 

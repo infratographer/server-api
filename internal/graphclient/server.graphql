@@ -1,0 +1,70 @@
+query GetServer($id: ID!) {
+  server(id: $id){
+    id
+    name
+    description
+    owner{
+      id
+    }
+    location {
+      id
+    }
+    serverProvider{
+      id
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+query GetOwnerServers($id: ID!, $orderBy: ServerOrder) {
+  _entities(representations: { __typename: "ResourceOwner", id: $id }) {
+    ... on ResourceOwner {
+      servers(orderBy: $orderBy) {
+        edges {
+          node {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation ServerCreate($input: CreateServerInput!) {
+  serverCreate(input: $input) {
+    server {
+      id
+      name
+      serverProvider {
+        id
+      }
+      owner {
+        id
+      }
+      location {
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerUpdate($id: ID!, $input: UpdateServerInput!) {
+  serverUpdate(id: $id, input: $input) {
+    server {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerDelete($id: ID!) {
+  serverDelete(id: $id) {
+    deletedID
+  }
+}

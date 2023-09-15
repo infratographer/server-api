@@ -31,9 +31,7 @@ import (
 	ent "go.infratographer.com/server-api/internal/ent/generated"
 	"go.infratographer.com/server-api/internal/ent/generated/eventhooks"
 	"go.infratographer.com/server-api/internal/graphapi"
-
-	// TODO: testclient -> graphclient (gqlgenc)
-	graphclient "go.infratographer.com/server-api/internal/testclient"
+	graphclient "go.infratographer.com/server-api/internal/graphclient"
 )
 
 const (
@@ -175,8 +173,7 @@ func withGraphClientHTTPClient(httpcli *http.Client) graphClientOptions {
 	}
 }
 
-// TODO testclient -> graphclient
-func graphTestClient(options ...graphClientOptions) graphclient.TestClient {
+func graphTestClient(options ...graphClientOptions) graphclient.GraphClient {
 	g := &graphClient{
 		srvURL: "graph",
 		httpClient: &http.Client{Transport: localRoundTripper{handler: handler.NewDefaultServer(

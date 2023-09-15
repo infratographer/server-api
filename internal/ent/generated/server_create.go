@@ -217,6 +217,11 @@ func (sc *ServerCreate) check() error {
 	if _, ok := sc.mutation.OwnerID(); !ok {
 		return &ValidationError{Name: "owner_id", err: errors.New(`generated: missing required field "Server.owner_id"`)}
 	}
+	if v, ok := sc.mutation.OwnerID(); ok {
+		if err := server.OwnerIDValidator(string(v)); err != nil {
+			return &ValidationError{Name: "owner_id", err: fmt.Errorf(`generated: validator failed for field "Server.owner_id": %w`, err)}
+		}
+	}
 	if _, ok := sc.mutation.LocationID(); !ok {
 		return &ValidationError{Name: "location_id", err: errors.New(`generated: missing required field "Server.location_id"`)}
 	}
@@ -235,6 +240,11 @@ func (sc *ServerCreate) check() error {
 	}
 	if _, ok := sc.mutation.ServerTypeID(); !ok {
 		return &ValidationError{Name: "server_type_id", err: errors.New(`generated: missing required field "Server.server_type_id"`)}
+	}
+	if v, ok := sc.mutation.ServerTypeID(); ok {
+		if err := server.ServerTypeIDValidator(string(v)); err != nil {
+			return &ValidationError{Name: "server_type_id", err: fmt.Errorf(`generated: validator failed for field "Server.server_type_id": %w`, err)}
+		}
 	}
 	if _, ok := sc.mutation.ProviderID(); !ok {
 		return &ValidationError{Name: "provider", err: errors.New(`generated: missing required edge "Server.provider"`)}

@@ -96,9 +96,9 @@ var (
 				Columns: []*schema.Column{ServersColumns[2]},
 			},
 			{
-				Name:    "server_owner_id",
+				Name:    "server_provider_id",
 				Unique:  false,
-				Columns: []*schema.Column{ServersColumns[5]},
+				Columns: []*schema.Column{ServersColumns[7]},
 			},
 			{
 				Name:    "server_location_id",
@@ -106,9 +106,9 @@ var (
 				Columns: []*schema.Column{ServersColumns[6]},
 			},
 			{
-				Name:    "server_provider_id",
+				Name:    "server_owner_id",
 				Unique:  false,
-				Columns: []*schema.Column{ServersColumns[7]},
+				Columns: []*schema.Column{ServersColumns[5]},
 			},
 			{
 				Name:    "server_server_type_id",

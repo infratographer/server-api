@@ -17,25 +17,26 @@ type Server struct {
 	ent.Schema
 }
 
-// Mixin of the Server type
+// Mixin to use for Server type
 func (Server) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entx.NewTimestampMixin(),
+		// softdelete.Mixin{},
 	}
 }
 
-// Fields of the Server.
+// Fields of the Instance.
 func (Server) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").
 			GoType(gidx.PrefixedID("")).
+			DefaultFunc(func() gidx.PrefixedID { return gidx.MustNewID(ServerPrefix) }).
 			Unique().
 			Immutable().
-			Comment("The ID of the server.").
+			Comment("The ID for the server.").
 			Annotations(
 				entgql.OrderField("ID"),
-			).
-			DefaultFunc(func() gidx.PrefixedID { return gidx.MustNewID(ServerPrefix) }),
+			),
 		field.Text("name").
 			NotEmpty().
 			Comment("The name of the server.").
@@ -51,7 +52,8 @@ func (Server) Fields() []ent.Field {
 		field.String("owner_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
-			Comment("The ID for the owner of this server.").
+			NotEmpty().
+			Comment("The ID for the owner for this server.").
 			Annotations(
 				entgql.QueryField(),
 				entgql.Type("ID"),
@@ -79,17 +81,16 @@ func (Server) Fields() []ent.Field {
 		field.String("server_type_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
+			NotEmpty().
 			Comment("The ID for the server type of this server.").
 			Annotations(
-				entgql.QueryField(),
 				entgql.Type("ID"),
-				entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationUpdateInput, entgql.SkipType),
-				entgql.OrderField("SERVER_TYPE"),
+				entgql.Skip(^entgql.SkipMutationCreateInput),
 			),
 	}
 }
 
-// Edges of the Server.
+// Edges of the Instance.
 func (Server) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("provider", Provider.Type).
@@ -106,7 +107,10 @@ func (Server) Edges() []ent.Edge {
 			Required().
 			Immutable().
 			Field("server_type_id").
-			Annotations(),
+			Comment("The server type for the server.").
+			Annotations(
+				entgql.MapsTo("serverType"),
+			),
 		edge.From("components", ServerComponent.Type).
 			Ref("server").
 			Annotations(
@@ -115,27 +119,27 @@ func (Server) Edges() []ent.Edge {
 	}
 }
 
-// Indexes of the Server.
+// Indexes of the LoadBalancer
 func (Server) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("owner_id"),
-		index.Fields("location_id"),
 		index.Fields("provider_id"),
+		index.Fields("location_id"),
+		index.Fields("owner_id"),
 		index.Fields("server_type_id"),
 	}
 }
 
-// Annotations of the Server
+// Annotations for the LoadBalancer
 func (Server) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entx.GraphKeyDirective("id"),
-		schema.Comment("Represents a server on the graph."),
-		entgql.RelayConnection(),
+		schema.Comment("Representation of a server."),
 		prefixIDDirective(ServerPrefix),
 		entgql.Implements("IPAddressable"),
+		entgql.RelayConnection(),
 		entgql.Mutations(
-			entgql.MutationCreate().Description("Create a new server."),
-			entgql.MutationUpdate().Description("Update an existing server."),
+			entgql.MutationCreate().Description("Input information to create a server."),
+			entgql.MutationUpdate().Description("Input information to update a server."),
 		),
 	}
 }

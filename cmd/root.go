@@ -22,7 +22,7 @@ import (
 )
 
 // app name
-const appName = "server-api"
+const appName = "serverapi"
 
 var (
 	cfgFile string

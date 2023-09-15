@@ -81,13 +81,13 @@ input CreateServerHardDriveTypeInput {
   capacity: String!
   hardDriveIDs: [ID!]
 }
-"""Create a new server."""
+"""Input information to create a server."""
 input CreateServerInput {
   """The name of the server."""
   name: String!
   """The description of the server."""
   description: String
-  """The ID for the owner of this server."""
+  """The ID for the owner for this server."""
   ownerID: ID!
   """The ID for the location of this server."""
   locationID: ID!
@@ -221,7 +221,7 @@ type PageInfo @shareable {
 }
 type Query
 type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefix: "srvrsrv") {
-  """The ID of the server."""
+  """The ID for the server."""
   id: ID!
   createdAt: Time!
   updatedAt: Time!
@@ -231,6 +231,7 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
   description: String
   """The server provider for the server."""
   serverProvider: ServerProvider! @goField(name: "Provider", forceResolver: false)
+  """The server type for the server."""
   serverType: ServerType!
   components(
     """Returns the elements in the list that come after the specified cursor."""
@@ -2115,7 +2116,6 @@ enum ServerOrderField {
   NAME
   DESCRIPTION
   OWNER
-  SERVER_TYPE
 }
 type ServerPowerSupply implements Node @key(fields: "id") @prefixedID(prefix: "srvrpsu") {
   """The ID of the server power supply type."""
@@ -2708,7 +2708,7 @@ input UpdateServerHardDriveTypeInput {
   removeHardDriveIDs: [ID!]
   clearHardDrive: Boolean
 }
-"""Update an existing server."""
+"""Input information to update a server."""
 input UpdateServerInput {
   """The name of the server."""
   name: String
