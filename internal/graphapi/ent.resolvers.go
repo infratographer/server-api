@@ -10,5 +10,9 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // Server returns ServerResolver implementation.
 func (r *Resolver) Server() ServerResolver { return &serverResolver{r} }
 
+// ServerType returns ServerTypeResolver implementation.
+func (r *Resolver) ServerType() ServerTypeResolver { return &serverTypeResolver{r} }
+
 type queryResolver struct{ *Resolver }
 type serverResolver struct{ *Resolver }
+type serverTypeResolver struct{ *Resolver }

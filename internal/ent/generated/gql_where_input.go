@@ -1060,14 +1060,14 @@ type ServerCPUTypeWhereInput struct {
 	ClockSpeedContainsFold *string  `json:"clockSpeedContainsFold,omitempty"`
 
 	// "core_count" field predicates.
-	CoreCount      *int  `json:"coreCount,omitempty"`
-	CoreCountNEQ   *int  `json:"coreCountNEQ,omitempty"`
-	CoreCountIn    []int `json:"coreCountIn,omitempty"`
-	CoreCountNotIn []int `json:"coreCountNotIn,omitempty"`
-	CoreCountGT    *int  `json:"coreCountGT,omitempty"`
-	CoreCountGTE   *int  `json:"coreCountGTE,omitempty"`
-	CoreCountLT    *int  `json:"coreCountLT,omitempty"`
-	CoreCountLTE   *int  `json:"coreCountLTE,omitempty"`
+	CoreCount      *int64  `json:"coreCount,omitempty"`
+	CoreCountNEQ   *int64  `json:"coreCountNEQ,omitempty"`
+	CoreCountIn    []int64 `json:"coreCountIn,omitempty"`
+	CoreCountNotIn []int64 `json:"coreCountNotIn,omitempty"`
+	CoreCountGT    *int64  `json:"coreCountGT,omitempty"`
+	CoreCountGTE   *int64  `json:"coreCountGTE,omitempty"`
+	CoreCountLT    *int64  `json:"coreCountLT,omitempty"`
+	CoreCountLTE   *int64  `json:"coreCountLTE,omitempty"`
 
 	// "cpu" edge predicates.
 	HasCPU     *bool                  `json:"hasCPU,omitempty"`

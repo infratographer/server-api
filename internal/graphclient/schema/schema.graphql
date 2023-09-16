@@ -191,7 +191,7 @@ input CreateServerProviderInput {
 input CreateServerTypeInput {
 	"""The name of the server type."""
 	name: String!
-	"""The ID for the owner of this server type."""
+	"""The ID for the owner for this server."""
 	ownerID: ID!
 }
 """
@@ -260,7 +260,7 @@ type Mutation {
 	"""Delete a server cpu."""
 	serverCPUDelete(id: ID!): ServerCPUDeletePayload!
 	"""Create a server cpu type."""
-	serverCPUType(input: CreateServerCPUTypeInput!): ServerCPUTypeCreatePayload!
+	serverCPUTypeCreate(input: CreateServerCPUTypeInput!): ServerCPUTypeCreatePayload!
 	"""Update a server cpu type."""
 	serverCPUTypeUpdate(id: ID!, input: UpdateServerCPUTypeInput!): ServerCPUTypeUpdatePayload!
 	"""Delete a server cpu type."""
@@ -539,7 +539,7 @@ type Server implements Node & IPAddressable @key(fields: "id") @prefixedID(prefi
 	): ServerComponentConnection!
 	"""The location of the server."""
 	location: Location!
-	"""The owner of the load balancer."""
+	"""The owner of the server."""
 	owner: ResourceOwner!
 }
 type ServerCPU implements Node @key(fields: "id") @prefixedID(prefix: "srvrcpu") {
@@ -3040,6 +3040,8 @@ type ServerType implements Node @key(fields: "id") @prefixedID(prefix: "srvrtyp"
 		"""Filtering options for Servers returned from the connection."""
 		where: ServerWhereInput
 	): ServerConnection!
+	"""The owner of the server type"""
+	owner: ResourceOwner!
 }
 """A connection to a list of items."""
 type ServerTypeConnection {

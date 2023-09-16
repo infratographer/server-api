@@ -14,7 +14,7 @@ extend type Mutation {
   """
   Create a server cpu type.
   """
-  serverCPUType(
+  serverCPUTypeCreate(
     input: CreateServerCPUTypeInput!
   ): ServerCPUTypeCreatePayload!
   """

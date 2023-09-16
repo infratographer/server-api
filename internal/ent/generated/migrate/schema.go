@@ -176,7 +176,7 @@ var (
 		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
 		{Name: "model", Type: field.TypeString, Size: 2147483647},
 		{Name: "clock_speed", Type: field.TypeString, Size: 2147483647},
-		{Name: "core_count", Type: field.TypeInt},
+		{Name: "core_count", Type: field.TypeInt64},
 	}
 	// ServerCPUTypesTable holds the schema information for the "server_cpu_types" table.
 	ServerCPUTypesTable = &schema.Table{

@@ -39,7 +39,7 @@ type ServerType struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// The name of the server type.
 	Name string `json:"name,omitempty"`
-	// The ID for the owner of this server type.
+	// The ID for the owner for this server.
 	OwnerID gidx.PrefixedID `json:"owner_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ServerTypeQuery when eager-loading is set.

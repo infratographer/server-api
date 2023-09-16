@@ -187,7 +187,7 @@ type CreateServerCPUTypeInput struct {
 	Vendor     string
 	Model      string
 	ClockSpeed string
-	CoreCount  int
+	CoreCount  int64
 	CPUIDs     []gidx.PrefixedID
 }
 
@@ -213,7 +213,7 @@ type UpdateServerCPUTypeInput struct {
 	Vendor       *string
 	Model        *string
 	ClockSpeed   *string
-	CoreCount    *int
+	CoreCount    *int64
 	ClearCPU     bool
 	AddCPUIDs    []gidx.PrefixedID
 	RemoveCPUIDs []gidx.PrefixedID

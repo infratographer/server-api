@@ -89,7 +89,7 @@ var (
 	// ClockSpeedValidator is a validator for the "clock_speed" field. It is called by the builders before save.
 	ClockSpeedValidator func(string) error
 	// CoreCountValidator is a validator for the "core_count" field. It is called by the builders before save.
-	CoreCountValidator func(int) error
+	CoreCountValidator func(int64) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() gidx.PrefixedID
 )

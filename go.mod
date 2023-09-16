@@ -3,10 +3,12 @@ module go.infratographer.com/server-api
 go 1.20
 
 require (
+	dario.cat/mergo v1.0.0
 	entgo.io/contrib v0.4.5
 	entgo.io/ent v0.12.4-0.20230503082810-f251400818ea
 	github.com/99designs/gqlgen v0.17.36
 	github.com/Yamashou/gqlgenc v0.14.0
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/labstack/echo/v4 v4.11.1
 	github.com/mattn/go-sqlite3 v1.14.17
@@ -23,10 +25,8 @@ require (
 )
 
 require (
-	dario.cat/mergo v1.0.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
-	github.com/brianvoe/gofakeit v3.18.0+incompatible // indirect
 	github.com/containerd/containerd v1.7.3 // indirect
 	github.com/cpuguy83/dockercfg v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

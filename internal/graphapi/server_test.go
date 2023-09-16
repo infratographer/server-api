@@ -75,7 +75,7 @@ func TestQuery_server(t *testing.T) {
 	}
 }
 
-func TestCreate_loadBalancer(t *testing.T) {
+func TestCreate_server(t *testing.T) {
 	ctx := context.Background()
 	perms := new(mockpermissions.MockPermissions)
 	perms.On("CreateAuthRelationships", mock.Anything, mock.Anything, mock.Anything).Return(nil)
@@ -357,3 +357,5 @@ func TestFullServerLifecycle(t *testing.T) {
 	require.Nil(t, deletedLB)
 	require.ErrorContains(t, err, "server not found")
 }
+
+// TODO: test cascading deletes

@@ -45,7 +45,8 @@ func (ServerType) Fields() []ent.Field {
 		field.String("owner_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
-			Comment("The ID for the owner of this server type.").
+			NotEmpty().
+			Comment("The ID for the owner for this server.").
 			Annotations(
 				entgql.QueryField(),
 				entgql.Type("ID"),

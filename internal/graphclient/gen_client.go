@@ -14,8 +14,16 @@ import (
 type GraphClient interface {
 	GetOwnerServers(ctx context.Context, id gidx.PrefixedID, orderBy *ServerOrder, httpRequestOptions ...client.HTTPRequestOption) (*GetOwnerServers, error)
 	GetServer(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServer, error)
+	GetServerCPUType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerCPUType, error)
+	GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error)
+	ServerCPUTypeCreate(ctx context.Context, input CreateServerCPUTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeCreate, error)
+	ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeDelete, error)
+	ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerCPUTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeUpdate, error)
 	ServerCreate(ctx context.Context, input CreateServerInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCreate, error)
 	ServerDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerDelete, error)
+	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
+	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeDelete, error)
+	ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeUpdate, error)
 	ServerUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerUpdate, error)
 }
 
@@ -67,7 +75,7 @@ type Mutation struct {
 	ServerCPU                   ServerCPUCreatePayload             "json:\"serverCPU\" graphql:\"serverCPU\""
 	ServerCPUUpdate             ServerCPUUpdatePayload             "json:\"serverCPUUpdate\" graphql:\"serverCPUUpdate\""
 	ServerCPUDelete             ServerCPUDeletePayload             "json:\"serverCPUDelete\" graphql:\"serverCPUDelete\""
-	ServerCPUType               ServerCPUTypeCreatePayload         "json:\"serverCPUType\" graphql:\"serverCPUType\""
+	ServerCPUTypeCreate         ServerCPUTypeCreatePayload         "json:\"serverCPUTypeCreate\" graphql:\"serverCPUTypeCreate\""
 	ServerCPUTypeUpdate         ServerCPUTypeUpdatePayload         "json:\"serverCPUTypeUpdate\" graphql:\"serverCPUTypeUpdate\""
 	ServerCPUTypeDelete         ServerCPUTypeDeletePayload         "json:\"serverCPUTypeDelete\" graphql:\"serverCPUTypeDelete\""
 	ServerHardDrive             ServerHardDriveCreatePayload       "json:\"serverHardDrive\" graphql:\"serverHardDrive\""
@@ -143,6 +151,59 @@ type GetServer struct {
 		UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
 	} "json:\"server\" graphql:\"server\""
 }
+type GetServerCPUType struct {
+	ServerCPUType struct {
+		ID         gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Vendor     string          "json:\"vendor\" graphql:\"vendor\""
+		Model      string          "json:\"model\" graphql:\"model\""
+		CoreCount  int64           "json:\"coreCount\" graphql:\"coreCount\""
+		ClockSpeed string          "json:\"clockSpeed\" graphql:\"clockSpeed\""
+		CreatedAt  time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt  time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+	} "json:\"serverCPUType\" graphql:\"serverCPUType\""
+}
+type GetServerType struct {
+	ServerType struct {
+		ID    gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Name  string          "json:\"name\" graphql:\"name\""
+		Owner struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"owner\" graphql:\"owner\""
+		CreatedAt time.Time "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+	} "json:\"serverType\" graphql:\"serverType\""
+}
+type ServerCPUTypeCreate struct {
+	ServerCPUTypeCreate struct {
+		ServerCPUType struct {
+			ID         gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Vendor     string          "json:\"vendor\" graphql:\"vendor\""
+			Model      string          "json:\"model\" graphql:\"model\""
+			CoreCount  int64           "json:\"coreCount\" graphql:\"coreCount\""
+			ClockSpeed string          "json:\"clockSpeed\" graphql:\"clockSpeed\""
+			CreatedAt  time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt  time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverCPUType\" graphql:\"serverCPUType\""
+	} "json:\"serverCPUTypeCreate\" graphql:\"serverCPUTypeCreate\""
+}
+type ServerCPUTypeDelete struct {
+	ServerCPUTypeDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverCPUTypeDelete\" graphql:\"serverCPUTypeDelete\""
+}
+type ServerCPUTypeUpdate struct {
+	ServerCPUTypeUpdate struct {
+		ServerCPUType struct {
+			ID         gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Vendor     string          "json:\"vendor\" graphql:\"vendor\""
+			Model      string          "json:\"model\" graphql:\"model\""
+			CoreCount  int64           "json:\"coreCount\" graphql:\"coreCount\""
+			ClockSpeed string          "json:\"clockSpeed\" graphql:\"clockSpeed\""
+			CreatedAt  time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt  time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverCPUType\" graphql:\"serverCPUType\""
+	} "json:\"serverCPUTypeUpdate\" graphql:\"serverCPUTypeUpdate\""
+}
 type ServerCreate struct {
 	ServerCreate struct {
 		Server struct {
@@ -166,6 +227,37 @@ type ServerDelete struct {
 	ServerDelete struct {
 		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
 	} "json:\"serverDelete\" graphql:\"serverDelete\""
+}
+type ServerTypeCreate struct {
+	ServerTypeCreate struct {
+		ServerType struct {
+			ID    gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Name  string          "json:\"name\" graphql:\"name\""
+			Owner struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"owner\" graphql:\"owner\""
+			CreatedAt time.Time "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverType\" graphql:\"serverType\""
+	} "json:\"serverTypeCreate\" graphql:\"serverTypeCreate\""
+}
+type ServerTypeDelete struct {
+	ServerTypeDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverTypeDelete\" graphql:\"serverTypeDelete\""
+}
+type ServerTypeUpdate struct {
+	ServerTypeUpdate struct {
+		ServerType struct {
+			ID    gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Name  string          "json:\"name\" graphql:\"name\""
+			Owner struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"owner\" graphql:\"owner\""
+			CreatedAt time.Time "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverType\" graphql:\"serverType\""
+	} "json:\"serverTypeUpdate\" graphql:\"serverTypeUpdate\""
 }
 type ServerUpdate struct {
 	ServerUpdate struct {
@@ -241,6 +333,135 @@ func (c *Client) GetServer(ctx context.Context, id gidx.PrefixedID, httpRequestO
 	return &res, nil
 }
 
+const GetServerCPUTypeDocument = `query GetServerCPUType ($id: ID!) {
+	serverCPUType(id: $id) {
+		id
+		vendor
+		model
+		coreCount
+		clockSpeed
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func (c *Client) GetServerCPUType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerCPUType, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerCPUType
+	if err := c.Client.Post(ctx, "GetServerCPUType", GetServerCPUTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const GetServerTypeDocument = `query GetServerType ($id: ID!) {
+	serverType(id: $id) {
+		id
+		name
+		owner {
+			id
+		}
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func (c *Client) GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerType
+	if err := c.Client.Post(ctx, "GetServerType", GetServerTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerCPUTypeCreateDocument = `mutation ServerCPUTypeCreate ($input: CreateServerCPUTypeInput!) {
+	serverCPUTypeCreate(input: $input) {
+		serverCPUType {
+			id
+			vendor
+			model
+			coreCount
+			clockSpeed
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerCPUTypeCreate(ctx context.Context, input CreateServerCPUTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerCPUTypeCreate
+	if err := c.Client.Post(ctx, "ServerCPUTypeCreate", ServerCPUTypeCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerCPUTypeDeleteDocument = `mutation ServerCPUTypeDelete ($id: ID!) {
+	serverCPUTypeDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerCPUTypeDelete
+	if err := c.Client.Post(ctx, "ServerCPUTypeDelete", ServerCPUTypeDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerCPUTypeUpdateDocument = `mutation ServerCPUTypeUpdate ($id: ID!, $input: UpdateServerCPUTypeInput!) {
+	serverCPUTypeUpdate(id: $id, input: $input) {
+		serverCPUType {
+			id
+			vendor
+			model
+			coreCount
+			clockSpeed
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerCPUTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerCPUTypeUpdate
+	if err := c.Client.Post(ctx, "ServerCPUTypeUpdate", ServerCPUTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 const ServerCreateDocument = `mutation ServerCreate ($input: CreateServerInput!) {
 	serverCreate(input: $input) {
 		server {
@@ -289,6 +510,83 @@ func (c *Client) ServerDelete(ctx context.Context, id gidx.PrefixedID, httpReque
 
 	var res ServerDelete
 	if err := c.Client.Post(ctx, "ServerDelete", ServerDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerTypeCreateDocument = `mutation ServerTypeCreate ($input: CreateServerTypeInput!) {
+	serverTypeCreate(input: $input) {
+		serverType {
+			id
+			name
+			owner {
+				id
+			}
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerTypeCreate
+	if err := c.Client.Post(ctx, "ServerTypeCreate", ServerTypeCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerTypeDeleteDocument = `mutation ServerTypeDelete ($id: ID!) {
+	serverTypeDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerTypeDelete
+	if err := c.Client.Post(ctx, "ServerTypeDelete", ServerTypeDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerTypeUpdateDocument = `mutation ServerTypeUpdate ($id: ID!, $input: UpdateServerTypeInput!) {
+	serverTypeUpdate(id: $id, input: $input) {
+		serverType {
+			id
+			name
+			owner {
+				id
+			}
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerTypeUpdate
+	if err := c.Client.Post(ctx, "ServerTypeUpdate", ServerTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

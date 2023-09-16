@@ -14,8 +14,8 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerCPUType is the resolver for the serverCPUType field.
-func (r *mutationResolver) ServerCPUType(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error) {
+// ServerCPUTypeCreate is the resolver for the serverCPUTypeCreate field.
+func (r *mutationResolver) ServerCPUTypeCreate(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error) {
 	// TODO: check permissions
 
 	ct, err := r.client.ServerCPUType.Create().SetInput(input).Save(ctx)
@@ -93,4 +93,21 @@ func (r *mutationResolver) ServerCPUTypeDelete(ctx context.Context, id gidx.Pref
 // ServerCPUType is the resolver for the serverCPUType field.
 func (r *queryResolver) ServerCPUType(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPUType, error) {
 	return r.client.ServerCPUType.Get(ctx, id)
+}
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *mutationResolver) ServerCPUType(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error) {
+	// TODO: check permissions
+
+	ct, err := r.client.ServerCPUType.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerCPUTypeCreatePayload{ServerCPUType: ct}, nil
 }

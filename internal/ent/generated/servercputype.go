@@ -44,7 +44,7 @@ type ServerCPUType struct {
 	// The clock speed of the server cpu type.
 	ClockSpeed string `json:"clock_speed,omitempty"`
 	// The number of cores for the server cpu type.
-	CoreCount int `json:"core_count,omitempty"`
+	CoreCount int64 `json:"core_count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ServerCPUTypeQuery when eager-loading is set.
 	Edges        ServerCPUTypeEdges `json:"edges"`
@@ -141,7 +141,7 @@ func (sct *ServerCPUType) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field core_count", values[i])
 			} else if value.Valid {
-				sct.CoreCount = int(value.Int64)
+				sct.CoreCount = value.Int64
 			}
 		default:
 			sct.selectValues.Set(columns[i], values[i])

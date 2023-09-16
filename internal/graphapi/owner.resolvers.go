@@ -23,6 +23,11 @@ func (r *serverResolver) Owner(ctx context.Context, obj *generated.Server) (*Res
 	return &ResourceOwner{ID: obj.OwnerID}, nil
 }
 
+// Owner is the resolver for the owner field.
+func (r *serverTypeResolver) Owner(ctx context.Context, obj *generated.ServerType) (*ResourceOwner, error) {
+	return &ResourceOwner{ID: obj.OwnerID}, nil
+}
+
 // ResourceOwner returns ResourceOwnerResolver implementation.
 func (r *Resolver) ResourceOwner() ResourceOwnerResolver { return &resourceOwnerResolver{r} }
 

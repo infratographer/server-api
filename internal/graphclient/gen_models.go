@@ -227,7 +227,7 @@ type CreateServerProviderInput struct {
 type CreateServerTypeInput struct {
 	// The name of the server type.
 	Name string `json:"name"`
-	// The ID for the owner of this server type.
+	// The ID for the owner for this server.
 	OwnerID gidx.PrefixedID `json:"ownerID"`
 }
 
@@ -275,7 +275,7 @@ type Server struct {
 	Components ServerComponentConnection `json:"components"`
 	// The location of the server.
 	Location Location `json:"location"`
-	// The owner of the load balancer.
+	// The owner of the server.
 	Owner ResourceOwner `json:"owner"`
 }
 
@@ -2712,6 +2712,8 @@ type ServerType struct {
 	// The name of the server type.
 	Name    string           `json:"name"`
 	Servers ServerConnection `json:"servers"`
+	// The owner of the server type
+	Owner ResourceOwner `json:"owner"`
 }
 
 func (ServerType) IsNode() {}

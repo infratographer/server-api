@@ -2239,8 +2239,8 @@ type ServerCPUTypeMutation struct {
 	vendor        *string
 	model         *string
 	clock_speed   *string
-	core_count    *int
-	addcore_count *int
+	core_count    *int64
+	addcore_count *int64
 	clearedFields map[string]struct{}
 	cpu           map[gidx.PrefixedID]struct{}
 	removedcpu    map[gidx.PrefixedID]struct{}
@@ -2535,13 +2535,13 @@ func (m *ServerCPUTypeMutation) ResetClockSpeed() {
 }
 
 // SetCoreCount sets the "core_count" field.
-func (m *ServerCPUTypeMutation) SetCoreCount(i int) {
+func (m *ServerCPUTypeMutation) SetCoreCount(i int64) {
 	m.core_count = &i
 	m.addcore_count = nil
 }
 
 // CoreCount returns the value of the "core_count" field in the mutation.
-func (m *ServerCPUTypeMutation) CoreCount() (r int, exists bool) {
+func (m *ServerCPUTypeMutation) CoreCount() (r int64, exists bool) {
 	v := m.core_count
 	if v == nil {
 		return
@@ -2552,7 +2552,7 @@ func (m *ServerCPUTypeMutation) CoreCount() (r int, exists bool) {
 // OldCoreCount returns the old "core_count" field's value of the ServerCPUType entity.
 // If the ServerCPUType object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerCPUTypeMutation) OldCoreCount(ctx context.Context) (v int, err error) {
+func (m *ServerCPUTypeMutation) OldCoreCount(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCoreCount is only allowed on UpdateOne operations")
 	}
@@ -2567,7 +2567,7 @@ func (m *ServerCPUTypeMutation) OldCoreCount(ctx context.Context) (v int, err er
 }
 
 // AddCoreCount adds i to the "core_count" field.
-func (m *ServerCPUTypeMutation) AddCoreCount(i int) {
+func (m *ServerCPUTypeMutation) AddCoreCount(i int64) {
 	if m.addcore_count != nil {
 		*m.addcore_count += i
 	} else {
@@ -2576,7 +2576,7 @@ func (m *ServerCPUTypeMutation) AddCoreCount(i int) {
 }
 
 // AddedCoreCount returns the value that was added to the "core_count" field in this mutation.
-func (m *ServerCPUTypeMutation) AddedCoreCount() (r int, exists bool) {
+func (m *ServerCPUTypeMutation) AddedCoreCount() (r int64, exists bool) {
 	v := m.addcore_count
 	if v == nil {
 		return
@@ -2783,7 +2783,7 @@ func (m *ServerCPUTypeMutation) SetField(name string, value ent.Value) error {
 		m.SetClockSpeed(v)
 		return nil
 	case servercputype.FieldCoreCount:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2820,7 +2820,7 @@ func (m *ServerCPUTypeMutation) AddedField(name string) (ent.Value, bool) {
 func (m *ServerCPUTypeMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case servercputype.FieldCoreCount:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

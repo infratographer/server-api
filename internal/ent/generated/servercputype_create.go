@@ -83,7 +83,7 @@ func (sctc *ServerCPUTypeCreate) SetClockSpeed(s string) *ServerCPUTypeCreate {
 }
 
 // SetCoreCount sets the "core_count" field.
-func (sctc *ServerCPUTypeCreate) SetCoreCount(i int) *ServerCPUTypeCreate {
+func (sctc *ServerCPUTypeCreate) SetCoreCount(i int64) *ServerCPUTypeCreate {
 	sctc.mutation.SetCoreCount(i)
 	return sctc
 }
@@ -262,7 +262,7 @@ func (sctc *ServerCPUTypeCreate) createSpec() (*ServerCPUType, *sqlgraph.CreateS
 		_node.ClockSpeed = value
 	}
 	if value, ok := sctc.mutation.CoreCount(); ok {
-		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt, value)
+		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt64, value)
 		_node.CoreCount = value
 	}
 	if nodes := sctc.mutation.CPUIDs(); len(nodes) > 0 {

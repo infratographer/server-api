@@ -94,75 +94,29 @@ func (b ServerBuilder) MustNew(ctx context.Context) *ent.Server {
 	return EntClient.Server.Create().SetName(b.Name).SetOwnerID(b.OwnerID).SetLocationID(b.LocationID).SetProviderID(b.ProviderID).SetServerTypeID(b.ServerTypeID).SetDescription(b.Description).SaveX(ctx)
 }
 
-// type PortBuilder struct {
-// 	Name           string
-// 	LoadBalancerID gidx.PrefixedID
-// 	Number         int
-// }
+type ServerCPUTypeBuilder struct {
+	Model      string
+	Vendor     string
+	CoreCount  int64
+	ClockSpeed string
+}
 
-// func (p PortBuilder) MustNew(ctx context.Context) *ent.Port {
-// 	if p.Name == "" {
-// 		p.Name = gofakeit.AppName()
-// 	}
+func (p ServerCPUTypeBuilder) MustNew(ctx context.Context) *ent.ServerCPUType {
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
 
-// 	if p.LoadBalancerID == "" {
-// 		p.LoadBalancerID = gidx.MustNewID(lbPrefix)
-// 	}
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
 
-// 	if p.Number == 0 {
-// 		p.Number = gofakeit.Number(1, 65535)
-// 	}
+	if p.CoreCount == 0 {
+		p.CoreCount = 4
+	}
 
-// 	return EntClient.Port.Create().SetName(p.Name).SetLoadBalancerID(p.LoadBalancerID).SetNumber(p.Number).SaveX(ctx)
-// }
+	if p.ClockSpeed == "" {
+		p.ClockSpeed = "2.5GHz"
+	}
 
-// type PoolBuilder struct {
-// 	Name     string
-// 	OwnerID  gidx.PrefixedID
-// 	Protocol pool.Protocol
-// }
-
-// func (p *PoolBuilder) MustNew(ctx context.Context) *ent.Pool {
-// 	if p.Name == "" {
-// 		p.Name = gofakeit.AppName()
-// 	}
-
-// 	if p.OwnerID == "" {
-// 		p.OwnerID = gidx.MustNewID(ownerPrefix)
-// 	}
-
-// 	if p.Protocol == "" {
-// 		p.Protocol = pool.Protocol(gofakeit.RandomString([]string{"tcp", "udp"}))
-// 	}
-
-// 	return EntClient.Pool.Create().SetName(p.Name).SetOwnerID(p.OwnerID).SetProtocol(p.Protocol).SaveX(ctx)
-// }
-
-// type OriginBuilder struct {
-// 	Name       string
-// 	Target     string
-// 	PortNumber int
-// 	Active     bool
-// 	PoolID     gidx.PrefixedID
-// }
-
-// func (o *OriginBuilder) MustNew(ctx context.Context) *ent.Origin {
-// 	if o.Name == "" {
-// 		o.Name = gofakeit.AppName()
-// 	}
-
-// 	if o.Target == "" {
-// 		o.Target = gofakeit.IPv4Address()
-// 	}
-
-// 	if o.PortNumber == 0 {
-// 		o.PortNumber = gofakeit.Number(1, 65535)
-// 	}
-
-// 	if o.PoolID == "" {
-// 		pb := &PoolBuilder{}
-// 		o.PoolID = pb.MustNew(ctx).ID
-// 	}
-
-// 	return EntClient.Origin.Create().SetName(o.Name).SetTarget(o.Target).SetPortNumber(o.PortNumber).SetActive(o.Active).SetPoolID(o.PoolID).SaveX(ctx)
-// }
+	return EntClient.ServerCPUType.Create().SetVendor(p.Vendor).SetModel(p.Model).SetCoreCount(p.CoreCount).SetClockSpeed(p.ClockSpeed).SaveX(ctx)
+}

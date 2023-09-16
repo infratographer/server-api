@@ -35,7 +35,14 @@ type ResourceOwner @interfaceObject @key(fields: "id") {
   
 extend type Server {
   """
-  The owner of the load balancer.
+  The owner of the server.
   """
   owner: ResourceOwner! @goField(forceResolver: true)
+}
+
+extend type ServerType {
+"""
+The owner of the server type
+"""
+owner: ResourceOwner! @goField(forceResolver: true)
 }

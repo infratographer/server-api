@@ -25,6 +25,8 @@ import (
 	"entgo.io/ent/entc/gen"
 	"entgo.io/ent/schema/field"
 	"go.infratographer.com/x/entx"
+
+	"github.com/hedwigz/entviz"
 )
 
 func main() {
@@ -57,6 +59,7 @@ func main() {
 		entc.Extensions(
 			xExt,
 			gqlExt,
+			entviz.Extension{}, // graph visualisation
 		),
 		entc.TemplateDir("./internal/ent/templates"),
 		entc.FeatureNames("intercept"),

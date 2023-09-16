@@ -162,7 +162,7 @@ func init() {
 	// servercputypeDescCoreCount is the schema descriptor for core_count field.
 	servercputypeDescCoreCount := servercputypeFields[4].Descriptor()
 	// servercputype.CoreCountValidator is a validator for the "core_count" field. It is called by the builders before save.
-	servercputype.CoreCountValidator = servercputypeDescCoreCount.Validators[0].(func(int) error)
+	servercputype.CoreCountValidator = servercputypeDescCoreCount.Validators[0].(func(int64) error)
 	// servercputypeDescID is the schema descriptor for id field.
 	servercputypeDescID := servercputypeFields[0].Descriptor()
 	// servercputype.DefaultID holds the default value on creation for the id field.
@@ -607,6 +607,10 @@ func init() {
 	servertypeDescName := servertypeFields[1].Descriptor()
 	// servertype.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	servertype.NameValidator = servertypeDescName.Validators[0].(func(string) error)
+	// servertypeDescOwnerID is the schema descriptor for owner_id field.
+	servertypeDescOwnerID := servertypeFields[2].Descriptor()
+	// servertype.OwnerIDValidator is a validator for the "owner_id" field. It is called by the builders before save.
+	servertype.OwnerIDValidator = servertypeDescOwnerID.Validators[0].(func(string) error)
 	// servertypeDescID is the schema descriptor for id field.
 	servertypeDescID := servertypeFields[0].Descriptor()
 	// servertype.DefaultID holds the default value on creation for the id field.

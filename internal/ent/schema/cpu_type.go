@@ -47,7 +47,7 @@ func (ServerCPUType) Fields() []ent.Field {
 		field.Text("clock_speed").
 			NotEmpty().
 			Comment("The clock speed of the server cpu type."),
-		field.Int("core_count").
+		field.Int64("core_count").
 			Positive().
 			Comment("The number of cores for the server cpu type."),
 	}

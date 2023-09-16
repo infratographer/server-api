@@ -96,7 +96,7 @@ func ClockSpeed(v string) predicate.ServerCPUType {
 }
 
 // CoreCount applies equality check predicate on the "core_count" field. It's identical to CoreCountEQ.
-func CoreCount(v int) predicate.ServerCPUType {
+func CoreCount(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldEQ(FieldCoreCount, v))
 }
 
@@ -376,42 +376,42 @@ func ClockSpeedContainsFold(v string) predicate.ServerCPUType {
 }
 
 // CoreCountEQ applies the EQ predicate on the "core_count" field.
-func CoreCountEQ(v int) predicate.ServerCPUType {
+func CoreCountEQ(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldEQ(FieldCoreCount, v))
 }
 
 // CoreCountNEQ applies the NEQ predicate on the "core_count" field.
-func CoreCountNEQ(v int) predicate.ServerCPUType {
+func CoreCountNEQ(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldNEQ(FieldCoreCount, v))
 }
 
 // CoreCountIn applies the In predicate on the "core_count" field.
-func CoreCountIn(vs ...int) predicate.ServerCPUType {
+func CoreCountIn(vs ...int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldIn(FieldCoreCount, vs...))
 }
 
 // CoreCountNotIn applies the NotIn predicate on the "core_count" field.
-func CoreCountNotIn(vs ...int) predicate.ServerCPUType {
+func CoreCountNotIn(vs ...int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldNotIn(FieldCoreCount, vs...))
 }
 
 // CoreCountGT applies the GT predicate on the "core_count" field.
-func CoreCountGT(v int) predicate.ServerCPUType {
+func CoreCountGT(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldGT(FieldCoreCount, v))
 }
 
 // CoreCountGTE applies the GTE predicate on the "core_count" field.
-func CoreCountGTE(v int) predicate.ServerCPUType {
+func CoreCountGTE(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldGTE(FieldCoreCount, v))
 }
 
 // CoreCountLT applies the LT predicate on the "core_count" field.
-func CoreCountLT(v int) predicate.ServerCPUType {
+func CoreCountLT(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldLT(FieldCoreCount, v))
 }
 
 // CoreCountLTE applies the LTE predicate on the "core_count" field.
-func CoreCountLTE(v int) predicate.ServerCPUType {
+func CoreCountLTE(v int64) predicate.ServerCPUType {
 	return predicate.ServerCPUType(sql.FieldLTE(FieldCoreCount, v))
 }
 

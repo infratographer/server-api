@@ -62,14 +62,14 @@ func (sctu *ServerCPUTypeUpdate) SetClockSpeed(s string) *ServerCPUTypeUpdate {
 }
 
 // SetCoreCount sets the "core_count" field.
-func (sctu *ServerCPUTypeUpdate) SetCoreCount(i int) *ServerCPUTypeUpdate {
+func (sctu *ServerCPUTypeUpdate) SetCoreCount(i int64) *ServerCPUTypeUpdate {
 	sctu.mutation.ResetCoreCount()
 	sctu.mutation.SetCoreCount(i)
 	return sctu
 }
 
 // AddCoreCount adds i to the "core_count" field.
-func (sctu *ServerCPUTypeUpdate) AddCoreCount(i int) *ServerCPUTypeUpdate {
+func (sctu *ServerCPUTypeUpdate) AddCoreCount(i int64) *ServerCPUTypeUpdate {
 	sctu.mutation.AddCoreCount(i)
 	return sctu
 }
@@ -201,10 +201,10 @@ func (sctu *ServerCPUTypeUpdate) sqlSave(ctx context.Context) (n int, err error)
 		_spec.SetField(servercputype.FieldClockSpeed, field.TypeString, value)
 	}
 	if value, ok := sctu.mutation.CoreCount(); ok {
-		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt, value)
+		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt64, value)
 	}
 	if value, ok := sctu.mutation.AddedCoreCount(); ok {
-		_spec.AddField(servercputype.FieldCoreCount, field.TypeInt, value)
+		_spec.AddField(servercputype.FieldCoreCount, field.TypeInt64, value)
 	}
 	if sctu.mutation.CPUCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -290,14 +290,14 @@ func (sctuo *ServerCPUTypeUpdateOne) SetClockSpeed(s string) *ServerCPUTypeUpdat
 }
 
 // SetCoreCount sets the "core_count" field.
-func (sctuo *ServerCPUTypeUpdateOne) SetCoreCount(i int) *ServerCPUTypeUpdateOne {
+func (sctuo *ServerCPUTypeUpdateOne) SetCoreCount(i int64) *ServerCPUTypeUpdateOne {
 	sctuo.mutation.ResetCoreCount()
 	sctuo.mutation.SetCoreCount(i)
 	return sctuo
 }
 
 // AddCoreCount adds i to the "core_count" field.
-func (sctuo *ServerCPUTypeUpdateOne) AddCoreCount(i int) *ServerCPUTypeUpdateOne {
+func (sctuo *ServerCPUTypeUpdateOne) AddCoreCount(i int64) *ServerCPUTypeUpdateOne {
 	sctuo.mutation.AddCoreCount(i)
 	return sctuo
 }
@@ -459,10 +459,10 @@ func (sctuo *ServerCPUTypeUpdateOne) sqlSave(ctx context.Context) (_node *Server
 		_spec.SetField(servercputype.FieldClockSpeed, field.TypeString, value)
 	}
 	if value, ok := sctuo.mutation.CoreCount(); ok {
-		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt, value)
+		_spec.SetField(servercputype.FieldCoreCount, field.TypeInt64, value)
 	}
 	if value, ok := sctuo.mutation.AddedCoreCount(); ok {
-		_spec.AddField(servercputype.FieldCoreCount, field.TypeInt, value)
+		_spec.AddField(servercputype.FieldCoreCount, field.TypeInt64, value)
 	}
 	if sctuo.mutation.CPUCleared() {
 		edge := &sqlgraph.EdgeSpec{

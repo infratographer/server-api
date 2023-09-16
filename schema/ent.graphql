@@ -180,7 +180,7 @@ input CreateServerProviderInput {
 input CreateServerTypeInput {
   """The name of the server type."""
   name: String!
-  """The ID for the owner of this server type."""
+  """The ID for the owner for this server."""
   ownerID: ID!
 }
 """
