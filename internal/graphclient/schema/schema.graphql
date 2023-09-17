@@ -254,7 +254,7 @@ type Mutation {
 	"""Delete a server component type."""
 	serverComponentTypeDelete(id: ID!): ServerComponentTypeDeletePayload!
 	"""Create a server cpu."""
-	serverCPU(input: CreateServerCPUInput!): ServerCPUCreatePayload!
+	serverCPUCreate(input: CreateServerCPUInput!): ServerCPUCreatePayload!
 	"""Update a server cpu."""
 	serverCPUUpdate(id: ID!, input: UpdateServerCPUInput!): ServerCPUUpdatePayload!
 	"""Delete a server cpu."""

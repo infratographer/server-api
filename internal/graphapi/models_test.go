@@ -120,3 +120,27 @@ func (p ServerCPUTypeBuilder) MustNew(ctx context.Context) *ent.ServerCPUType {
 
 	return EntClient.ServerCPUType.Create().SetVendor(p.Vendor).SetModel(p.Model).SetCoreCount(p.CoreCount).SetClockSpeed(p.ClockSpeed).SaveX(ctx)
 }
+
+type ServerCPUBuilder struct {
+	Serial        string
+	Server        *ent.Server
+	ServerCPUType *ent.ServerCPUType
+}
+
+func (p ServerCPUBuilder) MustNew(ctx context.Context) *ent.ServerCPU {
+	if p.Serial == "" {
+		p.Serial = gofakeit.UUID()
+	}
+
+	if p.Server == nil {
+		provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+		srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+		p.Server = (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	}
+
+	if p.ServerCPUType == nil {
+		p.ServerCPUType = (&ServerCPUTypeBuilder{}).MustNew(ctx)
+	}
+
+	return EntClient.ServerCPU.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerCPUType(p.ServerCPUType).SaveX(ctx)
+}

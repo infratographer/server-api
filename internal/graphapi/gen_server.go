@@ -86,7 +86,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ServerCPU                   func(childComplexity int, input generated.CreateServerCPUInput) int
+		ServerCPUCreate             func(childComplexity int, input generated.CreateServerCPUInput) int
 		ServerCPUDelete             func(childComplexity int, id gidx.PrefixedID) int
 		ServerCPUTypeCreate         func(childComplexity int, input generated.CreateServerCPUTypeInput) int
 		ServerCPUTypeDelete         func(childComplexity int, id gidx.PrefixedID) int
@@ -884,7 +884,7 @@ type MutationResolver interface {
 	ServerComponentTypeCreate(ctx context.Context, input generated.CreateServerComponentTypeInput) (*ServerComponentTypeCreatePayload, error)
 	ServerComponentTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerComponentTypeInput) (*ServerComponentTypeUpdatePayload, error)
 	ServerComponentTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerComponentTypeDeletePayload, error)
-	ServerCPU(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error)
+	ServerCPUCreate(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error)
 	ServerCPUUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerCPUInput) (*ServerCPUUpdatePayload, error)
 	ServerCPUDelete(ctx context.Context, id gidx.PrefixedID) (*ServerCPUDeletePayload, error)
 	ServerCPUTypeCreate(ctx context.Context, input generated.CreateServerCPUTypeInput) (*ServerCPUTypeCreatePayload, error)
@@ -1271,17 +1271,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Location.Servers(childComplexity, args["after"].(*entgql.Cursor[gidx.PrefixedID]), args["first"].(*int), args["before"].(*entgql.Cursor[gidx.PrefixedID]), args["last"].(*int), args["orderBy"].(*generated.ServerOrder), args["where"].(*generated.ServerWhereInput)), true
 
-	case "Mutation.serverCPU":
-		if e.complexity.Mutation.ServerCPU == nil {
+	case "Mutation.serverCPUCreate":
+		if e.complexity.Mutation.ServerCPUCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_serverCPU_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_serverCPUCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServerCPU(childComplexity, args["input"].(generated.CreateServerCPUInput)), true
+		return e.complexity.Mutation.ServerCPUCreate(childComplexity, args["input"].(generated.CreateServerCPUInput)), true
 
 	case "Mutation.serverCPUDelete":
 		if e.complexity.Mutation.ServerCPUDelete == nil {
@@ -4857,7 +4857,7 @@ extend type Mutation {
   """
   Create a server cpu.
   """
-  serverCPU(
+  serverCPUCreate(
     input: CreateServerCPUInput!
   ): ServerCPUCreatePayload!
   """
@@ -9206,6 +9206,21 @@ func (ec *executionContext) field_Location_servers_args(ctx context.Context, raw
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverCPUCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerCPUInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerCPUInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerCPUInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverCPUDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9296,21 +9311,6 @@ func (ec *executionContext) field_Mutation_serverCPUUpdate_args(ctx context.Cont
 		}
 	}
 	args["input"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverCPU_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerCPUInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerCPUInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerCPUInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -13705,8 +13705,8 @@ func (ec *executionContext) fieldContext_Mutation_serverComponentTypeDelete(ctx 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_serverCPU(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverCPU(ctx, field)
+func (ec *executionContext) _Mutation_serverCPUCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverCPUCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13719,7 +13719,7 @@ func (ec *executionContext) _Mutation_serverCPU(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerCPU(rctx, fc.Args["input"].(generated.CreateServerCPUInput))
+		return ec.resolvers.Mutation().ServerCPUCreate(rctx, fc.Args["input"].(generated.CreateServerCPUInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13736,7 +13736,7 @@ func (ec *executionContext) _Mutation_serverCPU(ctx context.Context, field graph
 	return ec.marshalNServerCPUCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerCPUCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_serverCPU(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_serverCPUCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13757,7 +13757,7 @@ func (ec *executionContext) fieldContext_Mutation_serverCPU(ctx context.Context,
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverCPU_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_serverCPUCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -49329,9 +49329,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "serverCPU":
+		case "serverCPUCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverCPU(ctx, field)
+				return ec._Mutation_serverCPUCreate(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

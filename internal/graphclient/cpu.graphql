@@ -1,0 +1,54 @@
+query GetServerCPU($id: ID!){
+  serverCPU(id: $id){
+    id
+    serial
+    server {
+      id
+    }
+    createdAt
+    updatedAt
+    serverCPUType {
+      id
+    }
+  }
+}
+
+mutation ServerCPUCreate($input: CreateServerCPUInput!){
+  serverCPUCreate(input: $input){
+    serverCPU{
+        id
+        serial
+        server {
+        id
+        }
+        createdAt
+        updatedAt
+        serverCPUType {
+        id
+        }
+    }
+  }
+}
+
+mutation ServerCPUUpdate($id: ID!, $input: UpdateServerCPUInput!) {
+  serverCPUUpdate(id: $id, input: $input) {
+    serverCPU {
+        id
+        serial
+        server {
+          id
+        }
+        createdAt
+        updatedAt
+        serverCPUType {
+          id
+        }
+    }
+  }
+}
+
+mutation ServerCPUDelete($id: ID!) {
+  serverCPUDelete(id: $id) {
+    deletedID
+  }
+}

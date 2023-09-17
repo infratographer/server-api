@@ -12,16 +12,16 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerCPU is the resolver for the serverCPU field.
-func (r *mutationResolver) ServerCPU(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error) {
+// ServerCPUCreate is the resolver for the serverCPUCreate field.
+func (r *mutationResolver) ServerCPUCreate(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error) {
 	// TODO: check permissions
 
-	cpu, err := r.client.ServerCPU.Create().SetInput(input).Save(ctx)
+	c, err := r.client.ServerCPU.Create().SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ServerCPUCreatePayload{ServerCPU: cpu}, nil
+	return &ServerCPUCreatePayload{ServerCPU: c}, nil
 }
 
 // ServerCPUUpdate is the resolver for the serverCPUUpdate field.
@@ -72,4 +72,21 @@ func (r *mutationResolver) ServerCPUDelete(ctx context.Context, id gidx.Prefixed
 // ServerCPU is the resolver for the serverCPU field.
 func (r *queryResolver) ServerCPU(ctx context.Context, id gidx.PrefixedID) (*generated.ServerCPU, error) {
 	return r.client.ServerCPU.Get(ctx, id)
+}
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *mutationResolver) ServerCPU(ctx context.Context, input generated.CreateServerCPUInput) (*ServerCPUCreatePayload, error) {
+	// TODO: check permissions
+
+	cpu, err := r.client.ServerCPU.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerCPUCreatePayload{ServerCPU: cpu}, nil
 }
