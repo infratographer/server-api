@@ -91,6 +91,8 @@ var (
 	ModelValidator func(string) error
 	// HeightValidator is a validator for the "height" field. It is called by the builders before save.
 	HeightValidator func(string) error
+	// DefaultIsFullDepth holds the default value on creation for the "is_full_depth" field.
+	DefaultIsFullDepth bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() gidx.PrefixedID
 )

@@ -261,7 +261,7 @@ var (
 		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
 		{Name: "model", Type: field.TypeString, Size: 2147483647},
 		{Name: "height", Type: field.TypeString, Size: 2147483647},
-		{Name: "is_full_depth", Type: field.TypeBool},
+		{Name: "is_full_depth", Type: field.TypeBool, Default: true},
 		{Name: "parent_chassis_type_id", Type: field.TypeString, Size: 2147483647},
 	}
 	// ServerChassisTypesTable holds the schema information for the "server_chassis_types" table.

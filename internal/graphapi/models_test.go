@@ -144,3 +144,27 @@ func (p ServerCPUBuilder) MustNew(ctx context.Context) *ent.ServerCPU {
 
 	return EntClient.ServerCPU.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerCPUType(p.ServerCPUType).SaveX(ctx)
 }
+
+type ServerChassisTypeBuilder struct {
+	Model               string
+	Vendor              string
+	Height              string
+	IsFullDepth         bool
+	ParentChassisTypeID gidx.PrefixedID
+}
+
+func (p ServerChassisTypeBuilder) MustNew(ctx context.Context) *ent.ServerChassisType {
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
+
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
+
+	if p.Height == "" {
+		p.Height = "1U"
+	}
+
+	return EntClient.ServerChassisType.Create().SetModel(p.Model).SetVendor(p.Vendor).SetHeight(p.Height).SetParentChassisTypeID(p.ParentChassisTypeID).SetIsFullDepth(p.IsFullDepth).SaveX(ctx)
+}

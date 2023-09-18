@@ -14,7 +14,7 @@ extend type Mutation {
   """
   Create a server chassis type.
   """
-  serverChassisType(
+  serverChassisTypeCreate(
     input: CreateServerChassisTypeInput!
   ): ServerChassisTypeCreatePayload!
   """

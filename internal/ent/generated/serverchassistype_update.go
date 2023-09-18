@@ -67,6 +67,14 @@ func (sctu *ServerChassisTypeUpdate) SetIsFullDepth(b bool) *ServerChassisTypeUp
 	return sctu
 }
 
+// SetNillableIsFullDepth sets the "is_full_depth" field if the given value is not nil.
+func (sctu *ServerChassisTypeUpdate) SetNillableIsFullDepth(b *bool) *ServerChassisTypeUpdate {
+	if b != nil {
+		sctu.SetIsFullDepth(*b)
+	}
+	return sctu
+}
+
 // AddChassiIDs adds the "chassis" edge to the ServerChassis entity by IDs.
 func (sctu *ServerChassisTypeUpdate) AddChassiIDs(ids ...gidx.PrefixedID) *ServerChassisTypeUpdate {
 	sctu.mutation.AddChassiIDs(ids...)
@@ -277,6 +285,14 @@ func (sctuo *ServerChassisTypeUpdateOne) SetHeight(s string) *ServerChassisTypeU
 // SetIsFullDepth sets the "is_full_depth" field.
 func (sctuo *ServerChassisTypeUpdateOne) SetIsFullDepth(b bool) *ServerChassisTypeUpdateOne {
 	sctuo.mutation.SetIsFullDepth(b)
+	return sctuo
+}
+
+// SetNillableIsFullDepth sets the "is_full_depth" field if the given value is not nil.
+func (sctuo *ServerChassisTypeUpdateOne) SetNillableIsFullDepth(b *bool) *ServerChassisTypeUpdateOne {
+	if b != nil {
+		sctuo.SetIsFullDepth(*b)
+	}
 	return sctuo
 }
 

@@ -37,7 +37,7 @@ input CreateServerChassisTypeInput {
   """The height of the server chassis type."""
   height: String!
   """Whether the server chassis type is full depth."""
-  isFullDepth: Boolean!
+  isFullDepth: Boolean
   """The ID for the parent of this chassis type."""
   parentChassisTypeID: ID!
   chassiIDs: [ID!]

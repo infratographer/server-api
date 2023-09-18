@@ -88,6 +88,14 @@ func (sctc *ServerChassisTypeCreate) SetIsFullDepth(b bool) *ServerChassisTypeCr
 	return sctc
 }
 
+// SetNillableIsFullDepth sets the "is_full_depth" field if the given value is not nil.
+func (sctc *ServerChassisTypeCreate) SetNillableIsFullDepth(b *bool) *ServerChassisTypeCreate {
+	if b != nil {
+		sctc.SetIsFullDepth(*b)
+	}
+	return sctc
+}
+
 // SetParentChassisTypeID sets the "parent_chassis_type_id" field.
 func (sctc *ServerChassisTypeCreate) SetParentChassisTypeID(gi gidx.PrefixedID) *ServerChassisTypeCreate {
 	sctc.mutation.SetParentChassisTypeID(gi)
@@ -165,6 +173,10 @@ func (sctc *ServerChassisTypeCreate) defaults() {
 	if _, ok := sctc.mutation.UpdatedAt(); !ok {
 		v := serverchassistype.DefaultUpdatedAt()
 		sctc.mutation.SetUpdatedAt(v)
+	}
+	if _, ok := sctc.mutation.IsFullDepth(); !ok {
+		v := serverchassistype.DefaultIsFullDepth
+		sctc.mutation.SetIsFullDepth(v)
 	}
 	if _, ok := sctc.mutation.ID(); !ok {
 		v := serverchassistype.DefaultID()

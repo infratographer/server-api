@@ -68,7 +68,7 @@ type CreateServerChassisTypeInput struct {
 	// The height of the server chassis type.
 	Height string `json:"height"`
 	// Whether the server chassis type is full depth.
-	IsFullDepth bool `json:"isFullDepth"`
+	IsFullDepth *bool `json:"isFullDepth,omitempty"`
 	// The ID for the parent of this chassis type.
 	ParentChassisTypeID gidx.PrefixedID   `json:"parentChassisTypeID"`
 	ChassiIDs           []gidx.PrefixedID `json:"chassiIDs,omitempty"`

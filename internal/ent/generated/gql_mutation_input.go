@@ -307,7 +307,7 @@ type CreateServerChassisTypeInput struct {
 	Vendor              string
 	Model               string
 	Height              string
-	IsFullDepth         bool
+	IsFullDepth         *bool
 	ParentChassisTypeID gidx.PrefixedID
 	ChassiIDs           []gidx.PrefixedID
 }
@@ -317,7 +317,9 @@ func (i *CreateServerChassisTypeInput) Mutate(m *ServerChassisTypeMutation) {
 	m.SetVendor(i.Vendor)
 	m.SetModel(i.Model)
 	m.SetHeight(i.Height)
-	m.SetIsFullDepth(i.IsFullDepth)
+	if v := i.IsFullDepth; v != nil {
+		m.SetIsFullDepth(*v)
+	}
 	m.SetParentChassisTypeID(i.ParentChassisTypeID)
 	if v := i.ChassiIDs; len(v) > 0 {
 		m.AddChassiIDs(v...)

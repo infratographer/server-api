@@ -49,6 +49,7 @@ func (ServerChassisType) Fields() []ent.Field {
 			NotEmpty().
 			Comment("The height of the server chassis type."),
 		field.Bool("is_full_depth").
+			Default(true).
 			Comment("Whether the server chassis type is full depth."),
 		field.Text("parent_chassis_type_id").
 			GoType(gidx.PrefixedID("")).

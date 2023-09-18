@@ -48,7 +48,7 @@ input CreateServerChassisTypeInput {
 	"""The height of the server chassis type."""
 	height: String!
 	"""Whether the server chassis type is full depth."""
-	isFullDepth: Boolean!
+	isFullDepth: Boolean
 	"""The ID for the parent of this chassis type."""
 	parentChassisTypeID: ID!
 	chassiIDs: [ID!]
@@ -236,7 +236,7 @@ type Mutation {
 	"""Delete a server chassis."""
 	serverChassisDelete(id: ID!): ServerChassisDeletePayload!
 	"""Create a server chassis type."""
-	serverChassisType(input: CreateServerChassisTypeInput!): ServerChassisTypeCreatePayload!
+	serverChassisTypeCreate(input: CreateServerChassisTypeInput!): ServerChassisTypeCreatePayload!
 	"""Update a server chassis type."""
 	serverChassisTypeUpdate(id: ID!, input: UpdateServerChassisTypeInput!): ServerChassisTypeUpdatePayload!
 	"""Delete a server chassis type."""

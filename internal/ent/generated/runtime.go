@@ -217,6 +217,10 @@ func init() {
 	serverchassistypeDescHeight := serverchassistypeFields[3].Descriptor()
 	// serverchassistype.HeightValidator is a validator for the "height" field. It is called by the builders before save.
 	serverchassistype.HeightValidator = serverchassistypeDescHeight.Validators[0].(func(string) error)
+	// serverchassistypeDescIsFullDepth is the schema descriptor for is_full_depth field.
+	serverchassistypeDescIsFullDepth := serverchassistypeFields[4].Descriptor()
+	// serverchassistype.DefaultIsFullDepth holds the default value on creation for the is_full_depth field.
+	serverchassistype.DefaultIsFullDepth = serverchassistypeDescIsFullDepth.Default.(bool)
 	// serverchassistypeDescID is the schema descriptor for id field.
 	serverchassistypeDescID := serverchassistypeFields[0].Descriptor()
 	// serverchassistype.DefaultID holds the default value on creation for the id field.
