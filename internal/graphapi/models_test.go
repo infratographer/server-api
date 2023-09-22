@@ -202,3 +202,15 @@ func (p ServerChassisBuilder) MustNew(ctx context.Context) *ent.ServerChassis {
 	// return EntClient.ServerChassis.Create().SetServer(p.Server).SetSerial(p.Serial).SetServerChassisType(p.ServerChassisType).SetParentChassisID(p.ParentChassis.ID).SaveX(ctx)
 	return EntClient.ServerChassis.Create().SetServer(p.Server).SetSerial(p.Serial).SetServerChassisType(p.ServerChassisType).SetParentChassisID(p.ParentChassisTypeID).SaveX(ctx)
 }
+
+type ServerComponentTypeBuilder struct {
+	Name string
+}
+
+func (p ServerComponentTypeBuilder) MustNew(ctx context.Context) *ent.ServerComponentType {
+	if p.Name == "" {
+		p.Name = gofakeit.DomainName()
+	}
+
+	return EntClient.ServerComponentType.Create().SetName(p.Name).SaveX(ctx)
+}

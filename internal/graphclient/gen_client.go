@@ -18,6 +18,7 @@ type GraphClient interface {
 	GetServerCPUType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerCPUType, error)
 	GetServerChassis(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerChassis, error)
 	GetServerChassisType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerChassisType, error)
+	GetServerComponentType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerComponentType, error)
 	GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error)
 	ServerCPUCreate(ctx context.Context, input CreateServerCPUInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUCreate, error)
 	ServerCPUDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUDelete, error)
@@ -31,6 +32,9 @@ type GraphClient interface {
 	ServerChassisTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisTypeDelete, error)
 	ServerChassisTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerChassisTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisTypeUpdate, error)
 	ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerChassisInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisUpdate, error)
+	ServerComponentTypeCreate(ctx context.Context, input CreateServerComponentTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentTypeCreate, error)
+	ServerComponentTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentTypeDelete, error)
+	ServerComponentTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerComponentTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentTypeUpdate, error)
 	ServerCreate(ctx context.Context, input CreateServerInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCreate, error)
 	ServerDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerDelete, error)
 	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
@@ -213,6 +217,14 @@ type GetServerChassisType struct {
 		IsFullDepth bool            "json:\"isFullDepth\" graphql:\"isFullDepth\""
 	} "json:\"serverChassisType\" graphql:\"serverChassisType\""
 }
+type GetServerComponentType struct {
+	ServerComponentType struct {
+		ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Name      string          "json:\"name\" graphql:\"name\""
+		CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+	} "json:\"serverComponentType\" graphql:\"serverComponentType\""
+}
 type GetServerType struct {
 	ServerType struct {
 		ID    gidx.PrefixedID "json:\"id\" graphql:\"id\""
@@ -359,6 +371,31 @@ type ServerChassisUpdate struct {
 			UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
 		} "json:\"serverChassis\" graphql:\"serverChassis\""
 	} "json:\"serverChassisUpdate\" graphql:\"serverChassisUpdate\""
+}
+type ServerComponentTypeCreate struct {
+	ServerComponentTypeCreate struct {
+		ServerComponentType struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Name      string          "json:\"name\" graphql:\"name\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverComponentType\" graphql:\"serverComponentType\""
+	} "json:\"serverComponentTypeCreate\" graphql:\"serverComponentTypeCreate\""
+}
+type ServerComponentTypeDelete struct {
+	ServerComponentTypeDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverComponentTypeDelete\" graphql:\"serverComponentTypeDelete\""
+}
+type ServerComponentTypeUpdate struct {
+	ServerComponentTypeUpdate struct {
+		ServerComponentType struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Name      string          "json:\"name\" graphql:\"name\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverComponentType\" graphql:\"serverComponentType\""
+	} "json:\"serverComponentTypeUpdate\" graphql:\"serverComponentTypeUpdate\""
 }
 type ServerCreate struct {
 	ServerCreate struct {
@@ -593,6 +630,29 @@ func (c *Client) GetServerChassisType(ctx context.Context, id gidx.PrefixedID, h
 
 	var res GetServerChassisType
 	if err := c.Client.Post(ctx, "GetServerChassisType", GetServerChassisTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const GetServerComponentTypeDocument = `query GetServerComponentType ($id: ID!) {
+	serverComponentType(id: $id) {
+		id
+		name
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func (c *Client) GetServerComponentType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerComponentType, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerComponentType
+	if err := c.Client.Post(ctx, "GetServerComponentType", GetServerComponentTypeDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 
@@ -939,6 +999,77 @@ func (c *Client) ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, in
 
 	var res ServerChassisUpdate
 	if err := c.Client.Post(ctx, "ServerChassisUpdate", ServerChassisUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerComponentTypeCreateDocument = `mutation ServerComponentTypeCreate ($input: CreateServerComponentTypeInput!) {
+	serverComponentTypeCreate(input: $input) {
+		serverComponentType {
+			id
+			name
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerComponentTypeCreate(ctx context.Context, input CreateServerComponentTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentTypeCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerComponentTypeCreate
+	if err := c.Client.Post(ctx, "ServerComponentTypeCreate", ServerComponentTypeCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerComponentTypeDeleteDocument = `mutation ServerComponentTypeDelete ($id: ID!) {
+	serverComponentTypeDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerComponentTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentTypeDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerComponentTypeDelete
+	if err := c.Client.Post(ctx, "ServerComponentTypeDelete", ServerComponentTypeDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerComponentTypeUpdateDocument = `mutation ServerComponentTypeUpdate ($id: ID!, $input: UpdateServerComponentTypeInput!) {
+	serverComponentTypeUpdate(id: $id, input: $input) {
+		serverComponentType {
+			id
+			name
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerComponentTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerComponentTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentTypeUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerComponentTypeUpdate
+	if err := c.Client.Post(ctx, "ServerComponentTypeUpdate", ServerComponentTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 
