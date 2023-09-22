@@ -92,7 +92,7 @@ type ComplexityRoot struct {
 		ServerCPUTypeDelete         func(childComplexity int, id gidx.PrefixedID) int
 		ServerCPUTypeUpdate         func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUTypeInput) int
 		ServerCPUUpdate             func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerCPUInput) int
-		ServerChassis               func(childComplexity int, input generated.CreateServerChassisInput) int
+		ServerChassisCreate         func(childComplexity int, input generated.CreateServerChassisInput) int
 		ServerChassisDelete         func(childComplexity int, id gidx.PrefixedID) int
 		ServerChassisTypeCreate     func(childComplexity int, input generated.CreateServerChassisTypeInput) int
 		ServerChassisTypeDelete     func(childComplexity int, id gidx.PrefixedID) int
@@ -872,7 +872,7 @@ type LocationResolver interface {
 	Servers(ctx context.Context, obj *Location, after *entgql.Cursor[gidx.PrefixedID], first *int, before *entgql.Cursor[gidx.PrefixedID], last *int, orderBy *generated.ServerOrder, where *generated.ServerWhereInput) (*generated.ServerConnection, error)
 }
 type MutationResolver interface {
-	ServerChassis(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error)
+	ServerChassisCreate(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error)
 	ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerChassisInput) (*ServerChassisUpdatePayload, error)
 	ServerChassisDelete(ctx context.Context, id gidx.PrefixedID) (*ServerChassisDeletePayload, error)
 	ServerChassisTypeCreate(ctx context.Context, input generated.CreateServerChassisTypeInput) (*ServerChassisTypeCreatePayload, error)
@@ -1343,17 +1343,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerCPUUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateServerCPUInput)), true
 
-	case "Mutation.serverChassis":
-		if e.complexity.Mutation.ServerChassis == nil {
+	case "Mutation.serverChassisCreate":
+		if e.complexity.Mutation.ServerChassisCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_serverChassis_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_serverChassisCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServerChassis(childComplexity, args["input"].(generated.CreateServerChassisInput)), true
+		return e.complexity.Mutation.ServerChassisCreate(childComplexity, args["input"].(generated.CreateServerChassisInput)), true
 
 	case "Mutation.serverChassisDelete":
 		if e.complexity.Mutation.ServerChassisDelete == nil {
@@ -4613,7 +4613,7 @@ extend type Mutation {
   """
   Create a server chassis.
   """
-  serverChassis(
+  serverChassisCreate(
     input: CreateServerChassisInput!
   ): ServerChassisCreatePayload!
   """
@@ -9314,6 +9314,21 @@ func (ec *executionContext) field_Mutation_serverCPUUpdate_args(ctx context.Cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverChassisCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerChassisInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerChassisInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerChassisInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverChassisDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9404,21 +9419,6 @@ func (ec *executionContext) field_Mutation_serverChassisUpdate_args(ctx context.
 		}
 	}
 	args["input"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverChassis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerChassisInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerChassisInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerChassisInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -12997,8 +12997,8 @@ func (ec *executionContext) fieldContext_Location_servers(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_serverChassis(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverChassis(ctx, field)
+func (ec *executionContext) _Mutation_serverChassisCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverChassisCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13011,7 +13011,7 @@ func (ec *executionContext) _Mutation_serverChassis(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerChassis(rctx, fc.Args["input"].(generated.CreateServerChassisInput))
+		return ec.resolvers.Mutation().ServerChassisCreate(rctx, fc.Args["input"].(generated.CreateServerChassisInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13028,7 +13028,7 @@ func (ec *executionContext) _Mutation_serverChassis(ctx context.Context, field g
 	return ec.marshalNServerChassisCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerChassisCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_serverChassis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_serverChassisCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -13049,7 +13049,7 @@ func (ec *executionContext) fieldContext_Mutation_serverChassis(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverChassis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_serverChassisCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -49245,9 +49245,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "serverChassis":
+		case "serverChassisCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverChassis(ctx, field)
+				return ec._Mutation_serverChassisCreate(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

@@ -12,16 +12,16 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerChassis is the resolver for the serverChassis field.
-func (r *mutationResolver) ServerChassis(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error) {
+// ServerChassisCreate is the resolver for the serverChassisCreate field.
+func (r *mutationResolver) ServerChassisCreate(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error) {
 	// TODO: check permissions
 
-	ct, err := r.client.ServerChassis.Create().SetInput(input).Save(ctx)
+	ch, err := r.client.ServerChassis.Create().SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ServerChassisCreatePayload{ServerChassis: ct}, nil
+	return &ServerChassisCreatePayload{ServerChassis: ch}, nil
 }
 
 // ServerChassisUpdate is the resolver for the serverChassisUpdate field.
@@ -78,3 +78,20 @@ func (r *queryResolver) ServerChassis(ctx context.Context, id gidx.PrefixedID) (
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *mutationResolver) ServerChassis(ctx context.Context, input generated.CreateServerChassisInput) (*ServerChassisCreatePayload, error) {
+	// TODO: check permissions
+
+	ct, err := r.client.ServerChassis.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ServerChassisCreatePayload{ServerChassis: ct}, nil
+}

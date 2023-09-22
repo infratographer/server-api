@@ -230,7 +230,7 @@ type Location @key(fields: "id") {
 }
 type Mutation {
 	"""Create a server chassis."""
-	serverChassis(input: CreateServerChassisInput!): ServerChassisCreatePayload!
+	serverChassisCreate(input: CreateServerChassisInput!): ServerChassisCreatePayload!
 	"""Update a server chassis."""
 	serverChassisUpdate(id: ID!, input: UpdateServerChassisInput!): ServerChassisUpdatePayload!
 	"""Delete a server chassis."""

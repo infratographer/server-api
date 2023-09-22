@@ -16,6 +16,7 @@ type GraphClient interface {
 	GetServer(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServer, error)
 	GetServerCPU(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerCPU, error)
 	GetServerCPUType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerCPUType, error)
+	GetServerChassis(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerChassis, error)
 	GetServerChassisType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerChassisType, error)
 	GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error)
 	ServerCPUCreate(ctx context.Context, input CreateServerCPUInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUCreate, error)
@@ -24,9 +25,12 @@ type GraphClient interface {
 	ServerCPUTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeDelete, error)
 	ServerCPUTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerCPUTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUTypeUpdate, error)
 	ServerCPUUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerCPUInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUUpdate, error)
+	ServerChassisCreate(ctx context.Context, input CreateServerChassisInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisCreate, error)
+	ServerChassisDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisDelete, error)
 	ServerChassisTypeCreate(ctx context.Context, input CreateServerChassisTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisTypeCreate, error)
 	ServerChassisTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisTypeDelete, error)
 	ServerChassisTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerChassisTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisTypeUpdate, error)
+	ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerChassisInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisUpdate, error)
 	ServerCreate(ctx context.Context, input CreateServerInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCreate, error)
 	ServerDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerDelete, error)
 	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
@@ -68,7 +72,7 @@ type Query struct {
 	Service               Service               "json:\"_service\" graphql:\"_service\""
 }
 type Mutation struct {
-	ServerChassis               ServerChassisCreatePayload         "json:\"serverChassis\" graphql:\"serverChassis\""
+	ServerChassisCreate         ServerChassisCreatePayload         "json:\"serverChassisCreate\" graphql:\"serverChassisCreate\""
 	ServerChassisUpdate         ServerChassisUpdatePayload         "json:\"serverChassisUpdate\" graphql:\"serverChassisUpdate\""
 	ServerChassisDelete         ServerChassisDeletePayload         "json:\"serverChassisDelete\" graphql:\"serverChassisDelete\""
 	ServerChassisTypeCreate     ServerChassisTypeCreatePayload     "json:\"serverChassisTypeCreate\" graphql:\"serverChassisTypeCreate\""
@@ -184,6 +188,20 @@ type GetServerCPUType struct {
 		UpdatedAt  time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
 	} "json:\"serverCPUType\" graphql:\"serverCPUType\""
 }
+type GetServerChassis struct {
+	ServerChassis struct {
+		ID     gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Serial string          "json:\"serial\" graphql:\"serial\""
+		Server struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"server\" graphql:\"server\""
+		ServerChassisType struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"serverChassisType\" graphql:\"serverChassisType\""
+		CreatedAt time.Time "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+	} "json:\"serverChassis\" graphql:\"serverChassis\""
+}
 type GetServerChassisType struct {
 	ServerChassisType struct {
 		ID          gidx.PrefixedID "json:\"id\" graphql:\"id\""
@@ -274,6 +292,27 @@ type ServerCPUUpdate struct {
 		} "json:\"serverCPU\" graphql:\"serverCPU\""
 	} "json:\"serverCPUUpdate\" graphql:\"serverCPUUpdate\""
 }
+type ServerChassisCreate struct {
+	ServerChassisCreate struct {
+		ServerChassis struct {
+			ID     gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial string          "json:\"serial\" graphql:\"serial\""
+			Server struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			ServerChassisType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverChassisType\" graphql:\"serverChassisType\""
+			CreatedAt time.Time "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverChassis\" graphql:\"serverChassis\""
+	} "json:\"serverChassisCreate\" graphql:\"serverChassisCreate\""
+}
+type ServerChassisDelete struct {
+	ServerChassisDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverChassisDelete\" graphql:\"serverChassisDelete\""
+}
 type ServerChassisTypeCreate struct {
 	ServerChassisTypeCreate struct {
 		ServerChassisType struct {
@@ -304,6 +343,22 @@ type ServerChassisTypeUpdate struct {
 			IsFullDepth bool            "json:\"isFullDepth\" graphql:\"isFullDepth\""
 		} "json:\"serverChassisType\" graphql:\"serverChassisType\""
 	} "json:\"serverChassisTypeUpdate\" graphql:\"serverChassisTypeUpdate\""
+}
+type ServerChassisUpdate struct {
+	ServerChassisUpdate struct {
+		ServerChassis struct {
+			ID     gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial string          "json:\"serial\" graphql:\"serial\""
+			Server struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			ServerChassisType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverChassisType\" graphql:\"serverChassisType\""
+			CreatedAt time.Time "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverChassis\" graphql:\"serverChassis\""
+	} "json:\"serverChassisUpdate\" graphql:\"serverChassisUpdate\""
 }
 type ServerCreate struct {
 	ServerCreate struct {
@@ -483,6 +538,35 @@ func (c *Client) GetServerCPUType(ctx context.Context, id gidx.PrefixedID, httpR
 
 	var res GetServerCPUType
 	if err := c.Client.Post(ctx, "GetServerCPUType", GetServerCPUTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const GetServerChassisDocument = `query GetServerChassis ($id: ID!) {
+	serverChassis(id: $id) {
+		id
+		serial
+		server {
+			id
+		}
+		serverChassisType {
+			id
+		}
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func (c *Client) GetServerChassis(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerChassis, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerChassis
+	if err := c.Client.Post(ctx, "GetServerChassis", GetServerChassisDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 
@@ -701,6 +785,57 @@ func (c *Client) ServerCPUUpdate(ctx context.Context, id gidx.PrefixedID, input 
 	return &res, nil
 }
 
+const ServerChassisCreateDocument = `mutation ServerChassisCreate ($input: CreateServerChassisInput!) {
+	serverChassisCreate(input: $input) {
+		serverChassis {
+			id
+			serial
+			server {
+				id
+			}
+			serverChassisType {
+				id
+			}
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerChassisCreate(ctx context.Context, input CreateServerChassisInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerChassisCreate
+	if err := c.Client.Post(ctx, "ServerChassisCreate", ServerChassisCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerChassisDeleteDocument = `mutation ServerChassisDelete ($id: ID!) {
+	serverChassisDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerChassisDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerChassisDelete
+	if err := c.Client.Post(ctx, "ServerChassisDelete", ServerChassisDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 const ServerChassisTypeCreateDocument = `mutation ServerChassisTypeCreate ($input: CreateServerChassisTypeInput!) {
 	serverChassisTypeCreate(input: $input) {
 		serverChassisType {
@@ -772,6 +907,38 @@ func (c *Client) ServerChassisTypeUpdate(ctx context.Context, id gidx.PrefixedID
 
 	var res ServerChassisTypeUpdate
 	if err := c.Client.Post(ctx, "ServerChassisTypeUpdate", ServerChassisTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerChassisUpdateDocument = `mutation ServerChassisUpdate ($id: ID!, $input: UpdateServerChassisInput!) {
+	serverChassisUpdate(id: $id, input: $input) {
+		serverChassis {
+			id
+			serial
+			server {
+				id
+			}
+			serverChassisType {
+				id
+			}
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerChassisUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerChassisInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerChassisUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerChassisUpdate
+	if err := c.Client.Post(ctx, "ServerChassisUpdate", ServerChassisUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

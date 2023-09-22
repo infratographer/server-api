@@ -35,7 +35,7 @@ func (ServerChassis) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("ID"),
 			).
-			DefaultFunc(func() gidx.PrefixedID { return gidx.MustNewID(ServerChassisTypePrefix) }),
+			DefaultFunc(func() gidx.PrefixedID { return gidx.MustNewID(ServerChassisPrefix) }),
 		field.Text("server_chassis_type_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().

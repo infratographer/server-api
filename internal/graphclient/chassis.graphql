@@ -1,0 +1,54 @@
+query GetServerChassis($id: ID!) {
+  serverChassis(id: $id){
+    id
+    serial
+    server{
+    id
+    }
+    serverChassisType {
+    id
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation ServerChassisCreate($input: CreateServerChassisInput!){
+  serverChassisCreate(input: $input){
+    serverChassis{
+      id
+      serial
+      server{
+        id
+      }
+      serverChassisType {
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerChassisUpdate($id: ID!, $input: UpdateServerChassisInput!) {
+  serverChassisUpdate(id: $id, input: $input) {
+    serverChassis {
+      id
+      serial
+      server{
+        id
+      }
+      serverChassisType {
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerChassisDelete($id: ID!) {
+  serverChassisDelete(id: $id) {
+    deletedID
+  }
+}

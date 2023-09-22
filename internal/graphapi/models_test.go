@@ -168,3 +168,37 @@ func (p ServerChassisTypeBuilder) MustNew(ctx context.Context) *ent.ServerChassi
 
 	return EntClient.ServerChassisType.Create().SetModel(p.Model).SetVendor(p.Vendor).SetHeight(p.Height).SetParentChassisTypeID(p.ParentChassisTypeID).SetIsFullDepth(p.IsFullDepth).SaveX(ctx)
 }
+
+type ServerChassisBuilder struct {
+	Serial string
+	Server *ent.Server
+	// ParentChassis     *ent.ServerChassis
+	ParentChassisTypeID gidx.PrefixedID
+	ServerChassisType   *ent.ServerChassisType
+}
+
+func (p ServerChassisBuilder) MustNew(ctx context.Context) *ent.ServerChassis {
+	if p.Serial == "" {
+		p.Serial = gofakeit.UUID()
+	}
+
+	if p.Server == nil {
+		provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+		srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+		p.Server = (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	}
+
+	if p.ServerChassisType == nil {
+		p.ServerChassisType = (&ServerChassisTypeBuilder{IsFullDepth: true}).MustNew(ctx)
+	}
+
+	// if p.ParentChassis == nil {
+	// 	provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+	// 	srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+	// 	server := (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	// 	p.ParentChassis = (&ServerChassisBuilder{Server: server, ServerChassisType: p.ServerChassisType}).MustNew(ctx)
+	// }
+
+	// return EntClient.ServerChassis.Create().SetServer(p.Server).SetSerial(p.Serial).SetServerChassisType(p.ServerChassisType).SetParentChassisID(p.ParentChassis.ID).SaveX(ctx)
+	return EntClient.ServerChassis.Create().SetServer(p.Server).SetSerial(p.Serial).SetServerChassisType(p.ServerChassisType).SetParentChassisID(p.ParentChassisTypeID).SaveX(ctx)
+}
