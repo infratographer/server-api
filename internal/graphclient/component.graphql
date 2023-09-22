@@ -1,0 +1,63 @@
+query GetServerComponent($id: ID!) {
+  serverComponent(id: $id){
+    id
+    name
+    model
+    vendor
+    serial
+    server {
+      id
+    }
+    serverComponentType{
+      id
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation ServerComponentCreate($input: CreateServerComponentInput!){
+  serverComponentCreate(input: $input){
+    serverComponent{
+        id
+        name
+        model
+        vendor
+        serial
+        server {
+            id
+        }
+        serverComponentType{
+            id
+        }
+        createdAt
+        updatedAt
+    }
+  }
+}
+
+mutation ServerComponentUpdate($id: ID!, $input: UpdateServerComponentInput!) {
+  serverComponentUpdate(id: $id, input: $input) {
+    serverComponent {
+        id
+        name
+        model
+        vendor
+        serial
+        server {
+            id
+        }
+        serverComponentType{
+            id
+        }
+        createdAt
+        updatedAt
+    }
+  }
+}
+
+mutation ServerComponentDelete($id: ID!) {
+  serverComponentDelete(id: $id) {
+    deletedID
+  }
+}

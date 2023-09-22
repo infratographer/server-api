@@ -157,12 +157,12 @@ func TestDelete_servercomponenttype(t *testing.T) {
 			ExpectedID: ct.ID,
 		},
 		{
-			TestName: "fails to delete server chassis that does not exist",
+			TestName: "fails to delete server component type that does not exist",
 			Input:    gidx.PrefixedID("srvrcpt-1234"),
 			errorMsg: "server_component_type not found",
 		},
 		{
-			TestName: "fails to delete empty server chassis ID",
+			TestName: "fails to delete empty server component type ID",
 			Input:    gidx.PrefixedID(""),
 			errorMsg: "server_component_type not found",
 		},

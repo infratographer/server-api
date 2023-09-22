@@ -214,3 +214,42 @@ func (p ServerComponentTypeBuilder) MustNew(ctx context.Context) *ent.ServerComp
 
 	return EntClient.ServerComponentType.Create().SetName(p.Name).SaveX(ctx)
 }
+
+type ServerComponentBuilder struct {
+	Name                string
+	Model               string
+	Vendor              string
+	Serial              string
+	Server              *ent.Server
+	ServerComponentType *ent.ServerComponentType
+}
+
+func (p ServerComponentBuilder) MustNew(ctx context.Context) *ent.ServerComponent {
+	if p.Name == "" {
+		p.Name = gofakeit.DomainName()
+	}
+
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
+
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
+
+	if p.Serial == "" {
+		p.Serial = gofakeit.UUID()
+	}
+
+	if p.Server == nil {
+		provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+		srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+		p.Server = (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	}
+
+	if p.ServerComponentType == nil {
+		p.ServerComponentType = (&ServerComponentTypeBuilder{}).MustNew(ctx)
+	}
+
+	return EntClient.ServerComponent.Create().SetName(p.Name).SetModel(p.Model).SetVendor(p.Vendor).SetSerial(p.Serial).SetServer(p.Server).SetComponentType(p.ServerComponentType).SaveX(ctx)
+}
