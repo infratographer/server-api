@@ -17,6 +17,7 @@
 package generated
 
 import (
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -531,7 +532,7 @@ type CreateServerHardDriveTypeInput struct {
 	Vendor       string
 	Model        string
 	Speed        string
-	Type         string
+	Type         serverharddrivetype.Type
 	Capacity     string
 	HardDriveIDs []gidx.PrefixedID
 }
@@ -559,7 +560,7 @@ type UpdateServerHardDriveTypeInput struct {
 	Vendor             *string
 	Model              *string
 	Speed              *string
-	Type               *string
+	Type               *serverharddrivetype.Type
 	Capacity           *string
 	ClearHardDrive     bool
 	AddHardDriveIDs    []gidx.PrefixedID

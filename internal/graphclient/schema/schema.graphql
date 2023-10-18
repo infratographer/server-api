@@ -87,7 +87,7 @@ input CreateServerHardDriveTypeInput {
 	"""The speed of the server hard drive type."""
 	speed: String!
 	"""The type of the server hard drive type."""
-	type: String!
+	type: ServerHardDriveTypeType!
 	"""The capacity of the server hard drive type."""
 	capacity: String!
 	hardDriveIDs: [ID!]
@@ -272,7 +272,7 @@ type Mutation {
 	"""Delete a server hard drive."""
 	serverHardDriveDelete(id: ID!): ServerHardDriveDeletePayload!
 	"""Create a server hard drive type."""
-	serverHardDriveType(input: CreateServerHardDriveTypeInput!): ServerHardDriveTypeCreatePayload!
+	serverHardDriveTypeCreate(input: CreateServerHardDriveTypeInput!): ServerHardDriveTypeCreatePayload!
 	"""Update a server hard drive type."""
 	serverHardDriveTypeUpdate(id: ID!, input: UpdateServerHardDriveTypeInput!): ServerHardDriveTypeUpdatePayload!
 	"""Delete a server hard drive type."""
@@ -1454,7 +1454,7 @@ type ServerHardDriveType implements Node @key(fields: "id") @prefixedID(prefix: 
 	"""The speed of the server hard drive type."""
 	speed: String!
 	"""The type of the server hard drive type."""
-	type: String!
+	type: ServerHardDriveTypeType!
 	"""The capacity of the server hard drive type."""
 	capacity: String!
 	hardDrive(
@@ -1516,6 +1516,11 @@ enum ServerHardDriveTypeOrderField {
 	CREATED_AT
 	UPDATED_AT
 	NAME
+}
+"""ServerHardDriveTypeType is enum for the field type"""
+enum ServerHardDriveTypeType {
+	ssd
+	hdd
 }
 """Return response from serverHardDriveTypeUpdate"""
 type ServerHardDriveTypeUpdatePayload {
@@ -1600,19 +1605,10 @@ input ServerHardDriveTypeWhereInput {
 	speedEqualFold: String
 	speedContainsFold: String
 	"""type field predicates"""
-	type: String
-	typeNEQ: String
-	typeIn: [String!]
-	typeNotIn: [String!]
-	typeGT: String
-	typeGTE: String
-	typeLT: String
-	typeLTE: String
-	typeContains: String
-	typeHasPrefix: String
-	typeHasSuffix: String
-	typeEqualFold: String
-	typeContainsFold: String
+	type: ServerHardDriveTypeType
+	typeNEQ: ServerHardDriveTypeType
+	typeIn: [ServerHardDriveTypeType!]
+	typeNotIn: [ServerHardDriveTypeType!]
 	"""capacity field predicates"""
 	capacity: String
 	capacityNEQ: String
@@ -3292,7 +3288,7 @@ input UpdateServerHardDriveTypeInput {
 	"""The speed of the server hard drive type."""
 	speed: String
 	"""The type of the server hard drive type."""
-	type: String
+	type: ServerHardDriveTypeType
 	"""The capacity of the server hard drive type."""
 	capacity: String
 	addHardDriveIDs: [ID!]

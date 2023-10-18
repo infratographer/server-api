@@ -14,8 +14,8 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerHardDriveType is the resolver for the serverHardDriveType field.
-func (r *mutationResolver) ServerHardDriveType(ctx context.Context, input generated.CreateServerHardDriveTypeInput) (*ServerHardDriveTypeCreatePayload, error) {
+// ServerHardDriveTypeCreate is the resolver for the serverHardDriveTypeCreate field.
+func (r *mutationResolver) ServerHardDriveTypeCreate(ctx context.Context, input generated.CreateServerHardDriveTypeInput) (*ServerHardDriveTypeCreatePayload, error) {
 	// TODO: check permissions
 
 	hd, err := r.client.ServerHardDriveType.Create().SetInput(input).Save(ctx)

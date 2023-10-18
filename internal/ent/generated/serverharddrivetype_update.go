@@ -62,7 +62,7 @@ func (shdtu *ServerHardDriveTypeUpdate) SetSpeed(s string) *ServerHardDriveTypeU
 }
 
 // SetType sets the "type" field.
-func (shdtu *ServerHardDriveTypeUpdate) SetType(s string) *ServerHardDriveTypeUpdate {
+func (shdtu *ServerHardDriveTypeUpdate) SetType(s serverharddrivetype.Type) *ServerHardDriveTypeUpdate {
 	shdtu.mutation.SetType(s)
 	return shdtu
 }
@@ -205,7 +205,7 @@ func (shdtu *ServerHardDriveTypeUpdate) sqlSave(ctx context.Context) (n int, err
 		_spec.SetField(serverharddrivetype.FieldSpeed, field.TypeString, value)
 	}
 	if value, ok := shdtu.mutation.GetType(); ok {
-		_spec.SetField(serverharddrivetype.FieldType, field.TypeString, value)
+		_spec.SetField(serverharddrivetype.FieldType, field.TypeEnum, value)
 	}
 	if value, ok := shdtu.mutation.Capacity(); ok {
 		_spec.SetField(serverharddrivetype.FieldCapacity, field.TypeString, value)
@@ -294,7 +294,7 @@ func (shdtuo *ServerHardDriveTypeUpdateOne) SetSpeed(s string) *ServerHardDriveT
 }
 
 // SetType sets the "type" field.
-func (shdtuo *ServerHardDriveTypeUpdateOne) SetType(s string) *ServerHardDriveTypeUpdateOne {
+func (shdtuo *ServerHardDriveTypeUpdateOne) SetType(s serverharddrivetype.Type) *ServerHardDriveTypeUpdateOne {
 	shdtuo.mutation.SetType(s)
 	return shdtuo
 }
@@ -467,7 +467,7 @@ func (shdtuo *ServerHardDriveTypeUpdateOne) sqlSave(ctx context.Context) (_node 
 		_spec.SetField(serverharddrivetype.FieldSpeed, field.TypeString, value)
 	}
 	if value, ok := shdtuo.mutation.GetType(); ok {
-		_spec.SetField(serverharddrivetype.FieldType, field.TypeString, value)
+		_spec.SetField(serverharddrivetype.FieldType, field.TypeEnum, value)
 	}
 	if value, ok := shdtuo.mutation.Capacity(); ok {
 		_spec.SetField(serverharddrivetype.FieldCapacity, field.TypeString, value)

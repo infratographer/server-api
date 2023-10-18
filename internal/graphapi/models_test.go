@@ -7,6 +7,7 @@ import (
 	"go.infratographer.com/x/gidx"
 
 	ent "go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 )
 
 type ServerTypeBuilder struct {
@@ -252,4 +253,37 @@ func (p ServerComponentBuilder) MustNew(ctx context.Context) *ent.ServerComponen
 	}
 
 	return EntClient.ServerComponent.Create().SetName(p.Name).SetModel(p.Model).SetVendor(p.Vendor).SetSerial(p.Serial).SetServer(p.Server).SetComponentType(p.ServerComponentType).SaveX(ctx)
+}
+
+type ServerHardDriveTypeBuilder struct {
+	Model        string
+	Vendor       string
+	Speed        string
+	Capacity     string
+	Type         serverharddrivetype.Type
+	HardDriveIDs []gidx.PrefixedID
+}
+
+func (p ServerHardDriveTypeBuilder) MustNew(ctx context.Context) *ent.ServerHardDriveType {
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
+
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
+
+	if p.Capacity == "" {
+		p.Capacity = gofakeit.DomainName()
+	}
+
+	if p.Speed == "" {
+		p.Speed = gofakeit.DomainName()
+	}
+
+	if p.Type == "" {
+		p.Type = serverharddrivetype.TypeHdd
+	}
+
+	return EntClient.ServerHardDriveType.Create().SetVendor(p.Vendor).SetModel(p.Model).SetCapacity(p.Capacity).SetSpeed(p.Speed).SetType(p.Type).SaveX(ctx)
 }

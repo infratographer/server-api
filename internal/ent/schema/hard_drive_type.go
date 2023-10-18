@@ -47,8 +47,8 @@ func (ServerHardDriveType) Fields() []ent.Field {
 		field.Text("speed").
 			NotEmpty().
 			Comment("The speed of the server hard drive type."),
-		field.Text("type").
-			NotEmpty().
+		field.Enum("type").
+			Values("ssd", "hdd").
 			Comment("The type of the server hard drive type."),
 		// TODO: should capacity go on the hard drive itself?
 		field.Text("capacity").

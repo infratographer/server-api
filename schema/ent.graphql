@@ -76,7 +76,7 @@ input CreateServerHardDriveTypeInput {
   """The speed of the server hard drive type."""
   speed: String!
   """The type of the server hard drive type."""
-  type: String!
+  type: ServerHardDriveTypeType!
   """The capacity of the server hard drive type."""
   capacity: String!
   hardDriveIDs: [ID!]
@@ -1055,7 +1055,7 @@ type ServerHardDriveType implements Node @key(fields: "id") @prefixedID(prefix: 
   """The speed of the server hard drive type."""
   speed: String!
   """The type of the server hard drive type."""
-  type: String!
+  type: ServerHardDriveTypeType!
   """The capacity of the server hard drive type."""
   capacity: String!
   hardDrive(
@@ -1107,6 +1107,11 @@ enum ServerHardDriveTypeOrderField {
   CREATED_AT
   UPDATED_AT
   NAME
+}
+"""ServerHardDriveTypeType is enum for the field type"""
+enum ServerHardDriveTypeType @goModel(model: "go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype.Type") {
+  ssd
+  hdd
 }
 """
 ServerHardDriveTypeWhereInput is used for filtering ServerHardDriveType objects.
@@ -1186,19 +1191,10 @@ input ServerHardDriveTypeWhereInput {
   speedEqualFold: String
   speedContainsFold: String
   """type field predicates"""
-  type: String
-  typeNEQ: String
-  typeIn: [String!]
-  typeNotIn: [String!]
-  typeGT: String
-  typeGTE: String
-  typeLT: String
-  typeLTE: String
-  typeContains: String
-  typeHasPrefix: String
-  typeHasSuffix: String
-  typeEqualFold: String
-  typeContainsFold: String
+  type: ServerHardDriveTypeType
+  typeNEQ: ServerHardDriveTypeType
+  typeIn: [ServerHardDriveTypeType!]
+  typeNotIn: [ServerHardDriveTypeType!]
   """capacity field predicates"""
   capacity: String
   capacityNEQ: String
@@ -2701,7 +2697,7 @@ input UpdateServerHardDriveTypeInput {
   """The speed of the server hard drive type."""
   speed: String
   """The type of the server hard drive type."""
-  type: String
+  type: ServerHardDriveTypeType
   """The capacity of the server hard drive type."""
   capacity: String
   addHardDriveIDs: [ID!]

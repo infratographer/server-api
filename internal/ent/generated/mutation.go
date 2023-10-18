@@ -6326,7 +6326,7 @@ type ServerHardDriveTypeMutation struct {
 	vendor            *string
 	model             *string
 	speed             *string
-	_type             *string
+	_type             *serverharddrivetype.Type
 	capacity          *string
 	clearedFields     map[string]struct{}
 	hard_drive        map[gidx.PrefixedID]struct{}
@@ -6622,12 +6622,12 @@ func (m *ServerHardDriveTypeMutation) ResetSpeed() {
 }
 
 // SetType sets the "type" field.
-func (m *ServerHardDriveTypeMutation) SetType(s string) {
+func (m *ServerHardDriveTypeMutation) SetType(s serverharddrivetype.Type) {
 	m._type = &s
 }
 
 // GetType returns the value of the "type" field in the mutation.
-func (m *ServerHardDriveTypeMutation) GetType() (r string, exists bool) {
+func (m *ServerHardDriveTypeMutation) GetType() (r serverharddrivetype.Type, exists bool) {
 	v := m._type
 	if v == nil {
 		return
@@ -6638,7 +6638,7 @@ func (m *ServerHardDriveTypeMutation) GetType() (r string, exists bool) {
 // OldType returns the old "type" field's value of the ServerHardDriveType entity.
 // If the ServerHardDriveType object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ServerHardDriveTypeMutation) OldType(ctx context.Context) (v string, err error) {
+func (m *ServerHardDriveTypeMutation) OldType(ctx context.Context) (v serverharddrivetype.Type, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldType is only allowed on UpdateOne operations")
 	}
@@ -6893,7 +6893,7 @@ func (m *ServerHardDriveTypeMutation) SetField(name string, value ent.Value) err
 		m.SetSpeed(v)
 		return nil
 	case serverharddrivetype.FieldType:
-		v, ok := value.(string)
+		v, ok := value.(serverharddrivetype.Type)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

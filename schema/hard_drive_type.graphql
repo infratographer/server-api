@@ -14,7 +14,7 @@ extend type Mutation {
   """
   Create a server hard drive type.
   """
-  serverHardDriveType(
+  serverHardDriveTypeCreate(
     input: CreateServerHardDriveTypeInput!
   ): ServerHardDriveTypeCreatePayload!
   """

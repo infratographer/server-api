@@ -44,7 +44,7 @@ type ServerHardDriveType struct {
 	// The speed of the server hard drive type.
 	Speed string `json:"speed,omitempty"`
 	// The type of the server hard drive type.
-	Type string `json:"type,omitempty"`
+	Type serverharddrivetype.Type `json:"type,omitempty"`
 	// The capacity of the server hard drive type.
 	Capacity string `json:"capacity,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -141,7 +141,7 @@ func (shdt *ServerHardDriveType) assignValues(columns []string, values []any) er
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				shdt.Type = value.String
+				shdt.Type = serverharddrivetype.Type(value.String)
 			}
 		case serverharddrivetype.FieldCapacity:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -206,7 +206,7 @@ func (shdt *ServerHardDriveType) String() string {
 	builder.WriteString(shdt.Speed)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(shdt.Type)
+	builder.WriteString(fmt.Sprintf("%v", shdt.Type))
 	builder.WriteString(", ")
 	builder.WriteString("capacity=")
 	builder.WriteString(shdt.Capacity)

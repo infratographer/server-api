@@ -83,7 +83,7 @@ func (shdtc *ServerHardDriveTypeCreate) SetSpeed(s string) *ServerHardDriveTypeC
 }
 
 // SetType sets the "type" field.
-func (shdtc *ServerHardDriveTypeCreate) SetType(s string) *ServerHardDriveTypeCreate {
+func (shdtc *ServerHardDriveTypeCreate) SetType(s serverharddrivetype.Type) *ServerHardDriveTypeCreate {
 	shdtc.mutation.SetType(s)
 	return shdtc
 }
@@ -276,7 +276,7 @@ func (shdtc *ServerHardDriveTypeCreate) createSpec() (*ServerHardDriveType, *sql
 		_node.Speed = value
 	}
 	if value, ok := shdtc.mutation.GetType(); ok {
-		_spec.SetField(serverharddrivetype.FieldType, field.TypeString, value)
+		_spec.SetField(serverharddrivetype.FieldType, field.TypeEnum, value)
 		_node.Type = value
 	}
 	if value, ok := shdtc.mutation.Capacity(); ok {

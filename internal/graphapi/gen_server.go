@@ -19,6 +19,7 @@ import (
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 	"go.infratographer.com/server-api/internal/ent/generated"
+	"go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -108,7 +109,7 @@ type ComplexityRoot struct {
 		ServerDelete                func(childComplexity int, id gidx.PrefixedID) int
 		ServerHardDrive             func(childComplexity int, input generated.CreateServerHardDriveInput) int
 		ServerHardDriveDelete       func(childComplexity int, id gidx.PrefixedID) int
-		ServerHardDriveType         func(childComplexity int, input generated.CreateServerHardDriveTypeInput) int
+		ServerHardDriveTypeCreate   func(childComplexity int, input generated.CreateServerHardDriveTypeInput) int
 		ServerHardDriveTypeDelete   func(childComplexity int, id gidx.PrefixedID) int
 		ServerHardDriveTypeUpdate   func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerHardDriveTypeInput) int
 		ServerHardDriveUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerHardDriveInput) int
@@ -893,7 +894,7 @@ type MutationResolver interface {
 	ServerHardDrive(ctx context.Context, input generated.CreateServerHardDriveInput) (*ServerHardDriveCreatePayload, error)
 	ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerHardDriveInput) (*ServerHardDriveUpdatePayload, error)
 	ServerHardDriveDelete(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveDeletePayload, error)
-	ServerHardDriveType(ctx context.Context, input generated.CreateServerHardDriveTypeInput) (*ServerHardDriveTypeCreatePayload, error)
+	ServerHardDriveTypeCreate(ctx context.Context, input generated.CreateServerHardDriveTypeInput) (*ServerHardDriveTypeCreatePayload, error)
 	ServerHardDriveTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerHardDriveTypeInput) (*ServerHardDriveTypeUpdatePayload, error)
 	ServerHardDriveTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerHardDriveTypeDeletePayload, error)
 	ServerMemory(ctx context.Context, input generated.CreateServerMemoryInput) (*ServerMemoryCreatePayload, error)
@@ -1535,17 +1536,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerHardDriveDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
 
-	case "Mutation.serverHardDriveType":
-		if e.complexity.Mutation.ServerHardDriveType == nil {
+	case "Mutation.serverHardDriveTypeCreate":
+		if e.complexity.Mutation.ServerHardDriveTypeCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_serverHardDriveType_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_serverHardDriveTypeCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServerHardDriveType(childComplexity, args["input"].(generated.CreateServerHardDriveTypeInput)), true
+		return e.complexity.Mutation.ServerHardDriveTypeCreate(childComplexity, args["input"].(generated.CreateServerHardDriveTypeInput)), true
 
 	case "Mutation.serverHardDriveTypeDelete":
 		if e.complexity.Mutation.ServerHardDriveTypeDelete == nil {
@@ -5041,7 +5042,7 @@ input CreateServerHardDriveTypeInput {
   """The speed of the server hard drive type."""
   speed: String!
   """The type of the server hard drive type."""
-  type: String!
+  type: ServerHardDriveTypeType!
   """The capacity of the server hard drive type."""
   capacity: String!
   hardDriveIDs: [ID!]
@@ -6020,7 +6021,7 @@ type ServerHardDriveType implements Node @key(fields: "id") @prefixedID(prefix: 
   """The speed of the server hard drive type."""
   speed: String!
   """The type of the server hard drive type."""
-  type: String!
+  type: ServerHardDriveTypeType!
   """The capacity of the server hard drive type."""
   capacity: String!
   hardDrive(
@@ -6072,6 +6073,11 @@ enum ServerHardDriveTypeOrderField {
   CREATED_AT
   UPDATED_AT
   NAME
+}
+"""ServerHardDriveTypeType is enum for the field type"""
+enum ServerHardDriveTypeType @goModel(model: "go.infratographer.com/server-api/internal/ent/generated/serverharddrivetype.Type") {
+  ssd
+  hdd
 }
 """
 ServerHardDriveTypeWhereInput is used for filtering ServerHardDriveType objects.
@@ -6151,19 +6157,10 @@ input ServerHardDriveTypeWhereInput {
   speedEqualFold: String
   speedContainsFold: String
   """type field predicates"""
-  type: String
-  typeNEQ: String
-  typeIn: [String!]
-  typeNotIn: [String!]
-  typeGT: String
-  typeGTE: String
-  typeLT: String
-  typeLTE: String
-  typeContains: String
-  typeHasPrefix: String
-  typeHasSuffix: String
-  typeEqualFold: String
-  typeContainsFold: String
+  type: ServerHardDriveTypeType
+  typeNEQ: ServerHardDriveTypeType
+  typeIn: [ServerHardDriveTypeType!]
+  typeNotIn: [ServerHardDriveTypeType!]
   """capacity field predicates"""
   capacity: String
   capacityNEQ: String
@@ -7666,7 +7663,7 @@ input UpdateServerHardDriveTypeInput {
   """The speed of the server hard drive type."""
   speed: String
   """The type of the server hard drive type."""
-  type: String
+  type: ServerHardDriveTypeType
   """The capacity of the server hard drive type."""
   capacity: String
   addHardDriveIDs: [ID!]
@@ -7845,7 +7842,7 @@ extend type Mutation {
   """
   Create a server hard drive type.
   """
-  serverHardDriveType(
+  serverHardDriveTypeCreate(
     input: CreateServerHardDriveTypeInput!
   ): ServerHardDriveTypeCreatePayload!
   """
@@ -9575,6 +9572,21 @@ func (ec *executionContext) field_Mutation_serverHardDriveDelete_args(ctx contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverHardDriveTypeCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerHardDriveTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerHardDriveTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerHardDriveTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverHardDriveTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9611,21 +9623,6 @@ func (ec *executionContext) field_Mutation_serverHardDriveTypeUpdate_args(ctx co
 		}
 	}
 	args["input"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverHardDriveType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerHardDriveTypeInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerHardDriveTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerHardDriveTypeInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -14236,8 +14233,8 @@ func (ec *executionContext) fieldContext_Mutation_serverHardDriveDelete(ctx cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverHardDriveType(ctx, field)
+func (ec *executionContext) _Mutation_serverHardDriveTypeCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverHardDriveTypeCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -14250,7 +14247,7 @@ func (ec *executionContext) _Mutation_serverHardDriveType(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerHardDriveType(rctx, fc.Args["input"].(generated.CreateServerHardDriveTypeInput))
+		return ec.resolvers.Mutation().ServerHardDriveTypeCreate(rctx, fc.Args["input"].(generated.CreateServerHardDriveTypeInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14267,7 +14264,7 @@ func (ec *executionContext) _Mutation_serverHardDriveType(ctx context.Context, f
 	return ec.marshalNServerHardDriveTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_serverHardDriveType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_serverHardDriveTypeCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -14288,7 +14285,7 @@ func (ec *executionContext) fieldContext_Mutation_serverHardDriveType(ctx contex
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverHardDriveType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_serverHardDriveTypeCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -24662,9 +24659,9 @@ func (ec *executionContext) _ServerHardDriveType_type(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(serverharddrivetype.Type)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNServerHardDriveTypeType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ServerHardDriveType_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24674,7 +24671,7 @@ func (ec *executionContext) fieldContext_ServerHardDriveType_type(ctx context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type ServerHardDriveTypeType does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35318,7 +35315,7 @@ func (ec *executionContext) unmarshalInputCreateServerHardDriveTypeInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNServerHardDriveTypeType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -39632,7 +39629,7 @@ func (ec *executionContext) unmarshalInputServerHardDriveTypeWhereInput(ctx cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "speed", "speedNEQ", "speedIn", "speedNotIn", "speedGT", "speedGTE", "speedLT", "speedLTE", "speedContains", "speedHasPrefix", "speedHasSuffix", "speedEqualFold", "speedContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "typeGT", "typeGTE", "typeLT", "typeLTE", "typeContains", "typeHasPrefix", "typeHasSuffix", "typeEqualFold", "typeContainsFold", "capacity", "capacityNEQ", "capacityIn", "capacityNotIn", "capacityGT", "capacityGTE", "capacityLT", "capacityLTE", "capacityContains", "capacityHasPrefix", "capacityHasSuffix", "capacityEqualFold", "capacityContainsFold", "hasHardDrive", "hasHardDriveWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "vendor", "vendorNEQ", "vendorIn", "vendorNotIn", "vendorGT", "vendorGTE", "vendorLT", "vendorLTE", "vendorContains", "vendorHasPrefix", "vendorHasSuffix", "vendorEqualFold", "vendorContainsFold", "model", "modelNEQ", "modelIn", "modelNotIn", "modelGT", "modelGTE", "modelLT", "modelLTE", "modelContains", "modelHasPrefix", "modelHasSuffix", "modelEqualFold", "modelContainsFold", "speed", "speedNEQ", "speedIn", "speedNotIn", "speedGT", "speedGTE", "speedLT", "speedLTE", "speedContains", "speedHasPrefix", "speedHasSuffix", "speedEqualFold", "speedContainsFold", "type", "typeNEQ", "typeIn", "typeNotIn", "capacity", "capacityNEQ", "capacityIn", "capacityNotIn", "capacityGT", "capacityGTE", "capacityLT", "capacityLTE", "capacityContains", "capacityHasPrefix", "capacityHasSuffix", "capacityEqualFold", "capacityContainsFold", "hasHardDrive", "hasHardDriveWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -40237,7 +40234,7 @@ func (ec *executionContext) unmarshalInputServerHardDriveTypeWhereInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOServerHardDriveTypeType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40246,7 +40243,7 @@ func (ec *executionContext) unmarshalInputServerHardDriveTypeWhereInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOServerHardDriveTypeType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40255,7 +40252,7 @@ func (ec *executionContext) unmarshalInputServerHardDriveTypeWhereInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			data, err := ec.unmarshalOServerHardDriveTypeType2ᚕgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐTypeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -40264,92 +40261,11 @@ func (ec *executionContext) unmarshalInputServerHardDriveTypeWhereInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			data, err := ec.unmarshalOServerHardDriveTypeType2ᚕgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐTypeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TypeNotIn = data
-		case "typeGT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeGT = data
-		case "typeGTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeGTE = data
-		case "typeLT":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeLT = data
-		case "typeLTE":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeLTE = data
-		case "typeContains":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeContains = data
-		case "typeHasPrefix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeHasPrefix = data
-		case "typeHasSuffix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeHasSuffix = data
-		case "typeEqualFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeEqualFold = data
-		case "typeContainsFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TypeContainsFold = data
 		case "capacity":
 			var err error
 
@@ -47704,7 +47620,7 @@ func (ec *executionContext) unmarshalInputUpdateServerHardDriveTypeInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOServerHardDriveTypeType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -49392,9 +49308,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "serverHardDriveType":
+		case "serverHardDriveTypeCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverHardDriveType(ctx, field)
+				return ec._Mutation_serverHardDriveTypeCreate(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -58022,6 +57938,16 @@ func (ec *executionContext) marshalNServerHardDriveTypeOrderField2ᚖgoᚗinfrat
 	return v
 }
 
+func (ec *executionContext) unmarshalNServerHardDriveTypeType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx context.Context, v interface{}) (serverharddrivetype.Type, error) {
+	var res serverharddrivetype.Type
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNServerHardDriveTypeType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx context.Context, sel ast.SelectionSet, v serverharddrivetype.Type) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) marshalNServerHardDriveTypeUpdatePayload2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerHardDriveTypeUpdatePayload(ctx context.Context, sel ast.SelectionSet, v ServerHardDriveTypeUpdatePayload) graphql.Marshaler {
 	return ec._ServerHardDriveTypeUpdatePayload(ctx, sel, &v)
 }
@@ -60357,6 +60283,89 @@ func (ec *executionContext) marshalOServerHardDriveTypeEdge2ᚖgoᚗinfratograph
 		return graphql.Null
 	}
 	return ec._ServerHardDriveTypeEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveTypeType2ᚕgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐTypeᚄ(ctx context.Context, v interface{}) ([]serverharddrivetype.Type, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]serverharddrivetype.Type, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNServerHardDriveTypeType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOServerHardDriveTypeType2ᚕgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐTypeᚄ(ctx context.Context, sel ast.SelectionSet, v []serverharddrivetype.Type) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNServerHardDriveTypeType2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOServerHardDriveTypeType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx context.Context, v interface{}) (*serverharddrivetype.Type, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(serverharddrivetype.Type)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServerHardDriveTypeType2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚋserverharddrivetypeᚐType(ctx context.Context, sel ast.SelectionSet, v *serverharddrivetype.Type) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOServerHardDriveTypeWhereInput2ᚕᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐServerHardDriveTypeWhereInputᚄ(ctx context.Context, v interface{}) ([]*generated.ServerHardDriveTypeWhereInput, error) {

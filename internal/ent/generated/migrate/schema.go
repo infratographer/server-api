@@ -425,7 +425,7 @@ var (
 		{Name: "vendor", Type: field.TypeString, Size: 2147483647},
 		{Name: "model", Type: field.TypeString, Size: 2147483647},
 		{Name: "speed", Type: field.TypeString, Size: 2147483647},
-		{Name: "type", Type: field.TypeString, Size: 2147483647},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"ssd", "hdd"}},
 		{Name: "capacity", Type: field.TypeString, Size: 2147483647},
 	}
 	// ServerHardDriveTypesTable holds the schema information for the "server_hard_drive_types" table.

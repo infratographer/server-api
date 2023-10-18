@@ -3134,19 +3134,10 @@ type ServerHardDriveTypeWhereInput struct {
 	SpeedContainsFold *string  `json:"speedContainsFold,omitempty"`
 
 	// "type" field predicates.
-	Type             *string  `json:"type,omitempty"`
-	TypeNEQ          *string  `json:"typeNEQ,omitempty"`
-	TypeIn           []string `json:"typeIn,omitempty"`
-	TypeNotIn        []string `json:"typeNotIn,omitempty"`
-	TypeGT           *string  `json:"typeGT,omitempty"`
-	TypeGTE          *string  `json:"typeGTE,omitempty"`
-	TypeLT           *string  `json:"typeLT,omitempty"`
-	TypeLTE          *string  `json:"typeLTE,omitempty"`
-	TypeContains     *string  `json:"typeContains,omitempty"`
-	TypeHasPrefix    *string  `json:"typeHasPrefix,omitempty"`
-	TypeHasSuffix    *string  `json:"typeHasSuffix,omitempty"`
-	TypeEqualFold    *string  `json:"typeEqualFold,omitempty"`
-	TypeContainsFold *string  `json:"typeContainsFold,omitempty"`
+	Type      *serverharddrivetype.Type  `json:"type,omitempty"`
+	TypeNEQ   *serverharddrivetype.Type  `json:"typeNEQ,omitempty"`
+	TypeIn    []serverharddrivetype.Type `json:"typeIn,omitempty"`
+	TypeNotIn []serverharddrivetype.Type `json:"typeNotIn,omitempty"`
 
 	// "capacity" field predicates.
 	Capacity             *string  `json:"capacity,omitempty"`
@@ -3439,33 +3430,6 @@ func (i *ServerHardDriveTypeWhereInput) P() (predicate.ServerHardDriveType, erro
 	}
 	if len(i.TypeNotIn) > 0 {
 		predicates = append(predicates, serverharddrivetype.TypeNotIn(i.TypeNotIn...))
-	}
-	if i.TypeGT != nil {
-		predicates = append(predicates, serverharddrivetype.TypeGT(*i.TypeGT))
-	}
-	if i.TypeGTE != nil {
-		predicates = append(predicates, serverharddrivetype.TypeGTE(*i.TypeGTE))
-	}
-	if i.TypeLT != nil {
-		predicates = append(predicates, serverharddrivetype.TypeLT(*i.TypeLT))
-	}
-	if i.TypeLTE != nil {
-		predicates = append(predicates, serverharddrivetype.TypeLTE(*i.TypeLTE))
-	}
-	if i.TypeContains != nil {
-		predicates = append(predicates, serverharddrivetype.TypeContains(*i.TypeContains))
-	}
-	if i.TypeHasPrefix != nil {
-		predicates = append(predicates, serverharddrivetype.TypeHasPrefix(*i.TypeHasPrefix))
-	}
-	if i.TypeHasSuffix != nil {
-		predicates = append(predicates, serverharddrivetype.TypeHasSuffix(*i.TypeHasSuffix))
-	}
-	if i.TypeEqualFold != nil {
-		predicates = append(predicates, serverharddrivetype.TypeEqualFold(*i.TypeEqualFold))
-	}
-	if i.TypeContainsFold != nil {
-		predicates = append(predicates, serverharddrivetype.TypeContainsFold(*i.TypeContainsFold))
 	}
 	if i.Capacity != nil {
 		predicates = append(predicates, serverharddrivetype.CapacityEQ(*i.Capacity))

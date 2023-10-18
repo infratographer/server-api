@@ -111,7 +111,7 @@ type CreateServerHardDriveTypeInput struct {
 	// The speed of the server hard drive type.
 	Speed string `json:"speed"`
 	// The type of the server hard drive type.
-	Type string `json:"type"`
+	Type ServerHardDriveTypeType `json:"type"`
 	// The capacity of the server hard drive type.
 	Capacity     string            `json:"capacity"`
 	HardDriveIDs []gidx.PrefixedID `json:"hardDriveIDs,omitempty"`
@@ -1201,7 +1201,7 @@ type ServerHardDriveType struct {
 	// The speed of the server hard drive type.
 	Speed string `json:"speed"`
 	// The type of the server hard drive type.
-	Type string `json:"type"`
+	Type ServerHardDriveTypeType `json:"type"`
 	// The capacity of the server hard drive type.
 	Capacity  string                    `json:"capacity"`
 	HardDrive ServerHardDriveConnection `json:"hardDrive"`
@@ -1334,19 +1334,10 @@ type ServerHardDriveTypeWhereInput struct {
 	SpeedEqualFold    *string  `json:"speedEqualFold,omitempty"`
 	SpeedContainsFold *string  `json:"speedContainsFold,omitempty"`
 	// type field predicates
-	Type             *string  `json:"type,omitempty"`
-	TypeNeq          *string  `json:"typeNEQ,omitempty"`
-	TypeIn           []string `json:"typeIn,omitempty"`
-	TypeNotIn        []string `json:"typeNotIn,omitempty"`
-	TypeGt           *string  `json:"typeGT,omitempty"`
-	TypeGte          *string  `json:"typeGTE,omitempty"`
-	TypeLt           *string  `json:"typeLT,omitempty"`
-	TypeLte          *string  `json:"typeLTE,omitempty"`
-	TypeContains     *string  `json:"typeContains,omitempty"`
-	TypeHasPrefix    *string  `json:"typeHasPrefix,omitempty"`
-	TypeHasSuffix    *string  `json:"typeHasSuffix,omitempty"`
-	TypeEqualFold    *string  `json:"typeEqualFold,omitempty"`
-	TypeContainsFold *string  `json:"typeContainsFold,omitempty"`
+	Type      *ServerHardDriveTypeType  `json:"type,omitempty"`
+	TypeNeq   *ServerHardDriveTypeType  `json:"typeNEQ,omitempty"`
+	TypeIn    []ServerHardDriveTypeType `json:"typeIn,omitempty"`
+	TypeNotIn []ServerHardDriveTypeType `json:"typeNotIn,omitempty"`
 	// capacity field predicates
 	Capacity             *string  `json:"capacity,omitempty"`
 	CapacityNeq          *string  `json:"capacityNEQ,omitempty"`
@@ -2974,7 +2965,7 @@ type UpdateServerHardDriveTypeInput struct {
 	// The speed of the server hard drive type.
 	Speed *string `json:"speed,omitempty"`
 	// The type of the server hard drive type.
-	Type *string `json:"type,omitempty"`
+	Type *ServerHardDriveTypeType `json:"type,omitempty"`
 	// The capacity of the server hard drive type.
 	Capacity           *string           `json:"capacity,omitempty"`
 	AddHardDriveIDs    []gidx.PrefixedID `json:"addHardDriveIDs,omitempty"`
@@ -3519,6 +3510,48 @@ func (e *ServerHardDriveTypeOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e ServerHardDriveTypeOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// ServerHardDriveTypeType is enum for the field type
+type ServerHardDriveTypeType string
+
+const (
+	ServerHardDriveTypeTypeSsd ServerHardDriveTypeType = "ssd"
+	ServerHardDriveTypeTypeHdd ServerHardDriveTypeType = "hdd"
+)
+
+var AllServerHardDriveTypeType = []ServerHardDriveTypeType{
+	ServerHardDriveTypeTypeSsd,
+	ServerHardDriveTypeTypeHdd,
+}
+
+func (e ServerHardDriveTypeType) IsValid() bool {
+	switch e {
+	case ServerHardDriveTypeTypeSsd, ServerHardDriveTypeTypeHdd:
+		return true
+	}
+	return false
+}
+
+func (e ServerHardDriveTypeType) String() string {
+	return string(e)
+}
+
+func (e *ServerHardDriveTypeType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ServerHardDriveTypeType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ServerHardDriveTypeType", str)
+	}
+	return nil
+}
+
+func (e ServerHardDriveTypeType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

@@ -341,10 +341,6 @@ func init() {
 	serverharddrivetypeDescSpeed := serverharddrivetypeFields[3].Descriptor()
 	// serverharddrivetype.SpeedValidator is a validator for the "speed" field. It is called by the builders before save.
 	serverharddrivetype.SpeedValidator = serverharddrivetypeDescSpeed.Validators[0].(func(string) error)
-	// serverharddrivetypeDescType is the schema descriptor for type field.
-	serverharddrivetypeDescType := serverharddrivetypeFields[4].Descriptor()
-	// serverharddrivetype.TypeValidator is a validator for the "type" field. It is called by the builders before save.
-	serverharddrivetype.TypeValidator = serverharddrivetypeDescType.Validators[0].(func(string) error)
 	// serverharddrivetypeDescCapacity is the schema descriptor for capacity field.
 	serverharddrivetypeDescCapacity := serverharddrivetypeFields[5].Descriptor()
 	// serverharddrivetype.CapacityValidator is a validator for the "capacity" field. It is called by the builders before save.
