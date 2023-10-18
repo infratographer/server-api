@@ -74,7 +74,7 @@ func (ServerHardDrive) Edges() []ent.Edge {
 			Immutable().
 			Field("server_id").
 			Annotations(),
-		edge.To("hard_drive_type", ServerHardDriveType.Type).
+		edge.To("server_hard_drive_type", ServerHardDriveType.Type).
 			Unique().
 			Required().
 			Immutable().

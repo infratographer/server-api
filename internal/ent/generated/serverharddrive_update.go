@@ -98,8 +98,8 @@ func (shdu *ServerHardDriveUpdate) check() error {
 	if _, ok := shdu.mutation.ServerID(); shdu.mutation.ServerCleared() && !ok {
 		return errors.New(`generated: clearing a required unique edge "ServerHardDrive.server"`)
 	}
-	if _, ok := shdu.mutation.HardDriveTypeID(); shdu.mutation.HardDriveTypeCleared() && !ok {
-		return errors.New(`generated: clearing a required unique edge "ServerHardDrive.hard_drive_type"`)
+	if _, ok := shdu.mutation.ServerHardDriveTypeID(); shdu.mutation.ServerHardDriveTypeCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerHardDrive.server_hard_drive_type"`)
 	}
 	return nil
 }
@@ -212,8 +212,8 @@ func (shduo *ServerHardDriveUpdateOne) check() error {
 	if _, ok := shduo.mutation.ServerID(); shduo.mutation.ServerCleared() && !ok {
 		return errors.New(`generated: clearing a required unique edge "ServerHardDrive.server"`)
 	}
-	if _, ok := shduo.mutation.HardDriveTypeID(); shduo.mutation.HardDriveTypeCleared() && !ok {
-		return errors.New(`generated: clearing a required unique edge "ServerHardDrive.hard_drive_type"`)
+	if _, ok := shduo.mutation.ServerHardDriveTypeID(); shduo.mutation.ServerHardDriveTypeCleared() && !ok {
+		return errors.New(`generated: clearing a required unique edge "ServerHardDrive.server_hard_drive_type"`)
 	}
 	return nil
 }

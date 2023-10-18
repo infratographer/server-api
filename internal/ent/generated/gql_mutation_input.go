@@ -485,16 +485,16 @@ func (c *ServerComponentTypeUpdateOne) SetInput(i UpdateServerComponentTypeInput
 
 // CreateServerHardDriveInput represents a mutation input for creating serverharddrives.
 type CreateServerHardDriveInput struct {
-	Serial          string
-	ServerID        gidx.PrefixedID
-	HardDriveTypeID gidx.PrefixedID
+	Serial                string
+	ServerID              gidx.PrefixedID
+	ServerHardDriveTypeID gidx.PrefixedID
 }
 
 // Mutate applies the CreateServerHardDriveInput on the ServerHardDriveMutation builder.
 func (i *CreateServerHardDriveInput) Mutate(m *ServerHardDriveMutation) {
 	m.SetSerial(i.Serial)
 	m.SetServerID(i.ServerID)
-	m.SetHardDriveTypeID(i.HardDriveTypeID)
+	m.SetServerHardDriveTypeID(i.ServerHardDriveTypeID)
 }
 
 // SetInput applies the change-set in the CreateServerHardDriveInput on the ServerHardDriveCreate builder.

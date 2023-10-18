@@ -178,10 +178,10 @@ func (shd *ServerHardDrive) Server(ctx context.Context) (*Server, error) {
 	return result, err
 }
 
-func (shd *ServerHardDrive) HardDriveType(ctx context.Context) (*ServerHardDriveType, error) {
-	result, err := shd.Edges.HardDriveTypeOrErr()
+func (shd *ServerHardDrive) ServerHardDriveType(ctx context.Context) (*ServerHardDriveType, error) {
+	result, err := shd.Edges.ServerHardDriveTypeOrErr()
 	if IsNotLoaded(err) {
-		result, err = shd.QueryHardDriveType().Only(ctx)
+		result, err = shd.QueryServerHardDriveType().Only(ctx)
 	}
 	return result, err
 }

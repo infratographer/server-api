@@ -1372,7 +1372,7 @@ func (shd *ServerHardDriveQuery) collectField(ctx context.Context, opCtx *graphq
 				selectedFields = append(selectedFields, serverharddrive.FieldServerID)
 				fieldSeen[serverharddrive.FieldServerID] = struct{}{}
 			}
-		case "hardDriveType":
+		case "serverHardDriveType":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -1381,7 +1381,7 @@ func (shd *ServerHardDriveQuery) collectField(ctx context.Context, opCtx *graphq
 			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
 				return err
 			}
-			shd.withHardDriveType = query
+			shd.withServerHardDriveType = query
 			if _, ok := fieldSeen[serverharddrive.FieldServerHardDriveTypeID]; !ok {
 				selectedFields = append(selectedFields, serverharddrive.FieldServerHardDriveTypeID)
 				fieldSeen[serverharddrive.FieldServerHardDriveTypeID] = struct{}{}

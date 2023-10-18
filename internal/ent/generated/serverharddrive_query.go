@@ -34,14 +34,14 @@ import (
 // ServerHardDriveQuery is the builder for querying ServerHardDrive entities.
 type ServerHardDriveQuery struct {
 	config
-	ctx               *QueryContext
-	order             []serverharddrive.OrderOption
-	inters            []Interceptor
-	predicates        []predicate.ServerHardDrive
-	withServer        *ServerQuery
-	withHardDriveType *ServerHardDriveTypeQuery
-	modifiers         []func(*sql.Selector)
-	loadTotal         []func(context.Context, []*ServerHardDrive) error
+	ctx                     *QueryContext
+	order                   []serverharddrive.OrderOption
+	inters                  []Interceptor
+	predicates              []predicate.ServerHardDrive
+	withServer              *ServerQuery
+	withServerHardDriveType *ServerHardDriveTypeQuery
+	modifiers               []func(*sql.Selector)
+	loadTotal               []func(context.Context, []*ServerHardDrive) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -100,8 +100,8 @@ func (shdq *ServerHardDriveQuery) QueryServer() *ServerQuery {
 	return query
 }
 
-// QueryHardDriveType chains the current query on the "hard_drive_type" edge.
-func (shdq *ServerHardDriveQuery) QueryHardDriveType() *ServerHardDriveTypeQuery {
+// QueryServerHardDriveType chains the current query on the "server_hard_drive_type" edge.
+func (shdq *ServerHardDriveQuery) QueryServerHardDriveType() *ServerHardDriveTypeQuery {
 	query := (&ServerHardDriveTypeClient{config: shdq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := shdq.prepareQuery(ctx); err != nil {
@@ -114,7 +114,7 @@ func (shdq *ServerHardDriveQuery) QueryHardDriveType() *ServerHardDriveTypeQuery
 		step := sqlgraph.NewStep(
 			sqlgraph.From(serverharddrive.Table, serverharddrive.FieldID, selector),
 			sqlgraph.To(serverharddrivetype.Table, serverharddrivetype.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, serverharddrive.HardDriveTypeTable, serverharddrive.HardDriveTypeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverharddrive.ServerHardDriveTypeTable, serverharddrive.ServerHardDriveTypeColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(shdq.driver.Dialect(), step)
 		return fromU, nil
@@ -309,13 +309,13 @@ func (shdq *ServerHardDriveQuery) Clone() *ServerHardDriveQuery {
 		return nil
 	}
 	return &ServerHardDriveQuery{
-		config:            shdq.config,
-		ctx:               shdq.ctx.Clone(),
-		order:             append([]serverharddrive.OrderOption{}, shdq.order...),
-		inters:            append([]Interceptor{}, shdq.inters...),
-		predicates:        append([]predicate.ServerHardDrive{}, shdq.predicates...),
-		withServer:        shdq.withServer.Clone(),
-		withHardDriveType: shdq.withHardDriveType.Clone(),
+		config:                  shdq.config,
+		ctx:                     shdq.ctx.Clone(),
+		order:                   append([]serverharddrive.OrderOption{}, shdq.order...),
+		inters:                  append([]Interceptor{}, shdq.inters...),
+		predicates:              append([]predicate.ServerHardDrive{}, shdq.predicates...),
+		withServer:              shdq.withServer.Clone(),
+		withServerHardDriveType: shdq.withServerHardDriveType.Clone(),
 		// clone intermediate query.
 		sql:  shdq.sql.Clone(),
 		path: shdq.path,
@@ -333,14 +333,14 @@ func (shdq *ServerHardDriveQuery) WithServer(opts ...func(*ServerQuery)) *Server
 	return shdq
 }
 
-// WithHardDriveType tells the query-builder to eager-load the nodes that are connected to
-// the "hard_drive_type" edge. The optional arguments are used to configure the query builder of the edge.
-func (shdq *ServerHardDriveQuery) WithHardDriveType(opts ...func(*ServerHardDriveTypeQuery)) *ServerHardDriveQuery {
+// WithServerHardDriveType tells the query-builder to eager-load the nodes that are connected to
+// the "server_hard_drive_type" edge. The optional arguments are used to configure the query builder of the edge.
+func (shdq *ServerHardDriveQuery) WithServerHardDriveType(opts ...func(*ServerHardDriveTypeQuery)) *ServerHardDriveQuery {
 	query := (&ServerHardDriveTypeClient{config: shdq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	shdq.withHardDriveType = query
+	shdq.withServerHardDriveType = query
 	return shdq
 }
 
@@ -424,7 +424,7 @@ func (shdq *ServerHardDriveQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		_spec       = shdq.querySpec()
 		loadedTypes = [2]bool{
 			shdq.withServer != nil,
-			shdq.withHardDriveType != nil,
+			shdq.withServerHardDriveType != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -454,9 +454,9 @@ func (shdq *ServerHardDriveQuery) sqlAll(ctx context.Context, hooks ...queryHook
 			return nil, err
 		}
 	}
-	if query := shdq.withHardDriveType; query != nil {
-		if err := shdq.loadHardDriveType(ctx, query, nodes, nil,
-			func(n *ServerHardDrive, e *ServerHardDriveType) { n.Edges.HardDriveType = e }); err != nil {
+	if query := shdq.withServerHardDriveType; query != nil {
+		if err := shdq.loadServerHardDriveType(ctx, query, nodes, nil,
+			func(n *ServerHardDrive, e *ServerHardDriveType) { n.Edges.ServerHardDriveType = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -497,7 +497,7 @@ func (shdq *ServerHardDriveQuery) loadServer(ctx context.Context, query *ServerQ
 	}
 	return nil
 }
-func (shdq *ServerHardDriveQuery) loadHardDriveType(ctx context.Context, query *ServerHardDriveTypeQuery, nodes []*ServerHardDrive, init func(*ServerHardDrive), assign func(*ServerHardDrive, *ServerHardDriveType)) error {
+func (shdq *ServerHardDriveQuery) loadServerHardDriveType(ctx context.Context, query *ServerHardDriveTypeQuery, nodes []*ServerHardDrive, init func(*ServerHardDrive), assign func(*ServerHardDrive, *ServerHardDriveType)) error {
 	ids := make([]gidx.PrefixedID, 0, len(nodes))
 	nodeids := make(map[gidx.PrefixedID][]*ServerHardDrive)
 	for i := range nodes {
@@ -558,7 +558,7 @@ func (shdq *ServerHardDriveQuery) querySpec() *sqlgraph.QuerySpec {
 		if shdq.withServer != nil {
 			_spec.Node.AddColumnOnce(serverharddrive.FieldServerID)
 		}
-		if shdq.withHardDriveType != nil {
+		if shdq.withServerHardDriveType != nil {
 			_spec.Node.AddColumnOnce(serverharddrive.FieldServerHardDriveTypeID)
 		}
 	}

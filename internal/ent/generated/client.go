@@ -1627,15 +1627,15 @@ func (c *ServerHardDriveClient) QueryServer(shd *ServerHardDrive) *ServerQuery {
 	return query
 }
 
-// QueryHardDriveType queries the hard_drive_type edge of a ServerHardDrive.
-func (c *ServerHardDriveClient) QueryHardDriveType(shd *ServerHardDrive) *ServerHardDriveTypeQuery {
+// QueryServerHardDriveType queries the server_hard_drive_type edge of a ServerHardDrive.
+func (c *ServerHardDriveClient) QueryServerHardDriveType(shd *ServerHardDrive) *ServerHardDriveTypeQuery {
 	query := (&ServerHardDriveTypeClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := shd.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(serverharddrive.Table, serverharddrive.FieldID, id),
 			sqlgraph.To(serverharddrivetype.Table, serverharddrivetype.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, serverharddrive.HardDriveTypeTable, serverharddrive.HardDriveTypeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, serverharddrive.ServerHardDriveTypeTable, serverharddrive.ServerHardDriveTypeColumn),
 		)
 		fromV = sqlgraph.Neighbors(shd.driver.Dialect(), step)
 		return fromV, nil

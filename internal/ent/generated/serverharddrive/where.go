@@ -403,21 +403,21 @@ func HasServerWith(preds ...predicate.Server) predicate.ServerHardDrive {
 	})
 }
 
-// HasHardDriveType applies the HasEdge predicate on the "hard_drive_type" edge.
-func HasHardDriveType() predicate.ServerHardDrive {
+// HasServerHardDriveType applies the HasEdge predicate on the "server_hard_drive_type" edge.
+func HasServerHardDriveType() predicate.ServerHardDrive {
 	return predicate.ServerHardDrive(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, HardDriveTypeTable, HardDriveTypeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, ServerHardDriveTypeTable, ServerHardDriveTypeColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasHardDriveTypeWith applies the HasEdge predicate on the "hard_drive_type" edge with a given conditions (other predicates).
-func HasHardDriveTypeWith(preds ...predicate.ServerHardDriveType) predicate.ServerHardDrive {
+// HasServerHardDriveTypeWith applies the HasEdge predicate on the "server_hard_drive_type" edge with a given conditions (other predicates).
+func HasServerHardDriveTypeWith(preds ...predicate.ServerHardDriveType) predicate.ServerHardDrive {
 	return predicate.ServerHardDrive(func(s *sql.Selector) {
-		step := newHardDriveTypeStep()
+		step := newServerHardDriveTypeStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

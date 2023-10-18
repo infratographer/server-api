@@ -102,15 +102,9 @@ func (shdc *ServerHardDriveCreate) SetServer(s *Server) *ServerHardDriveCreate {
 	return shdc.SetServerID(s.ID)
 }
 
-// SetHardDriveTypeID sets the "hard_drive_type" edge to the ServerHardDriveType entity by ID.
-func (shdc *ServerHardDriveCreate) SetHardDriveTypeID(id gidx.PrefixedID) *ServerHardDriveCreate {
-	shdc.mutation.SetHardDriveTypeID(id)
-	return shdc
-}
-
-// SetHardDriveType sets the "hard_drive_type" edge to the ServerHardDriveType entity.
-func (shdc *ServerHardDriveCreate) SetHardDriveType(s *ServerHardDriveType) *ServerHardDriveCreate {
-	return shdc.SetHardDriveTypeID(s.ID)
+// SetServerHardDriveType sets the "server_hard_drive_type" edge to the ServerHardDriveType entity.
+func (shdc *ServerHardDriveCreate) SetServerHardDriveType(s *ServerHardDriveType) *ServerHardDriveCreate {
+	return shdc.SetServerHardDriveTypeID(s.ID)
 }
 
 // Mutation returns the ServerHardDriveMutation object of the builder.
@@ -187,8 +181,8 @@ func (shdc *ServerHardDriveCreate) check() error {
 	if _, ok := shdc.mutation.ServerID(); !ok {
 		return &ValidationError{Name: "server", err: errors.New(`generated: missing required edge "ServerHardDrive.server"`)}
 	}
-	if _, ok := shdc.mutation.HardDriveTypeID(); !ok {
-		return &ValidationError{Name: "hard_drive_type", err: errors.New(`generated: missing required edge "ServerHardDrive.hard_drive_type"`)}
+	if _, ok := shdc.mutation.ServerHardDriveTypeID(); !ok {
+		return &ValidationError{Name: "server_hard_drive_type", err: errors.New(`generated: missing required edge "ServerHardDrive.server_hard_drive_type"`)}
 	}
 	return nil
 }
@@ -254,12 +248,12 @@ func (shdc *ServerHardDriveCreate) createSpec() (*ServerHardDrive, *sqlgraph.Cre
 		_node.ServerID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := shdc.mutation.HardDriveTypeIDs(); len(nodes) > 0 {
+	if nodes := shdc.mutation.ServerHardDriveTypeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   serverharddrive.HardDriveTypeTable,
-			Columns: []string{serverharddrive.HardDriveTypeColumn},
+			Table:   serverharddrive.ServerHardDriveTypeTable,
+			Columns: []string{serverharddrive.ServerHardDriveTypeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(serverharddrivetype.FieldID, field.TypeString),

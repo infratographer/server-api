@@ -12,6 +12,7 @@ import (
 )
 
 type GraphClient interface {
+	GetHardDrive(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetHardDrive, error)
 	GetHardDriveType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetHardDriveType, error)
 	GetOwnerServers(ctx context.Context, id gidx.PrefixedID, orderBy *ServerOrder, httpRequestOptions ...client.HTTPRequestOption) (*GetOwnerServers, error)
 	GetServer(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServer, error)
@@ -42,9 +43,12 @@ type GraphClient interface {
 	ServerComponentUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerComponentInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerComponentUpdate, error)
 	ServerCreate(ctx context.Context, input CreateServerInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCreate, error)
 	ServerDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerDelete, error)
+	ServerHardDriveCreate(ctx context.Context, input CreateServerHardDriveInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveCreate, error)
+	ServerHardDriveDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveDelete, error)
 	ServerHardDriveTypeCreate(ctx context.Context, input CreateServerHardDriveTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveTypeCreate, error)
 	ServerHardDriveTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveTypeDelete, error)
 	ServerHardDriveTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerHardDriveTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveTypeUpdate, error)
+	ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerHardDriveInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveUpdate, error)
 	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
 	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeDelete, error)
 	ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeUpdate, error)
@@ -102,7 +106,7 @@ type Mutation struct {
 	ServerCPUTypeCreate         ServerCPUTypeCreatePayload         "json:\"serverCPUTypeCreate\" graphql:\"serverCPUTypeCreate\""
 	ServerCPUTypeUpdate         ServerCPUTypeUpdatePayload         "json:\"serverCPUTypeUpdate\" graphql:\"serverCPUTypeUpdate\""
 	ServerCPUTypeDelete         ServerCPUTypeDeletePayload         "json:\"serverCPUTypeDelete\" graphql:\"serverCPUTypeDelete\""
-	ServerHardDrive             ServerHardDriveCreatePayload       "json:\"serverHardDrive\" graphql:\"serverHardDrive\""
+	ServerHardDriveCreate       ServerHardDriveCreatePayload       "json:\"serverHardDriveCreate\" graphql:\"serverHardDriveCreate\""
 	ServerHardDriveUpdate       ServerHardDriveUpdatePayload       "json:\"serverHardDriveUpdate\" graphql:\"serverHardDriveUpdate\""
 	ServerHardDriveDelete       ServerHardDriveDeletePayload       "json:\"serverHardDriveDelete\" graphql:\"serverHardDriveDelete\""
 	ServerHardDriveTypeCreate   ServerHardDriveTypeCreatePayload   "json:\"serverHardDriveTypeCreate\" graphql:\"serverHardDriveTypeCreate\""
@@ -144,6 +148,20 @@ type Mutation struct {
 	ServerTypeCreate            ServerTypeCreatePayload            "json:\"serverTypeCreate\" graphql:\"serverTypeCreate\""
 	ServerTypeUpdate            ServerTypeUpdatePayload            "json:\"serverTypeUpdate\" graphql:\"serverTypeUpdate\""
 	ServerTypeDelete            ServerTypeDeletePayload            "json:\"serverTypeDelete\" graphql:\"serverTypeDelete\""
+}
+type GetHardDrive struct {
+	ServerHardDrive struct {
+		ID     gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Serial string          "json:\"serial\" graphql:\"serial\""
+		Server struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"server\" graphql:\"server\""
+		CreatedAt           time.Time "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt           time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+		ServerHardDriveType struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"serverHardDriveType\" graphql:\"serverHardDriveType\""
+	} "json:\"serverHardDrive\" graphql:\"serverHardDrive\""
 }
 type GetHardDriveType struct {
 	ServerHardDriveType struct {
@@ -504,6 +522,27 @@ type ServerDelete struct {
 		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
 	} "json:\"serverDelete\" graphql:\"serverDelete\""
 }
+type ServerHardDriveCreate struct {
+	ServerHardDriveCreate struct {
+		ServerHardDrive struct {
+			ID     gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial string          "json:\"serial\" graphql:\"serial\""
+			Server struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			CreatedAt           time.Time "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt           time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+			ServerHardDriveType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverHardDriveType\" graphql:\"serverHardDriveType\""
+		} "json:\"serverHardDrive\" graphql:\"serverHardDrive\""
+	} "json:\"serverHardDriveCreate\" graphql:\"serverHardDriveCreate\""
+}
+type ServerHardDriveDelete struct {
+	ServerHardDriveDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverHardDriveDelete\" graphql:\"serverHardDriveDelete\""
+}
 type ServerHardDriveTypeCreate struct {
 	ServerHardDriveTypeCreate struct {
 		ServerHardDriveType struct {
@@ -542,6 +581,22 @@ type ServerHardDriveTypeUpdate struct {
 			} "json:\"hardDrive\" graphql:\"hardDrive\""
 		} "json:\"serverHardDriveType\" graphql:\"serverHardDriveType\""
 	} "json:\"serverHardDriveTypeUpdate\" graphql:\"serverHardDriveTypeUpdate\""
+}
+type ServerHardDriveUpdate struct {
+	ServerHardDriveUpdate struct {
+		ServerHardDrive struct {
+			ID     gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial string          "json:\"serial\" graphql:\"serial\""
+			Server struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			CreatedAt           time.Time "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt           time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+			ServerHardDriveType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverHardDriveType\" graphql:\"serverHardDriveType\""
+		} "json:\"serverHardDrive\" graphql:\"serverHardDrive\""
+	} "json:\"serverHardDriveUpdate\" graphql:\"serverHardDriveUpdate\""
 }
 type ServerTypeCreate struct {
 	ServerTypeCreate struct {
@@ -583,6 +638,35 @@ type ServerUpdate struct {
 			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
 		} "json:\"server\" graphql:\"server\""
 	} "json:\"serverUpdate\" graphql:\"serverUpdate\""
+}
+
+const GetHardDriveDocument = `query GetHardDrive ($id: ID!) {
+	serverHardDrive(id: $id) {
+		id
+		serial
+		server {
+			id
+		}
+		createdAt
+		updatedAt
+		serverHardDriveType {
+			id
+		}
+	}
+}
+`
+
+func (c *Client) GetHardDrive(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetHardDrive, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetHardDrive
+	if err := c.Client.Post(ctx, "GetHardDrive", GetHardDriveDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 const GetHardDriveTypeDocument = `query GetHardDriveType ($id: ID!) {
@@ -1403,6 +1487,57 @@ func (c *Client) ServerDelete(ctx context.Context, id gidx.PrefixedID, httpReque
 	return &res, nil
 }
 
+const ServerHardDriveCreateDocument = `mutation ServerHardDriveCreate ($input: CreateServerHardDriveInput!) {
+	serverHardDriveCreate(input: $input) {
+		serverHardDrive {
+			id
+			serial
+			server {
+				id
+			}
+			createdAt
+			updatedAt
+			serverHardDriveType {
+				id
+			}
+		}
+	}
+}
+`
+
+func (c *Client) ServerHardDriveCreate(ctx context.Context, input CreateServerHardDriveInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerHardDriveCreate
+	if err := c.Client.Post(ctx, "ServerHardDriveCreate", ServerHardDriveCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerHardDriveDeleteDocument = `mutation ServerHardDriveDelete ($id: ID!) {
+	serverHardDriveDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerHardDriveDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerHardDriveDelete
+	if err := c.Client.Post(ctx, "ServerHardDriveDelete", ServerHardDriveDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 const ServerHardDriveTypeCreateDocument = `mutation ServerHardDriveTypeCreate ($input: CreateServerHardDriveTypeInput!) {
 	serverHardDriveTypeCreate(input: $input) {
 		serverHardDriveType {
@@ -1482,6 +1617,38 @@ func (c *Client) ServerHardDriveTypeUpdate(ctx context.Context, id gidx.Prefixed
 
 	var res ServerHardDriveTypeUpdate
 	if err := c.Client.Post(ctx, "ServerHardDriveTypeUpdate", ServerHardDriveTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerHardDriveUpdateDocument = `mutation ServerHardDriveUpdate ($id: ID!, $input: UpdateServerHardDriveInput!) {
+	serverHardDriveUpdate(id: $id, input: $input) {
+		serverHardDrive {
+			id
+			serial
+			server {
+				id
+			}
+			createdAt
+			updatedAt
+			serverHardDriveType {
+				id
+			}
+		}
+	}
+}
+`
+
+func (c *Client) ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerHardDriveInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerHardDriveUpdate
+	if err := c.Client.Post(ctx, "ServerHardDriveUpdate", ServerHardDriveUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

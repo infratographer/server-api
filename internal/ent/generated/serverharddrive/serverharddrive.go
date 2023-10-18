@@ -41,8 +41,8 @@ const (
 	FieldServerHardDriveTypeID = "server_hard_drive_type_id"
 	// EdgeServer holds the string denoting the server edge name in mutations.
 	EdgeServer = "server"
-	// EdgeHardDriveType holds the string denoting the hard_drive_type edge name in mutations.
-	EdgeHardDriveType = "hard_drive_type"
+	// EdgeServerHardDriveType holds the string denoting the server_hard_drive_type edge name in mutations.
+	EdgeServerHardDriveType = "server_hard_drive_type"
 	// Table holds the table name of the serverharddrive in the database.
 	Table = "server_hard_drives"
 	// ServerTable is the table that holds the server relation/edge.
@@ -52,13 +52,13 @@ const (
 	ServerInverseTable = "servers"
 	// ServerColumn is the table column denoting the server relation/edge.
 	ServerColumn = "server_id"
-	// HardDriveTypeTable is the table that holds the hard_drive_type relation/edge.
-	HardDriveTypeTable = "server_hard_drives"
-	// HardDriveTypeInverseTable is the table name for the ServerHardDriveType entity.
+	// ServerHardDriveTypeTable is the table that holds the server_hard_drive_type relation/edge.
+	ServerHardDriveTypeTable = "server_hard_drives"
+	// ServerHardDriveTypeInverseTable is the table name for the ServerHardDriveType entity.
 	// It exists in this package in order to avoid circular dependency with the "serverharddrivetype" package.
-	HardDriveTypeInverseTable = "server_hard_drive_types"
-	// HardDriveTypeColumn is the table column denoting the hard_drive_type relation/edge.
-	HardDriveTypeColumn = "server_hard_drive_type_id"
+	ServerHardDriveTypeInverseTable = "server_hard_drive_types"
+	// ServerHardDriveTypeColumn is the table column denoting the server_hard_drive_type relation/edge.
+	ServerHardDriveTypeColumn = "server_hard_drive_type_id"
 )
 
 // Columns holds all SQL columns for serverharddrive fields.
@@ -134,10 +134,10 @@ func ByServerField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// ByHardDriveTypeField orders the results by hard_drive_type field.
-func ByHardDriveTypeField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByServerHardDriveTypeField orders the results by server_hard_drive_type field.
+func ByServerHardDriveTypeField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newHardDriveTypeStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newServerHardDriveTypeStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newServerStep() *sqlgraph.Step {
@@ -147,10 +147,10 @@ func newServerStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, false, ServerTable, ServerColumn),
 	)
 }
-func newHardDriveTypeStep() *sqlgraph.Step {
+func newServerHardDriveTypeStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(HardDriveTypeInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, HardDriveTypeTable, HardDriveTypeColumn),
+		sqlgraph.To(ServerHardDriveTypeInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, ServerHardDriveTypeTable, ServerHardDriveTypeColumn),
 	)
 }

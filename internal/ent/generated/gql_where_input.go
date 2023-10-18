@@ -2817,9 +2817,9 @@ type ServerHardDriveWhereInput struct {
 	HasServer     *bool               `json:"hasServer,omitempty"`
 	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
 
-	// "hard_drive_type" edge predicates.
-	HasHardDriveType     *bool                            `json:"hasHardDriveType,omitempty"`
-	HasHardDriveTypeWith []*ServerHardDriveTypeWhereInput `json:"hasHardDriveTypeWith,omitempty"`
+	// "server_hard_drive_type" edge predicates.
+	HasServerHardDriveType     *bool                            `json:"hasServerHardDriveType,omitempty"`
+	HasServerHardDriveTypeWith []*ServerHardDriveTypeWhereInput `json:"hasServerHardDriveTypeWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -3023,23 +3023,23 @@ func (i *ServerHardDriveWhereInput) P() (predicate.ServerHardDrive, error) {
 		}
 		predicates = append(predicates, serverharddrive.HasServerWith(with...))
 	}
-	if i.HasHardDriveType != nil {
-		p := serverharddrive.HasHardDriveType()
-		if !*i.HasHardDriveType {
+	if i.HasServerHardDriveType != nil {
+		p := serverharddrive.HasServerHardDriveType()
+		if !*i.HasServerHardDriveType {
 			p = serverharddrive.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasHardDriveTypeWith) > 0 {
-		with := make([]predicate.ServerHardDriveType, 0, len(i.HasHardDriveTypeWith))
-		for _, w := range i.HasHardDriveTypeWith {
+	if len(i.HasServerHardDriveTypeWith) > 0 {
+		with := make([]predicate.ServerHardDriveType, 0, len(i.HasServerHardDriveTypeWith))
+		for _, w := range i.HasServerHardDriveTypeWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasHardDriveTypeWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasServerHardDriveTypeWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, serverharddrive.HasHardDriveTypeWith(with...))
+		predicates = append(predicates, serverharddrive.HasServerHardDriveTypeWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

@@ -97,9 +97,9 @@ type CreateServerComponentTypeInput struct {
 // Input information to create a server hard drive.
 type CreateServerHardDriveInput struct {
 	// The serial for the server hard drive.
-	Serial          string          `json:"serial"`
-	ServerID        gidx.PrefixedID `json:"serverID"`
-	HardDriveTypeID gidx.PrefixedID `json:"hardDriveTypeID"`
+	Serial                string          `json:"serial"`
+	ServerID              gidx.PrefixedID `json:"serverID"`
+	ServerHardDriveTypeID gidx.PrefixedID `json:"serverHardDriveTypeID"`
 }
 
 // Input information to create a server hard drive type.
@@ -1139,9 +1139,9 @@ type ServerHardDrive struct {
 	CreatedAt time.Time       `json:"createdAt"`
 	UpdatedAt time.Time       `json:"updatedAt"`
 	// The serial for the server hard drive.
-	Serial        string              `json:"serial"`
-	Server        Server              `json:"server"`
-	HardDriveType ServerHardDriveType `json:"hardDriveType"`
+	Serial              string              `json:"serial"`
+	Server              Server              `json:"server"`
+	ServerHardDriveType ServerHardDriveType `json:"serverHardDriveType"`
 }
 
 func (ServerHardDrive) IsNode() {}
@@ -1413,9 +1413,9 @@ type ServerHardDriveWhereInput struct {
 	// server edge predicates
 	HasServer     *bool               `json:"hasServer,omitempty"`
 	HasServerWith []*ServerWhereInput `json:"hasServerWith,omitempty"`
-	// hard_drive_type edge predicates
-	HasHardDriveType     *bool                            `json:"hasHardDriveType,omitempty"`
-	HasHardDriveTypeWith []*ServerHardDriveTypeWhereInput `json:"hasHardDriveTypeWith,omitempty"`
+	// server_hard_drive_type edge predicates
+	HasServerHardDriveType     *bool                            `json:"hasServerHardDriveType,omitempty"`
+	HasServerHardDriveTypeWith []*ServerHardDriveTypeWhereInput `json:"hasServerHardDriveTypeWith,omitempty"`
 }
 
 type ServerMemory struct {

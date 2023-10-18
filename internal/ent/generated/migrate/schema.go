@@ -388,7 +388,7 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 			{
-				Symbol:     "server_hard_drives_server_hard_drive_types_hard_drive_type",
+				Symbol:     "server_hard_drives_server_hard_drive_types_server_hard_drive_type",
 				Columns:    []*schema.Column{ServerHardDrivesColumns[5]},
 				RefColumns: []*schema.Column{ServerHardDriveTypesColumns[0]},
 				OnDelete:   schema.NoAction,

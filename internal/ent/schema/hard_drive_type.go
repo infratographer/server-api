@@ -61,7 +61,7 @@ func (ServerHardDriveType) Fields() []ent.Field {
 func (ServerHardDriveType) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("hard_drive", ServerHardDrive.Type).
-			Ref("hard_drive_type").
+			Ref("server_hard_drive_type").
 			Annotations(
 				entgql.RelayConnection(),
 			),

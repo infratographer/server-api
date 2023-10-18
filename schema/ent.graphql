@@ -65,7 +65,7 @@ input CreateServerHardDriveInput {
   """The serial for the server hard drive."""
   serial: String!
   serverID: ID!
-  hardDriveTypeID: ID!
+  serverHardDriveTypeID: ID!
 }
 """Input information to create a server hard drive type."""
 input CreateServerHardDriveTypeInput {
@@ -1009,7 +1009,7 @@ type ServerHardDrive implements Node @key(fields: "id") @prefixedID(prefix: "srv
   """The serial for the server hard drive."""
   serial: String!
   server: Server!
-  hardDriveType: ServerHardDriveType!
+  serverHardDriveType: ServerHardDriveType!
 }
 """A connection to a list of items."""
 type ServerHardDriveConnection {
@@ -1265,9 +1265,9 @@ input ServerHardDriveWhereInput {
   """server edge predicates"""
   hasServer: Boolean
   hasServerWith: [ServerWhereInput!]
-  """hard_drive_type edge predicates"""
-  hasHardDriveType: Boolean
-  hasHardDriveTypeWith: [ServerHardDriveTypeWhereInput!]
+  """server_hard_drive_type edge predicates"""
+  hasServerHardDriveType: Boolean
+  hasServerHardDriveTypeWith: [ServerHardDriveTypeWhereInput!]
 }
 type ServerMemory implements Node @key(fields: "id") @prefixedID(prefix: "srvrmem") {
   """The ID of the server memory."""

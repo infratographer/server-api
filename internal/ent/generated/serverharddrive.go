@@ -55,8 +55,8 @@ type ServerHardDrive struct {
 type ServerHardDriveEdges struct {
 	// Server holds the value of the server edge.
 	Server *Server `json:"server,omitempty"`
-	// HardDriveType holds the value of the hard_drive_type edge.
-	HardDriveType *ServerHardDriveType `json:"hard_drive_type,omitempty"`
+	// ServerHardDriveType holds the value of the server_hard_drive_type edge.
+	ServerHardDriveType *ServerHardDriveType `json:"server_hard_drive_type,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -77,17 +77,17 @@ func (e ServerHardDriveEdges) ServerOrErr() (*Server, error) {
 	return nil, &NotLoadedError{edge: "server"}
 }
 
-// HardDriveTypeOrErr returns the HardDriveType value or an error if the edge
+// ServerHardDriveTypeOrErr returns the ServerHardDriveType value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ServerHardDriveEdges) HardDriveTypeOrErr() (*ServerHardDriveType, error) {
+func (e ServerHardDriveEdges) ServerHardDriveTypeOrErr() (*ServerHardDriveType, error) {
 	if e.loadedTypes[1] {
-		if e.HardDriveType == nil {
+		if e.ServerHardDriveType == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: serverharddrivetype.Label}
 		}
-		return e.HardDriveType, nil
+		return e.ServerHardDriveType, nil
 	}
-	return nil, &NotLoadedError{edge: "hard_drive_type"}
+	return nil, &NotLoadedError{edge: "server_hard_drive_type"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -170,9 +170,9 @@ func (shd *ServerHardDrive) QueryServer() *ServerQuery {
 	return NewServerHardDriveClient(shd.config).QueryServer(shd)
 }
 
-// QueryHardDriveType queries the "hard_drive_type" edge of the ServerHardDrive entity.
-func (shd *ServerHardDrive) QueryHardDriveType() *ServerHardDriveTypeQuery {
-	return NewServerHardDriveClient(shd.config).QueryHardDriveType(shd)
+// QueryServerHardDriveType queries the "server_hard_drive_type" edge of the ServerHardDrive entity.
+func (shd *ServerHardDrive) QueryServerHardDriveType() *ServerHardDriveTypeQuery {
+	return NewServerHardDriveClient(shd.config).QueryServerHardDriveType(shd)
 }
 
 // Update returns a builder for updating this ServerHardDrive.

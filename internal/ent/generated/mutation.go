@@ -5659,20 +5659,20 @@ func (m *ServerComponentTypeMutation) ResetEdge(name string) error {
 // ServerHardDriveMutation represents an operation that mutates the ServerHardDrive nodes in the graph.
 type ServerHardDriveMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *gidx.PrefixedID
-	created_at             *time.Time
-	updated_at             *time.Time
-	serial                 *string
-	clearedFields          map[string]struct{}
-	server                 *gidx.PrefixedID
-	clearedserver          bool
-	hard_drive_type        *gidx.PrefixedID
-	clearedhard_drive_type bool
-	done                   bool
-	oldValue               func(context.Context) (*ServerHardDrive, error)
-	predicates             []predicate.ServerHardDrive
+	op                            Op
+	typ                           string
+	id                            *gidx.PrefixedID
+	created_at                    *time.Time
+	updated_at                    *time.Time
+	serial                        *string
+	clearedFields                 map[string]struct{}
+	server                        *gidx.PrefixedID
+	clearedserver                 bool
+	server_hard_drive_type        *gidx.PrefixedID
+	clearedserver_hard_drive_type bool
+	done                          bool
+	oldValue                      func(context.Context) (*ServerHardDrive, error)
+	predicates                    []predicate.ServerHardDrive
 }
 
 var _ ent.Mutation = (*ServerHardDriveMutation)(nil)
@@ -5925,12 +5925,12 @@ func (m *ServerHardDriveMutation) ResetServerID() {
 
 // SetServerHardDriveTypeID sets the "server_hard_drive_type_id" field.
 func (m *ServerHardDriveMutation) SetServerHardDriveTypeID(gi gidx.PrefixedID) {
-	m.hard_drive_type = &gi
+	m.server_hard_drive_type = &gi
 }
 
 // ServerHardDriveTypeID returns the value of the "server_hard_drive_type_id" field in the mutation.
 func (m *ServerHardDriveMutation) ServerHardDriveTypeID() (r gidx.PrefixedID, exists bool) {
-	v := m.hard_drive_type
+	v := m.server_hard_drive_type
 	if v == nil {
 		return
 	}
@@ -5956,7 +5956,7 @@ func (m *ServerHardDriveMutation) OldServerHardDriveTypeID(ctx context.Context) 
 
 // ResetServerHardDriveTypeID resets all changes to the "server_hard_drive_type_id" field.
 func (m *ServerHardDriveMutation) ResetServerHardDriveTypeID() {
-	m.hard_drive_type = nil
+	m.server_hard_drive_type = nil
 }
 
 // ClearServer clears the "server" edge to the Server entity.
@@ -5985,43 +5985,30 @@ func (m *ServerHardDriveMutation) ResetServer() {
 	m.clearedserver = false
 }
 
-// SetHardDriveTypeID sets the "hard_drive_type" edge to the ServerHardDriveType entity by id.
-func (m *ServerHardDriveMutation) SetHardDriveTypeID(id gidx.PrefixedID) {
-	m.hard_drive_type = &id
+// ClearServerHardDriveType clears the "server_hard_drive_type" edge to the ServerHardDriveType entity.
+func (m *ServerHardDriveMutation) ClearServerHardDriveType() {
+	m.clearedserver_hard_drive_type = true
 }
 
-// ClearHardDriveType clears the "hard_drive_type" edge to the ServerHardDriveType entity.
-func (m *ServerHardDriveMutation) ClearHardDriveType() {
-	m.clearedhard_drive_type = true
+// ServerHardDriveTypeCleared reports if the "server_hard_drive_type" edge to the ServerHardDriveType entity was cleared.
+func (m *ServerHardDriveMutation) ServerHardDriveTypeCleared() bool {
+	return m.clearedserver_hard_drive_type
 }
 
-// HardDriveTypeCleared reports if the "hard_drive_type" edge to the ServerHardDriveType entity was cleared.
-func (m *ServerHardDriveMutation) HardDriveTypeCleared() bool {
-	return m.clearedhard_drive_type
-}
-
-// HardDriveTypeID returns the "hard_drive_type" edge ID in the mutation.
-func (m *ServerHardDriveMutation) HardDriveTypeID() (id gidx.PrefixedID, exists bool) {
-	if m.hard_drive_type != nil {
-		return *m.hard_drive_type, true
-	}
-	return
-}
-
-// HardDriveTypeIDs returns the "hard_drive_type" edge IDs in the mutation.
+// ServerHardDriveTypeIDs returns the "server_hard_drive_type" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// HardDriveTypeID instead. It exists only for internal usage by the builders.
-func (m *ServerHardDriveMutation) HardDriveTypeIDs() (ids []gidx.PrefixedID) {
-	if id := m.hard_drive_type; id != nil {
+// ServerHardDriveTypeID instead. It exists only for internal usage by the builders.
+func (m *ServerHardDriveMutation) ServerHardDriveTypeIDs() (ids []gidx.PrefixedID) {
+	if id := m.server_hard_drive_type; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetHardDriveType resets all changes to the "hard_drive_type" edge.
-func (m *ServerHardDriveMutation) ResetHardDriveType() {
-	m.hard_drive_type = nil
-	m.clearedhard_drive_type = false
+// ResetServerHardDriveType resets all changes to the "server_hard_drive_type" edge.
+func (m *ServerHardDriveMutation) ResetServerHardDriveType() {
+	m.server_hard_drive_type = nil
+	m.clearedserver_hard_drive_type = false
 }
 
 // Where appends a list predicates to the ServerHardDriveMutation builder.
@@ -6071,7 +6058,7 @@ func (m *ServerHardDriveMutation) Fields() []string {
 	if m.server != nil {
 		fields = append(fields, serverharddrive.FieldServerID)
 	}
-	if m.hard_drive_type != nil {
+	if m.server_hard_drive_type != nil {
 		fields = append(fields, serverharddrive.FieldServerHardDriveTypeID)
 	}
 	return fields
@@ -6229,8 +6216,8 @@ func (m *ServerHardDriveMutation) AddedEdges() []string {
 	if m.server != nil {
 		edges = append(edges, serverharddrive.EdgeServer)
 	}
-	if m.hard_drive_type != nil {
-		edges = append(edges, serverharddrive.EdgeHardDriveType)
+	if m.server_hard_drive_type != nil {
+		edges = append(edges, serverharddrive.EdgeServerHardDriveType)
 	}
 	return edges
 }
@@ -6243,8 +6230,8 @@ func (m *ServerHardDriveMutation) AddedIDs(name string) []ent.Value {
 		if id := m.server; id != nil {
 			return []ent.Value{*id}
 		}
-	case serverharddrive.EdgeHardDriveType:
-		if id := m.hard_drive_type; id != nil {
+	case serverharddrive.EdgeServerHardDriveType:
+		if id := m.server_hard_drive_type; id != nil {
 			return []ent.Value{*id}
 		}
 	}
@@ -6269,8 +6256,8 @@ func (m *ServerHardDriveMutation) ClearedEdges() []string {
 	if m.clearedserver {
 		edges = append(edges, serverharddrive.EdgeServer)
 	}
-	if m.clearedhard_drive_type {
-		edges = append(edges, serverharddrive.EdgeHardDriveType)
+	if m.clearedserver_hard_drive_type {
+		edges = append(edges, serverharddrive.EdgeServerHardDriveType)
 	}
 	return edges
 }
@@ -6281,8 +6268,8 @@ func (m *ServerHardDriveMutation) EdgeCleared(name string) bool {
 	switch name {
 	case serverharddrive.EdgeServer:
 		return m.clearedserver
-	case serverharddrive.EdgeHardDriveType:
-		return m.clearedhard_drive_type
+	case serverharddrive.EdgeServerHardDriveType:
+		return m.clearedserver_hard_drive_type
 	}
 	return false
 }
@@ -6294,8 +6281,8 @@ func (m *ServerHardDriveMutation) ClearEdge(name string) error {
 	case serverharddrive.EdgeServer:
 		m.ClearServer()
 		return nil
-	case serverharddrive.EdgeHardDriveType:
-		m.ClearHardDriveType()
+	case serverharddrive.EdgeServerHardDriveType:
+		m.ClearServerHardDriveType()
 		return nil
 	}
 	return fmt.Errorf("unknown ServerHardDrive unique edge %s", name)
@@ -6308,8 +6295,8 @@ func (m *ServerHardDriveMutation) ResetEdge(name string) error {
 	case serverharddrive.EdgeServer:
 		m.ResetServer()
 		return nil
-	case serverharddrive.EdgeHardDriveType:
-		m.ResetHardDriveType()
+	case serverharddrive.EdgeServerHardDriveType:
+		m.ResetServerHardDriveType()
 		return nil
 	}
 	return fmt.Errorf("unknown ServerHardDrive edge %s", name)

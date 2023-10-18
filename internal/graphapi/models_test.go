@@ -287,3 +287,27 @@ func (p ServerHardDriveTypeBuilder) MustNew(ctx context.Context) *ent.ServerHard
 
 	return EntClient.ServerHardDriveType.Create().SetVendor(p.Vendor).SetModel(p.Model).SetCapacity(p.Capacity).SetSpeed(p.Speed).SetType(p.Type).SaveX(ctx)
 }
+
+type ServerHardDriveBuilder struct {
+	Serial              string
+	Server              *ent.Server
+	ServerHardDriveType *ent.ServerHardDriveType
+}
+
+func (p ServerHardDriveBuilder) MustNew(ctx context.Context) *ent.ServerHardDrive {
+	if p.Serial == "" {
+		p.Serial = gofakeit.UUID()
+	}
+
+	if p.Server == nil {
+		provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+		srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+		p.Server = (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	}
+
+	if p.ServerHardDriveType == nil {
+		p.ServerHardDriveType = (&ServerHardDriveTypeBuilder{}).MustNew(ctx)
+	}
+
+	return EntClient.ServerHardDrive.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerHardDriveTypeID(p.ServerHardDriveType.ID).SaveX(ctx)
+}
