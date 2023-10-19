@@ -115,7 +115,7 @@ type ComplexityRoot struct {
 		ServerHardDriveUpdate       func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerHardDriveInput) int
 		ServerMemory                func(childComplexity int, input generated.CreateServerMemoryInput) int
 		ServerMemoryDelete          func(childComplexity int, id gidx.PrefixedID) int
-		ServerMemoryType            func(childComplexity int, input generated.CreateServerMemoryTypeInput) int
+		ServerMemoryTypeCreate      func(childComplexity int, input generated.CreateServerMemoryTypeInput) int
 		ServerMemoryTypeDelete      func(childComplexity int, id gidx.PrefixedID) int
 		ServerMemoryTypeUpdate      func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMemoryTypeInput) int
 		ServerMemoryUpdate          func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMemoryInput) int
@@ -900,7 +900,7 @@ type MutationResolver interface {
 	ServerMemory(ctx context.Context, input generated.CreateServerMemoryInput) (*ServerMemoryCreatePayload, error)
 	ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMemoryInput) (*ServerMemoryUpdatePayload, error)
 	ServerMemoryDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMemoryDeletePayload, error)
-	ServerMemoryType(ctx context.Context, input generated.CreateServerMemoryTypeInput) (*ServerMemoryTypeCreatePayload, error)
+	ServerMemoryTypeCreate(ctx context.Context, input generated.CreateServerMemoryTypeInput) (*ServerMemoryTypeCreatePayload, error)
 	ServerMemoryTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMemoryTypeInput) (*ServerMemoryTypeUpdatePayload, error)
 	ServerMemoryTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMemoryTypeDeletePayload, error)
 	ServerMotherboard(ctx context.Context, input generated.CreateServerMotherboardInput) (*ServerMotherboardCreatePayload, error)
@@ -1608,17 +1608,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerMemoryDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
 
-	case "Mutation.serverMemoryType":
-		if e.complexity.Mutation.ServerMemoryType == nil {
+	case "Mutation.serverMemoryTypeCreate":
+		if e.complexity.Mutation.ServerMemoryTypeCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_serverMemoryType_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_serverMemoryTypeCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServerMemoryType(childComplexity, args["input"].(generated.CreateServerMemoryTypeInput)), true
+		return e.complexity.Mutation.ServerMemoryTypeCreate(childComplexity, args["input"].(generated.CreateServerMemoryTypeInput)), true
 
 	case "Mutation.serverMemoryTypeDelete":
 		if e.complexity.Mutation.ServerMemoryTypeDelete == nil {
@@ -8009,7 +8009,7 @@ extend type Mutation {
   """
   Create a server memory type.
   """
-  serverMemoryType(
+  serverMemoryTypeCreate(
     input: CreateServerMemoryTypeInput!
   ): ServerMemoryTypeCreatePayload!
   """
@@ -9680,6 +9680,21 @@ func (ec *executionContext) field_Mutation_serverMemoryDelete_args(ctx context.C
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverMemoryTypeCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerMemoryTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerMemoryTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMemoryTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverMemoryTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9716,21 +9731,6 @@ func (ec *executionContext) field_Mutation_serverMemoryTypeUpdate_args(ctx conte
 		}
 	}
 	args["input"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverMemoryType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerMemoryTypeInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerMemoryTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMemoryTypeInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -14587,8 +14587,8 @@ func (ec *executionContext) fieldContext_Mutation_serverMemoryDelete(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_serverMemoryType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverMemoryType(ctx, field)
+func (ec *executionContext) _Mutation_serverMemoryTypeCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMemoryTypeCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -14601,7 +14601,7 @@ func (ec *executionContext) _Mutation_serverMemoryType(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerMemoryType(rctx, fc.Args["input"].(generated.CreateServerMemoryTypeInput))
+		return ec.resolvers.Mutation().ServerMemoryTypeCreate(rctx, fc.Args["input"].(generated.CreateServerMemoryTypeInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14618,7 +14618,7 @@ func (ec *executionContext) _Mutation_serverMemoryType(ctx context.Context, fiel
 	return ec.marshalNServerMemoryTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMemoryTypeCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_serverMemoryType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_serverMemoryTypeCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -14639,7 +14639,7 @@ func (ec *executionContext) fieldContext_Mutation_serverMemoryType(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverMemoryType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_serverMemoryTypeCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -49350,9 +49350,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "serverMemoryType":
+		case "serverMemoryTypeCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverMemoryType(ctx, field)
+				return ec._Mutation_serverMemoryTypeCreate(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

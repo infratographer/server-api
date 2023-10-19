@@ -271,7 +271,7 @@ type Mutation {
 	"""Delete a server memory."""
 	serverMemoryDelete(id: ID!): ServerMemoryDeletePayload!
 	"""Create a server memory type."""
-	serverMemoryType(input: CreateServerMemoryTypeInput!): ServerMemoryTypeCreatePayload!
+	serverMemoryTypeCreate(input: CreateServerMemoryTypeInput!): ServerMemoryTypeCreatePayload!
 	"""Update a server memory type."""
 	serverMemoryTypeUpdate(id: ID!, input: UpdateServerMemoryTypeInput!): ServerMemoryTypeUpdatePayload!
 	"""Delete a server memory type."""

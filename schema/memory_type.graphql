@@ -14,7 +14,7 @@ extend type Mutation {
   """
   Create a server memory type.
   """
-  serverMemoryType(
+  serverMemoryTypeCreate(
     input: CreateServerMemoryTypeInput!
   ): ServerMemoryTypeCreatePayload!
   """

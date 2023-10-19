@@ -311,3 +311,30 @@ func (p ServerHardDriveBuilder) MustNew(ctx context.Context) *ent.ServerHardDriv
 
 	return EntClient.ServerHardDrive.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerHardDriveTypeID(p.ServerHardDriveType.ID).SaveX(ctx)
 }
+
+type ServerMemoryTypeBuilder struct {
+	Vendor string
+	Model  string
+	Size   string
+	Speed  string
+}
+
+func (p ServerMemoryTypeBuilder) MustNew(ctx context.Context) *ent.ServerMemoryType {
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
+
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
+
+	if p.Speed == "" {
+		p.Speed = gofakeit.Animal()
+	}
+
+	if p.Size == "" {
+		p.Size = gofakeit.AnimalType()
+	}
+
+	return EntClient.ServerMemoryType.Create().SetModel(p.Model).SetSize(p.Size).SetSpeed(p.Speed).SetVendor(p.Vendor).SaveX(ctx)
+}

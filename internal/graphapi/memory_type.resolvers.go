@@ -14,8 +14,8 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerMemoryType is the resolver for the serverMemoryType field.
-func (r *mutationResolver) ServerMemoryType(ctx context.Context, input generated.CreateServerMemoryTypeInput) (*ServerMemoryTypeCreatePayload, error) {
+// ServerMemoryTypeCreate is the resolver for the serverMemoryTypeCreate field.
+func (r *mutationResolver) ServerMemoryTypeCreate(ctx context.Context, input generated.CreateServerMemoryTypeInput) (*ServerMemoryTypeCreatePayload, error) {
 	// TODO: check permissions
 
 	mt, err := r.client.ServerMemoryType.Create().SetInput(input).Save(ctx)

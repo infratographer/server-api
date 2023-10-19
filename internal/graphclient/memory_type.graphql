@@ -1,0 +1,45 @@
+mutation ServerMemoryTypeDelete($id: ID!) {
+  serverMemoryTypeDelete(id: $id) {
+    deletedID
+  }
+}
+
+query GetServerMemoryType($id: ID!){
+  serverMemoryType(id: $id){
+		id
+    size
+    createdAt
+    updatedAt
+    model
+    speed
+    vendor
+  }
+}
+
+mutation ServerMemoryTypeCreate($input: CreateServerMemoryTypeInput!){
+  serverMemoryTypeCreate(input: $input){
+    serverMemoryType{
+      id
+      size
+      createdAt
+      updatedAt
+      model
+      speed
+      vendor
+    }
+  }
+}
+
+mutation ServerMemoryTypeUpdate($id: ID!, $input: UpdateServerMemoryTypeInput!) {
+  serverMemoryTypeUpdate(id: $id, input: $input) {
+    serverMemoryType {
+      id
+      size
+      createdAt
+      updatedAt
+      model
+      speed
+      vendor
+    }
+  }
+}
