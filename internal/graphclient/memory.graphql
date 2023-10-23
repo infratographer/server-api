@@ -1,0 +1,54 @@
+mutation ServerMemoryDelete($id: ID!) {
+  serverMemoryDelete(id: $id) {
+    deletedID
+  }
+}
+
+query GetServerMemory($id: ID!){
+  serverMemory(id: $id){
+    id
+    serial
+    createdAt
+    updatedAt
+    server {
+      id
+    }
+    serverMemoryType {
+      id
+    }
+  }
+}
+
+mutation ServerMemoryCreate($input: CreateServerMemoryInput!){
+  serverMemoryCreate(input: $input){
+    serverMemory{
+      id
+      serial
+      createdAt
+      updatedAt
+      server {
+        id
+      }
+      serverMemoryType {
+        id
+      }
+    }
+  }
+}
+
+mutation ServerMemoryUpdate($id: ID!, $input: UpdateServerMemoryInput!) {
+  serverMemoryUpdate(id: $id, input: $input) {
+    serverMemory {
+      id
+      serial
+      createdAt
+      updatedAt
+      server {
+        id
+      }
+      serverMemoryType {
+        id
+      }
+    }
+  }
+}

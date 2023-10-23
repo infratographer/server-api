@@ -22,6 +22,7 @@ type GraphClient interface {
 	GetServerChassisType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerChassisType, error)
 	GetServerComponent(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerComponent, error)
 	GetServerComponentType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerComponentType, error)
+	GetServerMemory(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMemory, error)
 	GetServerMemoryType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMemoryType, error)
 	GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error)
 	ServerCPUCreate(ctx context.Context, input CreateServerCPUInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUCreate, error)
@@ -50,9 +51,12 @@ type GraphClient interface {
 	ServerHardDriveTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveTypeDelete, error)
 	ServerHardDriveTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerHardDriveTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveTypeUpdate, error)
 	ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerHardDriveInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerHardDriveUpdate, error)
+	ServerMemoryCreate(ctx context.Context, input CreateServerMemoryInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryCreate, error)
+	ServerMemoryDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryDelete, error)
 	ServerMemoryTypeCreate(ctx context.Context, input CreateServerMemoryTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryTypeCreate, error)
 	ServerMemoryTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryTypeDelete, error)
 	ServerMemoryTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMemoryTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryTypeUpdate, error)
+	ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMemoryInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryUpdate, error)
 	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
 	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeDelete, error)
 	ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeUpdate, error)
@@ -116,7 +120,7 @@ type Mutation struct {
 	ServerHardDriveTypeCreate   ServerHardDriveTypeCreatePayload   "json:\"serverHardDriveTypeCreate\" graphql:\"serverHardDriveTypeCreate\""
 	ServerHardDriveTypeUpdate   ServerHardDriveTypeUpdatePayload   "json:\"serverHardDriveTypeUpdate\" graphql:\"serverHardDriveTypeUpdate\""
 	ServerHardDriveTypeDelete   ServerHardDriveTypeDeletePayload   "json:\"serverHardDriveTypeDelete\" graphql:\"serverHardDriveTypeDelete\""
-	ServerMemory                ServerMemoryCreatePayload          "json:\"serverMemory\" graphql:\"serverMemory\""
+	ServerMemoryCreate          ServerMemoryCreatePayload          "json:\"serverMemoryCreate\" graphql:\"serverMemoryCreate\""
 	ServerMemoryUpdate          ServerMemoryUpdatePayload          "json:\"serverMemoryUpdate\" graphql:\"serverMemoryUpdate\""
 	ServerMemoryDelete          ServerMemoryDeletePayload          "json:\"serverMemoryDelete\" graphql:\"serverMemoryDelete\""
 	ServerMemoryTypeCreate      ServerMemoryTypeCreatePayload      "json:\"serverMemoryTypeCreate\" graphql:\"serverMemoryTypeCreate\""
@@ -286,6 +290,20 @@ type GetServerComponentType struct {
 		CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
 		UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
 	} "json:\"serverComponentType\" graphql:\"serverComponentType\""
+}
+type GetServerMemory struct {
+	ServerMemory struct {
+		ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Serial    string          "json:\"serial\" graphql:\"serial\""
+		CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		Server    struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"server\" graphql:\"server\""
+		ServerMemoryType struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"serverMemoryType\" graphql:\"serverMemoryType\""
+	} "json:\"serverMemory\" graphql:\"serverMemory\""
 }
 type GetServerMemoryType struct {
 	ServerMemoryType struct {
@@ -613,6 +631,27 @@ type ServerHardDriveUpdate struct {
 		} "json:\"serverHardDrive\" graphql:\"serverHardDrive\""
 	} "json:\"serverHardDriveUpdate\" graphql:\"serverHardDriveUpdate\""
 }
+type ServerMemoryCreate struct {
+	ServerMemoryCreate struct {
+		ServerMemory struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial    string          "json:\"serial\" graphql:\"serial\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+			Server    struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			ServerMemoryType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverMemoryType\" graphql:\"serverMemoryType\""
+		} "json:\"serverMemory\" graphql:\"serverMemory\""
+	} "json:\"serverMemoryCreate\" graphql:\"serverMemoryCreate\""
+}
+type ServerMemoryDelete struct {
+	ServerMemoryDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverMemoryDelete\" graphql:\"serverMemoryDelete\""
+}
 type ServerMemoryTypeCreate struct {
 	ServerMemoryTypeCreate struct {
 		ServerMemoryType struct {
@@ -643,6 +682,22 @@ type ServerMemoryTypeUpdate struct {
 			Vendor    string          "json:\"vendor\" graphql:\"vendor\""
 		} "json:\"serverMemoryType\" graphql:\"serverMemoryType\""
 	} "json:\"serverMemoryTypeUpdate\" graphql:\"serverMemoryTypeUpdate\""
+}
+type ServerMemoryUpdate struct {
+	ServerMemoryUpdate struct {
+		ServerMemory struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial    string          "json:\"serial\" graphql:\"serial\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+			Server    struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			ServerMemoryType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverMemoryType\" graphql:\"serverMemoryType\""
+		} "json:\"serverMemory\" graphql:\"serverMemory\""
+	} "json:\"serverMemoryUpdate\" graphql:\"serverMemoryUpdate\""
 }
 type ServerTypeCreate struct {
 	ServerTypeCreate struct {
@@ -967,6 +1022,35 @@ func (c *Client) GetServerComponentType(ctx context.Context, id gidx.PrefixedID,
 
 	var res GetServerComponentType
 	if err := c.Client.Post(ctx, "GetServerComponentType", GetServerComponentTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const GetServerMemoryDocument = `query GetServerMemory ($id: ID!) {
+	serverMemory(id: $id) {
+		id
+		serial
+		createdAt
+		updatedAt
+		server {
+			id
+		}
+		serverMemoryType {
+			id
+		}
+	}
+}
+`
+
+func (c *Client) GetServerMemory(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMemory, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerMemory
+	if err := c.Client.Post(ctx, "GetServerMemory", GetServerMemoryDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 
@@ -1727,6 +1811,57 @@ func (c *Client) ServerHardDriveUpdate(ctx context.Context, id gidx.PrefixedID, 
 	return &res, nil
 }
 
+const ServerMemoryCreateDocument = `mutation ServerMemoryCreate ($input: CreateServerMemoryInput!) {
+	serverMemoryCreate(input: $input) {
+		serverMemory {
+			id
+			serial
+			createdAt
+			updatedAt
+			server {
+				id
+			}
+			serverMemoryType {
+				id
+			}
+		}
+	}
+}
+`
+
+func (c *Client) ServerMemoryCreate(ctx context.Context, input CreateServerMemoryInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerMemoryCreate
+	if err := c.Client.Post(ctx, "ServerMemoryCreate", ServerMemoryCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerMemoryDeleteDocument = `mutation ServerMemoryDelete ($id: ID!) {
+	serverMemoryDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerMemoryDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerMemoryDelete
+	if err := c.Client.Post(ctx, "ServerMemoryDelete", ServerMemoryDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 const ServerMemoryTypeCreateDocument = `mutation ServerMemoryTypeCreate ($input: CreateServerMemoryTypeInput!) {
 	serverMemoryTypeCreate(input: $input) {
 		serverMemoryType {
@@ -1798,6 +1933,38 @@ func (c *Client) ServerMemoryTypeUpdate(ctx context.Context, id gidx.PrefixedID,
 
 	var res ServerMemoryTypeUpdate
 	if err := c.Client.Post(ctx, "ServerMemoryTypeUpdate", ServerMemoryTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerMemoryUpdateDocument = `mutation ServerMemoryUpdate ($id: ID!, $input: UpdateServerMemoryInput!) {
+	serverMemoryUpdate(id: $id, input: $input) {
+		serverMemory {
+			id
+			serial
+			createdAt
+			updatedAt
+			server {
+				id
+			}
+			serverMemoryType {
+				id
+			}
+		}
+	}
+}
+`
+
+func (c *Client) ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMemoryInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerMemoryUpdate
+	if err := c.Client.Post(ctx, "ServerMemoryUpdate", ServerMemoryUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

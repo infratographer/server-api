@@ -338,3 +338,27 @@ func (p ServerMemoryTypeBuilder) MustNew(ctx context.Context) *ent.ServerMemoryT
 
 	return EntClient.ServerMemoryType.Create().SetModel(p.Model).SetSize(p.Size).SetSpeed(p.Speed).SetVendor(p.Vendor).SaveX(ctx)
 }
+
+type ServerMemoryBuilder struct {
+	Serial           string
+	Server           *ent.Server
+	ServerMemoryType *ent.ServerMemoryType
+}
+
+func (p ServerMemoryBuilder) MustNew(ctx context.Context) *ent.ServerMemory {
+	if p.Serial == "" {
+		p.Serial = gofakeit.UUID()
+	}
+
+	if p.Server == nil {
+		provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+		srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+		p.Server = (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	}
+
+	if p.ServerMemoryType == nil {
+		p.ServerMemoryType = (&ServerMemoryTypeBuilder{}).MustNew(ctx)
+	}
+
+	return EntClient.ServerMemory.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerMemoryType(p.ServerMemoryType).SaveX(ctx)
+}
