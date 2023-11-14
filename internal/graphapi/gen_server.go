@@ -121,7 +121,7 @@ type ComplexityRoot struct {
 		ServerMemoryUpdate          func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMemoryInput) int
 		ServerMotherboard           func(childComplexity int, input generated.CreateServerMotherboardInput) int
 		ServerMotherboardDelete     func(childComplexity int, id gidx.PrefixedID) int
-		ServerMotherboardType       func(childComplexity int, input generated.CreateServerMotherboardTypeInput) int
+		ServerMotherboardTypeCreate func(childComplexity int, input generated.CreateServerMotherboardTypeInput) int
 		ServerMotherboardTypeDelete func(childComplexity int, id gidx.PrefixedID) int
 		ServerMotherboardTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) int
 		ServerMotherboardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) int
@@ -906,7 +906,7 @@ type MutationResolver interface {
 	ServerMotherboard(ctx context.Context, input generated.CreateServerMotherboardInput) (*ServerMotherboardCreatePayload, error)
 	ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) (*ServerMotherboardUpdatePayload, error)
 	ServerMotherboardDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardDeletePayload, error)
-	ServerMotherboardType(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error)
+	ServerMotherboardTypeCreate(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error)
 	ServerMotherboardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerMotherboardTypeInput) (*ServerMotherboardTypeUpdatePayload, error)
 	ServerMotherboardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerMotherboardTypeDeletePayload, error)
 	ServerNetworkCard(ctx context.Context, input generated.CreateServerNetworkCardInput) (*ServerNetworkCardCreatePayload, error)
@@ -1680,17 +1680,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerMotherboardDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
 
-	case "Mutation.serverMotherboardType":
-		if e.complexity.Mutation.ServerMotherboardType == nil {
+	case "Mutation.serverMotherboardTypeCreate":
+		if e.complexity.Mutation.ServerMotherboardTypeCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_serverMotherboardType_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_serverMotherboardTypeCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServerMotherboardType(childComplexity, args["input"].(generated.CreateServerMotherboardTypeInput)), true
+		return e.complexity.Mutation.ServerMotherboardTypeCreate(childComplexity, args["input"].(generated.CreateServerMotherboardTypeInput)), true
 
 	case "Mutation.serverMotherboardTypeDelete":
 		if e.complexity.Mutation.ServerMotherboardTypeDelete == nil {
@@ -8131,7 +8131,7 @@ extend type Mutation {
   """
   Create a server motherboard type.
   """
-  serverMotherboardType(
+  serverMotherboardTypeCreate(
     input: CreateServerMotherboardTypeInput!
   ): ServerMotherboardTypeCreatePayload!
   """
@@ -9788,6 +9788,21 @@ func (ec *executionContext) field_Mutation_serverMotherboardDelete_args(ctx cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverMotherboardTypeCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerMotherboardTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverMotherboardTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9824,21 +9839,6 @@ func (ec *executionContext) field_Mutation_serverMotherboardTypeUpdate_args(ctx 
 		}
 	}
 	args["input"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverMotherboardType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerMotherboardTypeInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerMotherboardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerMotherboardTypeInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -14941,8 +14941,8 @@ func (ec *executionContext) fieldContext_Mutation_serverMotherboardDelete(ctx co
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverMotherboardType(ctx, field)
+func (ec *executionContext) _Mutation_serverMotherboardTypeCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverMotherboardTypeCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -14955,7 +14955,7 @@ func (ec *executionContext) _Mutation_serverMotherboardType(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerMotherboardType(rctx, fc.Args["input"].(generated.CreateServerMotherboardTypeInput))
+		return ec.resolvers.Mutation().ServerMotherboardTypeCreate(rctx, fc.Args["input"].(generated.CreateServerMotherboardTypeInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14972,7 +14972,7 @@ func (ec *executionContext) _Mutation_serverMotherboardType(ctx context.Context,
 	return ec.marshalNServerMotherboardTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerMotherboardTypeCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_serverMotherboardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_serverMotherboardTypeCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -14993,7 +14993,7 @@ func (ec *executionContext) fieldContext_Mutation_serverMotherboardType(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverMotherboardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_serverMotherboardTypeCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -49392,9 +49392,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "serverMotherboardType":
+		case "serverMotherboardTypeCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverMotherboardType(ctx, field)
+				return ec._Mutation_serverMotherboardTypeCreate(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

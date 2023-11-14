@@ -362,3 +362,20 @@ func (p ServerMemoryBuilder) MustNew(ctx context.Context) *ent.ServerMemory {
 
 	return EntClient.ServerMemory.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerMemoryType(p.ServerMemoryType).SaveX(ctx)
 }
+
+type ServerMotherboardTypeBuilder struct {
+	Vendor string
+	Model  string
+}
+
+func (p ServerMotherboardTypeBuilder) MustNew(ctx context.Context) *ent.ServerMotherboardType {
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
+
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
+
+	return EntClient.ServerMotherboardType.Create().SetModel(p.Model).SetVendor(p.Vendor).SaveX(ctx)
+}

@@ -296,7 +296,7 @@ type Mutation {
 	"""Delete a server motherboard."""
 	serverMotherboardDelete(id: ID!): ServerMotherboardDeletePayload!
 	"""Create a server motherboard type."""
-	serverMotherboardType(input: CreateServerMotherboardTypeInput!): ServerMotherboardTypeCreatePayload!
+	serverMotherboardTypeCreate(input: CreateServerMotherboardTypeInput!): ServerMotherboardTypeCreatePayload!
 	"""Update a server motherboard type."""
 	serverMotherboardTypeUpdate(id: ID!, input: UpdateServerMotherboardTypeInput!): ServerMotherboardTypeUpdatePayload!
 	"""Delete a server motherboard type."""

@@ -14,8 +14,8 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerMotherboardType is the resolver for the serverMotherboardType field.
-func (r *mutationResolver) ServerMotherboardType(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error) {
+// ServerMotherboardTypeCreate is the resolver for the serverMotherboardTypeCreate field.
+func (r *mutationResolver) ServerMotherboardTypeCreate(ctx context.Context, input generated.CreateServerMotherboardTypeInput) (*ServerMotherboardTypeCreatePayload, error) {
 	// TODO: check permissions
 
 	mb, err := r.client.ServerMotherboardType.Create().SetInput(input).Save(ctx)
