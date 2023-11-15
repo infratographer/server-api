@@ -1,0 +1,54 @@
+mutation ServerMotherboardDelete($id: ID!) {
+  serverMotherboardDelete(id: $id) {
+    deletedID
+  }
+}
+
+query GetServerMotherboard($id: ID!){
+  serverMotherboard(id: $id){
+    id
+    serial
+		createdAt
+    server {
+      id
+    }
+    updatedAt
+    serverMotherboardType {
+      id
+    }
+  }
+}
+
+mutation ServerMotherboardCreate($input: CreateServerMotherboardInput!){
+  serverMotherboardCreate(input: $input){
+    serverMotherboard{
+      id
+      serial
+      createdAt
+      server {
+        id
+      }
+      updatedAt
+      serverMotherboardType {
+        id
+      }
+    }
+  }
+}
+
+mutation ServerMotherboardUpdate($id: ID!, $input: UpdateServerMotherboardInput!) {
+  serverMotherboardUpdate(id: $id, input: $input) {
+    serverMotherboard {
+      id
+      serial
+      createdAt
+      server {
+        id
+      }
+      updatedAt
+      serverMotherboardType {
+        id
+      }
+    }
+  }
+}

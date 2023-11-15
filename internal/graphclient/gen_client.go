@@ -24,6 +24,7 @@ type GraphClient interface {
 	GetServerComponentType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerComponentType, error)
 	GetServerMemory(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMemory, error)
 	GetServerMemoryType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMemoryType, error)
+	GetServerMotherboard(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMotherboard, error)
 	GetServerMotherboardType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMotherboardType, error)
 	GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error)
 	ServerCPUCreate(ctx context.Context, input CreateServerCPUInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUCreate, error)
@@ -58,9 +59,12 @@ type GraphClient interface {
 	ServerMemoryTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryTypeDelete, error)
 	ServerMemoryTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMemoryTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryTypeUpdate, error)
 	ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMemoryInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMemoryUpdate, error)
+	ServerMotherboardCreate(ctx context.Context, input CreateServerMotherboardInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardCreate, error)
+	ServerMotherboardDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardDelete, error)
 	ServerMotherboardTypeCreate(ctx context.Context, input CreateServerMotherboardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardTypeCreate, error)
 	ServerMotherboardTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardTypeDelete, error)
 	ServerMotherboardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMotherboardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardTypeUpdate, error)
+	ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMotherboardInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardUpdate, error)
 	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
 	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeDelete, error)
 	ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeUpdate, error)
@@ -130,7 +134,7 @@ type Mutation struct {
 	ServerMemoryTypeCreate      ServerMemoryTypeCreatePayload      "json:\"serverMemoryTypeCreate\" graphql:\"serverMemoryTypeCreate\""
 	ServerMemoryTypeUpdate      ServerMemoryTypeUpdatePayload      "json:\"serverMemoryTypeUpdate\" graphql:\"serverMemoryTypeUpdate\""
 	ServerMemoryTypeDelete      ServerMemoryTypeDeletePayload      "json:\"serverMemoryTypeDelete\" graphql:\"serverMemoryTypeDelete\""
-	ServerMotherboard           ServerMotherboardCreatePayload     "json:\"serverMotherboard\" graphql:\"serverMotherboard\""
+	ServerMotherboardCreate     ServerMotherboardCreatePayload     "json:\"serverMotherboardCreate\" graphql:\"serverMotherboardCreate\""
 	ServerMotherboardUpdate     ServerMotherboardUpdatePayload     "json:\"serverMotherboardUpdate\" graphql:\"serverMotherboardUpdate\""
 	ServerMotherboardDelete     ServerMotherboardDeletePayload     "json:\"serverMotherboardDelete\" graphql:\"serverMotherboardDelete\""
 	ServerMotherboardTypeCreate ServerMotherboardTypeCreatePayload "json:\"serverMotherboardTypeCreate\" graphql:\"serverMotherboardTypeCreate\""
@@ -319,6 +323,20 @@ type GetServerMemoryType struct {
 		Speed     string          "json:\"speed\" graphql:\"speed\""
 		Vendor    string          "json:\"vendor\" graphql:\"vendor\""
 	} "json:\"serverMemoryType\" graphql:\"serverMemoryType\""
+}
+type GetServerMotherboard struct {
+	ServerMotherboard struct {
+		ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Serial    string          "json:\"serial\" graphql:\"serial\""
+		CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+		Server    struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"server\" graphql:\"server\""
+		UpdatedAt             time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+		ServerMotherboardType struct {
+			ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		} "json:\"serverMotherboardType\" graphql:\"serverMotherboardType\""
+	} "json:\"serverMotherboard\" graphql:\"serverMotherboard\""
 }
 type GetServerMotherboardType struct {
 	ServerMotherboardType struct {
@@ -712,6 +730,27 @@ type ServerMemoryUpdate struct {
 		} "json:\"serverMemory\" graphql:\"serverMemory\""
 	} "json:\"serverMemoryUpdate\" graphql:\"serverMemoryUpdate\""
 }
+type ServerMotherboardCreate struct {
+	ServerMotherboardCreate struct {
+		ServerMotherboard struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial    string          "json:\"serial\" graphql:\"serial\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			Server    struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			UpdatedAt             time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+			ServerMotherboardType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverMotherboardType\" graphql:\"serverMotherboardType\""
+		} "json:\"serverMotherboard\" graphql:\"serverMotherboard\""
+	} "json:\"serverMotherboardCreate\" graphql:\"serverMotherboardCreate\""
+}
+type ServerMotherboardDelete struct {
+	ServerMotherboardDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverMotherboardDelete\" graphql:\"serverMotherboardDelete\""
+}
 type ServerMotherboardTypeCreate struct {
 	ServerMotherboardTypeCreate struct {
 		ServerMotherboardType struct {
@@ -738,6 +777,22 @@ type ServerMotherboardTypeUpdate struct {
 			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
 		} "json:\"serverMotherboardType\" graphql:\"serverMotherboardType\""
 	} "json:\"serverMotherboardTypeUpdate\" graphql:\"serverMotherboardTypeUpdate\""
+}
+type ServerMotherboardUpdate struct {
+	ServerMotherboardUpdate struct {
+		ServerMotherboard struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Serial    string          "json:\"serial\" graphql:\"serial\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			Server    struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"server\" graphql:\"server\""
+			UpdatedAt             time.Time "json:\"updatedAt\" graphql:\"updatedAt\""
+			ServerMotherboardType struct {
+				ID gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			} "json:\"serverMotherboardType\" graphql:\"serverMotherboardType\""
+		} "json:\"serverMotherboard\" graphql:\"serverMotherboard\""
+	} "json:\"serverMotherboardUpdate\" graphql:\"serverMotherboardUpdate\""
 }
 type ServerTypeCreate struct {
 	ServerTypeCreate struct {
@@ -1117,6 +1172,35 @@ func (c *Client) GetServerMemoryType(ctx context.Context, id gidx.PrefixedID, ht
 
 	var res GetServerMemoryType
 	if err := c.Client.Post(ctx, "GetServerMemoryType", GetServerMemoryTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const GetServerMotherboardDocument = `query GetServerMotherboard ($id: ID!) {
+	serverMotherboard(id: $id) {
+		id
+		serial
+		createdAt
+		server {
+			id
+		}
+		updatedAt
+		serverMotherboardType {
+			id
+		}
+	}
+}
+`
+
+func (c *Client) GetServerMotherboard(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMotherboard, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerMotherboard
+	if err := c.Client.Post(ctx, "GetServerMotherboard", GetServerMotherboardDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 
@@ -2035,6 +2119,57 @@ func (c *Client) ServerMemoryUpdate(ctx context.Context, id gidx.PrefixedID, inp
 	return &res, nil
 }
 
+const ServerMotherboardCreateDocument = `mutation ServerMotherboardCreate ($input: CreateServerMotherboardInput!) {
+	serverMotherboardCreate(input: $input) {
+		serverMotherboard {
+			id
+			serial
+			createdAt
+			server {
+				id
+			}
+			updatedAt
+			serverMotherboardType {
+				id
+			}
+		}
+	}
+}
+`
+
+func (c *Client) ServerMotherboardCreate(ctx context.Context, input CreateServerMotherboardInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerMotherboardCreate
+	if err := c.Client.Post(ctx, "ServerMotherboardCreate", ServerMotherboardCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerMotherboardDeleteDocument = `mutation ServerMotherboardDelete ($id: ID!) {
+	serverMotherboardDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerMotherboardDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerMotherboardDelete
+	if err := c.Client.Post(ctx, "ServerMotherboardDelete", ServerMotherboardDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 const ServerMotherboardTypeCreateDocument = `mutation ServerMotherboardTypeCreate ($input: CreateServerMotherboardTypeInput!) {
 	serverMotherboardTypeCreate(input: $input) {
 		serverMotherboardType {
@@ -2102,6 +2237,38 @@ func (c *Client) ServerMotherboardTypeUpdate(ctx context.Context, id gidx.Prefix
 
 	var res ServerMotherboardTypeUpdate
 	if err := c.Client.Post(ctx, "ServerMotherboardTypeUpdate", ServerMotherboardTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerMotherboardUpdateDocument = `mutation ServerMotherboardUpdate ($id: ID!, $input: UpdateServerMotherboardInput!) {
+	serverMotherboardUpdate(id: $id, input: $input) {
+		serverMotherboard {
+			id
+			serial
+			createdAt
+			server {
+				id
+			}
+			updatedAt
+			serverMotherboardType {
+				id
+			}
+		}
+	}
+}
+`
+
+func (c *Client) ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMotherboardInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerMotherboardUpdate
+	if err := c.Client.Post(ctx, "ServerMotherboardUpdate", ServerMotherboardUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

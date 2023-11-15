@@ -14,7 +14,7 @@ extend type Mutation {
   """
   Create a server motherboard.
   """
-  serverMotherboard(
+  serverMotherboardCreate(
     input: CreateServerMotherboardInput!
   ): ServerMotherboardCreatePayload!
   """

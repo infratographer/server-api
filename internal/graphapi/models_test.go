@@ -379,3 +379,27 @@ func (p ServerMotherboardTypeBuilder) MustNew(ctx context.Context) *ent.ServerMo
 
 	return EntClient.ServerMotherboardType.Create().SetModel(p.Model).SetVendor(p.Vendor).SaveX(ctx)
 }
+
+type ServerMotherboardBuilder struct {
+	Serial                string
+	Server                *ent.Server
+	ServerMotherBoardType *ent.ServerMotherboardType
+}
+
+func (p ServerMotherboardBuilder) MustNew(ctx context.Context) *ent.ServerMotherboard {
+	if p.Serial == "" {
+		p.Serial = gofakeit.UUID()
+	}
+
+	if p.Server == nil {
+		provider := (&ProviderBuilder{ResourceProviderID: gidx.MustNewID(resourceProviderPrefix)}).MustNew(ctx)
+		srvtype := (&ServerTypeBuilder{OwnerID: gidx.MustNewID(ownerPrefix)}).MustNew(ctx)
+		p.Server = (&ServerBuilder{ProviderID: provider.ID, ServerTypeID: srvtype.ID}).MustNew(ctx)
+	}
+
+	if p.ServerMotherBoardType == nil {
+		p.ServerMotherBoardType = (&ServerMotherboardTypeBuilder{}).MustNew(ctx)
+	}
+
+	return EntClient.ServerMotherboard.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerMotherboardType(p.ServerMotherBoardType).SaveX(ctx)
+}
