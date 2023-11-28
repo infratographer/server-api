@@ -26,6 +26,7 @@ type GraphClient interface {
 	GetServerMemoryType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMemoryType, error)
 	GetServerMotherboard(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMotherboard, error)
 	GetServerMotherboardType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerMotherboardType, error)
+	GetServerNetworkCardType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerNetworkCardType, error)
 	GetServerType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerType, error)
 	ServerCPUCreate(ctx context.Context, input CreateServerCPUInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUCreate, error)
 	ServerCPUDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerCPUDelete, error)
@@ -65,6 +66,9 @@ type GraphClient interface {
 	ServerMotherboardTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardTypeDelete, error)
 	ServerMotherboardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMotherboardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardTypeUpdate, error)
 	ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerMotherboardInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerMotherboardUpdate, error)
+	ServerNetworkCardTypeCreate(ctx context.Context, input CreateServerNetworkCardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerNetworkCardTypeCreate, error)
+	ServerNetworkCardTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerNetworkCardTypeDelete, error)
+	ServerNetworkCardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerNetworkCardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerNetworkCardTypeUpdate, error)
 	ServerTypeCreate(ctx context.Context, input CreateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeCreate, error)
 	ServerTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeDelete, error)
 	ServerTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerTypeUpdate, error)
@@ -143,7 +147,7 @@ type Mutation struct {
 	ServerNetworkCard           ServerNetworkCardCreatePayload     "json:\"serverNetworkCard\" graphql:\"serverNetworkCard\""
 	ServerNetworkCardUpdate     ServerNetworkCardUpdatePayload     "json:\"serverNetworkCardUpdate\" graphql:\"serverNetworkCardUpdate\""
 	ServerNetworkCardDelete     ServerNetworkCardDeletePayload     "json:\"serverNetworkCardDelete\" graphql:\"serverNetworkCardDelete\""
-	ServerNetworkCardType       ServerNetworkCardTypeCreatePayload "json:\"serverNetworkCardType\" graphql:\"serverNetworkCardType\""
+	ServerNetworkCardTypeCreate ServerNetworkCardTypeCreatePayload "json:\"serverNetworkCardTypeCreate\" graphql:\"serverNetworkCardTypeCreate\""
 	ServerNetworkCardTypeUpdate ServerNetworkCardTypeUpdatePayload "json:\"serverNetworkCardTypeUpdate\" graphql:\"serverNetworkCardTypeUpdate\""
 	ServerNetworkCardTypeDelete ServerNetworkCardTypeDeletePayload "json:\"serverNetworkCardTypeDelete\" graphql:\"serverNetworkCardTypeDelete\""
 	ServerNetworkPort           ServerNetworkPortCreatePayload     "json:\"serverNetworkPort\" graphql:\"serverNetworkPort\""
@@ -346,6 +350,16 @@ type GetServerMotherboardType struct {
 		CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
 		UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
 	} "json:\"serverMotherboardType\" graphql:\"serverMotherboardType\""
+}
+type GetServerNetworkCardType struct {
+	ServerNetworkCardType struct {
+		ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+		Model     string          "json:\"model\" graphql:\"model\""
+		Vendor    string          "json:\"vendor\" graphql:\"vendor\""
+		PortCount int64           "json:\"portCount\" graphql:\"portCount\""
+		CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+		UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+	} "json:\"serverNetworkCardType\" graphql:\"serverNetworkCardType\""
 }
 type GetServerType struct {
 	ServerType struct {
@@ -794,6 +808,35 @@ type ServerMotherboardUpdate struct {
 		} "json:\"serverMotherboard\" graphql:\"serverMotherboard\""
 	} "json:\"serverMotherboardUpdate\" graphql:\"serverMotherboardUpdate\""
 }
+type ServerNetworkCardTypeCreate struct {
+	ServerNetworkCardTypeCreate struct {
+		ServerNetworkCardType struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Model     string          "json:\"model\" graphql:\"model\""
+			Vendor    string          "json:\"vendor\" graphql:\"vendor\""
+			PortCount int64           "json:\"portCount\" graphql:\"portCount\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverNetworkCardType\" graphql:\"serverNetworkCardType\""
+	} "json:\"serverNetworkCardTypeCreate\" graphql:\"serverNetworkCardTypeCreate\""
+}
+type ServerNetworkCardTypeDelete struct {
+	ServerNetworkCardTypeDelete struct {
+		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
+	} "json:\"serverNetworkCardTypeDelete\" graphql:\"serverNetworkCardTypeDelete\""
+}
+type ServerNetworkCardTypeUpdate struct {
+	ServerNetworkCardTypeUpdate struct {
+		ServerNetworkCardType struct {
+			ID        gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Model     string          "json:\"model\" graphql:\"model\""
+			Vendor    string          "json:\"vendor\" graphql:\"vendor\""
+			PortCount int64           "json:\"portCount\" graphql:\"portCount\""
+			CreatedAt time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"serverNetworkCardType\" graphql:\"serverNetworkCardType\""
+	} "json:\"serverNetworkCardTypeUpdate\" graphql:\"serverNetworkCardTypeUpdate\""
+}
 type ServerTypeCreate struct {
 	ServerTypeCreate struct {
 		ServerType struct {
@@ -1225,6 +1268,31 @@ func (c *Client) GetServerMotherboardType(ctx context.Context, id gidx.PrefixedI
 
 	var res GetServerMotherboardType
 	if err := c.Client.Post(ctx, "GetServerMotherboardType", GetServerMotherboardTypeDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const GetServerNetworkCardTypeDocument = `query GetServerNetworkCardType ($id: ID!) {
+	serverNetworkCardType(id: $id) {
+		id
+		model
+		vendor
+		portCount
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func (c *Client) GetServerNetworkCardType(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*GetServerNetworkCardType, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res GetServerNetworkCardType
+	if err := c.Client.Post(ctx, "GetServerNetworkCardType", GetServerNetworkCardTypeDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 
@@ -2269,6 +2337,81 @@ func (c *Client) ServerMotherboardUpdate(ctx context.Context, id gidx.PrefixedID
 
 	var res ServerMotherboardUpdate
 	if err := c.Client.Post(ctx, "ServerMotherboardUpdate", ServerMotherboardUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerNetworkCardTypeCreateDocument = `mutation ServerNetworkCardTypeCreate ($input: CreateServerNetworkCardTypeInput!) {
+	serverNetworkCardTypeCreate(input: $input) {
+		serverNetworkCardType {
+			id
+			model
+			vendor
+			portCount
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerNetworkCardTypeCreate(ctx context.Context, input CreateServerNetworkCardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerNetworkCardTypeCreate, error) {
+	vars := map[string]interface{}{
+		"input": input,
+	}
+
+	var res ServerNetworkCardTypeCreate
+	if err := c.Client.Post(ctx, "ServerNetworkCardTypeCreate", ServerNetworkCardTypeCreateDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerNetworkCardTypeDeleteDocument = `mutation ServerNetworkCardTypeDelete ($id: ID!) {
+	serverNetworkCardTypeDelete(id: $id) {
+		deletedID
+	}
+}
+`
+
+func (c *Client) ServerNetworkCardTypeDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*ServerNetworkCardTypeDelete, error) {
+	vars := map[string]interface{}{
+		"id": id,
+	}
+
+	var res ServerNetworkCardTypeDelete
+	if err := c.Client.Post(ctx, "ServerNetworkCardTypeDelete", ServerNetworkCardTypeDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const ServerNetworkCardTypeUpdateDocument = `mutation ServerNetworkCardTypeUpdate ($id: ID!, $input: UpdateServerNetworkCardTypeInput!) {
+	serverNetworkCardTypeUpdate(id: $id, input: $input) {
+		serverNetworkCardType {
+			id
+			model
+			vendor
+			portCount
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) ServerNetworkCardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateServerNetworkCardTypeInput, httpRequestOptions ...client.HTTPRequestOption) (*ServerNetworkCardTypeUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res ServerNetworkCardTypeUpdate
+	if err := c.Client.Post(ctx, "ServerNetworkCardTypeUpdate", ServerNetworkCardTypeUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

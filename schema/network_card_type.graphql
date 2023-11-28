@@ -14,7 +14,7 @@ extend type Mutation {
   """
   Create a server network card type.
   """
-  serverNetworkCardType(
+  serverNetworkCardTypeCreate(
     input: CreateServerNetworkCardTypeInput!
   ): ServerNetworkCardTypeCreatePayload!
   """

@@ -403,3 +403,25 @@ func (p ServerMotherboardBuilder) MustNew(ctx context.Context) *ent.ServerMother
 
 	return EntClient.ServerMotherboard.Create().SetSerial(p.Serial).SetServer(p.Server).SetServerMotherboardType(p.ServerMotherBoardType).SaveX(ctx)
 }
+
+type NetworkCardTypeBuilder struct {
+	Vendor    string
+	Model     string
+	PortCount int
+}
+
+func (p NetworkCardTypeBuilder) MustNew(ctx context.Context) *ent.ServerNetworkCardType {
+	if p.Vendor == "" {
+		p.Vendor = gofakeit.CarMaker()
+	}
+
+	if p.Model == "" {
+		p.Model = gofakeit.CarModel()
+	}
+
+	if p.PortCount == 0 {
+		p.PortCount = gofakeit.Number(1, 10)
+	}
+
+	return EntClient.ServerNetworkCardType.Create().SetVendor(p.Vendor).SetModel(p.Model).SetPortCount(p.PortCount).SaveX(ctx)
+}

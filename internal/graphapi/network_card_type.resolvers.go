@@ -14,8 +14,8 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// ServerNetworkCardType is the resolver for the serverNetworkCardType field.
-func (r *mutationResolver) ServerNetworkCardType(ctx context.Context, input generated.CreateServerNetworkCardTypeInput) (*ServerNetworkCardTypeCreatePayload, error) {
+// ServerNetworkCardTypeCreate is the resolver for the serverNetworkCardTypeCreate field.
+func (r *mutationResolver) ServerNetworkCardTypeCreate(ctx context.Context, input generated.CreateServerNetworkCardTypeInput) (*ServerNetworkCardTypeCreatePayload, error) {
 	// TODO: check permissions
 
 	nc, err := r.client.ServerNetworkCardType.Create().SetInput(input).Save(ctx)

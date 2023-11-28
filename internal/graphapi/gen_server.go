@@ -127,7 +127,7 @@ type ComplexityRoot struct {
 		ServerMotherboardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerMotherboardInput) int
 		ServerNetworkCard           func(childComplexity int, input generated.CreateServerNetworkCardInput) int
 		ServerNetworkCardDelete     func(childComplexity int, id gidx.PrefixedID) int
-		ServerNetworkCardType       func(childComplexity int, input generated.CreateServerNetworkCardTypeInput) int
+		ServerNetworkCardTypeCreate func(childComplexity int, input generated.CreateServerNetworkCardTypeInput) int
 		ServerNetworkCardTypeDelete func(childComplexity int, id gidx.PrefixedID) int
 		ServerNetworkCardTypeUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerNetworkCardTypeInput) int
 		ServerNetworkCardUpdate     func(childComplexity int, id gidx.PrefixedID, input generated.UpdateServerNetworkCardInput) int
@@ -912,7 +912,7 @@ type MutationResolver interface {
 	ServerNetworkCard(ctx context.Context, input generated.CreateServerNetworkCardInput) (*ServerNetworkCardCreatePayload, error)
 	ServerNetworkCardUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkCardInput) (*ServerNetworkCardUpdatePayload, error)
 	ServerNetworkCardDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCardDeletePayload, error)
-	ServerNetworkCardType(ctx context.Context, input generated.CreateServerNetworkCardTypeInput) (*ServerNetworkCardTypeCreatePayload, error)
+	ServerNetworkCardTypeCreate(ctx context.Context, input generated.CreateServerNetworkCardTypeInput) (*ServerNetworkCardTypeCreatePayload, error)
 	ServerNetworkCardTypeUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateServerNetworkCardTypeInput) (*ServerNetworkCardTypeUpdatePayload, error)
 	ServerNetworkCardTypeDelete(ctx context.Context, id gidx.PrefixedID) (*ServerNetworkCardTypeDeletePayload, error)
 	ServerNetworkPort(ctx context.Context, input generated.CreateServerNetworkPortInput) (*ServerNetworkPortCreatePayload, error)
@@ -1752,17 +1752,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ServerNetworkCardDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
 
-	case "Mutation.serverNetworkCardType":
-		if e.complexity.Mutation.ServerNetworkCardType == nil {
+	case "Mutation.serverNetworkCardTypeCreate":
+		if e.complexity.Mutation.ServerNetworkCardTypeCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_serverNetworkCardType_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_serverNetworkCardTypeCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ServerNetworkCardType(childComplexity, args["input"].(generated.CreateServerNetworkCardTypeInput)), true
+		return e.complexity.Mutation.ServerNetworkCardTypeCreate(childComplexity, args["input"].(generated.CreateServerNetworkCardTypeInput)), true
 
 	case "Mutation.serverNetworkCardTypeDelete":
 		if e.complexity.Mutation.ServerNetworkCardTypeDelete == nil {
@@ -8253,7 +8253,7 @@ extend type Mutation {
   """
   Create a server network card type.
   """
-  serverNetworkCardType(
+  serverNetworkCardTypeCreate(
     input: CreateServerNetworkCardTypeInput!
   ): ServerNetworkCardTypeCreatePayload!
   """
@@ -9896,6 +9896,21 @@ func (ec *executionContext) field_Mutation_serverNetworkCardDelete_args(ctx cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_serverNetworkCardTypeCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 generated.CreateServerNetworkCardTypeInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateServerNetworkCardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkCardTypeInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_serverNetworkCardTypeDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -9932,21 +9947,6 @@ func (ec *executionContext) field_Mutation_serverNetworkCardTypeUpdate_args(ctx 
 		}
 	}
 	args["input"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_serverNetworkCardType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 generated.CreateServerNetworkCardTypeInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateServerNetworkCardTypeInput2goᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋentᚋgeneratedᚐCreateServerNetworkCardTypeInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -15295,8 +15295,8 @@ func (ec *executionContext) fieldContext_Mutation_serverNetworkCardDelete(ctx co
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_serverNetworkCardType(ctx, field)
+func (ec *executionContext) _Mutation_serverNetworkCardTypeCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_serverNetworkCardTypeCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -15309,7 +15309,7 @@ func (ec *executionContext) _Mutation_serverNetworkCardType(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ServerNetworkCardType(rctx, fc.Args["input"].(generated.CreateServerNetworkCardTypeInput))
+		return ec.resolvers.Mutation().ServerNetworkCardTypeCreate(rctx, fc.Args["input"].(generated.CreateServerNetworkCardTypeInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15326,7 +15326,7 @@ func (ec *executionContext) _Mutation_serverNetworkCardType(ctx context.Context,
 	return ec.marshalNServerNetworkCardTypeCreatePayload2ᚖgoᚗinfratographerᚗcomᚋserverᚑapiᚋinternalᚋgraphapiᚐServerNetworkCardTypeCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_serverNetworkCardType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_serverNetworkCardTypeCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -15347,7 +15347,7 @@ func (ec *executionContext) fieldContext_Mutation_serverNetworkCardType(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_serverNetworkCardType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_serverNetworkCardTypeCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -49434,9 +49434,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "serverNetworkCardType":
+		case "serverNetworkCardTypeCreate":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_serverNetworkCardType(ctx, field)
+				return ec._Mutation_serverNetworkCardTypeCreate(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

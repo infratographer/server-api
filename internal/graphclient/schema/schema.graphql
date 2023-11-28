@@ -308,7 +308,7 @@ type Mutation {
 	"""Delete a server network card."""
 	serverNetworkCardDelete(id: ID!): ServerNetworkCardDeletePayload!
 	"""Create a server network card type."""
-	serverNetworkCardType(input: CreateServerNetworkCardTypeInput!): ServerNetworkCardTypeCreatePayload!
+	serverNetworkCardTypeCreate(input: CreateServerNetworkCardTypeInput!): ServerNetworkCardTypeCreatePayload!
 	"""Update a server network card type."""
 	serverNetworkCardTypeUpdate(id: ID!, input: UpdateServerNetworkCardTypeInput!): ServerNetworkCardTypeUpdatePayload!
 	"""Delete a server network card type."""
