@@ -1,0 +1,57 @@
+query GetHardDriveType($id: ID!){
+  serverHardDriveType(id: $id){
+    id
+    type
+    model
+    speed
+    vendor
+    capacity
+    createdAt
+    updatedAt
+    hardDrive{
+      totalCount
+    } 
+  }
+}
+
+mutation ServerHardDriveTypeCreate($input: CreateServerHardDriveTypeInput!){
+  serverHardDriveTypeCreate(input: $input){
+    serverHardDriveType{
+        id
+        type
+        model
+        speed
+        vendor
+        capacity
+        createdAt
+        updatedAt
+        hardDrive{
+            totalCount
+        } 
+    }
+  }
+}
+
+mutation ServerHardDriveTypeUpdate($id: ID!, $input: UpdateServerHardDriveTypeInput!) {
+  serverHardDriveTypeUpdate(id: $id, input: $input) {
+    serverHardDriveType {
+        id
+        type
+        model
+        speed
+        vendor
+        capacity
+        createdAt
+        updatedAt
+        hardDrive{
+            totalCount
+        } 
+    }
+  }
+}
+
+mutation ServerHardDriveTypeDelete($id: ID!) {
+  serverHardDriveTypeDelete(id: $id) {
+    deletedID
+  }
+}

@@ -1,0 +1,54 @@
+query GetHardDrive($id: ID!){
+  serverHardDrive(id: $id){
+    id
+    serial
+    server {
+      id
+    }
+    createdAt
+    updatedAt
+    serverHardDriveType{
+      id
+    }
+  }
+}
+
+mutation ServerHardDriveCreate($input: CreateServerHardDriveInput!){
+  serverHardDriveCreate(input: $input){
+    serverHardDrive{
+      id
+      serial
+      server {
+        id
+      }
+      createdAt
+      updatedAt
+      serverHardDriveType{
+        id
+      }
+    }
+  }
+}
+
+mutation ServerHardDriveUpdate($id: ID!, $input: UpdateServerHardDriveInput!) {
+  serverHardDriveUpdate(id: $id, input: $input) {
+    serverHardDrive {
+      id
+      serial
+      server {
+        id
+      }
+      createdAt
+      updatedAt
+      serverHardDriveType{
+        id
+      }
+    }
+  }
+}
+
+mutation ServerHardDriveDelete($id: ID!) {
+  serverHardDriveDelete(id: $id) {
+    deletedID
+  }
+}

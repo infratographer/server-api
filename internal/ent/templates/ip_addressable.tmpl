@@ -1,0 +1,15 @@
+{{ define "model/additional/ip_addressable" }}
+  {{- if eq $.Name "Server" }}
+    // IsIPAddressable implements interface for IPAddressable
+    func ({{ $.Receiver }} {{ $.Name }}) IsIPAddressable() {}
+  {{ end }}
+{{ end }}
+
+{{ define "ip_addressable" }}
+{{ $pkg := base $.Config.Package }}
+{{ template "header" $ }}
+
+type IPAddressable interface {
+	IsIPAddressable()
+}
+{{ end }}

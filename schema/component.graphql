@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverComponent by ID.
+  """
+  serverComponent(
+    """
+    The server component ID.
+    """
+    id: ID!
+  ): ServerComponent!
+}
+
+extend type Mutation {
+  """
+  Create a server component.
+  """
+  serverComponentCreate(
+    input: CreateServerComponentInput!
+  ): ServerComponentCreatePayload!
+  """
+  Update a server component.
+  """
+  serverComponentUpdate(
+    id: ID!
+    input: UpdateServerComponentInput!
+  ): ServerComponentUpdatePayload!
+  """
+  Delete a server component.
+  """
+  serverComponentDelete(id: ID!): ServerComponentDeletePayload!
+}
+
+"""
+Return response from serverComponentCreate
+"""
+type ServerComponentCreatePayload {
+  """
+  The created server component.
+  """
+  serverComponent: ServerComponent!
+}
+
+"""
+Return response from serverComponentDelete
+"""
+type ServerComponentDeletePayload {
+  """
+  The ID of the deleted server component.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverComponentUpdate
+"""
+type ServerComponentUpdatePayload {
+  """
+  The updated server component.
+  """
+  serverComponent: ServerComponent!
+}

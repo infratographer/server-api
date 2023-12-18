@@ -1,0 +1,45 @@
+query GetServerType($id: ID!) {
+  serverType(id: $id){
+    id
+    name
+    owner {
+      id
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation ServerTypeCreate($input: CreateServerTypeInput!){
+  serverTypeCreate(input: $input){
+    serverType{
+      id
+      name
+      owner {
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerTypeUpdate($id: ID!, $input: UpdateServerTypeInput!) {
+  serverTypeUpdate(id: $id, input: $input) {
+    serverType {
+      id
+      name
+      owner {
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerTypeDelete($id: ID!) {
+  serverTypeDelete(id: $id) {
+    deletedID
+  }
+}

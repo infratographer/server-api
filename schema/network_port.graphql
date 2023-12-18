@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverNetworkPort by ID.
+  """
+  serverNetworkPort(
+    """
+    The server network port ID.
+    """
+    id: ID!
+  ): ServerNetworkPort!
+}
+
+extend type Mutation {
+  """
+  Create a server network port.
+  """
+  serverNetworkPort(
+    input: CreateServerNetworkPortInput!
+  ): ServerNetworkPortCreatePayload!
+  """
+  Update a server network port.
+  """
+  serverNetworkPortUpdate(
+    id: ID!
+    input: UpdateServerNetworkPortInput!
+  ): ServerNetworkPortUpdatePayload!
+  """
+  Delete a server network port.
+  """
+  serverNetworkPortDelete(id: ID!): ServerNetworkPortDeletePayload!
+}
+
+"""
+Return response from serverNetworkPortCreate
+"""
+type ServerNetworkPortCreatePayload {
+  """
+  The created server network port.
+  """
+  serverNetworkPort: ServerNetworkPort!
+}
+
+"""
+Return response from serverNetworkPortDelete
+"""
+type ServerNetworkPortDeletePayload {
+  """
+  The ID of the deleted server network port.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverNetworkPortUpdate
+"""
+type ServerNetworkPortUpdatePayload {
+  """
+  The updated server network port.
+  """
+  serverNetworkPort: ServerNetworkPort!
+}

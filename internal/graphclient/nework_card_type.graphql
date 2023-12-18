@@ -1,0 +1,42 @@
+mutation ServerNetworkCardTypeDelete($id: ID!) {
+  serverNetworkCardTypeDelete(id: $id) {
+    deletedID
+  }
+}
+
+query GetServerNetworkCardType($id: ID!){
+  serverNetworkCardType(id: $id){
+      id
+      model
+      vendor
+      portCount
+      createdAt
+      updatedAt
+  }
+}
+
+mutation ServerNetworkCardTypeCreate($input: CreateServerNetworkCardTypeInput!){
+  serverNetworkCardTypeCreate(input: $input){
+    serverNetworkCardType{
+      id
+      model
+      vendor
+      portCount
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerNetworkCardTypeUpdate($id: ID!, $input: UpdateServerNetworkCardTypeInput!) {
+  serverNetworkCardTypeUpdate(id: $id, input: $input) {
+    serverNetworkCardType {
+      id
+      model
+      vendor
+      portCount
+      createdAt
+      updatedAt
+    }
+  }
+}

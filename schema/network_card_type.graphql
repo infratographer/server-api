@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverNetworkCardType by ID.
+  """
+  serverNetworkCardType(
+    """
+    The server network card type ID.
+    """
+    id: ID!
+  ): ServerNetworkCardType!
+}
+
+extend type Mutation {
+  """
+  Create a server network card type.
+  """
+  serverNetworkCardTypeCreate(
+    input: CreateServerNetworkCardTypeInput!
+  ): ServerNetworkCardTypeCreatePayload!
+  """
+  Update a server network card type.
+  """
+  serverNetworkCardTypeUpdate(
+    id: ID!
+    input: UpdateServerNetworkCardTypeInput!
+  ): ServerNetworkCardTypeUpdatePayload!
+  """
+  Delete a server network card type.
+  """
+  serverNetworkCardTypeDelete(id: ID!): ServerNetworkCardTypeDeletePayload!
+}
+
+"""
+Return response from serverNetworkCardTypeCreate
+"""
+type ServerNetworkCardTypeCreatePayload {
+  """
+  The created server network card type.
+  """
+  serverNetworkCardType: ServerNetworkCardType!
+}
+
+"""
+Return response from serverNetworkCardTypeDelete
+"""
+type ServerNetworkCardTypeDeletePayload {
+  """
+  The ID of the deleted server network card type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverNetworkCardTypeUpdate
+"""
+type ServerNetworkCardTypeUpdatePayload {
+  """
+  The updated server network card type.
+  """
+  serverNetworkCardType: ServerNetworkCardType!
+}

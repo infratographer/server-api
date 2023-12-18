@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a server provider by ID.
+  """
+  serverProvider(
+    """
+    The server provider ID.
+    """
+    id: ID!
+  ): ServerProvider!
+}
+
+extend type Mutation {
+  """
+  Create a server provider.
+  """
+  serverProviderCreate(
+    input: CreateServerProviderInput!
+  ): ServerProviderCreatePayload!
+  """
+  Update a server provider.
+  """
+  serverProviderUpdate(
+    id: ID!
+    input: UpdateServerProviderInput!
+  ): ServerProviderUpdatePayload!
+  """
+  Delete a server provider.
+  """
+  serverProviderDelete(id: ID!): ServerProviderDeletePayload!
+}
+
+"""
+Return response from serverProviderCreate
+"""
+type ServerProviderCreatePayload {
+  """
+  The created server provider.
+  """
+  serverProvider: ServerProvider!
+}
+
+"""
+Return response from serverProviderDelete
+"""
+type ServerProviderDeletePayload {
+  """
+  The ID of the deleted server provider.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverProviderUpdate
+"""
+type ServerProviderUpdatePayload {
+  """
+  The updated server provider.
+  """
+  serverProvider: ServerProvider!
+}

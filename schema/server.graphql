@@ -1,0 +1,63 @@
+directive @prefixedID(prefix: String!) on OBJECT
+
+extend type Query {
+  """
+  Lookup a server by ID.
+  """
+  server(
+    """
+    The server ID.
+    """
+    id: ID!
+  ): Server!
+}
+
+extend type Mutation {
+  """
+  Create a server.
+  """
+  serverCreate(
+    input: CreateServerInput!
+  ): ServerCreatePayload!
+  """
+  Update a server.
+  """
+  serverUpdate(
+    id: ID!
+    input: UpdateServerInput!
+  ): ServerUpdatePayload!
+  """
+  Delete a server.
+  """
+  serverDelete(id: ID!): ServerDeletePayload!
+}
+
+"""
+Return response from serverCreate
+"""
+type ServerCreatePayload {
+  """
+  The created server.
+  """
+  server: Server!
+}
+
+"""
+Return response from serverDelete
+"""
+type ServerDeletePayload {
+  """
+  The ID of the deleted server.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverUpdate
+"""
+type ServerUpdatePayload {
+  """
+  The updated server.
+  """
+  server: Server!
+}

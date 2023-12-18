@@ -1,0 +1,61 @@
+extend type Query {
+  """
+  Lookup a serverCPUType by ID.
+  """
+  serverCPUType(
+    """
+    The server cpu type ID.
+    """
+    id: ID!
+  ): ServerCPUType!
+}
+
+extend type Mutation {
+  """
+  Create a server cpu type.
+  """
+  serverCPUTypeCreate(
+    input: CreateServerCPUTypeInput!
+  ): ServerCPUTypeCreatePayload!
+  """
+  Update a server cpu type.
+  """
+  serverCPUTypeUpdate(
+    id: ID!
+    input: UpdateServerCPUTypeInput!
+  ): ServerCPUTypeUpdatePayload!
+  """
+  Delete a server cpu type.
+  """
+  serverCPUTypeDelete(id: ID!): ServerCPUTypeDeletePayload!
+}
+
+"""
+Return response from serverCPUTypeCreate
+"""
+type ServerCPUTypeCreatePayload {
+  """
+  The created server cpu type.
+  """
+  serverCPUType: ServerCPUType!
+}
+
+"""
+Return response from serverCPUTypeDelete
+"""
+type ServerCPUTypeDeletePayload {
+  """
+  The ID of the deleted server cpu type.
+  """
+  deletedID: ID!
+}
+
+"""
+Return response from serverCPUTypeUpdate
+"""
+type ServerCPUTypeUpdatePayload {
+  """
+  The updated server cpu type.
+  """
+  serverCPUType: ServerCPUType!
+}

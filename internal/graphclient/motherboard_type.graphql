@@ -1,0 +1,39 @@
+mutation ServerMotherboardTypeDelete($id: ID!) {
+  serverMotherboardTypeDelete(id: $id) {
+    deletedID
+  }
+}
+
+query GetServerMotherboardType($id: ID!){
+  serverMotherboardType(id: $id){
+    id
+    model
+    vendor
+    createdAt
+    updatedAt
+  }
+}
+
+mutation ServerMotherboardTypeCreate($input: CreateServerMotherboardTypeInput!){
+  serverMotherboardTypeCreate(input: $input){
+    serverMotherboardType{
+      id
+      model
+      vendor
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ServerMotherboardTypeUpdate($id: ID!, $input: UpdateServerMotherboardTypeInput!) {
+  serverMotherboardTypeUpdate(id: $id, input: $input) {
+    serverMotherboardType {
+      id
+      model
+      vendor
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -1,0 +1,45 @@
+query GetServerCPUType($id: ID!) {
+  serverCPUType(id: $id){
+    id
+    vendor
+    model
+    coreCount
+    clockSpeed
+    createdAt
+    updatedAt
+  }
+}
+
+mutation ServerCPUTypeCreate($input: CreateServerCPUTypeInput!){
+  serverCPUTypeCreate(input: $input){
+    serverCPUType{
+        id
+        vendor
+        model
+        coreCount
+        clockSpeed
+        createdAt
+        updatedAt
+    }
+  }
+}
+
+mutation ServerCPUTypeUpdate($id: ID!, $input: UpdateServerCPUTypeInput!) {
+  serverCPUTypeUpdate(id: $id, input: $input) {
+    serverCPUType {
+        id
+        vendor
+        model
+        coreCount
+        clockSpeed
+        createdAt
+        updatedAt
+    }
+  }
+}
+
+mutation ServerCPUTypeDelete($id: ID!) {
+  serverCPUTypeDelete(id: $id) {
+    deletedID
+  }
+}
